@@ -1,0 +1,57 @@
+﻿@model SchoolOfScience.Models.ProgramType
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>ProgramType</legend>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.name)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.name)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.shortname)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.shortname)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.display_date)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.display_date)
+    </div>
+    
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.display_on_menu)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.display_on_menu)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.display_on_showcase)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.display_on_showcase)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.priority)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.priority)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id=Model.id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

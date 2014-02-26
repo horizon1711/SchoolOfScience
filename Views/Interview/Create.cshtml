@@ -1,0 +1,121 @@
+﻿@model SchoolOfScience.Models.Interview
+
+@{
+    ViewBag.Title = "Create";
+}
+
+<h2>Create Interview Timeslot</h2>
+
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>Interview</legend>
+        
+        <div class="editor-label">
+            @Html.LabelFor(model => model.program_id, "Program")
+        </div>
+        <div class="editor-field">
+            @Html.DropDownListFor(model => model.program_id, ViewBag.programList as SelectList, String.Empty)
+            @Html.ValidationMessageFor(model => model.program_id)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.status_id, "InterviewStatus")
+        </div>
+        <div class="editor-field">
+            @Html.DropDownListFor(model => model.status_id, ViewBag.statusList as SelectList, String.Empty)
+            @Html.ValidationMessageFor(model => model.status_id)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.start_time)
+        </div>
+        <div class="editor-field">
+            @Html.TextBoxFor(model => model.start_time, new { @class = "datetime-picker" })
+            @Html.ValidationMessageFor(model => model.start_time)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.end_time)
+        </div>
+        <div class="editor-field">
+            @Html.TextBoxFor(model => model.end_time, new { @class = "datetime-picker" })
+            @Html.ValidationMessageFor(model => model.end_time)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.no_of_interviewee)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.no_of_interviewee)
+            @Html.ValidationMessageFor(model => model.no_of_interviewee)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.duration)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.duration)
+            @Html.ValidationMessageFor(model => model.duration)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.buffer)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.buffer)
+            @Html.ValidationMessageFor(model => model.buffer)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.venue_id)
+        </div>
+        <div class="editor-field">
+            @Html.DropDownListFor(model => model.venue_id, ViewBag.venueList as SelectList, String.Empty)
+            @Html.ValidationMessageFor(model => model.venue_id)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.remarks)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.remarks)
+            @Html.ValidationMessageFor(model => model.remarks)
+        </div>
+
+        <p>
+            <input type="submit" value="Create" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+<script>
+    $(function () {
+        $.validator.addMethod("greaterThan",
+        function (value, element, params) {
+
+            if (!/Invalid|NaN/.test(new Date(value))) {
+                return new Date(value) > new Date($(params).val());
+            }
+
+            if (!/Invalid|NaN/.test(new Date("1/1/2000 " + value))) {
+                return new Date("1/1/2000 " + value) > new Date("1/1/2000 " + $(params).val());
+            }
+
+            return isNaN(value) && isNaN($(params).val())
+                || (Number(value) > Number($(params).val()));
+        }, 'Must be greater than {0}.');
+
+        $("#end_time").rules('add', { greaterThan: "#start_time" });
+    });
+</script>
+}

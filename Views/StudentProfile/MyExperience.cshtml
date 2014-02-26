@@ -1,0 +1,132 @@
+﻿@model SchoolOfScience.Models.ViewModels.StudentExperienceViewModel
+
+@{
+    Layout = null;
+}
+
+@foreach (var type in Model.types)
+{
+    <fieldset class="collapse">
+        <legend>@type.name</legend>
+
+        <div class="add-btn-wrapper">
+            @Html.ActionLink("Add", "Create", "StudentExperience", new { id = type.id }, new { @class = "add-experience-link add-experience-btn" })
+        </div>
+
+        @if (Model.experiences.Where(p => p.type_id == type.id).Count() > 0)
+        {
+        <table class="experience-table">
+            <thead>
+                <tr>
+                    <th>Period</th>
+                    <th>Organization/Program</th>
+                    <th>Position</th>
+                    <th>Duties</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var experience in Model.experiences.Where(p => p.type_id == type.id))
+            {        
+                <tr>
+                    <td>
+                        @experience.start_year-@experience.start_month.ToString("00") to 
+                        @if (experience.end_year < 0)
+                        {
+                            <text>Present</text>
+                        }
+                        else
+                        {
+                            <span style="display:none;">dummy</span>//for sorting purpose
+                            @(experience.end_year.ToString() + "-" + experience.end_month.ToString("00"))
+                        }
+                    </td>
+                    <td>
+                        @experience.organization
+                    </td>
+                    <td>
+                        @experience.position
+                    </td>
+                    <td>
+                        <pre>
+                            @experience.duty_description
+                        </pre>
+                    </td>
+                    <td>                        
+                        <a href="@Url.Action("Edit", "StudentExperience", new { id = experience.id })" class="edit-experience-btn"><img src="@Url.Content("~/Images/Action/edit.gif")" class="edit-btn" title="Edit this experience"/></a>
+                        <a href="@Url.Action("Delete", "StudentExperience", new { id = experience.id })" class="delete-experience-btn"><img src="@Url.Content("~/Images/Action/delete.gif")" class="delete-btn" title="Remove this experience"/></a>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+        }
+    </fieldset>
+}
+
+<div class="clear-fix"></div>
+
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/jqueryui")
+@Scripts.Render("~/bundles/datatable")
+<script>
+    $(function () {
+        $.ajaxSetup({ cache: false });
+
+        $(".experience-table").dataTable({
+            "aaSorting": [[0, "desc"]],
+            "bPaginate": false,
+            "bInfo": false,
+            "bFilter": false,
+            "oLanguage": {
+                "sSearch": ""
+            }
+        });
+
+        $(".add-experience-link").click(function (e) {
+            e.preventDefault();
+            showDialog($(this).prop("href"), "#error-dialog", "#dialog1", 400, 600);
+        });
+
+        $(".edit-experience-btn").click(function (e) {
+            e.preventDefault();
+            showDialog($(this).prop("href"), "#error-dialog", "#dialog1", 400, 600);
+        });
+
+        $(".delete-experience-btn").click(function (e) {
+            e.preventDefault();
+            $.ajax({
+                cache: false,
+                url: $(this).prop("href"),
+                error: function (jqXHR, status, error) {
+                    $("#error-dialog").html(error).dialog({
+                        width: 350,
+                        height: 100,
+                        overflow: "auto",
+                        modal: true,
+                        resizable: false,
+                        draggable: false,
+                        open: function () {
+                            $(this).scrollTop(0);
+                            $('.ui-widget-overlay').hide().fadeIn();
+                        },
+                        show: {
+                            effect: 'fade',
+                            duration: 200
+                        },
+                        hide: {
+                            effect: 'fade',
+                            duration: 100
+                        }
+                    });
+                },
+                success: function (result) {
+                    $("#tab3").html(result);
+                }
+            });
+            return false;
+        });
+
+        $(".add-experience-btn").button();
+    });
+</script>

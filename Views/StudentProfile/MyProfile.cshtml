@@ -1,0 +1,343 @@
+﻿@model SchoolOfScience.Models.ViewModels.StudentProfileViewModel
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<div class="showcase-title">
+    <img src="@Url.Content("~/Images")/Dashboard/profile.png" />
+    <h2>My Profile
+    </h2>
+    @*<div class="remarks">
+        Only eligible programs will be displayed on this page. Click @Html.ActionLink("here", "Showall", "Program") to show all programs instead.
+    </div>*@
+</div>
+
+
+<h1>@Model.student.name (ID: @Model.student.id)</h1>
+
+<div class="field-wrapper">
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.student.academic_plan_primary)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.student.academic_plan_description)
+    </div>
+</div>
+<div class="field-wrapper">
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.student.contact_phone_number)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.student.contact_phone_country_code)
+        @if (!String.IsNullOrEmpty(Model.student.contact_phone_country_code))
+        {
+            <text>-</text>
+        }
+        @Html.DisplayFor(model => model.student.contact_phone_number)
+    </div>
+</div>
+<div class="field-wrapper">
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.student.home_phone_number)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.student.home_phone_country_code)
+        @if (!String.IsNullOrEmpty(Model.student.home_phone_country_code))
+        {
+            <text>-</text>
+        }
+        @Html.DisplayFor(model => model.student.home_phone_number)
+    </div>
+</div>
+<div class="field-wrapper">
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.student.mobile_phone_number)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.student.mobile_phone_country_code)
+        @if (!String.IsNullOrEmpty(Model.student.mobile_phone_country_code))
+        {
+            <text>-</text>
+        }
+        @Html.DisplayFor(model => model.student.mobile_phone_number)
+    </div>
+</div>
+<div class="clear-fix"></div>
+<div class="field-wrapper">
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.student.email)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.student.email)
+    </div>
+</div>
+<div class="field-wrapper">
+    <div class="display-label">
+        Address
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.student.home_address1), @Html.DisplayFor(model => model.student.home_address2),@Html.DisplayFor(model => model.student.home_address3),@Html.DisplayFor(model => model.student.home_address4)
+    </div>
+</div>
+@if (Model.student.academic_plan_description.Contains("4Y"))
+{
+<div class="field-wrapper">
+    <div class="display-label">
+        @if (Model.student.academic_plan_description.Contains("Undeclared"))
+        {
+            <text>Pre-major Faculty Advisor</text>
+        }
+        else
+        {
+            <text>Faculty Mentor</text>
+        }
+    </div>
+    <div class="display-field">
+        @foreach (var advisor in Model.student.StudentAdvisors)
+        {
+            <div>@advisor.advisor_name - <a href="mailto:@advisor.advisor_email">@advisor.advisor_email</a></div>
+        }
+    </div>
+</div>
+}
+
+<ul id="tabs">
+    <li><a href="#" class="tab1">My Applications</a></li>
+    <li><a href="#" class="tab2">My Particulars</a></li>
+    <li><a href="#" class="tab3">My Experiences</a></li>
+    <li><a href="#" class="tab4">My Qualifications</a></li>
+    <li><a href="#" class="tab5">Activities Records</a></li>
+</ul>
+
+<div id="tabs-content"> 
+    <div id="tab1">
+
+        <div class="showcase-note">Date Format: Year-Month-Day</div>
+
+        <div class="clear-fix"></div>
+        <table class="application-table">
+            <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Program Period</th>
+                    <th>Program Name</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model.programactions)
+            {
+                <tr>
+                    <td>
+                        @item.program.ProgramType.name
+                    </td>
+                    <td>
+                        @String.Format("{0:yyyy-MM-dd}", item.program.start_time)
+                    </td>
+                    <td>
+                        @Html.ActionLink(item.program.name, "Details", "Program", new { id = item.program.id }, new { @class = "program-details-link program-name" })
+                        @if (!String.IsNullOrEmpty(item.program.job_position))
+                        {
+                            <br />
+                            <div class="program-note">
+                            @(item.program.job_position)
+                            @if (!String.IsNullOrEmpty(item.program.host_name))
+                            {
+                                <br />
+                                if (!String.IsNullOrEmpty(item.program.website))
+                                {
+                                    <a href="@(item.program.website)" target="_blank">@(item.program.host_name)</a>
+                                }
+                                else
+                                {
+                                    @(item.program.host_name)
+                                }
+                            }
+                            </div>
+                        }
+                    </td>
+                    <td>
+                        @item.application.ApplicationStatus.name
+                    </td>
+                    <td style="white-space:nowrap;">
+                    @if (item.eligible)
+                    {
+                        if (item.inperiod && item.open)
+                        {
+                            if (item.existed)
+                            {
+                                if (item.saved)
+                                {
+                                    <div class="action-wrapper">
+                                        @*<label>Application @Html.DisplayFor(modelItem => item.application.ApplicationStatus.name)</label>*@
+                                        <a href="@Url.Action("Edit", "Application", new { id = item.application.id })" class = "action-link" title = "Edit My Application"><img src="@Url.Content("~/Images/Action/edit.gif")" /></a>
+                                        @*@Html.ActionLink("[ Edit My Application ]", "Edit", "Application", new { id = item.application.id }, new { @class = "action-link", title = "Warning: Your application is saved, but is NOT submitted yet!" })*@
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="action-wrapper">
+                                        @*<label>Application @Html.DisplayFor(modelItem => item.application.ApplicationStatus.name)</label>*@
+                                        <a href="@Url.Action("Details", "Application", new { id = item.application.id })" class = "action-link" title = "View My Application"><img src="@Url.Content("~/Images/Action/view.gif")" /></a>
+                                        @*@Html.ActionLink("[ View My Application ]", "Details", "Application", new { id = item.application.id }, new { @class = "action-link" })*@
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <div class="action-wrapper">
+                                    <label>Apply Now</label>
+                                    @if (item.program.apply_action == "default")
+                                    {
+                                        <text><a href="@Url.Action("Create", "Application", new { id = item.program.id })" class = "action-link" title="Apply Now"><img src="@Url.Content("~/Images/Action/apply.gif")" /></a></text>
+                                    }
+                                    else
+                                    {
+                                        <text><a href="@Url.Action("Details", "Program", new { id = item.program.id })" class = "action-link" title="Apply Now"><img src="@Url.Content("~/Images/Action/apply.gif")" /></a></text>
+                                    }
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            if (item.beforestart)
+                            {
+                                <div class="action-wrapper"><label>Application Begins On <br />@String.Format("{0:yyyy-MM-dd HH:mm}", item.program.application_start_time)</label></div>
+                            }
+                            else
+                            {
+                                if (item.existed && !item.saved)
+                                {
+                                    <div class="action-wrapper">
+                                        @*<label>Application @Html.DisplayFor(modelItem => item.application.ApplicationStatus.name)</label>*@
+                                        <a href="@Url.Action("Details", "Application", new { id = item.application.id })" class = "action-link" title = "View My Application"><img src="@Url.Content("~/Images/Action/view.gif")" /></a>
+                                        @*@Html.ActionLink("[ View My Application ]", "Details", "Application", new { id = item.application.id }, new { @class = "action-link" })*@
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="action-wrapper"><label> Closed</label></div>
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        <div class="action-wrapper"><label>Not Eligible</label></div>
+                    }
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+
+        <div class="clear-fix"></div>
+    </div>
+
+    <div id="tab2">
+        @Html.Action("MyParticular", new { student_id = Model.student.id })
+    </div>
+    <div id="tab3">
+        @Html.Action("MyExperience", new { student_id = Model.student.id })
+    </div>
+    <div id="tab4">
+        @Html.Action("MyQualification", new { student_id = Model.student.id })
+    </div>
+    <div id="tab5">
+        <fieldset>
+            <legend>Activities Records</legend>
+
+            @if (Model.student.StudentActivities.Count() > 0)
+            {
+            <table class="activity-table">
+                <thead>
+                    <tr>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Activity Name</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var activity in Model.student.StudentActivities)
+                {        
+                    <tr>
+                        <td>
+                            @String.Format("{0:yyyy-MM-dd}", activity.start_date)
+                        </td>
+                        <td>
+                            @String.Format("{0:yyyy-MM-dd}", activity.end_date)
+                        </td>
+                        <td>
+                            @activity.name
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+            }
+        </fieldset>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $(function () {
+            $(".application-table").dataTable({
+                "aaSorting": [[3, "asc"]],
+                "bPaginate": false,
+                "bInfo": false,
+                "bFilter": false,
+                "oLanguage": {
+                    "sSearch": "",
+                    "sEmptyTable": "No current application"
+                }
+            });
+
+            $(".activity-table").dataTable({
+                "aaSorting": [[0, "desc"]],
+                "bPaginate": false,
+                "bInfo": false,
+                "bFilter": false,
+                "oLanguage": {
+                    "sSearch": ""
+                }
+            });
+
+            $("#tabs-content").find("[id^='tab']").hide(); // Hide all content
+            $("#tabs li:first").attr("id", "current"); // Activate the first tab
+            $("#tabs-content #tab1").fadeIn(); // Show first tab's content
+
+            $('#tabs a').click(function (e) {
+                e.preventDefault();
+                if ($(this).closest("li").attr("id") == "current") { //detection for current tab
+                    return;
+                }
+                else {
+                    $("#tabs-content").find("[id^='tab']").hide(); // Hide all content
+                    $("#tabs li").attr("id", ""); //Reset id's
+                    $(this).parent().attr("id", "current"); // Activate this
+                    $('#' + $(this).attr('class')).fadeIn(); // Show content for the current tab
+                }
+            });
+
+            $(".action-link").click(function (e) {
+                e.preventDefault();
+                showDialog($(this).prop("href"), "#error-dialog", "#dialog1");
+            });
+
+            $(".program-details-link").click(function (e) {
+                e.preventDefault();
+                showDialog($(this).prop("href"), "#error-dialog", "#dialog1");
+            });
+
+            //$(".add-link").click(function (e) {
+            //    e.preventDefault();
+            //    showDialog($(this).prop("href"), "#error-dialog", "#dialog1", 400, "auto");
+            //});
+
+            $(".button").button();
+        });
+</script>
+}

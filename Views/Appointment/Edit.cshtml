@@ -1,0 +1,79 @@
+﻿@model SchoolOfScience.Models.Appointment
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+<h2>Edit</h2>
+
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>Appointment</legend>
+
+        @Html.HiddenFor(model => model.id)
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.start_time)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.start_time)
+            @Html.ValidationMessageFor(model => model.start_time)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.end_time)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.end_time)
+            @Html.ValidationMessageFor(model => model.end_time)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.host_id, "Appointment Host")
+        </div>
+        <div class="editor-field">
+            @Html.DropDownListFor(model => model.host_id, ViewBag.hostList as SelectList)
+            @Html.ValidationMessageFor(model => model.host_id)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.status_id, "Appointment Status")
+        </div>
+        <div class="editor-field">
+            @Html.DropDownListFor(model => model.status_id, ViewBag.statusList as SelectList)
+            @Html.ValidationMessageFor(model => model.status_id)
+        </div>
+        
+        
+        <div class="editor-label">
+            @Html.LabelFor(model => model.venue_id, "Venue")
+        </div>
+        <div class="editor-field">
+            @Html.DropDownListFor(model => model.venue_id, ViewBag.venueList as SelectList, String.Empty)
+            @Html.ValidationMessageFor(model => model.venue_id)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.remarks)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.remarks)
+            @Html.ValidationMessageFor(model => model.remarks)
+        </div>
+
+        <p>
+            <input type="submit" value="Save" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

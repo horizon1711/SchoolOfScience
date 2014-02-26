@@ -1,0 +1,80 @@
+﻿@model IEnumerable<SchoolOfScience.Models.Application>
+
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>
+                ID
+            </th>
+            <th>
+                Student Name
+            </th>
+            <th>
+                Current Status
+            </th>
+            <th>
+                Submitted
+            </th>
+            <th>
+                Modified
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @item.id
+            </td>
+            <td>
+                <strong>@Html.DisplayFor(modelItem => item.StudentProfile.name) @Html.ActionLink(item.StudentProfile.id.ToString(), "Details", "StudentProfile", new { id = item.StudentProfile.id }, new { @class = "student-link" })</strong>
+            </td>
+            <td>
+                @item.ApplicationStatus.name
+            </td>
+            <td>
+                @item.submitted
+            </td>
+            <td>
+                @item.modified<br />
+                [@item.modified_by]
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<div class="clear-fix"></div>
+@using (Html.BeginForm()) {
+    @Html.Hidden("items", ViewBag.items as String)
+    <p>
+        <label for="status_id">Change Status to</label>
+        @Html.DropDownList("status_id", ViewBag.statusList as SelectList)
+    </p>
+
+    <p>
+        <input type="submit" value="Update" />
+    </p>
+    
+    <p>
+        @Html.ActionLink("Batch Attachment Download", "BatchDownload", new { items = ViewBag.items as String })
+    </p>
+}
+
+<script>
+    $(function () {
+        $(".data-table").dataTable({
+            "bFilter": false,
+            "bLengthChange": false,
+            "bPaginate" : false,
+            "bInfo": false,
+            "bRetrieve": true
+        });
+
+        $(".student-link").click(function (e) {
+            e.preventDefault();
+            showDialog($(this).prop("href"), "#error-dialog", "#dialog1");
+        });
+    });
+</script>

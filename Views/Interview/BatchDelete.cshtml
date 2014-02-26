@@ -1,0 +1,76 @@
+﻿@model IEnumerable<SchoolOfScience.Models.Interview>
+
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>
+                ID
+            </th>
+            <th>
+                Program
+            </th>
+            <th>
+                Date
+            </th>
+            <th>
+                Time
+            </th>
+            <th>
+                Application Assigned
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @item.id
+            </td>
+            <td>
+                @item.Program.name
+            </td>
+            <td>
+                @String.Format("{0:yyyy-MM-dd}", item.start_time)
+            </td>
+            <td>
+                @String.Format("{0:HH:mm}", item.start_time) - @String.Format("{0:HH:mm}", item.end_time)
+            </td>
+            <td>
+                @foreach (var application in item.Applications)
+                {
+                    <div>@Html.DisplayFor(modelItem => application.StudentProfile.name) @Html.ActionLink(application.StudentProfile.id.ToString(), "Details", "StudentProfile", new { id = application.StudentProfile.id }, new { @class = "student-link" })</div>
+                }
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<div class="clear-fix"></div>
+@using (Html.BeginForm()) {
+    @Html.Hidden("items", ViewBag.items as String)
+    <p>
+        Interview session with assigned applications will not be deleted.
+    </p>
+    <p>
+        <input type="submit" value="Delete" />
+    </p>
+}
+
+<script>
+    $(function () {
+        $(".data-table").dataTable({
+            "bFilter": false,
+            "bLengthChange": false,
+            "bPaginate" : false,
+            "bInfo": false,
+            "bRetrieve": true
+        });
+
+        $(".student-link").click(function (e) {
+            e.preventDefault();
+            showDialog($(this).prop("href"), "#error-dialog", "#dialog1");
+        });
+    });
+</script>

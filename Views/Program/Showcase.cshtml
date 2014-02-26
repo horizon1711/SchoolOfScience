@@ -1,0 +1,152 @@
+﻿@model IEnumerable<SchoolOfScience.Models.Program>
+
+@{
+    int? program_id = ViewBag.program_id;
+    IEnumerable<SchoolOfScience.Models.ProgramType> ProgramTypes = ViewBag.ProgramTypes;
+}
+
+<div class="showcase-title">
+    <img src="@Url.Content("~/Images")/Dashboard/program.png" />
+    <h2>Enrichment Programs</h2>
+    <div class="remarks">
+        Only eligible programs will be displayed on this page. To view all @Html.ActionLink("click here", "Showall", "Program").
+    </div>
+</div>
+
+<div class="clear-fix"></div>
+
+<div class="showcase-note">Date Format: Year-Month-Day</div>
+
+<div class="clear-fix"></div>
+
+<div class="showcase-wrapper">
+    @foreach(var item in ProgramTypes){
+        if (item.display_on_showcase && Model.Any(p => p.type_id == item.id))
+        {
+        <div class="showcase-box item">
+            <a href="@Url.Action("Showall", "Program", new { id = item.id })">
+                <div class="showcase-image">
+                    @if (!String.IsNullOrEmpty(item.image_filename)){
+                        <img src="@Url.Content("~/Images/ProgramType")/@item.id/@item.image_filename" />
+                    }
+                </div>
+                <h2>@item.name</h2>
+            </a>
+            <div class="clear-fix"></div>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <td style="height:20px;">
+                            @if (Model.Any(p => p.type_id == item.id))
+                            {
+                                if (item.display_date == "deadline")
+                                {
+                                    <div class="date-description">Apply before</div>
+                                } else
+                                {
+                                    <div class="date-description">Event date</div>
+                                }
+                            }
+                        </td>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @{
+                        int count = 0;}
+                @foreach (var program in Model)
+                {
+                    if (program.type_id == item.id && count < 5)
+                    {
+                        count++;
+                        <tr>
+                            <td>
+                                <div class="showcase-link">
+                                    @Html.ActionLink(program.name, "Details", "Program", new { id = program.id }, new { @class = "details-link", title = "View Program Details" })
+                                    <div class="program-note">
+                                        <div>
+                                        @if (!String.IsNullOrEmpty(program.job_position))
+                                        {
+                                            @(program.job_position)
+                                        }
+                                        </div>
+                                        <div>
+                                        @if (!String.IsNullOrEmpty(program.host_name))
+                                        {
+                                            if (!String.IsNullOrEmpty(program.website))
+                                            {
+                                                <a href="@(program.website)" target="_blank" title="@(program.website)">@(program.host_name)</a>
+                                            }
+                                            else
+                                            {
+                                                @(program.host_name)
+                                            }
+                                        }
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="showcase-date">
+                                    @if (item.display_date == "deadline")
+                                    {
+                                        @String.Format("{0:yyyy-MM-dd}", program.application_end_time)
+                                    }
+                                    @if (item.display_date == "program")
+                                    {
+                                        @String.Format("{0:yyyy-MM-dd}", program.start_time)
+                                    }
+                                    <br />
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+                </tbody>
+            </table>
+            <div class="showmore-link">@Html.ActionLink("view all", "Showall", "Program", new { id = item.id }, null)</div>
+        </div>
+        }
+    }
+    
+</div>
+
+<div class="clear-fix"></div>
+
+
+@section Scripts {
+    <script>
+        $(function () {
+            $(".showcase-wrapper").gridalicious({
+                width: 470,
+                gutter: 20
+            });
+
+            $(".data-table").dataTable({
+                "aaSorting": [[1, "asc"]],
+                "bLengthChange": true,
+                "iDisplayLength": 5,
+                "bInfo": false,
+                "bPaginate": false,
+                "bAutoWidth": false,
+                "bFilter": false,
+                "oLanguage": {
+                    "sSearch": "",
+                    "sEmptyTable": "Stay tuned for more programs!"
+                }
+            });
+
+            $(".details-link").click( function (e) {
+                e.preventDefault();
+                showDialog($(this).prop("href"), "#error-dialog", "#dialog1");
+            });
+
+            @if (program_id != null)
+            {
+                <text> showDialog("@Url.Action("Details", "Program", new { id = program_id })", "#error-dialog", "#dialog1"); </text>
+            }
+        });
+
+    </script>
+}

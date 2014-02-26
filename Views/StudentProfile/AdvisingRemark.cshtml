@@ -1,0 +1,133 @@
+﻿@model IEnumerable<SchoolOfScience.Models.StudentAdvisingRemark>
+
+@{
+    Layout = null;
+}
+
+<fieldset class="collapse">
+    <legend>Advising Comment</legend>
+
+    <div class="add-btn-wrapper">
+        @Html.ActionLink("Add", "Create", "StudentAdvisingRemark", new { student_id = ViewBag.student_id, opener_id = ViewBag.opener_id }, new { @class = "add-remark-link add-remark-btn" })
+    </div>
+
+    <div class="clear-fix"></div>
+    @if (Model.Count() > 0)
+    {
+    <table class="remark-table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Comment</th>
+                <th>Attachment</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var remark in Model)
+        {        
+            <tr>
+                <td>
+                    @String.Format("{0:yyyy-MM-dd}", remark.display_date)<br />
+                    [@Html.DisplayFor(model => remark.modified_by)]
+                </td>
+                <td>
+                    @if (!remark.@private || remark.created_by == User.Identity.Name)
+                    {
+                    <pre>
+                        @Html.DisplayFor(model => remark.text)
+                    </pre>
+                    }
+                    else
+                    {
+                    <span style="font-style: italic;">
+                        Private Comment
+                    </span>
+                    }
+                </td>
+                <td>
+                    @if (!remark.@private || remark.created_by == User.Identity.Name)
+                    {
+                    <a href="@Url.Action("Download", "FileHandler", new { filename = remark.filename, folder = remark.filepath })" target="_blank">@Html.DisplayFor(model => remark.filename)</a>
+                    }
+                </td>
+                <td>
+                    @if (User.Identity.Name == remark.created_by)
+                    {
+                    <a href="@Url.Action("Edit", "StudentAdvisingRemark", new { id = remark.id, opener_id = ViewBag.opener_id })" class="edit-remark-btn"><img src="@Url.Content("~/Images/Action/edit.gif")" class="edit-btn" title="Edit this comment"/></a>
+                    <a href="@Url.Action("Delete", "StudentAdvisingRemark", new { id = remark.id, opener_id = ViewBag.opener_id })" class="delete-remark-btn"><img src="@Url.Content("~/Images/Action/delete.gif")" class="delete-btn" title="Remove this comment"/></a>
+                    }
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+    }
+</fieldset>
+
+<div class="clear-fix"></div>
+
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/jqueryui")
+@Scripts.Render("~/bundles/datatable")
+<script>
+    $(function () {
+        $.ajaxSetup({ cache: false });
+
+        $(".remark-table").dataTable({
+            "aaSorting": [[0, "desc"]],
+            "bPaginate": false,
+            "bInfo": false,
+            "bFilter": true,
+            "oLanguage": {
+                "sSearch": ""
+            }
+        });
+
+        $(".add-remark-link").click(function (e) {
+            e.preventDefault();
+            showDialog($(this).prop("href"), "#error-dialog", "#dialog2", 400, 460);
+        });
+
+        $(".edit-remark-btn").click(function (e) {
+            e.preventDefault();
+            showDialog($(this).prop("href"), "#error-dialog", "#dialog2", 400, 460);
+        });
+
+        $(".delete-remark-btn").click(function (e) {
+            e.preventDefault();
+            $.ajax({
+                cache: false,
+                url: $(this).prop("href"),
+                error: function (jqXHR, status, error) {
+                    $("#error-dialog").html(error).dialog({
+                        width: 350,
+                        height: 100,
+                        overflow: "auto",
+                        modal: true,
+                        resizable: false,
+                        draggable: false,
+                        open: function () {
+                            $(this).scrollTop(0);
+                            $('.ui-widget-overlay').hide().fadeIn();
+                        },
+                        show: {
+                            effect: 'fade',
+                            duration: 200
+                        },
+                        hide: {
+                            effect: 'fade',
+                            duration: 100
+                        }
+                    });
+                },
+                success: function (result) {
+                    $("#@ViewBag.opener_id").html(result);
+                }
+            });
+            return false;
+        });
+
+        $(".add-remark-btn").button();
+    });
+</script>

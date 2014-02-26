@@ -1,0 +1,1391 @@
+.scheduler_8_main,
+.scheduler_8_rowheader,
+.scheduler_8_timeheadercol,
+.scheduler_8_timeheadergroup
+{
+    font-family: Segoe UI Light,Segoe UI,Arial,Helvetica,Verdana,Sans Serif;
+}
+
+.scheduler_8_main 
+{
+    border: 1px solid #999;
+    background: #ffffff;
+}
+
+.scheduler_8_event {
+    font-size: 14px;
+    color: #ffffff;
+}
+
+.scheduler_8_event_inner  
+{
+    position:absolute;
+    left:0px;
+    right: 1px;
+    top: 0px;
+    bottom: 1px;
+    padding: 4px;
+
+    background: #09b2ef;
+    border: 1px solid #079beb;
+}
+
+.scheduler_8_event_inner
+{
+    -ms-transition: background-color .3s linear;
+    -moz-transition: background-color .3s linear;
+    -webkit-transition: background-color .3s linear;
+    transition: background-color .3s linear;	
+}
+
+.scheduler_8_event:hover .scheduler_8_event_inner 
+{
+    background: #079beb;
+}
+
+.scheduler_8_event .scheduler_8_action:hover
+{
+    opacity: 1;
+    filter: none;
+}
+
+.scheduler_8_timeheader 
+{
+    cursor: default;
+    color: #666;
+}
+
+.scheduler_8_message
+{
+    opacity: 0.9;
+    filter: alpha(opacity=90);
+    padding: 10px; 
+    color: #fff;
+    background: #045776;
+}
+
+.scheduler_8_timeheadergroup,
+.scheduler_8_timeheadercol,
+.scheduler_8_rowheader,
+.scheduler_8_corner
+{
+    color: #ffffff;
+    background: #646464;
+
+    -ms-transition: background-color .3s linear;
+    -moz-transition: background-color .3s linear;
+    -webkit-transition: background-color .3s linear;
+    transition: background-color .3s linear;	
+}
+
+.scheduler_8_rowheader_inner {
+    padding: 2px;
+}
+
+.scheduler_8_timeheadergroup:hover,
+.scheduler_8_timeheadercol:hover,
+.scheduler_8_rowheader:hover,
+.scheduler_8_corner:hover
+{
+    background: #464646;
+}
+
+.scheduler_8_timeheadergroup,
+.scheduler_8_timeheadercol {
+    text-align: center;
+}
+
+.scheduler_8_timeheadergroup_inner
+{
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;
+    border-right: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    padding: 3px;
+}
+
+.scheduler_8_timeheadercol_inner
+{
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;
+    border-right: 1px solid #ddd;
+
+    padding: 3px;
+}
+
+.scheduler_8_cellcolumn 
+{
+    background: #fff;
+}
+
+.scheduler_8_tree_image_no_children {
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAIAAABv85FHAAAAKXRFWHRDcmVhdGlvbiBUaW1lAHDhIDMwIEkgMjAwOSAwODo0NjozMSArMDEwMClDkt4AAAAHdElNRQfZAR4HLzEyzsCJAAAACXBIWXMAAA7CAAAOwgEVKEqAAAAABGdBTUEAALGPC/xhBQAAADBJREFUeNpjrK6s5uTl/P75OybJ0NLW8h8bAIozgeSxAaA4E1A7VjmgOL31MeLxHwCeXUT0WkFMKAAAAABJRU5ErkJggg==);
+}
+.scheduler_8_tree_image_expand {
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAIAAABv85FHAAAAKXRFWHRDcmVhdGlvbiBUaW1lAHDhIDMwIEkgMjAwOSAwODo0NjozMSArMDEwMClDkt4AAAAHdElNRQfZAR4HLyUoFBT0AAAACXBIWXMAAA7CAAAOwgEVKEqAAAAABGdBTUEAALGPC/xhBQAAAFJJREFUeNpjrK6s5uTl/P75OybJ0NLW8h8bAIozgeRhgJGREc4GijMBtTNgA0BxFog+uA4IA2gmUJwFog/IgUhAGBB9KPYhA3T74Jog+hjx+A8A1KRQ+AN5vcwAAAAASUVORK5CYII=);
+}
+.scheduler_8_tree_image_collapse {
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAIAAABv85FHAAAAKXRFWHRDcmVhdGlvbiBUaW1lAHDhIDMwIEkgMjAwOSAwODo0NjozMSArMDEwMClDkt4AAAAHdElNRQfZAR4HLxB+p9DXAAAACXBIWXMAAA7CAAAOwgEVKEqAAAAABGdBTUEAALGPC/xhBQAAAENJREFUeNpjrK6s5uTl/P75OybJ0NLW8h8bAIozgeSxAaA4E1A7VjmgOAtEHyMjI7IE0EygOAtEH5CDqY9c+xjx+A8ANndK9WaZlP4AAAAASUVORK5CYII=);    
+}
+
+.scheduler_8_divider 
+{
+    background-color: #ccc;
+}
+
+.scheduler_8_divider_horizontal
+{
+    background-color: #ccc;
+}
+
+.scheduler_8_matrix_vertical_line 
+{
+    background-color: #eee;
+}
+
+.scheduler_8_matrix_horizontal_line 
+{
+    background-color: #eee;
+}
+
+.scheduler_8_resourcedivider 
+{
+    background-color: #ccc;
+}
+
+.scheduler_8_shadow_inner 
+{
+    background-color: #666666;
+    opacity: 0.3;
+    filter: alpha(opacity=30);
+    height: 100%;
+}
+
+.scheduler_8_cellparent {
+    background-color: #f8f8f8;
+}
+
+.scheduler_8_columnheader {
+}
+
+.scheduler_8_columnheader_inner {
+}
+
+.scheduler_8_columnheader_cell {
+    
+}
+
+.scheduler_8_columnheader_splitter {
+    background-color: #ffffff;
+    opacity: 0.5;
+    filter: alpha(opacity=50);
+}
+.scheduler_8_columnheader_cell_inner {
+    padding: 2px;   
+}
+
+.scheduler_8_timeheader_float_inner {
+    padding: 3px;
+}
+
+.scheduler_8_event_float_inner {
+    padding: 5px 4px 4px 8px;
+}
+
+.scheduler_8_event_float_inner:after {
+    content:"";
+    border-color: transparent #fff transparent transparent;
+    border-style:solid;
+    border-width:5px;
+    width:0;
+    height:0;
+    position:absolute;
+    top:8px;
+    left:-4px;
+}.scheduler_blue_wrap_inner 
+{
+    padding: 10px;
+    border-radius: 10px;
+
+    background: #77c2fc;
+    background: -webkit-gradient(linear, left top, left bottom, from(#77c2fc), to(#0e86c7));
+    background: -webkit-linear-gradient(top, #77c2fc 0%, #0e86c7);
+    background: -moz-linear-gradient(top, #77c2fc 0%, #0e86c7);
+    background: -ms-linear-gradient(top, #77c2fc 0%, #0e86c7);
+    background: -o-linear-gradient(top, #77c2fc 0%, #0e86c7);
+    background: linear-gradient(top, #77c2fc 0%, #0e86c7);
+    filter: progid:DXImageTransform.Microsoft.Gradient(startColorStr="#77c2fc", endColorStr="#0e86c7");
+}
+
+.scheduler_blue_main 
+{
+    font-family: Tahoma, Arial, sans-serif;
+    border: 1px solid #999;
+    background: #ffffff;
+}
+
+.scheduler_blue_event {
+    font-size: 12px;
+    color: #ffffff;
+    text-shadow: 0px -1px 0px rgba(007,155,235,1), 0px 0px 0px rgba(000,000,000,0);
+}
+
+.scheduler_blue_event_inner  
+{
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;
+    padding: 4px;
+
+    background: #09b2ef;
+    border-radius: 5px;
+    border: 1px solid #079beb;
+    -webkit-box-shadow: 0px 0px 5px rgba(000,000,000,0.5), inset 0px 1px 0px rgba(072,211,246,1);
+    box-shadow: 0px 0px 5px rgba(000,000,000,0.5), inset 0px 1px 0px rgba(072,211,246,1);
+}
+
+.scheduler_blue_event_hover .scheduler_blue_event_inner 
+{
+    background: #5BC8EF;
+}
+
+.scheduler_blue_event .scheduler_blue_action:hover
+{
+    opacity: 1;
+    filter: none;
+}
+
+.scheduler_blue_message
+{
+    opacity: 0.9;
+    filter: alpha(opacity=90);
+    padding: 10px; 
+    color: #fff;
+    background: #045776;
+    border-radius: 10px;
+    display: inline-block;
+    margin-left: 5px;
+    margin-top: 5px;
+}
+
+.scheduler_blue_timeheadergroup,
+.scheduler_blue_timeheadercol,
+.scheduler_blue_rowheader,
+.scheduler_blue_corner
+{
+    color: #045776;
+    background: #fff;
+}
+
+.scheduler_blue_timeheadergroup,
+.scheduler_blue_timeheadercol
+{
+    text-align: center;
+}
+
+.scheduler_blue_timeheadergroup_inner
+{
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;
+    border-right: 1px solid #ddd;
+}
+
+.scheduler_blue_timeheadercol_inner
+{
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;
+    border-top: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+}
+
+.scheduler_blue_cellcolumn 
+{
+    background: #fff;
+}
+
+.scheduler_blue_tree_image_no_children {
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAIAAABv85FHAAAAKXRFWHRDcmVhdGlvbiBUaW1lAHDhIDMwIEkgMjAwOSAwODo0NjozMSArMDEwMClDkt4AAAAHdElNRQfZAR4HLzEyzsCJAAAACXBIWXMAAA7CAAAOwgEVKEqAAAAABGdBTUEAALGPC/xhBQAAADBJREFUeNpjrK6s5uTl/P75OybJ0NLW8h8bAIozgeSxAaA4E1A7VjmgOL31MeLxHwCeXUT0WkFMKAAAAABJRU5ErkJggg==);
+}
+.scheduler_blue_tree_image_expand {
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAIAAABv85FHAAAAKXRFWHRDcmVhdGlvbiBUaW1lAHDhIDMwIEkgMjAwOSAwODo0NjozMSArMDEwMClDkt4AAAAHdElNRQfZAR4HLyUoFBT0AAAACXBIWXMAAA7CAAAOwgEVKEqAAAAABGdBTUEAALGPC/xhBQAAAFJJREFUeNpjrK6s5uTl/P75OybJ0NLW8h8bAIozgeRhgJGREc4GijMBtTNgA0BxFog+uA4IA2gmUJwFog/IgUhAGBB9KPYhA3T74Jog+hjx+A8A1KRQ+AN5vcwAAAAASUVORK5CYII=);
+}
+.scheduler_blue_tree_image_collapse {
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAIAAABv85FHAAAAKXRFWHRDcmVhdGlvbiBUaW1lAHDhIDMwIEkgMjAwOSAwODo0NjozMSArMDEwMClDkt4AAAAHdElNRQfZAR4HLxB+p9DXAAAACXBIWXMAAA7CAAAOwgEVKEqAAAAABGdBTUEAALGPC/xhBQAAAENJREFUeNpjrK6s5uTl/P75OybJ0NLW8h8bAIozgeSxAaA4E1A7VjmgOAtEHyMjI7IE0EygOAtEH5CDqY9c+xjx+A8ANndK9WaZlP4AAAAASUVORK5CYII=);
+}
+
+.scheduler_blue_divider 
+{
+    background-color: #ccc;
+}
+
+.scheduler_blue_divider_horizontal
+{
+    background-color: #ccc;
+}
+
+.scheduler_blue_matrix_vertical_line 
+{
+    background-color: #eee;
+}
+
+.scheduler_blue_matrix_vertical_break 
+{
+    background-color: #000;
+}
+
+.scheduler_blue_matrix_horizontal_line 
+{
+    background-color: #eee;
+}
+
+.scheduler_blue_resourcedivider 
+{
+    background-color: #ccc;
+}
+
+.scheduler_blue_shadow_inner 
+{
+    background-color: #666666;
+    opacity: 0.5;
+    filter: alpha(opacity=50);
+    height: 100%;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+}
+
+.scheduler_blue_timeheader_float_inner {
+}
+
+.scheduler_blue_event_float_inner {
+    padding: 4px 4px 4px 8px;
+}
+
+.scheduler_blue_event_float_inner:after {
+    content:"";
+    border-color: transparent #fff transparent transparent;
+    border-style:solid;
+    border-width:5px;
+    width:0;
+    height:0;
+    position:absolute;
+    top:6px;
+    left:-4px;
+}.scheduler_green_main 
+{
+    font-family: Tahoma, Arial, sans-serif;
+    border: 1px solid #999;
+}
+
+.scheduler_green_event {
+    font-size:12px;
+    color:#fff;
+    text-shadow: 0px -1px 0px rgba(000,000,000,0.2), 0px 1px 0px rgba(255,255,255,1);
+}
+
+.scheduler_green_event_inner
+{
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 4px;
+
+    color: #ffffff;
+    padding: 4px;
+
+    background: #a2c200;
+    background: -webkit-gradient(linear, left top, left bottom, from(#a2c200), to(#8aaa00));
+    background: -webkit-linear-gradient(top, #a2c200 0%, #8aaa00);
+    background: -moz-linear-gradient(top, #a2c200 0%, #8aaa00);
+    background: -ms-linear-gradient(top, #a2c200 0%, #8aaa00);
+    background: -o-linear-gradient(top, #a2c200 0%, #8aaa00);
+    background: linear-gradient(top, #a2c200 0%, #8aaa00);
+    filter: progid:DXImageTransform.Microsoft.Gradient(startColorStr="#a2c200", endColorStr="#8aaa00");
+
+    border-radius: 5px;
+    border: 1px solid #7cb316;
+
+    -webkit-box-shadow: 0px 2px 3px rgba(000,000,000,0.3), inset 0px 0px 2px rgba(255,255,255,0.8);
+    box-shadow: 0px 2px 3px rgba(000,000,000,0.3), inset 0px 0px 2px rgba(255,255,255,0.8);
+}
+
+.scheduler_green_event_bar
+{
+    top: 3px;
+    left: 4px;
+    right: 4px;
+    height: 2px;
+    background-color: #C7D48D;
+}
+
+.scheduler_green_event_bar_inner  
+{
+    position: absolute;
+    height: 2px;
+    background-color: #6E8700;
+}
+
+.scheduler_green_event_hover .scheduler_green_event_inner 
+{
+    background: #a8dc18;
+    background: -webkit-gradient(linear, left top, left bottom, from(#a8dc18), to(#8fc300));
+    background: -webkit-linear-gradient(top, #a8dc18 0%, #8fc300);
+    background: -moz-linear-gradient(top, #a8dc18 0%, #8fc300);
+    background: -ms-linear-gradient(top, #a8dc18 0%, #8fc300);
+    background: -o-linear-gradient(top, #a8dc18 0%, #8fc300);
+    background: linear-gradient(top, #a8dc18 0%, #8fc300);
+    filter: progid:DXImageTransform.Microsoft.Gradient(startColorStr="#a8dc18", endColorStr="#8fc300");
+}
+
+/* .scheduler_green_red is an example custom class that can be applied using BeforeEventRender handler */
+.scheduler_green_red .scheduler_green_event_inner 
+{
+    border: 1px solid #c00004;
+    background: #ab0000;
+    background: -webkit-gradient(linear, left top, left bottom, from(#ff2819), to(#ab0000));
+    background: -webkit-linear-gradient(top, #ff2819 0%, #ab0000);
+    background: -moz-linear-gradient(top, #ff2819 0%, #ab0000);
+    background: -ms-linear-gradient(top, #ff2819 0%, #ab0000);
+    background: -o-linear-gradient(top, #ff2819 0%, #ab0000);
+    background: linear-gradient(top, #ff2819 0%, #ab0000);
+    filter: progid:DXImageTransform.Microsoft.Gradient(startColorStr="#ff2819", endColorStr="#ab0000");
+}
+
+
+.scheduler_green_timeheader 
+{
+    cursor: default;
+    color: #666;
+}
+
+.scheduler_green_message 
+{
+    padding: 10px;
+    opacity: 0.9;
+    filter: alpha(opacity=90);
+    color: #ffffff;
+    text-shadow: 0px -1px 1px rgba(000,000,000,0.2), 0px 1px 0px rgba(255,255,255,0.3);
+    
+    background: #000;
+    background: -webkit-gradient(linear, left top, left bottom, from(#999999), to(#666666));
+    background: -webkit-linear-gradient(top, #999999 0%, #666666);
+    background: -moz-linear-gradient(top, #999999 0%, #666666);
+    background: -ms-linear-gradient(top, #999999 0%, #666666);
+    background: -o-linear-gradient(top, #999999 0%, #666666);
+    background: linear-gradient(top, #999999 0%, #666666);
+    filter: progid:DXImageTransform.Microsoft.Gradient(startColorStr="#999999", endColorStr="#666666");
+}
+
+.scheduler_green_timeheadergroup,
+.scheduler_green_timeheadercol {
+    text-align: center;
+    color: #ffffff;
+    text-shadow: 0px -1px 1px rgba(000,000,000,0.2), 0px 1px 0px rgba(255,255,255,0.3);
+}
+
+.scheduler_green_timeheadergroup_inner
+{
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;
+
+    border-right: 1px solid #999;
+
+    background: #666;
+    background: -webkit-gradient(linear, left top, left bottom, from(#777777), to(#666666));
+    background: -webkit-linear-gradient(top, #777777 0%, #666666);
+    background: -moz-linear-gradient(top, #777777 0%, #666666);
+    background: -ms-linear-gradient(top, #777777 0%, #666666);
+    background: -o-linear-gradient(top, #777777 0%, #666666);
+    background: linear-gradient(top, #777777 0%, #666666);
+    filter: progid:DXImageTransform.Microsoft.Gradient(startColorStr="#777777", endColorStr="#666666");
+}
+
+.scheduler_green_timeheadercol_inner
+{
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;
+    border-right: 1px solid #999;
+    border-top: 1px solid #999;
+
+    background: #666;
+    background: -webkit-gradient(linear, left top, left bottom, from(#777777), to(#666666));
+    background: -webkit-linear-gradient(top, #777777 0%, #666666);
+    background: -moz-linear-gradient(top, #777777 0%, #666666);
+    background: -ms-linear-gradient(top, #777777 0%, #666666);
+    background: -o-linear-gradient(top, #777777 0%, #666666);
+    background: linear-gradient(top, #777777 0%, #666666);
+    filter: progid:DXImageTransform.Microsoft.Gradient(startColorStr="#777777", endColorStr="#666666");
+}
+
+.scheduler_green_rowheader 
+{
+    color: #ffffff;
+    text-shadow: 0px -1px 1px rgba(000,000,000,0.2), 0px 1px 0px rgba(255,255,255,0.3);
+
+    background: #666;
+    background: -webkit-gradient(linear, left top, right top, from(#777777), to(#666666));
+    background: -webkit-linear-gradient(left, #777777 0%, #666666);
+    background: -moz-linear-gradient(left, #777777 0%, #666666);
+    background: -ms-linear-gradient(left, #777777 0%, #666666);
+    background: -o-linear-gradient(left, #777777 0%, #666666);
+    background: linear-gradient(left, #777777 0%, #666666);
+    filter: progid:DXImageTransform.Microsoft.Gradient(startColorStr="#777777", endColorStr="#666666", GradientType=1);
+}
+
+.scheduler_green_corner
+{
+    color: #ffffff;
+    background: #666;
+    background: -webkit-gradient(linear, left top, right top, from(#777777), to(#666666));
+    background: -webkit-linear-gradient(left, #777777 0%, #666666);
+    background: -moz-linear-gradient(left, #777777 0%, #666666);
+    background: -ms-linear-gradient(left, #777777 0%, #666666);
+    background: -o-linear-gradient(left, #777777 0%, #666666);
+    background: linear-gradient(left, #777777 0%, #666666);
+    filter: progid:DXImageTransform.Microsoft.Gradient(startColorStr="#777777", endColorStr="#666666", GradientType=1);
+}
+
+.scheduler_green_resourceheader td
+{
+    border-bottom: 1px solid black;
+    padding: 0px;
+}
+
+.scheduler_green_tree_image_no_children {
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAIAAABv85FHAAAAKXRFWHRDcmVhdGlvbiBUaW1lAHDhIDMwIEkgMjAwOSAwODo0NjozMSArMDEwMClDkt4AAAAHdElNRQfZAR4HLzEyzsCJAAAACXBIWXMAAA7CAAAOwgEVKEqAAAAABGdBTUEAALGPC/xhBQAAADBJREFUeNpjrK6s5uTl/P75OybJ0NLW8h8bAIozgeSxAaA4E1A7VjmgOL31MeLxHwCeXUT0WkFMKAAAAABJRU5ErkJggg==);
+}
+.scheduler_green_tree_image_expand {
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAIAAABv85FHAAAAKXRFWHRDcmVhdGlvbiBUaW1lAHDhIDMwIEkgMjAwOSAwODo0NjozMSArMDEwMClDkt4AAAAHdElNRQfZAR4HLyUoFBT0AAAACXBIWXMAAA7CAAAOwgEVKEqAAAAABGdBTUEAALGPC/xhBQAAAFJJREFUeNpjrK6s5uTl/P75OybJ0NLW8h8bAIozgeRhgJGREc4GijMBtTNgA0BxFog+uA4IA2gmUJwFog/IgUhAGBB9KPYhA3T74Jog+hjx+A8A1KRQ+AN5vcwAAAAASUVORK5CYII=);
+}
+.scheduler_green_tree_image_collapse {
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAIAAABv85FHAAAAKXRFWHRDcmVhdGlvbiBUaW1lAHDhIDMwIEkgMjAwOSAwODo0NjozMSArMDEwMClDkt4AAAAHdElNRQfZAR4HLxB+p9DXAAAACXBIWXMAAA7CAAAOwgEVKEqAAAAABGdBTUEAALGPC/xhBQAAAENJREFUeNpjrK6s5uTl/P75OybJ0NLW8h8bAIozgeSxAaA4E1A7VjmgOAtEHyMjI7IE0EygOAtEH5CDqY9c+xjx+A8ANndK9WaZlP4AAAAASUVORK5CYII=);
+}
+
+.scheduler_green_divider 
+{
+    background-color: #ccc;
+}
+
+.scheduler_green_divider_horizontal
+{
+    background-color: #ccc;
+}
+
+.scheduler_green_matrix_vertical_line 
+{
+    background-color: #eee;
+}
+
+.scheduler_green_matrix_vertical_break 
+{
+    background-color: #000;
+}
+.scheduler_green_matrix_horizontal_line 
+{
+    background-color: #eee;
+}
+
+.scheduler_green_resourcedivider 
+{
+    background-color: #ccc;
+}
+
+.scheduler_green_shadow_inner 
+{
+    background-color: #666666;
+    opacity: 0.5;
+    filter: alpha(opacity=50);
+    height: 100%;
+    border-radius: 5px;
+}
+
+.scheduler_green_cellweekend 
+{
+    background-color: #f0f0f0;
+}
+
+.scheduler_green_timeheader_float_inner {
+}
+
+.scheduler_green_event_float_inner {
+    padding: 4px 4px 4px 8px;
+}
+
+.scheduler_green_event_float_inner:after {
+    content:"";
+    border-color: transparent #fff transparent transparent;
+    border-style:solid;
+    border-width:5px;
+    width:0;
+    height:0;
+    position:absolute;
+    top:7px;
+    left:-4px;
+}/* 
+
+DayPilot Scheduler Theme 
+http://themes.daypilot.org/scheduler/theme/m3km5n
+
+*/
+
+.scheduler_traditional_main 
+{
+	border: 1px solid #999999;
+}
+
+.scheduler_traditional_main, .scheduler_traditional_main td 
+{
+	font-family: Tahoma, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+}
+
+.scheduler_traditional_event { 
+	
+}
+
+.scheduler_traditional_event { 
+	color: #333333;
+}
+
+.scheduler_traditional_event_inner { 
+	position: absolute;
+	
+	left: 0px;
+	right: 0px;
+	top: 0px;
+	bottom: 0px;
+	
+	margin: 0px;
+	overflow: hidden;
+
+	background-color: #ffffff;
+	
+	background: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#f2f2f2));  
+	background: -webkit-linear-gradient(top, #ffffff 0%, #f2f2f2);
+	background: -moz-linear-gradient(top, #ffffff 0%, #f2f2f2);
+	background: -ms-linear-gradient(top, #ffffff 0%, #f2f2f2);
+	background: -o-linear-gradient(top, #ffffff 0%, #f2f2f2);
+	background: linear-gradient(top, #ffffff 0%, #f2f2f2);
+	filter: progid:DXImageTransform.Microsoft.Gradient(startColorStr="#ffffff", endColorStr="#f2f2f2");
+	
+	
+	
+	padding: 2px;
+	
+	
+	padding-top: 5px;
+	
+	
+	border: 1px solid #999999;
+	
+	
+	
+	
+	
+}
+
+.scheduler_traditional_timeheadergroup,
+.scheduler_traditional_timeheadercol
+{
+	color: #333333;
+	background: #ece9d8;
+	
+	background: -webkit-gradient(linear, left top, left bottom, from(#efecde), to(#e9e6d2));
+	background: -webkit-linear-gradient(top, #efecde 0%, #e9e6d2);
+	background: -moz-linear-gradient(top, #efecde 0%, #e9e6d2);
+	background: -ms-linear-gradient(top, #efecde 0%, #e9e6d2);
+	background: -o-linear-gradient(top, #efecde 0%, #e9e6d2);
+	background: linear-gradient(top, #efecde 0%, #e9e6d2);
+	filter: progid:DXImageTransform.Microsoft.Gradient(startColorStr="#efecde", endColorStr="#e9e6d2");
+	
+}
+
+.scheduler_traditional_rowheader,
+.scheduler_traditional_corner
+{
+	color: #333333;
+	background: #ece9d8;
+	
+	background: -webkit-gradient(linear, left top, right top, from(#efecde), to(#e9e6d2));
+	background: -webkit-linear-gradient(left, #efecde 0%, #e9e6d2);
+	background: -moz-linear-gradient(left, #efecde 0%, #e9e6d2);
+	background: -ms-linear-gradient(left, #efecde 0%, #e9e6d2);
+	background: -o-linear-gradient(left, #efecde 0%, #e9e6d2);
+	background: linear-gradient(left, #efecde 0%, #e9e6d2);
+	filter: progid:DXImageTransform.Microsoft.Gradient(startColorStr="#efecde", endColorStr="#e9e6d2", GradientType=1);
+	
+}
+
+.scheduler_traditional_rowheader_inner {
+	padding: 2px;
+}
+
+.scheduler_traditional_timeheadergroup,
+.scheduler_traditional_timeheadercol
+{
+	text-align: center;
+}
+
+.scheduler_traditional_timeheadergroup_inner,
+.scheduler_traditional_timeheadercol_inner
+{
+	position: absolute;
+	left: 0px;
+	right: 0px;
+	top: 0px;
+	bottom: 0px;
+	border-right: 1px solid #999999;
+	padding: 2px;
+}
+
+.scheduler_traditional_timeheadergroup_inner {
+	border-bottom: 1px solid #999999;
+}
+
+.scheduler_traditional_divider,
+.scheduler_traditional_divider_horizontal,
+.scheduler_traditional_resourcedivider 
+{
+	background-color: #999999;
+}
+
+.scheduler_traditional_matrix_vertical_line,
+.scheduler_traditional_matrix_horizontal_line 
+{
+	background-color: #ead098;
+}
+
+.scheduler_traditional_cell 
+{
+	background: #fff4bc;
+}
+
+.scheduler_traditional_cell.scheduler_traditional_cell_business 
+{
+	background: #ffffd5;
+}
+
+.scheduler_traditional_message 
+{
+	padding: 10px;
+	opacity: 0.9;
+	filter: alpha(opacity=90);
+	
+	color: #ffffff;
+	background: #777777;
+	
+	background: -webkit-gradient(linear, left top, left bottom, from(#838383), to(#6b6b6b));
+	background: -webkit-linear-gradient(top, #838383 0%, #6b6b6b);
+	background: -moz-linear-gradient(top, #838383 0%, #6b6b6b);
+	background: -ms-linear-gradient(top, #838383 0%, #6b6b6b);
+	background: -o-linear-gradient(top, #838383 0%, #6b6b6b);
+	background: linear-gradient(top, #838383 0%, #6b6b6b);
+	filter: progid:DXImageTransform.Microsoft.Gradient(startColorStr="#838383", endColorStr="#6b6b6b");
+	
+}
+
+.scheduler_traditional_shadow_inner 
+{
+	background-color: #666666;
+	opacity: 0.5;
+	filter: alpha(opacity=50);
+	height: 100%;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+}
+
+
+.scheduler_traditional_event_bar
+{
+	top: 1px;
+	left: 1px;
+	right: 1px;
+	height: 3px;
+	background-color: #ffffff;
+        
+        border-bottom: 1px solid #999999;
+}
+
+.scheduler_traditional_event_bar_inner  
+{
+	position: absolute;
+	height: 3px;
+	background-color: #2d5de0;
+}
+
+
+.scheduler_traditional_matrix_vertical_break 
+{
+	background-color: #000;
+}
+
+.scheduler_traditional_cellparent {
+}
+
+.scheduler_traditional_tree_image_no_children {
+	background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAIAAABv85FHAAAAKXRFWHRDcmVhdGlvbiBUaW1lAHDhIDMwIEkgMjAwOSAwODo0NjozMSArMDEwMClDkt4AAAAHdElNRQfZAR4HLzEyzsCJAAAACXBIWXMAAA7CAAAOwgEVKEqAAAAABGdBTUEAALGPC/xhBQAAADBJREFUeNpjrK6s5uTl/P75OybJ0NLW8h8bAIozgeSxAaA4E1A7VjmgOL31MeLxHwCeXUT0WkFMKAAAAABJRU5ErkJggg==);
+}
+.scheduler_traditional_tree_image_expand {
+	background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAIAAABv85FHAAAAKXRFWHRDcmVhdGlvbiBUaW1lAHDhIDMwIEkgMjAwOSAwODo0NjozMSArMDEwMClDkt4AAAAHdElNRQfZAR4HLyUoFBT0AAAACXBIWXMAAA7CAAAOwgEVKEqAAAAABGdBTUEAALGPC/xhBQAAAFJJREFUeNpjrK6s5uTl/P75OybJ0NLW8h8bAIozgeRhgJGREc4GijMBtTNgA0BxFog+uA4IA2gmUJwFog/IgUhAGBB9KPYhA3T74Jog+hjx+A8A1KRQ+AN5vcwAAAAASUVORK5CYII=);
+}
+.scheduler_traditional_tree_image_collapse {
+	background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAIAAABv85FHAAAAKXRFWHRDcmVhdGlvbiBUaW1lAHDhIDMwIEkgMjAwOSAwODo0NjozMSArMDEwMClDkt4AAAAHdElNRQfZAR4HLxB+p9DXAAAACXBIWXMAAA7CAAAOwgEVKEqAAAAABGdBTUEAALGPC/xhBQAAAENJREFUeNpjrK6s5uTl/P75OybJ0NLW8h8bAIozgeSxAaA4E1A7VjmgOAtEHyMjI7IE0EygOAtEH5CDqY9c+xjx+A8ANndK9WaZlP4AAAAASUVORK5CYII=);
+}
+
+.scheduler_traditional_columnheader 
+{
+}
+
+.scheduler_traditional_columnheader_inner {
+    font-weight: bold;
+}
+
+.scheduler_traditional_columnheader_cell {
+    background: -webkit-gradient(linear, left top, right top, from(#eeeeee), to(#dddddd));
+    background: -moz-linear-gradient(left, #eeeeee 0%, #dddddd);
+    background: -ms-linear-gradient(left, #eeeeee 0%, #dddddd);
+    background: -webkit-linear-gradient(left, #eeeeee 0%, #dddddd);
+    background: linear-gradient(left, #eeeeee 0%, #dddddd);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorStr="#eeeeee", endColorStr="#dddddd", GradientType=1);
+}
+
+.scheduler_traditional_columnheader_splitter {
+    background-color: #666;
+    opacity: 0.5;
+    filter: alpha(opacity=50);
+}
+.scheduler_traditional_columnheader_cell_inner {
+    padding: 2px;   
+}
+
+.scheduler_traditional_timeheader_float_inner {
+	padding: 2px;
+}
+
+.scheduler_traditional_event_float_inner {
+	
+    padding: 6px 2px 2px 7px;
+	
+	
+}
+
+.scheduler_traditional_event_float_inner:after {
+    content:"";
+    border-color: transparent #333333 transparent transparent;
+    border-style:solid;
+    border-width:5px;
+    width:0;
+    height:0;
+    position:absolute;
+	
+    top:8px;
+	
+	
+    left:-4px;
+}.scheduler_transparent_main 
+{
+    font-family: Tahoma, Arial, sans-serif;
+    border: 1px solid #999;
+}
+
+.scheduler_transparent_event 
+{
+    opacity: 0.7;
+    filter: alpha(opacity=70);
+
+    font-size: 12px;
+    color: #000;
+}
+
+.scheduler_transparent_event_inner  
+{
+    padding: 6px 4px 4px 4px;
+    overflow: hidden;
+
+    position: absolute;
+    top: 0px;
+    bottom: 1px;
+    left: 0px;
+    right: 0px;
+
+    background: #47afff;
+    border: 1px solid #1066a8;
+}
+
+.scheduler_transparent_event_hover .scheduler_transparent_event_inner 
+{
+}
+
+.scheduler_transparent_event .scheduler_transparent_action:hover
+{
+    opacity: 1;
+    filter: none;
+}
+
+.scheduler_transparent_selected .scheduler_transparent_event_inner
+{
+    background: #ddd;
+}
+
+.scheduler_transparent_timeheader 
+{
+    cursor: default;
+    color: #666;
+}
+
+.scheduler_transparent_message
+{
+    opacity: 0.7;
+    filter: alpha(opacity=70);
+
+    padding: 10px; 
+    color: #eeeeee;
+    background: #333;
+}
+
+.scheduler_transparent_timeheadergroup,
+.scheduler_transparent_timeheadercol
+{
+    color: #666;
+    text-align: center;
+    
+    background: #eeeeee;
+    background: -webkit-gradient(linear, left top, left bottom, from(#f3f3f3), to(#e9e9e9));
+    background: -webkit-linear-gradient(top, #f3f3f3 0%, #e9e9e9);
+    background: -moz-linear-gradient(top, #f3f3f3 0%, #e9e9e9);
+    background: -ms-linear-gradient(top, #f3f3f3 0%, #e9e9e9);
+    background: -o-linear-gradient(top, #f3f3f3 0%, #e9e9e9);
+    background: linear-gradient(top, #f3f3f3 0%, #e9e9e9);
+    filter: progid:DXImageTransform.Microsoft.Gradient(startColorStr="#f3f3f3", endColorStr="#e9e9e9");
+}
+
+.scheduler_transparent_rowheader,
+.scheduler_transparent_corner
+{
+    color: #666666;
+    
+    background: #eeeeee;
+    background: -webkit-gradient(linear, left top, right top, from(#f3f3f3), to(#e9e9e9));
+    background: -webkit-linear-gradient(left, #f3f3f3 0%, #e9e9e9);
+    background: -moz-linear-gradient(left, #f3f3f3 0%, #e9e9e9);
+    background: -ms-linear-gradient(left, #f3f3f3 0%, #e9e9e9);
+    background: -o-linear-gradient(left, #f3f3f3 0%, #e9e9e9);
+    background: linear-gradient(left, #f3f3f3 0%, #e9e9e9);
+    filter: progid:DXImageTransform.Microsoft.Gradient(startColorStr="#f3f3f3", endColorStr="#e9e9e9", GradientType=1);
+}
+
+.scheduler_transparent_rowheader_inner {
+    padding: 3px;
+}
+
+.scheduler_transparent_timeheadergroup_inner
+{
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;
+    text-align: center;
+    border-right: 1px solid #999;
+    border-bottom: 1px solid #999;
+}
+
+.scheduler_transparent_timeheadercol_inner
+{
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;
+    border-right: 1px solid #999;
+}
+
+.scheduler_transparent_cellcolumn 
+{
+    background: #fff;
+}
+
+.scheduler_transparent_cellparent {
+    background-color: #f8f8f8;
+}
+
+.scheduler_transparent_tree_image_no_children {
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAIAAABv85FHAAAAKXRFWHRDcmVhdGlvbiBUaW1lAHDhIDMwIEkgMjAwOSAwODo0NjozMSArMDEwMClDkt4AAAAHdElNRQfZAR4HLzEyzsCJAAAACXBIWXMAAA7CAAAOwgEVKEqAAAAABGdBTUEAALGPC/xhBQAAADBJREFUeNpjrK6s5uTl/P75OybJ0NLW8h8bAIozgeSxAaA4E1A7VjmgOL31MeLxHwCeXUT0WkFMKAAAAABJRU5ErkJggg==);
+}
+.scheduler_transparent_tree_image_expand {
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAIAAABv85FHAAAAKXRFWHRDcmVhdGlvbiBUaW1lAHDhIDMwIEkgMjAwOSAwODo0NjozMSArMDEwMClDkt4AAAAHdElNRQfZAR4HLyUoFBT0AAAACXBIWXMAAA7CAAAOwgEVKEqAAAAABGdBTUEAALGPC/xhBQAAAFJJREFUeNpjrK6s5uTl/P75OybJ0NLW8h8bAIozgeRhgJGREc4GijMBtTNgA0BxFog+uA4IA2gmUJwFog/IgUhAGBB9KPYhA3T74Jog+hjx+A8A1KRQ+AN5vcwAAAAASUVORK5CYII=);
+}
+.scheduler_transparent_tree_image_collapse {
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAIAAABv85FHAAAAKXRFWHRDcmVhdGlvbiBUaW1lAHDhIDMwIEkgMjAwOSAwODo0NjozMSArMDEwMClDkt4AAAAHdElNRQfZAR4HLxB+p9DXAAAACXBIWXMAAA7CAAAOwgEVKEqAAAAABGdBTUEAALGPC/xhBQAAAENJREFUeNpjrK6s5uTl/P75OybJ0NLW8h8bAIozgeSxAaA4E1A7VjmgOAtEHyMjI7IE0EygOAtEH5CDqY9c+xjx+A8ANndK9WaZlP4AAAAASUVORK5CYII=);
+}
+
+.scheduler_transparent_divider 
+{
+    background-color: #999;
+}
+
+.scheduler_transparent_divider_horizontal
+{
+    background-color: #999;
+}
+
+.scheduler_transparent_matrix_vertical_line 
+{
+    background-color: #eee;
+}
+
+.scheduler_transparent_matrix_vertical_break 
+{
+    background-color: #000;
+}
+
+.scheduler_transparent_matrix_horizontal_line 
+{
+    background-color: #eee;
+}
+
+.scheduler_transparent_resourcedivider 
+{
+    background-color: #999;
+}
+
+.scheduler_transparent_shadow_inner 
+{
+    background-color: #666666;
+    opacity: 0.5;
+    filter: alpha(opacity=50);
+    height: 100%;
+}
+
+.scheduler_transparent_event_bar
+{
+    top: 3px;
+    left: 4px;
+    right: 4px;
+    height: 4px;
+
+    background-color: #8bceff;
+}
+
+.scheduler_transparent_event_bar_inner  
+{
+    position: absolute;
+    height: 4px;
+    background-color: #1066a8;
+}
+
+.scheduler_transparent_timeheader_float_inner {
+}
+
+.scheduler_transparent_event_float_inner {
+    padding: 7px 4px 4px 8px;
+}
+
+.scheduler_transparent_event_float_inner:after {
+    content:"";
+    border-color: transparent #1066a8 transparent transparent;
+    border-style:solid;
+    border-width:5px;
+    width:0;
+    height:0;
+    position:absolute;
+    top:9px;
+    left:-4px;
+}.scheduler_white_main 
+{
+	border: 1px solid #999;
+}
+
+.scheduler_white_event {
+    font-size: 12px;
+    color: #666;
+}
+
+.scheduler_white_event_inner  
+{
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 4px;
+
+    padding: 4px;
+    overflow:hidden;
+
+    border: 1px solid #999;
+    border-radius: 5px;
+
+    -webkit-box-shadow: 0px 2px 3px rgba(000,000,000,0.3),inset 0px 0px 2px rgba(255,255,255,0.8);
+    box-shadow:0px 2px 3px rgba(000,000,000,0.3), inset 0px 0px 2px rgba(255,255,255,0.8);
+
+    background: #fff;
+    background: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#eeeeee));
+    background: -moz-linear-gradient(top, #ffffff 0%, #eeeeee);
+    background: -ms-linear-gradient(top, #ffffff 0%, #eeeeee);
+    background: -webkit-linear-gradient(top, #ffffff 0%, #eeeeee);
+    background: linear-gradient(top, #ffffff 0%, #eeeeee);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorStr="#ffffff", endColorStr="#eeeeee");  
+}
+
+.scheduler_white_event_hover .scheduler_white_event_inner 
+{
+}
+
+.scheduler_white_event_continueright .scheduler_white_event_inner {
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+    border-right-style: dotted;
+}
+
+.scheduler_white_event_continueleft .scheduler_white_event_inner 
+{
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;	
+    border-left-style: dotted;
+}
+
+.scheduler_white_event .scheduler_white_action:hover
+{
+    opacity: 1;
+    filter: none;
+}
+
+.scheduler_white_selected .scheduler_white_event_inner
+{
+    background: #ddd;
+}
+
+.scheduler_white_red .scheduler_white_event_inner 
+{
+    border: 1px solid #c00004;
+    background: #ab0000;
+    background: -webkit-gradient(linear, left top, left bottom, from(#ff2819), to(#ab0000));
+    background: -moz-linear-gradient(top, #ff2819 0%, #ab0000);
+    background: -ms-linear-gradient(top, #ff2819 0%, #ab0000);
+    background: -webkit-linear-gradient(top, #ff2819 0%, #ab0000);
+    background: linear-gradient(top, #ff2819 0%, #ab0000);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorStr="#ff2819", endColorStr="#ab0000");
+}
+
+
+.scheduler_white_timeheader 
+{
+    cursor: default;
+    color: #666;
+}
+
+.scheduler_white_message
+{
+    opacity: 0.9;
+    filter: alpha(opacity=90);
+    padding: 10px; 
+    color: #ffffff;
+    background: #ffa216;
+    background: -webkit-gradient(linear, left top, left bottom, from(#ffa216), to(#ff8400));
+    background: -moz-linear-gradient(top, #ffa216 0%, #ff8400);
+    background: -ms-linear-gradient(top, #ffa216 0%, #ff8400);
+    background: -webkit-linear-gradient(top, #ffa216 0%, #ff8400);
+    background: linear-gradient(top, #ffa216 0%, #ff8400);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorStr="#ffa216", endColorStr="#ff8400");
+}
+
+.scheduler_white_timeheadergroup,
+.scheduler_white_timeheadercol
+{
+	text-align: center;
+
+        color: #666;
+	background: #eee;
+	background: -webkit-gradient(linear, left top, left bottom, from(#eeeeee), to(#dddddd));
+	background: -moz-linear-gradient(top, #eeeeee 0%, #dddddd);
+	background: -ms-linear-gradient(top, #eeeeee 0%, #dddddd);
+	background: -webkit-linear-gradient(top, #eeeeee 0%, #dddddd);
+	background: linear-gradient(top, #eeeeee 0%, #dddddd);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorStr="#eeeeee", endColorStr="#dddddd");
+/*	text-shadow: 0px -1px 1px rgba(000,000,000,0.2), 0px 1px 0px rgba(255,255,255,0.3); */
+}
+
+.scheduler_white_rowheader,
+.scheduler_white_corner
+{
+    color: #666;
+    background: #eee;
+    background: -webkit-gradient(linear, left top, right top, from(#eeeeee), to(#dddddd));
+    background: -moz-linear-gradient(left, #eeeeee 0%, #dddddd);
+    background: -ms-linear-gradient(left, #eeeeee 0%, #dddddd);
+    background: -webkit-linear-gradient(left, #eeeeee 0%, #dddddd);
+    background: linear-gradient(left, #eeeeee 0%, #dddddd);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorStr="#eeeeee", endColorStr="#dddddd", GradientType=1);
+    zoom: 1;
+/*	text-shadow: 0px -1px 1px rgba(000,000,000,0.2), 0px 1px 0px rgba(255,255,255,0.3);*/
+}
+
+.scheduler_white_rowheader_inner 
+{
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;
+
+    border-right: 1px solid #eee;
+    padding: 2px;
+}
+
+.scheduler_white_timeheadergroup_inner
+{
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;
+    text-align: center;
+    border-right: 1px solid #999;
+    border-bottom: 1px solid #999;
+}
+
+.scheduler_white_timeheadercol_inner
+{
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;
+    border-right: 1px solid #999;
+}
+
+.scheduler_white_cellcolumn 
+{
+    background: #fff;
+}
+
+.scheduler_white_tree_image_no_children {
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAIAAABv85FHAAAAKXRFWHRDcmVhdGlvbiBUaW1lAHDhIDMwIEkgMjAwOSAwODo0NjozMSArMDEwMClDkt4AAAAHdElNRQfZAR4HLzEyzsCJAAAACXBIWXMAAA7CAAAOwgEVKEqAAAAABGdBTUEAALGPC/xhBQAAADBJREFUeNpjrK6s5uTl/P75OybJ0NLW8h8bAIozgeSxAaA4E1A7VjmgOL31MeLxHwCeXUT0WkFMKAAAAABJRU5ErkJggg==);
+}
+.scheduler_white_tree_image_expand {
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAIAAABv85FHAAAAKXRFWHRDcmVhdGlvbiBUaW1lAHDhIDMwIEkgMjAwOSAwODo0NjozMSArMDEwMClDkt4AAAAHdElNRQfZAR4HLyUoFBT0AAAACXBIWXMAAA7CAAAOwgEVKEqAAAAABGdBTUEAALGPC/xhBQAAAFJJREFUeNpjrK6s5uTl/P75OybJ0NLW8h8bAIozgeRhgJGREc4GijMBtTNgA0BxFog+uA4IA2gmUJwFog/IgUhAGBB9KPYhA3T74Jog+hjx+A8A1KRQ+AN5vcwAAAAASUVORK5CYII=);
+}
+.scheduler_white_tree_image_collapse {
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAIAAABv85FHAAAAKXRFWHRDcmVhdGlvbiBUaW1lAHDhIDMwIEkgMjAwOSAwODo0NjozMSArMDEwMClDkt4AAAAHdElNRQfZAR4HLxB+p9DXAAAACXBIWXMAAA7CAAAOwgEVKEqAAAAABGdBTUEAALGPC/xhBQAAAENJREFUeNpjrK6s5uTl/P75OybJ0NLW8h8bAIozgeSxAaA4E1A7VjmgOAtEHyMjI7IE0EygOAtEH5CDqY9c+xjx+A8ANndK9WaZlP4AAAAASUVORK5CYII=);    
+}
+
+.scheduler_white_divider 
+{
+    background-color: #999;
+}
+
+.scheduler_white_divider_horizontal
+{
+    background-color: #999;
+}
+
+.scheduler_white_matrix_vertical_line 
+{
+    background-color: #eee;
+}
+
+.scheduler_white_matrix_vertical_break 
+{
+    background-color: #000;
+}
+
+.scheduler_white_matrix_horizontal_line 
+{
+    background-color: #eee;
+}
+
+.scheduler_white_resourcedivider 
+{
+    background-color: #999;
+}
+
+.scheduler_white_shadow_inner 
+{
+    background-color: #666666;
+    opacity: 0.5;
+    filter: alpha(opacity=50);
+    height: 100%;
+    border-radius: 5px;
+}
+
+.scheduler_white_event_bar
+{
+    top: 3px;
+    left: 4px;
+    right: 4px;
+    height: 2px;
+}
+
+.scheduler_white_event_bar_inner  
+{
+    position: absolute;
+    height: 2px;
+    background-color: #999;
+}
+
+.scheduler_white_columnheader 
+{
+}
+
+.scheduler_white_columnheader_inner {
+    font-weight: bold;
+}
+
+.scheduler_white_columnheader_cell {
+    background: -webkit-gradient(linear, left top, right top, from(#eeeeee), to(#dddddd));
+    background: -moz-linear-gradient(left, #eeeeee 0%, #dddddd);
+    background: -ms-linear-gradient(left, #eeeeee 0%, #dddddd);
+    background: -webkit-linear-gradient(left, #eeeeee 0%, #dddddd);
+    background: linear-gradient(left, #eeeeee 0%, #dddddd);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorStr="#eeeeee", endColorStr="#dddddd", GradientType=1);
+}
+
+.scheduler_white_columnheader_splitter {
+    background-color: #666;
+    opacity: 0.5;
+    filter: alpha(opacity=50);
+}
+.scheduler_white_columnheader_cell_inner {
+    padding: 2px;   
+}
+
+.scheduler_white_timeheader_float_inner {
+}
+
+.scheduler_white_event_float_inner {
+    padding: 5px 4px 4px 8px;
+}
+
+.scheduler_white_event_float_inner:after {
+    content:"";
+    border-color: transparent #999 transparent transparent;
+    border-style:solid;
+    border-width:5px;
+    width:0;
+    height:0;
+    position:absolute;
+    top:7px;
+    left:-4px;
+}

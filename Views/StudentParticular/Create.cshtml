@@ -1,0 +1,82 @@
+﻿@model SchoolOfScience.Models.StudentParticular
+
+@{
+    Layout = null;
+}
+
+@using (Html.BeginForm("Create", "StudentParticular", FormMethod.Post, new { id = "form" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(model => model.type_id)
+    @Html.HiddenFor(model => model.student_id)
+
+        
+        <div class="display-label">
+            Add @Model.StudentParticularType.name
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.name)
+            @Html.ValidationMessageFor(model => model.name)
+        </div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.StudentParticularType.example)
+        </div>
+    
+        <p>
+            <button type="button" class="add-button">Add</button>
+        </p>
+}
+
+@Scripts.Render("~/bundles/jqueryval")
+<script>
+    $(function () {
+        $.ajaxSetup({ cache: false });
+
+        $("#form").submit(function (e) {
+            e.preventDefault();
+        });
+
+        $(".add-button").button();
+
+        $(".add-button").click(function (e) {
+            e.preventDefault();
+            if ($("#form").valid()) {
+                $.ajax({
+                    url: "@Url.Action("Create", "StudentParticular", null)",
+                    type: "POST",
+                    data: $("#form").serializeArray(),
+                    cache: false,
+                    error: function (jqXHR, status, error) {
+                        $("#error-dialog").html(error).dialog({
+                            width: 350,
+                            height: 100,
+                            overflow: "auto",
+                            modal: true,
+                            resizable: false,
+                            draggable: false,
+                            open: function () {
+                                $(this).scrollTop(0);
+                                $('.ui-widget-overlay').hide().fadeIn();
+                            },
+                            show: {
+                                effect: 'fade',
+                                duration: 200
+                            },
+                            hide: {
+                                effect: 'fade',
+                                duration: 100
+                            }
+                        });
+                    },
+                    success: function (result) {
+                        $("#dialog1").dialog("close");
+                        $("#tab2").html(result);
+                    }
+                });
+            }
+        });
+
+        $("input#name").focus();
+    });
+</script>

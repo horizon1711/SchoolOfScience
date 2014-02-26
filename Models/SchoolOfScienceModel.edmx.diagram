@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="e54b7acc95c54e16a47f410e6474fda8" Name="Diagram1" ZoomLevel="88">
+        <EntityTypeShape EntityType="SchoolOfScienceModel.C__MigrationHistory" Width="1.5" PointX="29.5" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="SchoolOfScienceModel.Application" Width="1.5" PointX="7" PointY="0.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="SchoolOfScienceModel.ApplicationAttachment" Width="1.5" PointX="5" PointY="10.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="SchoolOfScienceModel.ApplicationExchangeOption" Width="1.5" PointX="5.125" PointY="2.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="SchoolOfScienceModel.ApplicationOptionValue" Width="1.5" PointX="5.125" PointY="8" IsExpanded="true" />
+        <EntityTypeShape EntityType="SchoolOfScienceModel.ApplicationStatus" Width="1.5" PointX="5.125" PointY="0.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="SchoolOfScienceModel.Appointment" Width="1.5" PointX="14.875" PointY="0.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="SchoolOfScienceModel.AppointmentConcern" Width="1.5" PointX="12.875" PointY="3" IsExpanded="true" />
+        <EntityTypeShape EntityType="SchoolOfScienceModel.AppointmentHost" Width="1.5" PointX="12.875" PointY="5.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="SchoolOfScienceModel.AppointmentStatus" Width="1.5" PointX="12.875" PointY="0.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="SchoolOfScienceModel.AppointmentVenue" Width="1.5" PointX="16.25" PointY="4.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="SchoolOfScienceModel.ExchangeOption" Width="1.5" PointX="5.125" PointY="5.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="SchoolOfScienceModel.Interview" Width="1.5" PointX="11" PointY="0.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="SchoolOfScienceModel.InterviewStatus" Width="1.5" PointX="9.125" PointY="0.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="SchoolOfScienceModel.InterviewVenue" Width="1.5" PointX="9.125" PointY="2.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="SchoolOfScienceModel.Nomination" Width="1.5" PointX="19" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="SchoolOfScienceModel.NominationStatus" Width="1.5" PointX="17.375" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="SchoolOfScienceModel.Notification" Width="1.5" PointX="23.125" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="SchoolOfScienceModel.NotificationRecipient" Width="1.5" PointX="21.375" PointY="3.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="SchoolOfScienceModel.NotificationStatus" Width="1.5" PointX="21.375" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="SchoolOfScienceModel.NotificationTemplate" Width="1.5" PointX="24.875" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="SchoolOfScienceModel.NotificationType" Width="1.5" PointX="24.875" PointY="4.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="SchoolOfScienceModel.Program" Width="1.5" PointX="2.75" PointY="0.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="SchoolOfScienceModel.ProgramApplicationAttachment" Width="1.5" PointX="0.875" PointY="6.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="SchoolOfScienceModel.ProgramAttachment" Width="1.5" PointX="0.875" PointY="8.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="SchoolOfScienceModel.ProgramOptionValue" Width="1.5" PointX="0.875" PointY="11.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="SchoolOfScienceModel.ProgramStatus" Width="1.5" PointX="0.875" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="SchoolOfScienceModel.ProgramType" Width="1.5" PointX="0.875" PointY="0.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="SchoolOfScienceModel.StudentCourseHistory" Width="1.5" PointX="8.875" PointY="13.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="SchoolOfScienceModel.StudentExperience" Width="1.5" PointX="12.625" PointY="16.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="SchoolOfScienceModel.StudentExperienceType" Width="1.5" PointX="12.625" PointY="20.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="SchoolOfScienceModel.StudentParticular" Width="1.5" PointX="12.625" PointY="13.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="SchoolOfScienceModel.StudentParticularType" Width="1.5" PointX="12.625" PointY="11.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="SchoolOfScienceModel.StudentProfile" Width="1.5" PointX="10.75" PointY="9.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="SchoolOfScienceModel.StudentPublicExam" Width="1.5" PointX="8.875" PointY="20.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="SchoolOfScienceModel.StudentTerm" Width="1.5" PointX="8.875" PointY="17.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="SchoolOfScienceModel.Timeslot" Width="1.5" PointX="25.125" PointY="7.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="SchoolOfScienceModel.TimeslotConfig" Width="1.5" PointX="22.875" PointY="7.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="SchoolOfScienceModel.TimeslotConfigSession" Width="1.5" PointX="25.125" PointY="10" IsExpanded="true" />
+        <EntityTypeShape EntityType="SchoolOfScienceModel.SystemUser" Width="1.5" PointX="17.125" PointY="8.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="SchoolOfScienceModel.webpages_Membership" Width="1.5" PointX="17.125" PointY="11.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="SchoolOfScienceModel.webpages_OAuthMembership" Width="1.5" PointX="29.5" PointY="2.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="SchoolOfScienceModel.SystemRole" Width="1.5" PointX="19" PointY="9.5" IsExpanded="true" />
+        <AssociationConnector Association="SchoolOfScienceModel.FK_Application_ApplicationStatus" ManuallyRouted="false" />
+        <AssociationConnector Association="SchoolOfScienceModel.FK_Application_Program" ManuallyRouted="false" />
+        <AssociationConnector Association="SchoolOfScienceModel.FK_Application_StudentProfile" ManuallyRouted="false" />
+        <AssociationConnector Association="SchoolOfScienceModel.FK_ApplicationAttachment_Application" ManuallyRouted="false" />
+        <AssociationConnector Association="SchoolOfScienceModel.FK_ApplicationExchangeOption_Application" ManuallyRouted="false" />
+        <AssociationConnector Association="SchoolOfScienceModel.FK_ApplicationOptionValue_ApplicationOptionValue" ManuallyRouted="false" />
+        <AssociationConnector Association="SchoolOfScienceModel.FK_ApplicationAttachment_ProgramApplicationAttachment" ManuallyRouted="false" />
+        <AssociationConnector Association="SchoolOfScienceModel.FK_ApplicationExchangeOption_ExchangeOption" ManuallyRouted="false" />
+        <AssociationConnector Association="SchoolOfScienceModel.FK_ApplicationOptionValue_ProgramOptionValue" ManuallyRouted="false" />
+        <AssociationConnector Association="SchoolOfScienceModel.FK_Appointment_AppointmentHost" ManuallyRouted="false" />
+        <AssociationConnector Association="SchoolOfScienceModel.FK_Appointment_AppointmentStatus" ManuallyRouted="false" />
+        <AssociationConnector Association="SchoolOfScienceModel.FK_Appointment_AppointmentVenue" ManuallyRouted="false" />
+        <AssociationConnector Association="SchoolOfScienceModel.FK_Appointment_StudentProfile" ManuallyRouted="false" />
+        <AssociationConnector Association="SchoolOfScienceModel.FK_AppointmentConcern_Program" ManuallyRouted="false" />
+        <AssociationConnector Association="SchoolOfScienceModel.FK_UserProfile_AppointmentHost" ManuallyRouted="false" />
+        <AssociationConnector Association="SchoolOfScienceModel.FK_Interview_InterviewVenue" ManuallyRouted="false" />
+        <AssociationConnector Association="SchoolOfScienceModel.FK_Interview_Program" ManuallyRouted="false" />
+        <AssociationConnector Association="SchoolOfScienceModel.FK_Nomination_NominationStatus" ManuallyRouted="false" />
+        <AssociationConnector Association="SchoolOfScienceModel.FK_Nomination_Program" ManuallyRouted="false" />
+        <AssociationConnector Association="SchoolOfScienceModel.FK_Notification_NotificationStatus" ManuallyRouted="false" />
+        <AssociationConnector Association="SchoolOfScienceModel.FK_Notification_NotificationTemplate" ManuallyRouted="false" />
+        <AssociationConnector Association="SchoolOfScienceModel.FK_Notification_NotificationType" ManuallyRouted="false" />
+        <AssociationConnector Association="SchoolOfScienceModel.FK_NotificationRecipient_Notification" ManuallyRouted="false" />
+        <AssociationConnector Association="SchoolOfScienceModel.FK_NotificationRecipient_StudentProfile" ManuallyRouted="false" >
+        </AssociationConnector>
+        <AssociationConnector Association="SchoolOfScienceModel.FK_NotificationTemplate_NotificationType" ManuallyRouted="false" />
+        <AssociationConnector Association="SchoolOfScienceModel.FK_NotificationType_NotificationTemplate" ManuallyRouted="false" />
+        <AssociationConnector Association="SchoolOfScienceModel.FK_Program_ProgramStatus" ManuallyRouted="false" />
+        <AssociationConnector Association="SchoolOfScienceModel.FK_Program_ProgramType" ManuallyRouted="false" />
+        <AssociationConnector Association="SchoolOfScienceModel.FK_ProgramApplicationAttachment_Program" ManuallyRouted="false" />
+        <AssociationConnector Association="SchoolOfScienceModel.FK_ProgramAttachment_Program" ManuallyRouted="false" />
+        <AssociationConnector Association="SchoolOfScienceModel.FK_ProgramOptionValue_Program" ManuallyRouted="false" />
+        <AssociationConnector Association="SchoolOfScienceModel.FK_StudentCourseHistory_StudentProfile" ManuallyRouted="false" />
+        <AssociationConnector Association="SchoolOfScienceModel.FK_StudentExperience_StudentExperienceType" ManuallyRouted="false" />
+        <AssociationConnector Association="SchoolOfScienceModel.FK_StudentExperience_StudentProfile" ManuallyRouted="false" />
+        <AssociationConnector Association="SchoolOfScienceModel.FK_StudentParticular_StudentParticularType" ManuallyRouted="false" >
+        </AssociationConnector>
+        <AssociationConnector Association="SchoolOfScienceModel.FK_StudentParticular_StudentProfile" ManuallyRouted="false" />
+        <AssociationConnector Association="SchoolOfScienceModel.FK_StudentPublicExam_StudentProfile" ManuallyRouted="false" />
+        <AssociationConnector Association="SchoolOfScienceModel.FK_StudentTerm_StudentProfile" ManuallyRouted="false" />
+        <AssociationConnector Association="SchoolOfScienceModel.FK_Timeslot_TimeslotConfig" ManuallyRouted="false" />
+        <AssociationConnector Association="SchoolOfScienceModel.FK_TimeslotConfigSession_TimeslotConfig" ManuallyRouted="false" />
+        <AssociationConnector Association="SchoolOfScienceModel.AppointmentAppointmentConcern" ManuallyRouted="false" />
+        <AssociationConnector Association="SchoolOfScienceModel.InterviewApplication" ManuallyRouted="false" />
+        <AssociationConnector Association="SchoolOfScienceModel.webpages_UsersInRoles" ManuallyRouted="false" />
+        <AssociationConnector Association="SchoolOfScienceModel.FK_Interview_InterviewStatus" />
+        <AssociationConnector Association="SchoolOfScienceModel.FK_webpages_Membership_UserProfile" />
+        <EntityTypeShape EntityType="SchoolOfScienceModel.StudentAcademicPlan" Width="1.5" PointX="8.875" PointY="9.625" />
+        <AssociationConnector Association="SchoolOfScienceModel.FK_StudentAcademicPlan_StudentProfile" />
+        <EntityTypeShape EntityType="SchoolOfScienceModel.StudentQualification" Width="1.5" PointX="12.625" PointY="9.125" />
+        <AssociationConnector Association="SchoolOfScienceModel.FK_StudentQualification_StudentProfile" />
+        <EntityTypeShape EntityType="SchoolOfScienceModel.StudentAdvisingRemark" Width="1.5" PointX="7.125" PointY="14.25" />
+        <AssociationConnector Association="SchoolOfScienceModel.FK_StudentAdvisingRemark_StudentProfile" />
+        <EntityTypeShape EntityType="SchoolOfScienceModel.StudentAdvisor" Width="1.5" PointX="7.125" PointY="18.75" />
+        <AssociationConnector Association="SchoolOfScienceModel.FK_StudentAdvisor_StudentProfile" />
+        <EntityTypeShape EntityType="SchoolOfScienceModel.StudentAdmission" Width="1.5" PointX="5.25" PointY="14.625" />
+        <AssociationConnector Association="SchoolOfScienceModel.FK_StudentAdmission_StudentProfile" />
+        <EntityTypeShape EntityType="SchoolOfScienceModel.StudentMajorChoice" Width="1.5" PointX="13" PointY="23.375" />
+        <AssociationConnector Association="SchoolOfScienceModel.FK_StudentMajorChoice_StudentProfile" />
+        <EntityTypeShape EntityType="SchoolOfScienceModel.StudentActivity" Width="1.5" PointX="8.625" PointY="24.25" />
+        <AssociationConnector Association="SchoolOfScienceModel.FK_StudentActivity_StudentProfile" />
+        </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

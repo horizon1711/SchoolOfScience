@@ -1,0 +1,158 @@
+﻿@model SchoolOfScience.Models.Notification
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+<h2>Edit</h2>
+
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>Notification</legend>
+
+        @Html.HiddenFor(model => model.id)
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.send_time)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.send_time)
+            @Html.ValidationMessageFor(model => model.send_time)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.sender)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.sender)
+            @Html.ValidationMessageFor(model => model.sender)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.subject)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.subject)
+            @Html.ValidationMessageFor(model => model.subject)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.body)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.body)
+            @Html.ValidationMessageFor(model => model.body)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.template_id, "NotificationTemplate")
+        </div>
+        <div class="editor-field">
+            @Html.DropDownList("template_id", String.Empty)
+            @Html.ValidationMessageFor(model => model.template_id)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.status_id, "NotificationStatus")
+        </div>
+        <div class="editor-field">
+            @Html.DropDownList("status_id", String.Empty)
+            @Html.ValidationMessageFor(model => model.status_id)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.type_id, "NotificationType")
+        </div>
+        <div class="editor-field">
+            @Html.DropDownList("type_id", String.Empty)
+            @Html.ValidationMessageFor(model => model.type_id)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.created_by)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.created_by)
+            @Html.ValidationMessageFor(model => model.created_by)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.created)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.created)
+            @Html.ValidationMessageFor(model => model.created)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.modified_by)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.modified_by)
+            @Html.ValidationMessageFor(model => model.modified_by)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.modified)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.modified)
+            @Html.ValidationMessageFor(model => model.modified)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.program_id)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.program_id)
+            @Html.ValidationMessageFor(model => model.program_id)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.application_id)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.application_id)
+            @Html.ValidationMessageFor(model => model.application_id)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.interview_id)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.interview_id)
+            @Html.ValidationMessageFor(model => model.interview_id)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.appointment_id)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.appointment_id)
+            @Html.ValidationMessageFor(model => model.appointment_id)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.nomination_id)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.nomination_id)
+            @Html.ValidationMessageFor(model => model.nomination_id)
+        </div>
+
+        <p>
+            <input type="submit" value="Save" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

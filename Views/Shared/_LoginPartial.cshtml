@@ -1,0 +1,24 @@
+﻿@if (Request.IsAuthenticated) {
+    using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" })) 
+    {
+        @Html.AntiForgeryToken()
+        <text>
+            Hi  
+            @if (Session["StudentName"] != null)
+            {
+                @Html.ActionLink(Session["StudentName"].ToString(), "MyProfile", "StudentProfile", routeValues: null, htmlAttributes: new { @class = "username", title = "Profile" })
+            } else 
+            {
+                @User.Identity.Name
+            }
+            @*as @String.Join(",", Roles.GetRolesForUser(User.Identity.Name))*@
+                <a href="javascript:document.getElementById('logoutForm').submit()"><img src="@Url.Content("~/Images/Logoff.png")" class="logoff"/>log off</a>
+        </text>
+    }
+} 
+@*else {
+    <ul>
+        <li>@Html.ActionLink("Register", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
+        <li>@Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
+    </ul>
+}*@

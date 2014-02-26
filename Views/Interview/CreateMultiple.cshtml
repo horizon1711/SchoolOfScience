@@ -1,0 +1,336 @@
+﻿@model SchoolOfScience.Models.ViewModels.InterviewCreateMultipleViewModel
+
+@{
+    ViewBag.Title = "CreateByTimeslot";
+}
+
+<h2>Create Multiple Interview Timeslots</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    
+    
+    <fieldset>
+        <legend>Interview Information</legend>
+        
+        <div class="field-wrapper">
+            <div class="editor-label">
+                @Html.LabelFor(model => model.interview.program_id, "Program")
+            </div>
+            <div class="editor-field">
+                @Html.DropDownListFor(model => model.interview.program_id, ViewBag.programList as SelectList, String.Empty)
+                @Html.ValidationMessageFor(model => model.interview.program_id)
+            </div>
+        </div>
+
+        <div class="field-wrapper">
+            <div class="editor-label">
+                @Html.LabelFor(model => model.interview.duration)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(model => model.interview.duration)
+                @Html.ValidationMessageFor(model => model.interview.duration)
+            </div>
+        </div>
+
+        <div class="field-wrapper">
+            <div class="editor-label">
+                @Html.LabelFor(model => model.interview.buffer)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(model => model.interview.buffer)
+                @Html.ValidationMessageFor(model => model.interview.buffer)
+            </div>
+        </div>
+
+        <div class="clear-fix"></div>
+        
+        <div class="field-wrapper">
+            <div class="editor-label">
+                @Html.LabelFor(model => model.interview.no_of_interviewee)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(model => model.interview.no_of_interviewee)
+                @Html.ValidationMessageFor(model => model.interview.no_of_interviewee)
+            </div>
+        </div>
+        
+        <div class="field-wrapper">
+            <div class="editor-label">
+                @Html.LabelFor(model => model.interview.venue_id)
+            </div>
+            <div class="editor-field">
+                @Html.DropDownListFor(model => model.interview.venue_id, ViewBag.venueList as SelectList, String.Empty)
+                @Html.ValidationMessageFor(model => model.interview.venue_id)
+            </div>
+        </div>
+        
+        <div class="field-wrapper">
+            <div class="editor-label">
+                @Html.LabelFor(model => model.interview.remarks)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(model => model.interview.remarks)
+                @Html.ValidationMessageFor(model => model.interview.remarks)
+            </div>
+        </div>
+
+    </fieldset>
+    
+        <div class="clear-fix"></div>
+    
+    <fieldset>
+        <legend>Timeslot Configuration</legend>
+
+        <div class="field-wrapper">
+            <div class="editor-label">
+                @Html.LabelFor(model => model.config.start_date)
+            </div>
+            <div class="editor-field">
+                @Html.TextBoxFor(model => model.config.start_date, new { @class = "date-picker" })
+                @Html.ValidationMessageFor(model => model.config.start_date)
+            </div>
+
+            <div class="editor-label">
+                @Html.LabelFor(model => model.config.end_date)
+            </div>
+            <div class="editor-field">
+                @Html.TextBoxFor(model => model.config.end_date, new { @class = "date-picker" })
+                @Html.ValidationMessageFor(model => model.config.end_date)
+            </div>
+
+            <div class="editor-label">
+                Create on:
+            </div>
+            <div class="editor-field">
+                <div class="field-wrapper">
+                    @Html.CheckBoxFor(model => model.config.monday, new { @class = "checkbox dayofweek weekday" })
+                    @Html.LabelFor(model => model.config.monday)
+                    <br />
+                    @Html.CheckBoxFor(model => model.config.tuesday, new { @class = "checkbox dayofweek weekday" })
+                    @Html.LabelFor(model => model.config.tuesday)
+                    <br />
+                    @Html.CheckBoxFor(model => model.config.wednesday, new { @class = "checkbox dayofweek weekday" })
+                    @Html.LabelFor(model => model.config.wednesday)
+                    <br />
+                    @Html.CheckBoxFor(model => model.config.thursday, new { @class = "checkbox dayofweek weekday" })
+                    @Html.LabelFor(model => model.config.thursday)
+                    <br />
+                    @Html.CheckBoxFor(model => model.config.friday, new { @class = "checkbox dayofweek weekday" })
+                    @Html.LabelFor(model => model.config.friday)
+                </div>
+                <div class="field-wrapper">
+                    <input type="checkbox" id="checkWeekday" class="checkbox" />
+                    <label for="checkWeekday">Weekdays</label>
+                </div>
+                <div class="clear-fix"></div>
+                    <br />
+                <div class="field-wrapper">
+                    @Html.CheckBoxFor(model => model.config.saturday, new { @class = "checkbox dayofweek" })
+                    @Html.LabelFor(model => model.config.saturday)
+                    <br />
+                    @Html.CheckBoxFor(model => model.config.sunday, new { @class = "checkbox dayofweek" })
+                    @Html.LabelFor(model => model.config.sunday)
+                    <br />
+                    @*@Html.CheckBoxFor(model => model.config.holiday, new { @class = "checkbox" })
+                    @Html.LabelFor(model => model.config.holiday)*@
+                    <br />
+                </div>
+            </div>
+        </div>
+
+        <fieldset class="dates-wrapper">
+            <legend>Skipped Dates</legend>
+
+            <button type="button" class="addDate-btn">Add</button>
+            <button type="button" class="removeDate-btn">Remove</button>
+            
+        </fieldset>
+
+        <fieldset class="sessions-wrapper">
+            <legend>Timeslot Session</legend>
+            
+            <button type="button" class="add-btn">Add</button>
+            <button type="button" class="remove-btn">Remove</button>
+            
+
+            <div id="session0" class="session-wrapper">
+                <p>Session 1</p>
+                <div class="field-wrapper">
+                    <div class="editor-label">
+                        @Html.DisplayNameFor(model => model.sessions[0].start_time)
+                    </div>
+                    <div class="editor-field">
+                        @Html.TextBoxFor(model => model.sessions[0].start_time, new { @class = "time-picker starttime" })
+                        @Html.ValidationMessageFor(model => model.sessions[0].start_time)
+                    </div>
+                </div>
+                <div class="field-wrapper">
+                    <div class="editor-label">
+                        @Html.DisplayNameFor(model => model.sessions[0].end_time)
+                    </div>
+                    <div class="editor-field">
+                        @Html.TextBoxFor(model => model.sessions[0].end_time, new { @class = "time-picker endttime" })
+                        @Html.ValidationMessageFor(model => model.sessions[0].end_time)
+                    </div>
+                </div>
+                <div class="field-wrapper">
+                    <div class="editor-label">
+                        @Html.DisplayNameFor(model => model.sessions[0].excluded)
+                    </div>
+                    <div class="editor-field">
+                        @Html.CheckBoxFor(model => model.sessions[0].excluded, new { @class = "checkbox" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="clear-fix"></div>
+
+
+        </fieldset>
+
+    </fieldset>
+
+        <div class="clear-fix"></div>
+        <p>
+            <input type="submit" value="Create" />
+        </p>
+    
+}
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script>
+        $(function () {
+
+            $.validator.addMethod("greaterThan",
+            function (value, element, params) {
+
+                if (!/Invalid|NaN/.test(new Date(value))) {
+                    return new Date(value) > new Date($(params).val());
+                }
+
+                if (!/Invalid|NaN/.test(new Date("1/1/2000 " + value))) {
+                    return new Date("1/1/2000 " + value) > new Date("1/1/2000 " + $(params).val());
+                }
+
+                return isNaN(value) && isNaN($(params).val())
+                    || (Number(value) > Number($(params).val()));
+            }, 'Must be greater than {0}.');
+
+            $("#sessions_0__end_time").rules('add', { greaterThan: "#sessions_0__start_time" });
+
+            $(".time-picker").css("width", "100px").timepicker({
+                'timeFormat': 'H:i',
+                'minTime': '9:00',
+                'maxTime': '18:30'
+            });
+
+            var i = $(".session-wrapper").length;
+
+            $(".remove-btn").click( function () {
+                $(".session-wrapper").last().remove();
+                if (i > 0)
+                    i--;
+            });
+
+            $(".add-btn").click( function () {
+                $.ajax({
+                    url: "@Url.Action("CreateTimeslotSession", "Interview")",
+                    data: { index: i },
+                    cache: false,
+                    error: function (jqXHR, status, error) {
+                        $("#error-dialog").html(error).dialog({
+                            width: 200,
+                            height: 100,
+                            overflow: "auto",
+                            modal: true,
+                            resizable: false,
+                            draggable: false,
+                            open: function () {
+                                $(this).scrollTop(0);
+                                $('.ui-widget-overlay').hide().fadeIn().bind('click', function () {
+                                    $('#error-dialog').dialog('close');
+                                });
+                            },
+                            show: {
+                                effect: 'fade',
+                                duration: 200
+                            },
+                            hide: {
+                                effect: 'fade',
+                                duration: 100
+                            }
+                        });
+                    },
+                    success: function(result){
+                        $(".sessions-wrapper").append(result);
+                        i++;
+                    }
+                });
+            });
+
+            var j = $(".date-wrapper").length;
+
+            $(".removeDate-btn").click( function () {
+                $(".date-wrapper").last().remove();
+                if (j > 0)
+                    j--;
+            });
+
+            $(".addDate-btn").click( function () {
+                $.ajax({
+                    url: "@Url.Action("CreateTimeslotSkippedDate", "Interview")",
+                    data: { index: j },
+                    cache: false,
+                    error: function (jqXHR, status, error) {
+                        $("#error-dialog").html(error).dialog({
+                            width: 200,
+                            height: 100,
+                            overflow: "auto",
+                            modal: true,
+                            resizable: false,
+                            draggable: false,
+                            open: function () {
+                                $(this).scrollTop(0);
+                                $('.ui-widget-overlay').hide().fadeIn().bind('click', function () {
+                                    $('#error-dialog').dialog('close');
+                                });
+                            },
+                            show: {
+                                effect: 'fade',
+                                duration: 200
+                            },
+                            hide: {
+                                effect: 'fade',
+                                duration: 100
+                            }
+                        });
+                    },
+                    success: function (result) {
+                        $(".dates-wrapper").append(result);
+                        j++;
+                    }
+                });
+            });
+
+            $("#checkWeekday").click(function () {
+                $(".weekday").prop("checked", $("#checkWeekday").is(":checked"));
+            });
+            $(".weekday").click(function () {
+                if (!$(this).is(":checked")) {
+                    $("#checkWeekday").prop("checked", $(this).is(":checked"));
+                }
+                if ($(".weekday:checked").length == 5) {
+                    $("#checkWeekday").prop("checked", true);
+                }
+            });
+        });
+    </script>
+}

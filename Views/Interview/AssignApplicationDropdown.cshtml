@@ -1,0 +1,9 @@
+﻿@model SchoolOfScience.Models.ViewModels.InterviewViewModel
+@{
+    int i = ViewBag.index;
+}
+                    <div class="application-wrapper">
+                        Interviewee @(i+1)
+                        @Html.DropDownListFor(model => model.applications[i].id, new SelectList((IEnumerable<SelectListItem>)ViewBag.applicationList, "Value", "Text"), String.Empty)
+                        @Html.ValidationMessageFor(model => model.applications[i].id)
+                    </div>

@@ -1,0 +1,61 @@
+﻿@model SchoolOfScience.Models.Appointment
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<fieldset>
+    <legend>Appointment</legend>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.start_time)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.start_time)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.end_time)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.end_time)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.AppointmentHost.name)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.AppointmentHost.name)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.AppointmentStatus.name)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.AppointmentStatus.name)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.student_id)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.student_id)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.remarks)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.remarks)
+    </div>
+</fieldset>
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    <p>
+        <input type="submit" value="Delete" /> |
+        @Html.ActionLink("Back to List", "Index")
+    </p>
+}

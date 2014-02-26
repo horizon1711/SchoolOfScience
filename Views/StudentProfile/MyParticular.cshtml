@@ -1,0 +1,101 @@
+﻿@model SchoolOfScience.Models.ViewModels.StudentParticularViewModel
+
+@{
+    Layout = null;
+    var rand = new Random();
+}
+
+<div class="particulars-wrapper">
+@foreach (var type in Model.types.OrderBy(t => t.priority))
+{
+    <div class="item">
+    <fieldset>
+        <legend>@type.name</legend>
+
+        <div class="add-btn-wrapper">
+            @if (type.name == "Language" && false)//request changed, switch off hard-coded handling of Language
+            {
+                @Html.ActionLink("Add / Edit", "EditLanguage", "StudentParticular", new { id = type.id }, new { @class = "add-particular-btn add-language-link" })
+            } else {
+                @Html.ActionLink("Add", "Create", "StudentParticular", new { id = type.id }, new { @class = "add-particular-btn add-particular-link" })
+            }
+        </div>
+
+    @foreach (var particular in Model.particulars.Where(p => p.type_id == type.id))
+    {
+        <div class="editor-field">
+            @particular.name
+            @if (particular.name != "English" && particular.name != "Putonghua" && particular.name != "Cantonese" || true)//request changed, switch off hard-coded handling of Language
+            {
+                <div class="remove-btn">
+                <a href="@Url.Action("Delete", "StudentParticular", new { id = particular.id })" class="delete-particular-btn">
+                    <img src="@Url.Content("~/Images/Action/delete.gif")" class="delete-btn" title="Remove this @type.name"/>
+                </a>
+                </div>
+            }
+        </div>
+    }
+    </fieldset>
+    </div>
+}
+</div>
+
+<div class="clear-fix"></div>
+
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/jqueryui")
+@Scripts.Render("~/bundles/gridalicious")
+<script>
+    $(function () {
+        $.ajaxSetup({ cache: false });
+
+        $(".particulars-wrapper").gridalicious({
+            width: 450
+        });
+
+        $(".add-particular-link, .add-language-link").click(function (e) {
+            e.preventDefault();
+            showDialog($(this).prop("href"), "#error-dialog", "#dialog1", 400, 250);
+        });
+        //$(".add-language-link").click(function (e) {
+        //    e.preventDefault();
+        //    showDialog($(this).prop("href"), "#error-dialog", "#dialog1", 400, 500);
+        //});
+
+        $(".delete-particular-btn").click(function (e) {
+            e.preventDefault();
+            $.ajax({
+                url: $(this).prop("href"),
+                cache: false,
+                error: function (jqXHR, status, error) {
+                    $("#error-dialog").html(error).dialog({
+                        width: 350,
+                        height: 100,
+                        overflow: "auto",
+                        modal: true,
+                        resizable: false,
+                        draggable: false,
+                        open: function () {
+                            $(this).scrollTop(0);
+                            $('.ui-widget-overlay').hide().fadeIn();
+                        },
+                        show: {
+                            effect: 'fade',
+                            duration: 200
+                        },
+                        hide: {
+                            effect: 'fade',
+                            duration: 100
+                        }
+                    });
+                },
+                success: function (result) {
+                    $("#tab2").html(result);
+                }
+            });
+            return false;
+        });
+
+        $(".add-particular-btn").button();
+    });
+</script>

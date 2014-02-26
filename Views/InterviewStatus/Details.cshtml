@@ -1,0 +1,28 @@
+﻿@model SchoolOfScience.Models.InterviewStatus
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>InterviewStatus</legend>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.name)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.name)
+    </div>
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.display_to_student)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.display_to_student)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id=Model.id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

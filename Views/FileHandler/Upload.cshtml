@@ -1,0 +1,52 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>File Upload - HKUST School Of Science Office of Academic Advising and Support</title>
+    <link href="@Url.Content("~/favicon.ico")" rel="shortcut icon" type="image/x-icon" />
+    
+        @Styles.Render("~/Content/css")
+
+    
+
+</head>
+<body style="padding: 0;">
+<form method="post" enctype="multipart/form-data">
+    <div class="display-label">
+        <label for="file">Filename:</label>
+        <input type="file" name="file" id="file" />
+        <span class="file-upload-error"></span>
+    </div>
+    <p>
+        <input type="submit" value="Upload" /> (Max file size: 20MB)
+    </p>
+</form>
+</body>
+        @Scripts.Render("~/bundles/jquery")
+        @Scripts.Render("~/bundles/jqueryui")
+
+    @if (ViewBag.Success) {
+    <script>
+        $("#@ViewBag.elementId", opener.document).val("@ViewBag.filename");
+        $("#@ViewBag.elementId", opener.document).next(".filepath-hidden").val("@ViewBag.folder");
+        $("#@ViewBag.elementId" + "_label a", opener.document).html("@ViewBag.filename");
+        $("#@ViewBag.elementId" + "_label a", opener.document).prop("href", "@Html.Raw(Url.Action("Download", "FileHandler", new { filename = ViewBag.filename, folder = ViewBag.folder }))");
+        $("#@ViewBag.elementId", opener.document).prevAll(".delete-btn").css("display", "inline");
+        $("#@ViewBag.elementId", opener.document).prevAll(".upload-btn").css("display", "none");
+        window.close();
+    </script>
+    }
+
+    @if (Session["FlashMessage"] != null)
+    {
+    <script>
+        $(".file-upload-error").html("@Html.Raw(Session["FlashMessage"].ToString())");
+        @{Session.Remove("FlashMessage");}
+    </script>
+    }
+</html>

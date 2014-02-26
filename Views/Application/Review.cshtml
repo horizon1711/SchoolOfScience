@@ -1,0 +1,237 @@
+﻿@model SchoolOfScience.Models.ViewModels.ApplicationViewModel
+
+<h1>My Application - @Model.student.name (ID: @Model.student.id)</h1>
+
+<div class="program-details-title">
+<h2>@Html.DisplayFor(model => model.program.name)</h2>
+    <div class="program-note">
+    @if (!String.IsNullOrEmpty(Model.program.job_position))
+    {
+        @(Model.program.job_position)
+    }
+    @if (!String.IsNullOrEmpty(Model.program.job_position) && !String.IsNullOrEmpty(Model.program.host_name))
+    {
+        <text> - </text>
+    }
+    @if (!String.IsNullOrEmpty(Model.program.host_name))
+    {
+        if (!String.IsNullOrEmpty(Model.program.website))
+        {
+            <a href="@(Model.program.website)" target="_blank" title="@(Model.program.website)">@(Model.program.host_name)</a>
+        }
+        else
+        {
+            @(Model.program.host_name)
+        }
+    }
+    </div>
+</div>
+
+@if (Model.program.application_end_time != null)
+{
+<div class="program-details-deadline">
+    <div class="display-label">
+            Application Deadline
+    </div>
+    <div class="display-field">
+        @String.Format("{0:yyyy-MM-dd HH:mm}", Model.program.application_end_time)
+    </div>
+</div>
+}
+@if (Model.application.submitted != null)
+{    
+<div class="program-details-submitted">
+    <div class="display-label">
+        Submitted on
+    </div>
+    <div class="display-field">
+        @String.Format("{0:yyyy-MM-dd HH:mm}", Model.application.submitted)
+    </div>
+</div>
+}
+else
+{
+<div class="program-details-submitted">
+    <div class="display-label">
+        Submitted on
+    </div>
+    <div class="display-field">
+        Not submitted
+    </div>
+</div>
+}
+<div class="clear-fix"></div>
+<hr />
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    
+    @Html.HiddenFor(model => model.application.id)
+    @Html.HiddenFor(model => model.application.created)
+    @Html.HiddenFor(model => model.application.created_by)
+    @Html.HiddenFor(model => model.application.program_id)
+    @Html.HiddenFor(model => model.application.student_id)
+
+    <fieldset class="collapse">
+        <legend>Application Details</legend>
+  
+@if (Model.options.Count() == 0 && Model.attachments.Count() == 0 && !Model.program.require_exchange_option && !Model.program.require_appointment && !Model.program.require_interview)
+{
+    <p>No additional information required for this application.</p>
+}
+else
+{      
+            <div class="field-wrapper">
+        @for (int i = 0; i < Model.options.Count(); i++)
+        {
+                <div class="display-label">
+                    @Html.DisplayFor(model => model.options[i].ProgramOptionValue.name)
+                </div>
+                <div class="editor-field">
+                    <pre>
+                    @Html.DisplayFor(model => model.options[i].value)
+                    </pre>
+                </div>
+        }
+            </div>
+        
+        <div class="clear-fix"></div>
+        if (Model.attachments.Count() > 0)
+        {
+        <hr />
+        }
+        
+            <div class="field-wrapper">
+        @for (int i = 0; i < Model.attachments.Count(); i++)
+        {
+                <div class="display-label">
+                    @Html.DisplayFor(model => model.attachments[i].ProgramApplicationAttachment.name)
+                    @if (Model.attachments[i].ProgramApplicationAttachment.required)
+                    {
+                        <span class="required-text">(required)</span>
+                    }
+                    <label id="attachments_@(i)__filename_label">
+                        <a href="@Url.Action("Download", "FileHandler", new { filename = Model.attachments[i].filename, folder = Model.attachments[i].filepath })" target="_blank">@Html.DisplayFor(model => model.attachments[i].filename)</a>
+                    </label>
+                </div>
+        }
+            </div>
+        
+        <div class="clear-fix"></div>
+        
+        if (Model.exchange_options.Count() > 0)
+        {
+        <hr />
+        }
+        
+        <div class="field-wrapper" style="width: 50%">
+        @for (int i = 0; i < Model.exchange_options.Count(); i++)
+        {
+                <div class="display-label">
+                    @{
+            switch (i + 1)
+            {
+                case 1:
+                                <text>@(i + 1)st Choice</text>
+                    break;
+                case 2:
+                                <text>@(i + 1)nd Choice</text>
+                    break;
+                case 3:
+                                <text>@(i + 1)rd Choice</text>
+                    break;
+                default:
+                                <text>@(i + 1)th Choice</text>
+                    break;
+            }
+                    }
+                </div>
+                <div class="editor-field">
+                    @Html.DisplayFor(model => model.exchange_options[i].ExchangeOption.name)
+                </div>
+        }
+        </div>
+
+        <div class="clear-fix"></div>
+        
+        if (Model.program.require_appointment)
+        {
+        <hr />
+        }
+        
+        <div class="field-wrapper">
+        @if (Model.program.require_appointment)
+        {
+            <div class="display-label">
+                Consultation Session Reserved
+            </div>
+            <div class="editor-field">
+                @if (ViewBag.appointment_start_time != null)
+                {
+                    @ViewBag.appointment_start_time
+                }
+                else
+                {
+                    <text>None</text>
+                }
+            </div>
+        }
+        </div>
+    
+        <div class="clear-fix"></div>
+
+        if (Model.program.require_interview)
+        {
+        <div class="field-wrapper">
+            <div class="display-label">
+                Interview Session Assigned
+            </div>
+            <div class="editor-field">
+                @Html.DropDownListFor(model => model.interview_id, ViewBag.interviewList as SelectList, String.Empty)
+            </div>
+        </div>
+        
+        <div class="clear-fix"></div>
+        }
+        
+}
+    
+    <hr />
+
+        <div class="field-wrapper">
+            <div class="display-label">
+                @Html.DisplayNameFor(model => model.application.ApplicationStatus.name)
+            </div>
+            <div class="editor-field">
+                @Html.DropDownListFor(model => model.application.status_id, ViewBag.statusList as SelectList)
+            </div>
+        </div>
+        
+        <div class="clear-fix"></div>
+    </fieldset>
+    
+        
+        <p>
+            <input type="submit" id="submit" name="submit" value="Submit" />
+        </p>
+        <p>
+            <button type="button" id="close-btn">Close</button>
+        </p>
+}
+
+@Scripts.Render("~/bundles/jqueryval")
+<script>
+    $(function () {
+        $("#close-btn").click( function () {
+            $("#dialog1").dialog("close");
+        });
+
+        $(".student-link2").click( function (e) {
+            e.preventDefault();
+            showDialog($(this).prop("href"), "#error-dialog", "#dialog2", "60%", 400);
+        });
+    });
+</script>

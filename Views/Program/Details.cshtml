@@ -1,0 +1,210 @@
+﻿@model SchoolOfScience.Models.ProgramAction
+
+@*<div class="program-link">
+    Direct link: <a href="@Url.Action("Showcase", "Program", new RouteValueDictionary( new {id = Model.id} ))">@(Request.Url.Host + Url.Action("Showcase", "Program", new RouteValueDictionary( new {id = Model.id} )))</a>
+</div>*@
+<div class="program-details-title">
+<h1>@Html.DisplayFor(model => model.program.name)</h1>
+    <div class="program-note">
+    @if (!String.IsNullOrEmpty(Model.program.job_position))
+    {
+        @(Model.program.job_position)
+    }
+    @if (!String.IsNullOrEmpty(Model.program.job_position) && !String.IsNullOrEmpty(Model.program.host_name))
+    {
+        <text> - </text>
+    }
+    @if (!String.IsNullOrEmpty(Model.program.host_name))
+    {
+        if (!String.IsNullOrEmpty(Model.program.website))
+        {
+            <a href="@(Model.program.website)" target="_blank" title="@(Model.program.website)">@(Model.program.host_name)</a>
+        }
+        else
+        {
+            @(Model.program.host_name)
+        }
+    }
+    </div>
+</div>
+
+@if (Model.program.application_end_time != null)
+{
+<div class="program-details-deadline">
+    <div class="display-label">
+            Application Deadline
+    </div>
+    <div class="display-field">
+        @String.Format("{0:yyyy-MM-dd HH:mm}", Model.program.application_end_time)
+    </div>
+</div>
+}
+<div class="clear-fix"></div>
+<hr />
+    
+    <div class="dialog-left-pane">
+        <div class="display-field program-details-description">
+            @Html.Raw(Model.program.description)
+        </div>
+    </div>
+
+    <div class="dialog-right-pane">
+        
+        @if (Model.program.start_time != null)
+        {
+        <div class="display-label">
+             Program Period
+        </div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.program.start_time)
+        </div>
+        }
+        
+        @if (Model.program.eligibility != null)
+        {
+        <div class="display-label">
+             Eligibility
+        </div>
+        <div class="display-field">
+            <pre>
+            @Html.DisplayFor(model => model.program.eligibility)
+            </pre>
+        </div>
+        }
+        
+        @if (Model.program.vacancies != null)
+        {
+        <div class="display-label">
+             Vacancies
+        </div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.program.vacancies)
+        </div>
+        }
+        
+        @if (Model.program.ProgramAttachments.Count() > 0)
+        {
+        <div class="display-label">
+             Attachment(s)
+        </div>
+        <div class="display-field">
+        @foreach (var attachment in Model.program.ProgramAttachments)
+        {
+            if (!String.IsNullOrEmpty(attachment.name))
+            {
+                @Html.ActionLink(attachment.name, "Download", "FileHandler", new { filename = attachment.filename, folder = attachment.filepath }, null)<br />
+            }
+        }
+        </div>
+        }
+        
+        @if (Model.program.website != null)
+        {
+        <div class="display-field">
+            <a href="@Model.program.website" target="_blank">Website</a>
+        </div>
+        }
+        
+            @if (Model.eligible)
+            {
+                if (Model.inperiod && Model.open)
+                {
+                    if (Model.existed)
+                    {
+                        if (Model.saved)
+                        {
+                            <div class="display-field">
+                                <label>Application @Html.DisplayFor(modelItem => Model.application.ApplicationStatus.name)</label>
+                                <a href="@Url.Action("Edit", "Application", new { id = Model.application.id })" class = "action-link" title = "Edit My Application"><img src="@Url.Content("~/Images/Action/edit.gif")" /></a>
+                                @*@Html.ActionLink("[ Edit My Application ]", "Edit", "Application", new { id = Model.application.id }, new { @class = "action-link", title = "Warning: Your application is saved, but is NOT submitted yet!" })*@
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="display-field">
+                                <label>Application @Html.DisplayFor(modelItem => Model.application.ApplicationStatus.name)</label>
+                                <a href="@Url.Action("Details", "Application", new { id = Model.application.id })" class = "action-link" title = "View My Application"><img src="@Url.Content("~/Images/Action/view.gif")" /></a>
+                                @*@Html.ActionLink("[ View My Application ]", "Details", "Application", new { id = Model.application.id }, new { @class = "action-link" })*@
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="details-action-wrapper display-field">
+                            <label>Apply Now</label>
+                            @if (Model.program.apply_action == "default")
+                            {
+                                <text><a href="@Url.Action("Create", "Application", new { id = Model.program.id })" class = "action-link"><img src="@Url.Content("~/Images/Action/apply.gif")" /></a></text>
+                            }
+                            @if (Model.program.apply_action == "link")
+                            {
+                                <text><a href="@Model.program.apply_link" target="_blank" title="You will be redirected to an external link."><img src="@Url.Content("~/Images/Action/apply.gif")" /></a></text>
+                            }
+                            @if (Model.program.apply_action == "email")
+                            {
+                                <text><a href="mailto:@(Model.program.apply_link)" target="_blank" title="Click to open your default email client."><img src="@Url.Content("~/Images/Action/apply.gif")" /></a></text>
+                            }   
+                        </div>
+                    }
+                }
+                else
+                {
+                    if (Model.beforestart)
+                    {
+                        <div class="display-field"><label>Application Begins On <br />@String.Format("{0:yyyy-MM-dd HH:mm}", Model.program.application_start_time)</label></div>
+                    }
+                    else
+                    {
+                        if (Model.existed && !Model.saved)
+                        {
+                            <div class="display-field">
+                                <label>Application @Html.DisplayFor(modelItem => Model.application.ApplicationStatus.name)</label>
+                                <a href="@Url.Action("Details", "Application", new { id = Model.application.id })" class = "action-link" title = "View My Application"><img src="@Url.Content("~/Images/Action/view.gif")" /></a>
+                                @*@Html.ActionLink("[ View My Application ]", "Details", "Application", new { id = Model.application.id }, new { @class = "action-link" })*@
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="display-field"><label>Application Closed</label></div>
+                        }
+                    }
+                }
+            }
+            else
+            {
+                <div class="display-field"><label>Not Eligible</label></div>
+            }
+    </div>
+<div class="program-details-footer">
+@if (!String.IsNullOrEmpty(Model.program.enquiry))
+{
+    <span style="font-weight: bold;">Enquiry: </span>
+    @Model.program.enquiry
+}
+</div>
+
+    <div class="clear-fix"></div>
+
+
+<script>
+@*    $(".apply-btn").click(function (e) {
+        e.preventDefault();
+        var url = "@Url.Action("Create", "Application", new { id = Model.id }, null)";
+        showDialog(url, "#error-dialog", "#dialog2", "850", "550");
+    });
+
+    $(".details-btn").click(function (e) {
+        e.preventDefault();
+        var url = "@Url.Action("Details", "Application", new { id = ViewBag.application_id }, null)";
+        showDialog(url, "#error-dialog", "#dialog2", "850", "550");
+    });*@
+
+    $(".action-link").click(function (e) {
+        e.preventDefault();
+        showDialog($(this).prop("href"), "#error-dialog", "#dialog1");
+    });
+
+    $(".button").button();
+
+    $(document).tooltip();
+</script>

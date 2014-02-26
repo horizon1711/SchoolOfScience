@@ -1,0 +1,55 @@
+﻿@model IEnumerable<SchoolOfScience.Models.ProgramStatus>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Program Status Management</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="data-table">
+    <thead>
+    <tr>
+        <th>
+            Program Status
+        </th>
+        <th>
+            Displayed to Student
+        </th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.shown_to_student)
+        </td>
+        <td>
+            @if (!item.locked)
+            {
+                @Html.ActionLink("Edit", "Edit", new { id=item.id }) <text>|</text>
+                @Html.ActionLink("Delete", "Delete", new { id=item.id })
+            } else 
+            {
+                @Html.ActionLink("Edit", "Edit", new { id=item.id }) <text>|</text>
+                <text>System properties cannot be deleted.</text>
+            }
+        </td>
+    </tr>
+}
+    </tbody>
+
+</table>
+
+
+@section Scripts {
+    <script>
+        $(".data-table").dataTable();
+    </script>
+}

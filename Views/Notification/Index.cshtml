@@ -1,0 +1,89 @@
+﻿@model IEnumerable<SchoolOfScience.Models.Notification>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Notification Management</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.send_time)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.sender)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.subject)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NotificationStatus.name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NotificationType.name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.created)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.modified)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.send_time)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.sender)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.subject)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NotificationStatus.name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NotificationType.name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.created)<br />
+                [@Html.DisplayFor(modelItem => item.created_by)]
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.modified)<br />
+                [@Html.DisplayFor(modelItem => item.modified_by)]
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id=item.id }) |
+                @Html.ActionLink("Details", "Details", new { id=item.id }) |
+                @Html.ActionLink("Delete", "Delete", new { id=item.id }) |
+                @if (item.NotificationStatus.name == "Pending") {
+                    @Html.ActionLink("Send", "Send", new { id = item.id }, new { @class = "send-link" })
+                }
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+@section Scripts {
+    <script>
+        $(function () {
+            $(".data-table").dataTable();
+
+            $(".send-link").click( function (e) {
+                e.preventDefault();
+                showDialog($(this).prop("href"), "#error-dialog", "");
+            });
+        });
+    </script>
+}

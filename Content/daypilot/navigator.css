@@ -1,0 +1,308 @@
+﻿/* navigator styles */
+
+.navigator_8_main {
+	font-family: Segoe UI Light,Segoe UI,Arial,Helvetica,Verdana,Sans Serif;
+}
+
+
+.navigator_8_main 
+{
+	border-left: 1px solid #A0A0A0;
+	border-right: 1px solid #A0A0A0;
+	border-bottom: 1px solid #A0A0A0;
+    background-color: white;
+    color: #000000;
+}
+
+.navigator_8_month {
+    font-size: 8pt;
+    /*border: 1px solid black;*/
+}
+.navigator_8_day {
+    color: black;
+    /*background-color: white;*/
+}
+.navigator_8_weekend {
+    background-color: #f0f0f0;
+}
+.navigator_8_dayheader {
+    color: black;
+}
+
+.navigator_8_line 
+{
+	border-bottom: 1px solid #A0A0A0;
+}
+
+.navigator_8_dayother {
+    color: gray;
+}
+.navigator_8_todaybox
+{
+	border: 1px solid red;
+}
+
+.navigator_8_select 
+{
+    background-color: #FFE794;
+}
+.navigator_8_title, .navigator_8_titleleft, .navigator_8_titleright {
+    border-top: 1px solid #A0A0A0;
+
+	color: #ffffff;
+	background: #646464;
+
+	-ms-transition: background-color .3s linear;
+	-moz-transition: background-color .3s linear;
+	-webkit-transition: background-color .3s linear;
+	transition: background-color .3s linear;	
+}
+.navigator_8_busy {
+	font-weight: bold;
+}
+/* navigator */
+
+.navigator_blue_main 
+{
+	xborder-left: 1px solid #A0A0A0;
+	xborder-right: 1px solid #A0A0A0;
+	xborder-bottom: 1px solid #A0A0A0;
+    background-color: white;
+    color: #000000;
+}
+
+.navigator_blue_month {
+    font-family: Tahoma;
+    font-size: 8pt;
+    /*border: 1px solid black;*/
+}
+.navigator_blue_day {
+    color: black;
+    /*background-color: white;*/
+}
+.navigator_blue_weekend {
+    background-color: #f0f0f0;
+}
+.navigator_blue_dayheader {
+    color: black;
+}
+
+.navigator_blue_line 
+{
+	xborder-bottom: 1px solid #A0A0A0;
+}
+
+.navigator_blue_dayother {
+    color: gray;
+}
+.navigator_blue_todaybox
+{
+	border: 1px solid red;
+}
+
+.navigator_blue_select 
+{
+    background-color: #6b9cad;
+    color: #fff;
+}
+.navigator_blue_title, .navigator_blue_titleleft, .navigator_blue_titleright {
+    xborder-top: 1px solid #A0A0A0;
+	color: #000;
+	font-weight: bold;
+
+}
+.navigator_blue_busy {
+	font-weight: bold;
+}
+/* navigator styles */
+
+.navigator_green_main 
+{
+	border-left: 1px solid #A0A0A0;
+	border-right: 1px solid #A0A0A0;
+	border-bottom: 1px solid #A0A0A0;
+    background-color: white;
+    color: #000000;
+}
+
+.navigator_green_month {
+    font-family: Tahoma;
+    font-size: 8pt;
+    /*border: 1px solid black;*/
+}
+.navigator_green_day {
+    color: black;
+    /*background-color: white;*/
+}
+.navigator_green_weekend {
+    background-color: #f0f0f0;
+}
+.navigator_green_dayheader {
+    color: black;
+}
+
+.navigator_green_line 
+{
+	border-bottom: 1px solid #A0A0A0;
+}
+
+.navigator_green_dayother {
+    color: gray;
+}
+.navigator_green_todaybox
+{
+	border: 1px solid red;
+}
+
+.navigator_green_select 
+{
+    background-color: #ddd;
+}
+.navigator_green_title, .navigator_green_titleleft, .navigator_green_titleright {
+    border-top: 1px solid #A0A0A0;
+
+	color: #ffffff;
+	background: #666;
+	background: -moz-linear-gradient(
+		top,
+		#777 0%,
+		#666);
+	background: -webkit-gradient(
+		linear, left top, left bottom, 
+		from(#777),
+		to(#666));
+	filter: progid:DXImageTransform.Microsoft.Gradient(startColorStr="#777777", endColorStr="#666666");
+	text-shadow:
+		0px -1px 1px rgba(000,000,000,0.2),
+		0px 1px 0px rgba(255,255,255,0.3);
+
+}
+.navigator_green_busy {
+	font-weight: bold;
+}
+/* navigator styles */
+
+.navigator_transparent_main 
+{
+	border-left: 1px solid #A0A0A0;
+	border-right: 1px solid #A0A0A0;
+	border-bottom: 1px solid #A0A0A0;
+    background-color: white;
+    color: #000000;
+}
+
+.navigator_transparent_month {
+    font-family: Tahoma;
+    font-size: 8pt;
+    /*border: 1px solid black;*/
+}
+.navigator_transparent_day {
+    color: black;
+    /*background-color: white;*/
+}
+.navigator_transparent_weekend {
+    background-color: #f0f0f0;
+}
+.navigator_transparent_dayheader {
+    color: black;
+}
+
+.navigator_transparent_line 
+{
+	border-bottom: 1px solid #A0A0A0;
+}
+
+.navigator_transparent_dayother {
+    color: gray;
+}
+.navigator_transparent_todaybox
+{
+	border: 1px solid red;
+}
+
+.navigator_transparent_select 
+{
+    background-color: #ddd;
+}
+.navigator_transparent_title, .navigator_transparent_titleleft, .navigator_transparent_titleright {
+    border-top: 1px solid #A0A0A0;
+
+	color: #666;
+	background: #eeeeee;
+	
+	background: -moz-linear-gradient(
+		top,
+		#f3f3f3 0%,
+		#e9e9e9);
+	background: -webkit-gradient(
+		linear, left top, left bottom, 
+		from(#f3f3f3),
+		to(#e9e9e9));
+	filter: progid:DXImageTransform.Microsoft.Gradient(startColorStr="#f3f3f3", endColorStr="#e9e9e9");
+
+}
+.navigator_transparent_busy {
+	font-weight: bold;
+}
+/* navigator styles */
+
+.navigator_white_main 
+{
+	border-left: 1px solid #A0A0A0;
+	border-right: 1px solid #A0A0A0;
+	border-bottom: 1px solid #A0A0A0;
+    background-color: white;
+    color: #000000;
+}
+
+.navigator_white_month {
+    font-family: Tahoma;
+    font-size: 8pt;
+    /*border: 1px solid black;*/
+}
+.navigator_white_day {
+    color: black;
+    /*background-color: white;*/
+}
+.navigator_white_weekend {
+    background-color: #f0f0f0;
+}
+.navigator_white_dayheader {
+    color: black;
+}
+
+.navigator_white_line 
+{
+	border-bottom: 1px solid #A0A0A0;
+}
+
+.navigator_white_dayother {
+    color: gray;
+}
+.navigator_white_todaybox
+{
+	border: 1px solid red;
+}
+
+.navigator_white_select 
+{
+    background-color: #FFE794;
+}
+.navigator_white_title, .navigator_white_titleleft, .navigator_white_titleright {
+    border-top: 1px solid #A0A0A0;
+
+	color: #666;
+	background: #eee;
+	background: -moz-linear-gradient(
+		top,
+		#eee 0%,
+		#ddd);
+	background: -webkit-gradient(
+		linear, left top, left bottom, 
+		from(#eee),
+		to(#ddd));
+	filter: progid:DXImageTransform.Microsoft.Gradient(startColorStr="#eeeeee", endColorStr="#dddddd");
+}
+.navigator_white_busy {
+	font-weight: bold;
+}

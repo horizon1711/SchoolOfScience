@@ -1,0 +1,75 @@
+﻿@model SchoolOfScience.Models.StudentExperience
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<fieldset>
+    <legend>StudentExperience</legend>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.StudentExperienceType.name)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.StudentExperienceType.name)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.StudentProfile.name)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.StudentProfile.name)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.start_month)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.start_month)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.start_year)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.start_year)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.end_month)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.end_month)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.end_year)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.end_year)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.organization)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.organization)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.position)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.position)
+    </div>
+</fieldset>
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    <p>
+        <input type="submit" value="Delete" /> |
+        @Html.ActionLink("Back to List", "Index")
+    </p>
+}

@@ -1,0 +1,43 @@
+﻿@model SchoolOfScience.Models.StudentQualification
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>StudentQualification</legend>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.StudentProfile.name)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.StudentProfile.name)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.organization)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.organization)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.qualification)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.qualification)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.award_date)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.award_date)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id=Model.id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

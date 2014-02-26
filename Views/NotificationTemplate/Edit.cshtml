@@ -1,0 +1,124 @@
+﻿@model SchoolOfScience.Models.NotificationTemplate
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+<h2>Edit</h2>
+
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>NotificationTemplate</legend>
+
+        @Html.HiddenFor(model => model.id)
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.type_id, "NotificationType")
+        </div>
+        <div class="editor-field">
+            @Html.DropDownList("type_id", String.Empty)
+            @Html.ValidationMessageFor(model => model.type_id)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.name)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.name)
+            @Html.ValidationMessageFor(model => model.name)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.sender)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.sender)
+            @Html.ValidationMessageFor(model => model.sender)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.cc)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.cc)
+            @Html.ValidationMessageFor(model => model.cc)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.bcc)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.bcc)
+            @Html.ValidationMessageFor(model => model.bcc)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.subject)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.subject)
+            @Html.ValidationMessageFor(model => model.subject)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.body)
+        </div>
+        <div class="editor-field">
+            @Html.TextAreaFor(model => model.body, new { @class = "ckeditor" })
+            @Html.ValidationMessageFor(model => model.body)
+        </div>
+
+        <p>
+            <input type="submit" value="Save" />
+        </p>
+    </fieldset>
+}
+
+<fieldset>
+    <legend>Variables List</legend>
+    <table class="data-table" style="width:30%; float:left;">
+        <thead>
+            <tr>
+                <th>Code</th>
+                <th>Replaced by</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>[student id]</td>
+                <td>Student ID</td>
+            </tr>
+            <tr>
+                <td>[student name]</td>
+                <td>Student Name</td>
+            </tr>
+            <tr>
+                <td>[application id]</td>
+                <td>Application ID</td>
+            </tr>
+            <tr>
+                <td>[program id]</td>
+                <td>Program ID</td>
+            </tr>
+            <tr>
+                <td>[program name]</td>
+                <td>Program Name</td>
+            </tr>
+            <tr>
+                <td>[submit date]</td>
+                <td>Date of Submission</td>
+            </tr>
+        </tbody>
+    </table>
+</fieldset>
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

@@ -1,0 +1,57 @@
+﻿@model SchoolOfScience.Models.Appointment
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>Appointment</legend>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.start_time)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.start_time)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.end_time)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.end_time)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.AppointmentHost.name)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.AppointmentHost.name)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.AppointmentStatus.name)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.AppointmentStatus.name)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.StudentProfile.name)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.StudentProfile.name)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.remarks)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.remarks)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id=Model.id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

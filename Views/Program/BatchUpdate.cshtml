@@ -1,0 +1,58 @@
+﻿@model IEnumerable<SchoolOfScience.Models.Program>
+
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>
+                ID
+            </th>
+            <th>
+                Program Name
+            </th>
+            <th>
+                Current Status
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @item.id
+            </td>
+            <td>
+                @item.name
+            </td>
+            <td>
+                @item.ProgramStatus.name
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<div class="clear-fix"></div>
+@using (Html.BeginForm()) {
+    @Html.Hidden("items", ViewBag.items as String)
+    <p>
+        <label for="status_id">Change Status to</label>
+        @Html.DropDownList("status_id", ViewBag.statusList as SelectList)
+    </p>
+
+    <p>
+        <input type="submit" value="Update" />
+    </p>
+}
+
+<script>
+    $(function () {
+        $(".data-table").dataTable({
+            "bFilter": false,
+            "bLengthChange": false,
+            "bPaginate" : false,
+            "bInfo": false,
+            "bRetrieve": true
+        });
+    });
+</script>

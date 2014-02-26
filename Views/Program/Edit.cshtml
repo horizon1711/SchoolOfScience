@@ -1,0 +1,518 @@
+﻿@model SchoolOfScience.Models.ViewModels.ProgramViewModel
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+<h2>Edit Existing Program</h2>
+<div class="copy-link">@Html.ActionLink("Copy to a new program", "Copy", "Program", new { id = Model.program.id }, new { id = "copy-link" })</div>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    
+    @Html.HiddenFor(model => model.program.id)
+    @Html.HiddenFor(model => model.program.created)
+    @Html.HiddenFor(model => model.program.created_by)
+
+    <fieldset class="collapse">
+        <legend>Basic Information</legend>
+        
+        <div class="field-wrapper">
+            <div class="editor-label">
+                @Html.LabelFor(model => model.program.name)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(model => model.program.name)
+                @Html.ValidationMessageFor(model => model.program.name)
+            </div>
+        </div>
+
+        <div class="field-wrapper">
+            <div class="editor-label">
+                @Html.LabelFor(model => model.program.type_id)
+            </div>
+            <div class="editor-field">
+                @Html.DropDownList("program.type_id", ViewBag.TypeList as IEnumerable<SelectListItem>, String.Empty, new { @class = "chosen selectlist" })
+                @Html.ValidationMessageFor(model => model.program.type_id)
+            </div>
+        </div>
+
+        <div class="field-wrapper">
+            <div class="editor-label">
+                @Html.LabelFor(model => model.program.status_id)
+            </div>
+            <div class="editor-field">
+                @Html.DropDownList("program.status_id", ViewBag.StatusList as IEnumerable<SelectListItem>, String.Empty, new { @class = "chosen selectlist" })
+                @Html.ValidationMessageFor(model => model.program.status_id)
+            </div>
+        </div>
+        
+        <div class="clear-fix"></div>
+
+        <div class="field-wrapper">
+            <div class="editor-label">
+                @Html.LabelFor(model => model.program.description)
+            </div>
+            <div class="editor-field">
+                @Html.TextAreaFor(model => model.program.description, new { @class = "ckeditor" })
+            </div>
+        </div>
+        
+        <div class="clear-fix"></div>
+
+        <div class="field-wrapper">
+            <div class="editor-label">
+                @Html.LabelFor(model => model.program.start_time)
+            </div>
+            <div class="editor-field">
+                @Html.TextBoxFor(model => model.program.start_time)
+                @Html.ValidationMessageFor(model => model.program.start_time)
+            </div>
+        </div>
+@*        
+        <div class="field-wrapper">
+            <div class="editor-label">
+                @Html.LabelFor(model => model.program.end_time)
+            </div>
+            <div class="editor-field">
+                @Html.TextBoxFor(model => model.program.end_time, "{0:M/dd/yyyy h:mm tt}", new { @class = "datename-picker" })
+                @Html.ValidationMessageFor(model => model.program.end_time)
+            </div>
+        </div>*@
+
+        <div class="field-wrapper">
+            <div class="editor-label">
+                @Html.LabelFor(model => model.program.application_start_time)
+            </div>
+            <div class="editor-field">
+                @Html.TextBoxFor(model => model.program.application_start_time, "{0:yyyy-MM-dd HH:mm}", new { @class = "datetime-picker" })
+                @Html.ValidationMessageFor(model => model.program.application_start_time)
+            </div>
+        </div>
+
+        <div class="field-wrapper">
+            <div class="editor-label">
+                @Html.LabelFor(model => model.program.application_end_time)
+            </div>
+            <div class="editor-field">
+                @Html.TextBoxFor(model => model.program.application_end_time, "{0:yyyy-MM-dd HH:mm}", new { @class = "datetime-picker" })
+                @Html.ValidationMessageFor(model => model.program.application_end_time)
+            </div>
+        </div>
+
+        <div class="field-wrapper">
+             <div class="editor-label">
+            @Html.LabelFor(model => model.program.deadline_reminder_date)
+            </div>
+            <div class="editor-field">
+                @Html.TextBoxFor(model => model.program.deadline_reminder_date, "{0:yyyy-MM-dd HH:mm}", new { @class = "datetime-picker" })
+                @Html.ValidationMessageFor(model => model.program.deadline_reminder_date)
+            </div>
+        </div>
+
+        <div class="clear-fix"></div>
+
+        <div class="field-wrapper">
+            <div class="editor-label">
+                @Html.LabelFor(model => model.program.vacancies)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(model => model.program.vacancies)
+                @Html.ValidationMessageFor(model => model.program.vacancies)
+            </div>
+        </div>
+
+        <div class="clear-fix"></div>
+        
+        <div class="field-wrapper">
+            <div class="editor-label">
+                @Html.LabelFor(model => model.program.host_name)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(model => model.program.host_name)
+                @Html.ValidationMessageFor(model => model.program.host_name)
+            </div>
+        </div>
+
+        <div class="field-wrapper">
+            <div class="editor-label">
+                @Html.LabelFor(model => model.program.website)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(model => model.program.website)
+                @Html.ValidationMessageFor(model => model.program.website)
+            </div>
+        </div>
+        
+        <div class="field-wrapper">
+            <div class="editor-label">
+                @Html.LabelFor(model => model.program.job_position)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(model => model.program.job_position)
+                @Html.ValidationMessageFor(model => model.program.job_position)
+            </div>
+        </div>
+    
+        <div class="clear-fix"></div>
+        
+        <div class="field-wrapper">
+            <div class="editor-label">
+                @Html.LabelFor(model => model.program.enquiry)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(model => model.program.enquiry)
+                @Html.ValidationMessageFor(model => model.program.enquiry)
+            </div>
+        </div>
+
+    </fieldset>
+    
+    <div class="clear-fix"></div>
+    
+    <fieldset class="collapse">
+
+        <legend>Eligible Selection and Criteria</legend>
+
+        <div class="field-wrapper">
+            <div class="editor-label">
+                @Html.LabelFor(model => model.program.eligible_academic_career)
+            </div>
+            <div class="editor-field">
+                @Html.ListBox("academic_career", ViewBag.eligible_academic_career as MultiSelectList, new { @class = "chosen eligible" })
+                @Html.ValidationMessageFor(model => model.program.eligible_academic_career)
+            </div>
+        </div>
+        
+        <div class="field-wrapper">
+            <div class="editor-label">
+                @Html.LabelFor(model => model.program.eligible_academic_organization)
+            </div>
+            <div class="editor-field">
+                @Html.ListBox("academic_organization", ViewBag.eligible_academic_organization as MultiSelectList, new { @class = "chosen eligible" })
+                @Html.ValidationMessageFor(model => model.program.eligible_academic_organization)
+            </div>
+        </div>
+        
+        <div class="clear-fix"></div>
+
+        <div class="field-wrapper">
+            <div class="editor-label">
+                @Html.LabelFor(model => model.program.eligible_academic_plan)
+            </div>
+            <div class="editor-field">
+                @Html.ListBox("academic_plan", ViewBag.eligible_academic_plan as MultiSelectList, new { @class = "chosen eligible" })
+                @Html.ValidationMessageFor(model => model.program.eligible_academic_plan)
+            </div>
+        </div>
+        
+        <div class="field-wrapper">
+            <div class="editor-label">
+                @Html.LabelFor(model => model.program.eligible_program_status)
+            </div>
+            <div class="editor-field">
+                @Html.ListBox("program_status", ViewBag.eligible_program_status as MultiSelectList, new { @class = "chosen eligible" })
+                @Html.ValidationMessageFor(model => model.program.eligible_program_status)
+            </div>
+        </div>
+        
+        <div class="field-wrapper">
+            <div class="editor-label">
+                @Html.LabelFor(model => model.program.eligible_academic_level)
+            </div>
+            <div class="editor-field">
+                @Html.ListBox("academic_level", ViewBag.eligible_academic_level as MultiSelectList, new { @class = "chosen eligible" })
+                @Html.ValidationMessageFor(model => model.program.eligible_academic_level)
+            </div>
+        </div>
+        
+        <div class="clear-fix"></div>
+
+        <div class="field-wrapper">
+            <div class="editor-label">
+                @Html.LabelFor(model => model.program.eligibility)
+            </div>
+            <div class="editor-field">
+                @Html.TextAreaFor(model => model.program.eligibility, new { @class = "expanding" })
+                @Html.ValidationMessageFor(model => model.program.eligibility)
+            </div>
+        </div>
+        
+        <div class="clear-fix"></div>
+
+        <div class="field-wrapper">
+            <div class="editor-label">
+                @Html.LabelFor(model => model.program.special_criteria)
+            </div>
+            <div class="editor-field">
+                @Html.TextAreaFor(model => model.program.special_criteria, new { @class = "expanding" })
+                @Html.ValidationMessageFor(model => model.program.special_criteria)
+            </div>
+        </div>
+        
+        <div class="clear-fix"></div>
+
+        <div class="field-wrapper">
+            <div class="editor-field">
+                @Html.CheckBoxFor(model => model.program.require_interview, new { @class = "checkbox" })
+                @Html.LabelFor(model => model.program.require_interview)
+                @Html.ValidationMessageFor(model => model.program.require_interview)
+            </div>
+            <div class="editor-field">
+            @Html.CheckBoxFor(model => model.program.require_nomination, new { @class = "checkbox" })
+            @Html.LabelFor(model => model.program.require_nomination)
+            @Html.ValidationMessageFor(model => model.program.require_nomination)
+            </div>
+        </div>
+
+        <div class="field-wrapper">
+            <div class="editor-field">
+            @Html.CheckBoxFor(model => model.program.require_appointment, new { @class = "checkbox" })
+            @Html.LabelFor(model => model.program.require_appointment)
+            @Html.ValidationMessageFor(model => model.program.require_appointment)
+            </div>
+            <div class="editor-field">
+            @Html.CheckBoxFor(model => model.program.require_exchange_option, new { @class = "checkbox" })
+            @Html.LabelFor(model => model.program.require_exchange_option)
+            @Html.ValidationMessageFor(model => model.program.require_exchange_option)
+            </div>
+        </div>
+
+        <div class="clear-fix"></div>
+
+        <div class="field-wrapper">
+            <div class="editor-label">
+                @Html.LabelFor(model => model.program.note_exchange)
+            </div>
+            <div class="editor-field">
+                @Html.TextAreaFor(model => model.program.note_exchange, new { @class = "ckeditor" })
+                @Html.ValidationMessageFor(model => model.program.note_exchange)
+            </div>
+        </div>
+
+        <div class="clear-fix"></div>
+
+        <div class="field-wrapper">
+            <div class="editor-label">
+                @Html.LabelFor(model => model.program.apply_action)
+            </div>
+            <div class="editor-field">
+                @Html.DropDownListFor(model => model.program.apply_action, ViewBag.ActionList as SelectList)
+                @Html.ValidationMessageFor(model => model.program.apply_action)
+            </div>
+        </div>
+
+        <div class="field-wrapper">
+            <div class="editor-label">
+                @Html.LabelFor(model => model.program.apply_link)
+            </div>
+            <div class="editor-field">
+                @Html.TextBoxFor(model => model.program.apply_link)
+                @Html.ValidationMessageFor(model => model.program.apply_link)
+            </div>
+        </div>
+    </fieldset>
+
+        <div class="clear-fix"></div>
+    
+    <fieldset class="startCollapse">
+
+        <legend>Optional Fields</legend>
+        
+        @for (int i = 0; i < Model.no_of_options; i++)
+        {
+            <div class="field-wrapper">
+                <div id="opt-@(i)">
+                    <div class="editor-label">
+                        Field @(i + 1)
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.options[i].name)<br />
+                        @Html.CheckBoxFor(model => model.options[i].required)
+                        @Html.LabelFor(model => model.options[i].required)
+                        @Html.HiddenFor(model => model.options[i].id)
+                        @Html.HiddenFor(model => model.options[i].program_id)
+                    </div>
+                </div>
+            </div>
+        }
+    </fieldset>
+
+        <div class="clear-fix"></div>
+    
+    <fieldset class="startCollapse">
+
+        <legend>Program Attachments</legend>
+        
+        <div class="tabs">
+            <ul>
+                @for (int i = 0; i < Model.no_of_attachments; i++)
+                {
+                    <li><a href="#att-@i">Attachment @(i + 1)</a></li>
+                }
+            </ul>
+            @for (int i = 0; i < Model.no_of_attachments; i++)
+            {
+                <div id="att-@i">
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.attachments[i].name)
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.attachments[i].name)
+                        @Html.HiddenFor(model => model.attachments[i].id)
+                        @Html.HiddenFor(model => model.attachments[i].program_id)
+                        <br />
+                        <label id="attachments_@(i)__filename_label">
+                            Uploaded File: <a href="@Url.Action("Download", "FileHandler", new { filename = Model.attachments[i].filename, folder = Model.attachments[i].filepath })">@Html.DisplayFor(model => model.attachments[i].filename)</a>
+                        </label>
+                        <button type="button" class="delete-btn" id="delete-btn@(i)">Remove</button>
+                        <button type="button" class="upload-btn" id="upload-btn@(i)">Upload</button>
+                        @Html.HiddenFor(model => model.attachments[i].filename, new { @class = "filename-hidden" })
+                        @Html.HiddenFor(model => model.attachments[i].filepath, new { @class = "filepath-hidden" })
+                    </div>
+                </div>
+            }
+        </div>
+    </fieldset>
+
+        <div class="clear-fix"></div>
+    
+    <fieldset class="startCollapse">
+
+        <legend>Required Application Documents (For applicants)</legend>
+        
+        @for (int i = 0; i < Model.no_of_app_attachments; i++)
+        {
+            <div class="field-wrapper">
+                <div id="app-att-@(i)">
+                    <div class="editor-label">
+                        Document @(i + 1)
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.app_attachments[i].name)<br />
+                        @Html.CheckBoxFor(model => model.app_attachments[i].required)
+                        @Html.LabelFor(model => model.app_attachments[i].required)
+                        @Html.HiddenFor(model => model.app_attachments[i].id)
+                        @Html.HiddenFor(model => model.app_attachments[i].program_id)
+                    </div>
+                </div>
+            </div>
+        }
+
+        <div class="clear-fix"></div>
+
+    </fieldset>
+    <p>
+        <input type="submit" value="Save" class="save-btn"/>
+    </p>@*
+    <p>
+        <input type="submit" value="Publish" class="publish-btn"/>
+    </p>*@
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        $(function () {
+            $.validator.addMethod("greaterThan",
+            function (value, element, params) {
+
+                if (!/Invalid|NaN/.test(new Date(value))) {
+                    return new Date(value) > new Date($(params).val());
+                }
+
+                return isNaN(value) && isNaN($(params).val())
+                    || (Number(value) > Number($(params).val()));
+            }, 'Must be greater than {0}.');
+
+            $("#program_application_end_time").rules('add', { greaterThan: "#program_application_start_time" });
+
+            //$("#program_application_end_time").blur(function () {
+            //    var deadline = new Date($("#program_application_end_time").val());
+            //    var reminder = new Date();
+            //    reminder.setDate(deadline.getDate() - 3);
+            //    $("#program_deadline_reminder_date").val($.datepicker.formatDate("m/dd/yy", reminder));
+            //});
+
+            $(".tabs").tabs();
+
+            $("#copy-link").click(function (e) {
+                e.preventDefault();
+                var name = prompt("Please enter a name for the new program.", "@Model.program.name" + " - Copy");
+                var url = $(this).prop("href")
+                if (name) {
+                    url = $(this).prop("href") + "?name=" + name;
+                    window.location.href = url;
+                }
+            });
+
+            EligibleSelectListChange($("#student_types").val(), $('#academic_organization'), "@Url.Action("GetEligibleAcademicOrganization")");
+            EligibleSelectListChange($("#student_programs").val(), $('#academic_plan'), "@Url.Action("GetEligibleAcademicPlan")");
+            EligibleSelectListChange($("#academic_plan").val(), $('#program_status'), "@Url.Action("GetEligibleProgramStatus")");
+
+
+            $("#academic_career").chosen().change(function () {
+                EligibleSelectListChange($(this).val(), $('#academic_organization'), "@Url.Action("GetEligibleAcademicOrganization")");
+            });
+            $("#academic_organization").chosen().change(function () {
+                EligibleSelectListChange($(this).val(), $('#academic_plan'), "@Url.Action("GetEligibleAcademicPlan")");
+            });
+            $("#academic_plan").chosen().change(function () {
+                EligibleSelectListChange($(this).val(), $('#program_status'), "@Url.Action("GetEligibleProgramStatus")");
+            });
+
+            function EligibleSelectListChange(selectedList, targetList, actionURL) {
+                if (selectedList != null && selectedList != '') {
+                    $.ajax({
+                        url: actionURL,
+                        dataType: 'json',
+                        data: { selected: selectedList.join(',') },
+                        traditional: true,
+                        success: function (options) {
+                            targetList.children("option").prop("disabled", "disabled");
+                            $.each(options, function (index, option) {
+                                targetList.children("option[value=" + option.Value + "]").removeProp("disabled");
+                            });
+                            targetList.trigger("chosen:updated");
+                        }
+                    });
+                } else {
+                    targetList.children("option").removeProp("disabled");
+                    targetList.trigger("chosen:updated");
+                }
+
+            }
+
+            $(".filename-hidden[value='']").prevAll(".delete-btn").hide();
+            $(".filename-hidden[value!='']").prevAll(".upload-btn").hide();
+            
+            $(".upload-btn").click( function (e) {
+                e.preventDefault();
+                var actionUrl = '@Html.Raw(Url.Action("Upload", "FileHandler", new { elementId = "replace_elementId", folder = "Temp/Program/" + Model.program.id, programid = Model.program.id }))';
+                actionUrl = actionUrl.replace("replace_elementId", $(this).nextAll("input.filename-hidden").prop("id"));
+                window.open(actionUrl, 'popup', 'width=500,height=150,toolbar=0,menubar=0,location=0,status=0,scrollbars=0,resizable=1,left=0,top=0');
+            });
+
+            $(".delete-btn").click( function (e) {
+                e.preventDefault();
+                var elementId = "#" + $(this).nextAll(".filename-hidden").prop("id");
+                $(elementId).val("");
+                $(elementId).next(".filepath-hidden").val("");
+                $(elementId + "_label a").html("");
+                $(elementId + "_label a").prop("href", "");
+                $(elementId).prevAll(".delete-btn").hide();
+                $(elementId).prevAll(".upload-btn").show();
+            });
+
+            $(".publish-btn").click(function () {
+                $("#program_status_id").val(2);
+            });
+        });
+    </script>
+}

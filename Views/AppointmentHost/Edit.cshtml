@@ -1,0 +1,106 @@
+﻿@model SchoolOfScience.Models.ViewModels.AppointmentHostViewModel
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+<h2>Edit</h2>
+
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>AppointmentHost</legend>
+
+        @Html.HiddenFor(model => model.host.id)
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.host.name)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.host.name)
+            @Html.ValidationMessageFor(model => model.host.name)
+        </div>
+
+        <div class="editor-label">
+            Assigned Users
+        </div>
+        <div class="editor-field">
+            <div class="users-wrapper">
+                <p>
+                    <button type="button" class="add-btn">Add</button>
+                    <button type="button" class="remove-btn">Remove</button>
+                </p>
+                @for (int i = 0; i < Model.users.Count(); i++)
+                {
+                    <div class="user-wrapper">
+                        User @(i+1)
+                        @Html.DropDownListFor(model => model.users[i].UserId, new SelectList(ViewBag.userList as SelectList, "Value", "Text", Model.users[i].UserId.ToString()))
+                        @Html.ValidationMessageFor(model => model.users[i].UserId)
+                    </div>
+                }
+            </div>
+        </div>
+        
+        <p>
+            <input type="submit" value="Save" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script>
+        $(function () {
+            var i = $(".user-wrapper").length;
+
+            $(".remove-btn").click( function () {
+                $(".user-wrapper").last().remove();
+                if (i > 0)
+                    i--;
+            });
+
+            $(".add-btn").click( function () {
+                $.ajax({
+                    url: "@Url.Action("AssignUserDropdown", "AppointmentHost")",
+                    data: { index: i, id: "@Model.host.id" },
+                    cache: false,
+                    error: function (jqXHR, status, error) {
+                        $("#error-dialog").html(error).dialog({
+                            width: 200,
+                            height: 100,
+                            overflow: "auto",
+                            modal: true,
+                            resizable: false,
+                            draggable: false,
+                            open: function () {
+                                $(this).scrollTop(0);
+                                $('.ui-widget-overlay').hide().fadeIn().bind('click', function () {
+                                    $('#error-dialog').dialog('close');
+                                });
+                            },
+                            show: {
+                                effect: 'fade',
+                                duration: 200
+                            },
+                            hide: {
+                                effect: 'fade',
+                                duration: 100
+                            }
+                        });
+                    },
+                    success: function (result) {
+                        $(".users-wrapper").append(result);
+                        i++;
+                    }
+                });
+            });
+        });
+    </script>
+}

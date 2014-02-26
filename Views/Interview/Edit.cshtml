@@ -1,0 +1,189 @@
+﻿@model SchoolOfScience.Models.ViewModels.InterviewViewModel
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+<h2>Edit Interview Timeslot</h2>
+
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>Interview</legend>
+
+        @Html.HiddenFor(model => model.interview.id)
+        
+        
+        <div class="editor-label">
+            @Html.LabelFor(model => model.interview.program_id, "Program")
+        </div>
+        <div class="editor-field">
+            @Html.TextBoxFor(model => model.interview.Program.name, new { disabled = "disabled" })
+            @Html.HiddenFor(model => model.interview.program_id)
+            @Html.ValidationMessageFor(model => model.interview.program_id)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.interview.status_id, "InterviewStatus")
+        </div>
+        <div class="editor-field">
+            @Html.DropDownListFor(model => model.interview.status_id, ViewBag.statusList as SelectList, String.Empty)
+            @Html.ValidationMessageFor(model => model.interview.status_id)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.interview.start_time)
+        </div>
+        <div class="editor-field">
+            @Html.TextBoxFor(model => model.interview.start_time, "{0:yyyy-MM-dd HH:mm}", new { @class = "datetime-picker" })
+            @Html.ValidationMessageFor(model => model.interview.start_time)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.interview.end_time)
+        </div>
+        <div class="editor-field">
+            @Html.TextBoxFor(model => model.interview.end_time, "{0:yyyy-MM-dd HH:mm}", new { @class = "datetime-picker" })
+            @Html.ValidationMessageFor(model => model.interview.end_time)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.interview.no_of_interviewee)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.interview.no_of_interviewee)
+            @Html.ValidationMessageFor(model => model.interview.no_of_interviewee)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.interview.duration)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.interview.duration)
+            @Html.ValidationMessageFor(model => model.interview.duration)
+        </div>
+        
+        <div class="editor-label">
+            @Html.LabelFor(model => model.interview.venue_id)
+        </div>
+        <div class="editor-field">
+            @Html.DropDownListFor(model => model.interview.venue_id, ViewBag.venueList as SelectList, String.Empty)
+            @Html.ValidationMessageFor(model => model.interview.venue_id)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.interview.remarks)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.interview.remarks)
+            @Html.ValidationMessageFor(model => model.interview.remarks)
+        </div>
+
+        <div class="editor-label">
+            Assigned Applications
+        </div>
+        <div class="editor-field">
+            <div class="applications-wrapper">
+                <p>
+                    <button type="button" class="add-btn">Add</button>
+                    <button type="button" class="remove-btn">Remove</button>
+                </p>
+                @for (int i = 0; i < Model.applications.Count(); i++)
+                {
+                    <div class="application-wrapper">
+                        Interviewee @(i+1)
+                        @Html.DropDownListFor(model => model.applications[i].id, new SelectList((IEnumerable<SelectListItem>)ViewBag.applicationList, "Value", "Text", Model.applications[i].id.ToString()), String.Empty)
+                        @Html.ValidationMessageFor(model => model.applications[i].id)
+                    </div>
+                }
+            </div>
+        </div>
+
+        <p>
+            <input type="submit" value="Save" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+<script>
+    $(function () {
+        $.validator.addMethod("greaterThan",
+        function (value, element, params) {
+
+            if (!/Invalid|NaN/.test(new Date(value))) {
+                return new Date(value) > new Date($(params).val());
+            }
+
+            if (!/Invalid|NaN/.test(new Date("1/1/2000 " + value))) {
+                return new Date("1/1/2000 " + value) > new Date("1/1/2000 " + $(params).val());
+            }
+
+            return isNaN(value) && isNaN($(params).val())
+                || (Number(value) > Number($(params).val()));
+        }, 'Must be greater than {0}.');
+
+        $("#interview_end_time").rules('add', { greaterThan: "#interview_start_time" });
+
+
+        var i = $(".application-wrapper").length;
+
+        $(".remove-btn").click( function () {
+            $(".application-wrapper").last().remove();
+            if (i > 0)
+                i--;
+        });
+
+        $(".add-btn").click( function () {
+            if (i < "@(Model.interview.no_of_interviewee)") {
+
+                $.ajax({
+                    url: "@Url.Action("AssignApplicationDropdown", "Interview")",
+                    data: { index: i, id: "@Model.interview.id" },
+                    cache: false,
+                    error: function (jqXHR, status, error) {
+                        $("#error-dialog").html(error).dialog({
+                            width: 200,
+                            height: 100,
+                            overflow: "auto",
+                            modal: true,
+                            resizable: false,
+                            draggable: false,
+                            open: function () {
+                                $(this).scrollTop(0);
+                                $('.ui-widget-overlay').hide().fadeIn().bind('click', function () {
+                                    $('#error-dialog').dialog('close');
+                                });
+                            },
+                            show: {
+                                effect: 'fade',
+                                duration: 200
+                            },
+                            hide: {
+                                effect: 'fade',
+                                duration: 100
+                            }
+                        });
+                    },
+                    success: function (result) {
+                        $(".applications-wrapper").append(result);
+                        i++;
+                    }
+                });
+            } else {
+                alert("Exceeded maximum number of interviewees");
+            }
+        });
+    });
+</script>
+
+}

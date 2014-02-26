@@ -1,0 +1,58 @@
+﻿@model IEnumerable<SchoolOfScience.Models.Application>
+
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>
+                ID
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.StudentProfile.name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.status_id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.submitted)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.modified)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.id)
+            </td>
+            <td>
+                <strong>@Html.DisplayFor(modelItem => item.StudentProfile.name) @Html.ActionLink(item.StudentProfile.id.ToString(), "Details", "StudentProfile", new { id = item.StudentProfile.id }, new { @class = "student-link" })</strong>[@Html.DisplayFor(modelItem => item.StudentProfile.academic_organization)]
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ApplicationStatus.name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.submitted)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.modified)<br />
+                [@Html.DisplayFor(modelItem => item.modified_by)]
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<script>
+    $(function () {
+        $(".data-table").dataTable();
+
+
+        $(".student-link").click( function (e) {
+            e.preventDefault();
+            showDialog($(this).prop("href"), "#error-dialog", "#dialog1");
+        });
+    });
+</script>

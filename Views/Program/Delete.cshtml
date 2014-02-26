@@ -1,0 +1,108 @@
+﻿@model SchoolOfScience.Models.Program
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete Selected Program</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+    <fieldset class="collapse">
+        <legend>Basic Information</legend>
+        
+        <div class="field-wrapper">
+            <div class="display-label">
+                @Html.LabelFor(model => model.name)
+            </div>
+            <div class="display-field">
+                @Html.DisplayFor(model => model.name)
+            </div>
+        </div>
+
+        <div class="field-wrapper">
+            <div class="display-label">
+                @Html.LabelFor(model => model.type_id)
+            </div>
+            <div class="display-field">
+                @Html.DisplayFor(model => model.ProgramType.name)
+            </div>
+        </div>
+
+        <div class="field-wrapper">
+            <div class="display-label">
+                @Html.LabelFor(model => model.status_id)
+            </div>
+            <div class="display-field">
+                @Html.DisplayFor(model => model.ProgramStatus.name)
+            </div>
+        </div>
+        
+        <div class="clear-fix"></div>
+
+        <div class="field-wrapper">
+            <div class="display-label">
+                @Html.LabelFor(model => model.description)
+            </div>
+            <div class="display-field">
+                @Html.Raw(Model.description)
+            </div>
+        </div>
+        
+        <div class="clear-fix"></div>
+
+        <div class="field-wrapper">
+            <div class="display-label">
+                @Html.LabelFor(model => model.start_time)
+            </div>
+            <div class="display-field">
+                @Html.DisplayFor(model => model.start_time)
+            </div>
+        </div>
+        
+        <div class="field-wrapper">
+            <div class="display-label">
+                @Html.LabelFor(model => model.end_time)
+            </div>
+            <div class="display-field">
+                @Html.DisplayFor(model => model.end_time)
+            </div>
+        </div>
+
+        <div class="field-wrapper">
+            <div class="display-label">
+                @Html.LabelFor(model => model.application_start_time)
+            </div>
+            <div class="display-field">
+                @Html.DisplayFor(model => model.application_start_time)
+            </div>
+        </div>
+
+        <div class="field-wrapper">
+            <div class="display-label">
+                @Html.LabelFor(model => model.application_end_time)
+            </div>
+            <div class="display-field">
+                @Html.DisplayFor(model => model.application_end_time)
+            </div>
+        </div>
+
+        <div class="field-wrapper">
+             <div class="display-label">
+            @Html.LabelFor(model => model.deadline_reminder_date)
+            </div>
+            <div class="display-field">
+                @Html.DisplayFor(model => model.deadline_reminder_date)
+            </div>
+        </div>
+
+        <div class="clear-fix"></div>
+
+    </fieldset>
+    
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    <p>
+        <input type="submit" value="Delete" /> |
+        @Html.ActionLink("Back to List", "Index")
+    </p>
+}

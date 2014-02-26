@@ -1,0 +1,114 @@
+﻿@model IEnumerable<SchoolOfScience.Models.StudentQualification>
+
+@{
+    Layout = null;
+}
+
+<fieldset class="collapse">
+    <legend>Awards / Qualifications</legend>
+
+    <div class="add-btn-wrapper">
+        @Html.ActionLink("Add", "Create", "StudentQualification", null, new { @class = "add-qualification-link add-qualification-btn" })
+    </div>
+
+    @if (Model.Count() > 0)
+    {
+    <table class="qualification-table">
+        <thead>
+            <tr>
+                <th>Date Obtained</th>
+                <th>Name of Awarding Body</th>
+                <th>Award / Qualification</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var qualification in Model)
+        {        
+            <tr>
+                <td>
+                    @String.Format("{0:yyyy-MM-dd}", qualification.award_date)
+                </td>
+                <td>
+                    @qualification.organization
+                </td>
+                <td>
+                    @qualification.name
+                </td>
+                <td>                        
+                    <a href="@Url.Action("Edit", "StudentQualification", new { id = qualification.id })" class="edit-qualification-btn"><img src="@Url.Content("~/Images/Action/edit.gif")" class="edit-btn" title="Edit this qualification"/></a>
+                    <a href="@Url.Action("Delete", "StudentQualification", new { id = qualification.id })" class="delete-qualification-btn"><img src="@Url.Content("~/Images/Action/delete.gif")" class="delete-btn" title="Remove this qualification"/></a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+    }
+</fieldset>
+
+<div class="clear-fix"></div>
+
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/jqueryui")
+@Scripts.Render("~/bundles/datatable")
+<script>
+    $(function () {
+        $.ajaxSetup({ cache: false });
+
+        $(".qualification-table").dataTable({
+            "aaSorting": [[0, "desc"]],
+            "bPaginate": false,
+            "bInfo": false,
+            "bFilter": false,
+            "oLanguage": {
+                "sSearch": ""
+            }
+        });
+
+        $(".add-qualification-link").click(function (e) {
+            e.preventDefault();
+            showDialog($(this).prop("href"), "#error-dialog", "#dialog1", 400, 400);
+        });
+
+        $(".edit-qualification-btn").click(function (e) {
+            e.preventDefault();
+            showDialog($(this).prop("href"), "#error-dialog", "#dialog1", 400, 400);
+        });
+
+        $(".delete-qualification-btn").click(function (e) {
+            e.preventDefault();
+            $.ajax({
+                cache: false,
+                url: $(this).prop("href"),
+                error: function (jqXHR, status, error) {
+                    $("#error-dialog").html(error).dialog({
+                        width: 350,
+                        height: 100,
+                        overflow: "auto",
+                        modal: true,
+                        resizable: false,
+                        draggable: false,
+                        open: function () {
+                            $(this).scrollTop(0);
+                            $('.ui-widget-overlay').hide().fadeIn();
+                        },
+                        show: {
+                            effect: 'fade',
+                            duration: 200
+                        },
+                        hide: {
+                            effect: 'fade',
+                            duration: 100
+                        }
+                    });
+                },
+                success: function (result) {
+                    $("#tab4").html(result);
+                }
+            });
+            return false;
+        });
+
+        $(".add-qualification-btn").button();
+    });
+</script>

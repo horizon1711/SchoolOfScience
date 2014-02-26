@@ -1,0 +1,109 @@
+﻿@model SchoolOfScience.Models.StudentQualification
+
+@{
+    Layout = null;
+}
+
+@using (Html.BeginForm("Edit", "StudentQualification", FormMethod.Post, new { id = "form" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(model => model.id)
+    @Html.HiddenFor(model => model.student_id)
+    
+        
+        <div class="display-label">
+            Edit Qualification
+        </div>
+    
+        <div class="editor-label">
+            @Html.DisplayNameFor(model => model.organization)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.organization)
+            @Html.ValidationMessageFor(model => model.organization)
+        </div>
+    
+        <div class="editor-label">
+            @Html.DisplayNameFor(model => model.name)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.name)
+            @Html.ValidationMessageFor(model => model.name)
+        </div>
+    
+        <div class="editor-label">
+            @Html.DisplayNameFor(model => model.award_date)
+        </div>
+        <div class="editor-field">
+            @Html.TextBoxFor(model => model.award_date, "{0:yyyy-MM-dd}", new { @class = "date-picker" })
+            @Html.ValidationMessageFor(model => model.award_date)
+        </div>
+    
+    <div class="clear-fix"></div>
+    
+    <p>
+        <button type="button" class="add-button">Done</button>
+    </p>
+}
+
+@Scripts.Render("~/bundles/dtpicker")
+@Scripts.Render("~/bundles/jqueryval")
+<script>
+    $(function () {
+        $.ajaxSetup({ cache: false });
+
+        $(".add-button").button();
+
+        $(".date-picker").datetimepicker({
+            timepicker: false,
+            //format: "n/d/Y",
+            format: "Y-m-d",
+            validateOnBlur: false
+        });
+
+        $(".add-button").click(function (e) {
+            e.preventDefault();
+            if ($("#form").valid()) {
+                $.ajax({
+                    cache: false,
+                    url: "@Url.Action("Edit", "StudentQualification", null)",
+                    type: "POST",
+                    data: $("#form").serializeArray(),
+                    error: function (jqXHR, status, error) {
+                        $("#dialog1").dialog("close");
+                        $("#error-dialog").dialog({
+                            width: 350,
+                            height: 100,
+                            overflow: "auto",
+                            modal: true,
+                            resizable: false,
+                            draggable: false,
+                            open: function () {
+                                $(this).scrollTop(0);
+                                $('.ui-widget-overlay').hide().fadeIn();
+                            },
+                            show: {
+                                effect: 'fade',
+                                duration: 200
+                            },
+                            hide: {
+                                effect: 'fade',
+                                duration: 100
+                            }
+                        }).html(error);
+                    },
+                    success: function (result) {
+                        $("#dialog1").dialog("close");
+                        $("#tab4").html("");
+                        $("#tab4").html(result);
+                    }
+                });
+            } else {
+                $(".input-validation-error").first().focus();
+            }
+        });
+
+        $("input#organization").focus();
+    });
+</script>

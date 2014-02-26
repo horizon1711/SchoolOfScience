@@ -1,0 +1,207 @@
+﻿@model SchoolOfScience.Models.ViewModels.InterviewAssignMultipleViewModel
+
+<h2>Auto Assign Multiple Applications to Interview Timeslots</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    
+    
+    <fieldset>
+        <legend>Interview Information</legend>
+        
+        <div class="field-wrapper">
+            <div class="editor-label">
+                @Html.LabelFor(model => model.program_id, "Program (with Processed Applications)")
+            </div>
+            <div class="editor-field">
+                @Html.DropDownListFor(model => model.program_id, ViewBag.programList as SelectList, String.Empty, new { @class = "program-select" })
+                @Html.ValidationMessageFor(model => model.program_id)
+            </div>
+        </div>
+        
+        <div class="clear-fix"></div>
+
+        <div class="field-wrapper">
+            <div class="editor-label">
+                @Html.EditorFor(model => model.sort_by_dept)
+                @Html.LabelFor(model => model.sort_by_dept)
+            </div>
+        </div>
+        
+        <div class="clear-fix"></div>
+
+        <div class="field-wrapper">
+            <div class="editor-label">
+                @Html.EditorFor(model => model.continuous_assign)
+                @Html.LabelFor(model => model.continuous_assign, "Mixed Department Assignment", new { title = "Checked: different departments in a single session. Uncheck: single department in a single session." })
+            </div>
+        </div>
+
+    </fieldset>
+    
+    <div class="clear-fix"></div>
+    
+    <fieldset>
+        <legend>Unassigned Applications</legend>
+
+        <div class="applications-wrapper">
+
+        </div>
+
+    </fieldset>
+    
+    <div class="clear-fix"></div>
+    
+    <fieldset class="sessions-wrapper">
+        <legend>Avoided Session Configuration</legend>
+        
+        <button type="button" class="add-btn">Add</button>
+        <button type="button" class="remove-btn">Remove</button>
+
+
+        <div class="clear-fix"></div>
+
+    </fieldset>
+
+        <div class="clear-fix"></div>
+        <p>
+            <input type="submit" value="Auto Assign" />
+        </p>
+    
+}
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script>
+        $(function () {
+            $.validator.addMethod("greaterThan",
+            function (value, element, params) {
+
+                if (!/Invalid|NaN/.test(new Date(value))) {
+                    return new Date(value) > new Date($(params).val());
+                }
+
+                if (!/Invalid|NaN/.test(new Date("1/1/2000 " + value))) {
+                    return new Date("1/1/2000 " + value) > new Date("1/1/2000 " + $(params).val());
+                }
+
+                return isNaN(value) && isNaN($(params).val())
+                    || (Number(value) > Number($(params).val()));
+            }, 'Must be greater than {0}.');
+
+            $("#sort_by_dept").change(function () {
+                if ($(this).is(":checked")) {
+                    $("#continuous_assign").removeAttr("disabled");
+                } else {
+                    $("#continuous_assign").attr("checked", true);
+                    $("#continuous_assign").attr("disabled", true);
+                }
+            });
+
+            $("#continuous_assign").change(function () {
+                if ($(this).is(":checked")) {
+                    $("#sort_by_dept").removeAttr("disabled");
+                } else {
+                    $("#sort_by_dept").attr("checked", true);
+                    $("#sort_by_dept").attr("disabled", true);
+                }
+            });
+
+
+            $(".time-picker").css("width", "100px").timepicker({
+                'timeFormat': 'H:i',
+                'minTime': '9:00',
+                'maxTime': '18:30'
+            });
+
+            var i = $(".session-wrapper").length;
+
+            $(".remove-btn").click( function () {
+                $(".session-wrapper").last().remove();
+                if (i > 0)
+                    i--;
+            });
+
+            $(".add-btn").click( function () {
+                $.ajax({
+                    url: "@Url.Action("AssignAvoidedSession", "Interview")",
+                    data: { index: i },
+                    cache: false,
+                    error: function (jqXHR, status, error) {
+                        $("#error-dialog").html(error).dialog({
+                            width: 200,
+                            height: 100,
+                            overflow: "auto",
+                            modal: true,
+                            resizable: false,
+                            draggable: false,
+                            open: function () {
+                                $(this).scrollTop(0);
+                                $('.ui-widget-overlay').hide().fadeIn().bind('click', function () {
+                                    $('#error-dialog').dialog('close');
+                                });
+                            },
+                            show: {
+                                effect: 'fade',
+                                duration: 200
+                            },
+                            hide: {
+                                effect: 'fade',
+                                duration: 100
+                            }
+                        });
+                    },
+                    success: function(result){
+                        $(".sessions-wrapper").append(result);
+                        i++;
+                    }
+                });
+            });
+
+            $(".program-select").change(function () {
+                if ($(this).val() != "") {
+                    $.ajax({
+                        url: "@Url.Action("AssignApplicationList", "Interview")",
+                        data: { id: $(this).val() },
+                        cache: false,
+                        error: function (jqXHR, status, error) {
+                            $("#error-dialog").html(error).dialog({
+                                width: 200,
+                                height: 100,
+                                overflow: "auto",
+                                modal: true,
+                                resizable: false,
+                                draggable: false,
+                                open: function () {
+                                    $(this).scrollTop(0);
+                                    $('.ui-widget-overlay').hide().fadeIn().bind('click', function () {
+                                        $('#error-dialog').dialog('close');
+                                    });
+                                },
+                                show: {
+                                    effect: 'fade',
+                                    duration: 200
+                                },
+                                hide: {
+                                    effect: 'fade',
+                                    duration: 100
+                                }
+                            });
+                        },
+                        success: function (result) {
+                            $(".applications-wrapper").html(result);
+                        }
+                    });
+                } else {
+                    $(".applications-wrapper").html("");
+                }
+            });
+        });
+    </script>
+}

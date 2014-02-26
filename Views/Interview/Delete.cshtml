@@ -1,0 +1,82 @@
+﻿@model SchoolOfScience.Models.Interview
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete Interview Timeslot</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<fieldset>
+    <legend>Interview</legend>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Program.name)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Program.name)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.InterviewStatus.name)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.InterviewStatus.name)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.start_time)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.start_time)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.end_time)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.end_time)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.no_of_interviewee)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.no_of_interviewee)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.duration)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.duration)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.buffer)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.buffer)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.venue_id)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.InterviewVenue.name)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.remarks)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.remarks)
+    </div>
+</fieldset>
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    <p>
+        <input type="submit" value="Delete" /> |
+        @Html.ActionLink("Back to List", "Index")
+    </p>
+}

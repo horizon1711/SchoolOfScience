@@ -1,0 +1,122 @@
+﻿@model SchoolOfScience.Models.StudentActivity
+
+@{
+    Layout = null;
+}
+
+@using (Html.BeginForm("Create", "StudentActivity", new { opener_id = ViewBag.opener_id }, FormMethod.Post, new { id = "form" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(model => model.student_id)
+    
+        
+        <div class="display-label">
+            Add Student Activity Record
+        </div>
+    
+        <div class="editor-label">
+            @Html.DisplayNameFor(model => model.start_date)
+        </div>
+        <div class="editor-field">
+            @Html.TextBoxFor(model => model.start_date, "{0:yyyy-MM-dd}", new { @class = "date-picker" })
+            @Html.ValidationMessageFor(model => model.start_date)
+        </div>
+    
+        <div class="editor-label">
+            @Html.DisplayNameFor(model => model.end_date)
+        </div>
+        <div class="editor-field">
+            @Html.TextBoxFor(model => model.end_date, "{0:yyyy-MM-dd}", new { @class = "date-picker" })
+            @Html.ValidationMessageFor(model => model.end_date)
+        </div>
+    
+        <div class="editor-label">
+            @Html.LabelFor(model => model.name)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.name)
+            @Html.ValidationMessageFor(model => model.name)
+        </div>
+    
+        <div class="editor-label">
+            @Html.LabelFor(model => model.data_source)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.data_source)
+            @Html.ValidationMessageFor(model => model.data_source)
+        </div>
+    
+        <div class="editor-label">
+            @Html.LabelFor(model => model.remarks)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.remarks)
+            @Html.ValidationMessageFor(model => model.remarks)
+        </div>
+    
+    <div class="clear-fix"></div>
+    
+    <p>
+        <button type="button" class="add-button">Add</button>
+    </p>
+}
+
+@Scripts.Render("~/bundles/dtpicker")
+@Scripts.Render("~/bundles/jqueryval")
+<script>
+    $(function () {
+        $.ajaxSetup({ cache: false });
+
+        $(".date-picker").datetimepicker({
+            timepicker: false,
+            format: "Y-m-d",
+            validateOnBlur: false
+        });
+
+        $(".add-button").button();
+
+        $(".add-button").click(function (e) {
+            e.preventDefault();
+            if ($("#form").valid()) {
+                $.ajax({
+                    cache: false,
+                    url: "@Url.Action("Create", "StudentActivity", new { opener_id = ViewBag.opener_id })",
+                    type: "POST",
+                    data: $("#form").serializeArray(),
+                    error: function (jqXHR, status, error) {
+                        $("#dialog2").dialog("close");
+                        $("#error-dialog").dialog({
+                            width: 350,
+                            height: 100,
+                            overflow: "auto",
+                            modal: true,
+                            resizable: false,
+                            draggable: false,
+                            open: function () {
+                                $(this).scrollTop(0);
+                                $('.ui-widget-overlay').hide().fadeIn();
+                            },
+                            show: {
+                                effect: 'fade',
+                                duration: 200
+                            },
+                            hide: {
+                                effect: 'fade',
+                                duration: 100
+                            }
+                        }).html(error);
+                    },
+                    success: function (result) {
+                        $("#dialog2").dialog("close");
+                        $("#@ViewBag.opener_id").html(result);
+                    }
+                });
+            } else {
+                $(".input-validation-error").first().focus();
+            }
+        });
+
+        $("#name").focus();
+    });
+</script>

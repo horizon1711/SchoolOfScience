@@ -1,0 +1,192 @@
+﻿@model SchoolOfScience.Models.ViewModels.ApplicationExportViewModel
+@{
+    Layout = null;
+}
+
+<style>
+    br {mso-data-placement:same-cell;}
+</style>
+
+<table>
+    <tr>
+        <th>Application ID</th>
+        <th>Application Status</th>
+        <th>Created</th>
+        <th>Modified</th>
+        <th>Submitted</th>
+        <th>Student ID</th>
+        <th>Name</th>
+        <th>Admit Type</th>
+        <th>Email</th>
+        <th>Contact Number</th>
+        <th>Home Nummber</th>
+        <th>Mobile Number</th>
+        <th>Academic Career</th>
+        <th>Academic Organizartion</th>
+        <th>Academic Plan</th>
+        <th>Academic Level</th>
+        <th>CGA</th>
+        <th>Cumulative Credits Earned in UST</th>
+        <th>Credits Earned Elsewhere</th>
+        <th>Potential Graduate Indicator</th>
+        <th>Expected Graduation Term</th>
+        @foreach (var option in Model.program.ProgramOptionValues)
+        {
+        <th>@option.name</th>
+        }
+        @if (Model.program.require_exchange_option)
+        {
+        <th>ExchangeOption1</th>
+        <th>ExchangeOption2</th>
+        <th>ExchangeOption3</th>
+        <th>ExchangeOption4</th>
+        <th>ExchangeOption5</th>
+        }
+        @if (Model.program.require_interview)
+        {
+        <th>Interview Date</th>
+        <th>Interview Time</th>
+        <th>Interview Venue</th>
+        }
+        @if (Model.program.require_appointment)
+        {
+        <th>Appointment Date</th>
+        <th>Appointment Time</th>
+        <th>Appointment Venue</th>
+        }
+        @foreach (var particulartype in Model.particulartypes)
+        {
+            <th>Particular - @particulartype.name</th>
+        }
+        @foreach (var experiencetype in Model.experiencetypes)
+        {
+            <th>Experience - @experiencetype.name</th>
+        }
+        <th>Qualification</th>
+    </tr>
+    @foreach (var application in Model.program.Applications)
+    {
+    <tr>
+        <td>@application.id</td>
+        <td>@application.ApplicationStatus.name</td>
+        <td>@application.created</td>
+        <td>@application.modified</td>
+        <td>@application.submitted</td>
+        <td>@application.student_id</td>
+        <td>@application.StudentProfile.name</td>
+        <td>@application.StudentProfile.StudentAdmission.Admit_Type</td>
+        <td>@application.StudentProfile.email</td>
+        <td>@application.StudentProfile.contact_phone_country_code
+            @if (!String.IsNullOrEmpty(application.StudentProfile.contact_phone_country_code))
+            {
+                <text>-</text>
+            }
+            @application.StudentProfile.contact_phone_number</td>
+        <td>@application.StudentProfile.home_phone_country_code
+            @if (!String.IsNullOrEmpty(application.StudentProfile.home_phone_country_code))
+            {
+                <text>-</text>
+            }
+            @application.StudentProfile.home_phone_number</td>
+        <td>@application.StudentProfile.mobile_phone_country_code
+            @if (!String.IsNullOrEmpty(application.StudentProfile.mobile_phone_country_code))
+            {
+                <text>-</text>
+            }
+            @application.StudentProfile.mobile_phone_number</td>
+        <td>@application.StudentProfile.academic_career</td>
+        <td>@application.StudentProfile.academic_organization</td>
+        <td>@application.StudentProfile.academic_plan_description</td>
+        <td>@application.StudentProfile.academic_level</td>
+        <td>@application.StudentProfile.StudentAdmission.Cumulative_GPA</td>
+        <td>@application.StudentProfile.StudentAdmission.Cumulative_Credits_Earned_in_UST</td>
+        <td>@application.StudentProfile.StudentAdmission.Credits_Earned_Elsewhere</td>
+        <td>@application.StudentProfile.StudentAdmission.Potential_Graduate_Indicator</td>
+        <td>@application.StudentProfile.StudentAdmission.Expected_Graduation_Term_Description</td>
+        @foreach (var option in application.ApplicationOptionValues)
+        {
+        <td>@option.value</td>
+        }
+        @if (Model.program.require_exchange_option)
+        {
+            foreach (var item in application.ApplicationExchangeOptions.OrderBy(o => o.priority))
+            {
+                <td>@item.ExchangeOption.name</td>
+            }
+        }
+        @if (Model.program.require_interview)
+        {
+            if (application.Interviews != null && application.Interviews.Count() > 0)
+            {
+                foreach (var interview in application.Interviews)
+                {
+                    <td>@String.Format("{0:yyyy-MM-dd}", interview.start_time)</td>
+                    <td>@String.Format("{0:HH:mm}", interview.start_time) to @String.Format("{0:HH:mm}", interview.end_time)</td>
+                    <td>@interview.InterviewVenue.name</td>
+                }
+            }
+            else
+            {
+                    <td>None</td>
+                    <td>None</td>
+                    <td>None</td>
+            }
+        }
+        @if (Model.program.require_appointment)
+        {
+            var appointments = application.StudentProfile.Appointments.Where(o => o.AppointmentConcerns.Any(c => c.program_id == Model.program.id));
+            if (appointments != null && appointments.Count() > 0)
+            {
+                foreach (var appointment in appointments)
+                {
+                    <td>@String.Format("{0:yyyy-MM-dd}", appointment.start_time)</td>
+                    <td>@String.Format("{0:HH:mm}", appointment.start_time) to @String.Format("{0:HH:mm}", appointment.end_time)</td>
+                    <td>@appointment.AppointmentVenue.name</td>
+                }
+            }
+            else
+            {
+                    <td>None</td>
+                    <td>None</td>
+                    <td>None</td>
+            }
+        }
+        @foreach (var particulartype in Model.particulartypes)
+        {
+            <td>
+                @foreach (var particular in application.StudentProfile.StudentParticulars.Where(p => p.type_id == particulartype.id).Select((x, i) => new { data = x, index = i }))
+                {
+                    if (particular.index > 0)
+                    {
+                        <text><br /></text>
+                    }
+                    @particular.data.name
+                }
+            </td>
+        }
+        @foreach (var experiencetype in Model.experiencetypes)
+        {
+            <td>
+                @foreach (var experience in application.StudentProfile.StudentExperiences.Where(e => e.type_id == experiencetype.id).Select((x, i) => new { data = x, index = i }))
+                {
+                    if (experience.index > 0)
+                    {
+                        <text><br /></text>
+                    }
+                    @(experience.data.start_year + "-" + experience.data.start_month + " to " + experience.data.end_year + "-" + experience.data.end_month + " " + experience.data.organization + " " + experience.data.position) 
+                }
+            </td>
+        }
+        <td>
+            @foreach (var qualification in application.StudentProfile.StudentQualifications.Select((x, i) => new { data = x, index = i }))
+            {
+                if (qualification.index > 0)
+                {
+                    <text><br /></text>
+                }
+                @(String.Format("{0:yyyy-MM-dd}", qualification.data.award_date) + " " + qualification.data.organization + " " + qualification.data.name) 
+            }
+        </td>
+    </tr>
+    }
+</table>

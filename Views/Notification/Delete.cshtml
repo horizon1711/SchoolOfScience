@@ -1,0 +1,131 @@
+﻿@model SchoolOfScience.Models.Notification
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<fieldset>
+    <legend>Notification</legend>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.send_time)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.send_time)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.sender)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.sender)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.subject)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.subject)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.body)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.body)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.NotificationTemplate.body)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.NotificationTemplate.body)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.NotificationStatus.name)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.NotificationStatus.name)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.NotificationType.name)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.NotificationType.name)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.created_by)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.created_by)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.created)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.created)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.modified_by)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.modified_by)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.modified)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.modified)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.program_id)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.program_id)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.application_id)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.application_id)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.interview_id)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.interview_id)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.appointment_id)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.appointment_id)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.nomination_id)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.nomination_id)
+    </div>
+</fieldset>
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    <p>
+        <input type="submit" value="Delete" /> |
+        @Html.ActionLink("Back to List", "Index")
+    </p>
+}

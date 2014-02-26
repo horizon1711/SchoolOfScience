@@ -1,0 +1,174 @@
+﻿@model IEnumerable<SchoolOfScience.Models.ProgramAction>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<div class="showcase-title">
+    <img src="~/Images/Dashboard/program.png" />
+    <h2>Enrichment Programs</h2>
+    @*<div class="remarks">
+        Only eligible programs will be displayed on this page. Click @Html.ActionLink("here", "Showall", "Program") to show all programs instead.
+    </div>*@
+</div>
+
+<h2>My Appointment</h2>
+
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>
+                Type
+            </th>
+            <th>
+                Program
+            </th>
+            <th>
+                Program Date
+            </th>
+            <th>
+                Deadline
+            </th>
+            <th>
+                Appointment Session
+            </th>
+            <th>
+                Action
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.program.ProgramType.name)
+            </td>
+            <td>
+                @Html.ActionLink(item.program.name, "Details", "Program", new { id = item.program.id }, new { @class = "program-details-link" })
+                @if (!String.IsNullOrEmpty(item.program.job_position))
+                {
+                    <br />
+                    <div class="program-note">
+                    @(item.program.job_position)
+                    @if (!String.IsNullOrEmpty(item.program.host_name))
+                    {
+                        <br />
+                        @(item.program.host_name)
+                    }
+                    </div>
+                }
+            </td>
+            <td>
+                @String.Format("{0:yyyy-MM-dd}", item.program.start_time)
+            </td>
+            <td>
+                @String.Format("{0:yyyy-MM-dd}", item.program.application_end_time)
+            </td>
+            <td>
+                @if (item.appointment != null)
+                {
+                    @String.Format("{0:yyyy-MM-dd HH:mm}", item.appointment.start_time)
+                }
+            </td>
+            <td>
+            @if (item.eligible)
+            {
+                if (item.inperiod && item.open)
+                {
+                    if (item.existed)
+                    {
+                        if (item.saved)
+                        {
+                            <p>
+                                Application @Html.DisplayFor(modelItem => item.application.ApplicationStatus.name)<br />
+                                @Html.ActionLink("[ Edit My Application ]", "Edit", "Application", new { id = item.application.id }, new { @class = "action-link", title = "Warning: Your application is saved, but is NOT submitted yet!" })
+                            </p>
+                        }
+                        else
+                        {
+                            <p>
+                                Application @Html.DisplayFor(modelItem => item.application.ApplicationStatus.name)<br/>
+                                @Html.ActionLink("[ View My Application ]", "Details", "Application", new { id = item.application.id }, new { @class = "action-link" })
+                            </p>
+                        }
+                    }
+                    else
+                    {
+                        <p>
+                            @Html.DisplayFor(modelItem => item.program.ProgramStatus.name)<br />
+                            @if (item.program.apply_action == "default")
+                            {
+                                @Html.ActionLink("[ Apply Now ]", "Create", "Application", new { id = item.program.id }, new { @class = "action-link" });
+                            }
+                            @if (item.program.apply_action == "link")
+                            {
+                                <text><a href="@item.program.apply_link" target="_blank" title="You will be redirected to an external link.">[ Apply Now ]</a></text>
+                            }
+                            @if (item.program.apply_action == "email")
+                            {
+                                <text><a href="mailto:@(item.program.apply_link)" target="_blank" title="Your default email client will be opened.">[ Apply Now ]</a></text>
+                            }   
+                        </p>
+                    }
+                }
+                else
+                {
+                    if (item.beforestart)
+                    {
+                        <p>Application Begins on <br />@String.Format("{0:yyyy-MM-dd HH:mm}", item.program.application_start_time)</p>
+                    }
+                    else
+                    {
+                        if (item.existed && !item.saved)
+                        {
+                            <p>
+                                Application @Html.DisplayFor(modelItem => item.application.ApplicationStatus.name) <br />
+                                @Html.ActionLink("[ View My Application ]", "Details", "Application", new { id = item.application.id }, new { @class = "action-link" })
+                            </p>
+                        }
+                        else
+                        {
+                            <p>Application Closed</p>
+                        }
+                    }
+                }
+            }
+            else
+            {
+                <p>Not eligible</p>
+            }
+            </td>
+        </tr>
+    }
+    </tbody>
+
+</table>
+
+
+
+@section Scripts {
+    <script>
+        $(function () {
+            $(".data-table").dataTable({
+                "aaSorting": [[3, "asc"]],
+                "bPaginate": false,
+                "bInfo": false,
+                "oLanguage": {
+                    "sSearch": "",
+                    "sEmptyTable": "No current appointment"
+                }
+            });
+
+            $(".action-link").click(function (e) {
+                e.preventDefault();
+                showDialog($(this).prop("href"), "#error-dialog", "#dialog1");
+            });
+            
+            $(".program-details-link").click( function (e) {
+                e.preventDefault();
+                showDialog($(this).prop("href"), "#error-dialog", "#dialog1");
+            });
+        });
+    </script>
+}

@@ -1,0 +1,66 @@
+﻿@model IEnumerable<SchoolOfScience.Models.ExchangeOption>
+
+
+<p>
+    @Html.ActionLink("Clear Selection", "", null, new { @class = "clear-link" })
+</p>
+<div class="clear-fix"></div>
+<div class="list-wrapper">
+    <table class="list-table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.country)
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model) {
+            <tr>
+                <td>
+                    @Html.ActionLink(item.name, "", null, new { @class = "select-link" })
+                    @Html.Hidden("dest", item.id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.country)
+                </td>
+            </tr>
+        }
+        </tbody>
+
+    </table>
+</div>
+
+    <script>
+        $(function () {
+            $(".list-table").dataTable({
+                "sScrollY": "300px",
+                "bRetrieve": true,
+                "bInfo": false,
+                "bPaginate": false,
+                "oLanguage": {
+                    "sSearch": ""
+                }
+            });
+
+            $(".select-link").click(function (e) {
+                e.preventDefault();
+                var id = $(this).next().val();
+                if ($(".dest-select option[value='" + id + "']:selected").length > 0) {
+                    alert("Already selected.");
+                } else {
+                    //$(".dest-select option[value='']:selected").parent().not($("option[value='" + id + "']:selected").parent().siblings()).first().val(id);
+                    $(".dest-select option[value='']:selected").parent().first().val(id);
+                }
+            });
+
+            $(".clear-link").click(function (e) {
+                e.preventDefault();
+                $(".dest-select").val("");
+            });
+            
+        });
+    </script>

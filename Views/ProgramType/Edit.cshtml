@@ -1,0 +1,123 @@
+﻿@model SchoolOfScience.Models.ProgramType
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+<h2>Edit</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>ProgramType</legend>
+
+        @Html.HiddenFor(model => model.id)
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.name)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.name)
+            @Html.ValidationMessageFor(model => model.name)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.shortname) (max: 5 characters)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.shortname)
+            @Html.ValidationMessageFor(model => model.shortname)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.display_date)
+        </div>
+        <div class="editor-field">
+            @Html.DropDownListFor(model => model.display_date, ViewBag.dateTypeList as List<SelectListItem>)
+        </div>
+        
+        <div class="editor-label">
+            @Html.LabelFor(model => model.display_on_menu)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.display_on_menu)
+            @Html.ValidationMessageFor(model => model.display_on_menu)
+        </div>
+        
+        <div class="editor-label">
+            @Html.LabelFor(model => model.display_on_showcase)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.display_on_showcase)
+            @Html.ValidationMessageFor(model => model.display_on_showcase)
+        </div>
+        
+        <div class="editor-label">
+            @Html.LabelFor(model => model.priority)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.priority)
+            @Html.ValidationMessageFor(model => model.priority)
+        </div>
+
+        <div class="editor-label">
+            Programe Type Icon (Best size: 60px X 60px)
+        </div>
+        <div class="editor-field">
+            <label id="image_filename_label">
+                Uploaded File: <a href="@Url.Content("~/Images/ProgramType/" + Model.id + "/" + Model.image_filename)" target="_blank">@Html.DisplayFor(model => model.image_filename)</a>
+            </label>
+            <button type="button" class="delete-btn" id="delete-btn">Remove</button>
+            <button type="button" class="upload-btn" id="upload-btn">Upload</button>
+            @Html.HiddenFor(model => model.image_filename, new { @class = "filename-hidden" })
+            @Html.HiddenFor(model => model.image_filepath, new { @class = "filepath-hidden" })
+        </div>
+
+        @if (!String.IsNullOrEmpty(Model.image_filename))
+        {
+            <div>
+                <img src="@Url.Content("~/Images/ProgramType/" + Model.id + "/" + Model.image_filename)" style="height:60px; width:60px;" />
+            </div>
+        }
+
+        <p>
+            <input type="submit" value="Save" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script>
+        $(function () {
+            $(".filename-hidden[value='']").prevAll(".delete-btn").hide();
+            $(".filename-hidden[value!='']").prevAll(".upload-btn").hide();
+
+            $(".upload-btn").click(function (e) {
+                e.preventDefault();
+                var actionUrl = '@Html.Raw(Url.Action("Upload", "FileHandler", new { elementId = "replace_elementId", folder = "Temp/ProgramType/" + Model.id }))';
+                actionUrl = actionUrl.replace("replace_elementId", $(this).nextAll("input.filename-hidden").prop("id"));
+                window.open(actionUrl, 'popup', 'width=500,height=100,toolbar=0,menubar=0,location=0,status=0,scrollbars=0,resizable=0,left=0,top=0');
+            });
+            
+            $(".delete-btn").click( function (e) {
+                e.preventDefault();
+                var elementId = "#" + $(this).nextAll(".filename-hidden").prop("id");
+                $(elementId).val("");
+                $(elementId).next(".filepath-hidden").val("");
+                $(elementId + "_label a").html("");
+                $(elementId + "_label a").prop("href", "");
+                $(elementId).prevAll(".delete-btn").hide();
+                $(elementId).prevAll(".upload-btn").show();
+            });
+        })
+    </script>
+}

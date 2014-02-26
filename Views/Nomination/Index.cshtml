@@ -1,0 +1,119 @@
+﻿@model IEnumerable<SchoolOfScience.Models.Nomination>
+
+@{
+    ViewBag.Title = "Index";
+    IEnumerable<SchoolOfScience.Models.Program> programs = ViewBag.programs;
+}
+
+<h2>Programs Available for Nomination</h2>
+
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Program.name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.nominator_id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NominationStatus.name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.quota)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.start_date)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.end_date)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.id)
+            </td>
+            <td>
+                @Html.ActionLink(item.Program.name, "Details", "Program", new { id = item.program_id }, new { @class = "program-details-link" })
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.nominator_id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NominationStatus.name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.quota)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.start_date)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.end_date)
+            </td>
+            <td>
+                @if (User.IsInRole("Advising"))
+                {
+                    @Html.ActionLink("Edit", "Edit", new { id=item.id }) <text> | </text>
+                    @Html.ActionLink("Delete", "Delete", new { id=item.id })
+                }
+                @if (User.IsInRole("Nominator"))
+                {
+                    @Html.ActionLink("Nominate", "Nominate", new { id = item.id })
+                }
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+<div class="clear-fix"></div>
+
+@if (User.IsInRole("Advising"))
+{
+<hr />
+<h2>Programs Pending for Nomination</h2>
+
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>Program Id</th>
+            <th>Program Name</th>
+            <th>Status</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var program in programs)
+    {
+        <tr>
+            <td>@program.id</td>
+            <td>
+                @Html.ActionLink(program.name, "Details", "Program", new { id = program.id }, new { @class = "program-details-link" })
+            </td>
+            <td>@program.ProgramStatus.name</td>
+            <td>@Html.ActionLink("Create", "Create", "Nomination", new { id = program.id }, null)</td>
+        </tr>
+    }
+    </tbody>
+</table>
+}
+@section Scripts {
+    <script>
+        $(function () {
+            $(".data-table").dataTable();
+
+
+            $(".program-details-link").click( function (e) {
+                e.preventDefault();
+                showDialog($(this).prop("href"), "#error-dialog", "#dialog1");
+            });
+        });
+    </script>
+}

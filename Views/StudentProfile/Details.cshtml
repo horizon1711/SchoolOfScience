@@ -1,0 +1,497 @@
+﻿@model SchoolOfScience.Models.ViewModels.StudentProfileViewModel
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h1>@Model.student.name (ID: @Model.student.id)</h1>
+
+@if (ViewBag.profilepic)
+{
+<div class="profile-picture">
+    <img src="@Url.Content("~/Images/StudentProfile/" + Model.student.id + ".jpg")"/>
+</div>
+}
+<div class="field-wrapper">
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.student.academic_plan_primary)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.student.academic_plan_description)
+    </div>
+</div>
+<div class="field-wrapper">
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.student.contact_phone_number)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.student.contact_phone_country_code)
+        @if (!String.IsNullOrEmpty(Model.student.contact_phone_country_code))
+        {
+            <text>-</text>
+        }
+        @Html.DisplayFor(model => model.student.contact_phone_number)
+    </div>
+</div>
+<div class="field-wrapper">
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.student.home_phone_number)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.student.home_phone_country_code)
+        @if (!String.IsNullOrEmpty(Model.student.home_phone_country_code))
+        {
+            <text>-</text>
+        }
+        @Html.DisplayFor(model => model.student.home_phone_number)
+    </div>
+</div>
+<div class="field-wrapper">
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.student.mobile_phone_number)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.student.mobile_phone_country_code)
+        @if (!String.IsNullOrEmpty(Model.student.mobile_phone_country_code))
+        {
+            <text>-</text>
+        }
+        @Html.DisplayFor(model => model.student.mobile_phone_number)
+    </div>
+</div>
+<div class="field-wrapper clear-left">
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.student.email)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.student.email)
+    </div>
+</div>
+<div class="field-wrapper">
+    <div class="display-label">
+        Address
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.student.home_address1), @Html.DisplayFor(model => model.student.home_address2),@Html.DisplayFor(model => model.student.home_address3),@Html.DisplayFor(model => model.student.home_address4)
+    </div>
+</div>
+<div class="clear-fix"></div>
+@if (Model.student.academic_plan_description.Contains("4Y"))
+{
+<div class="field-wrapper">
+    <div class="display-label">
+        @if (Model.student.academic_plan_description.Contains("Undeclared"))
+        {
+            <text>Pre-major Faculty Advisor</text>
+        }
+        else
+        {
+            <text>Faculty Mentor</text>
+        }
+    </div>
+    <div class="display-field">
+        @foreach (var advisor in Model.student.StudentAdvisors)
+        {
+            <div>@advisor.advisor_name - <a href="mailto:@advisor.advisor_email">@advisor.advisor_email</a></div>
+        }
+    </div>
+</div>
+}
+
+@if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment"))
+{
+<div class="field-wrapper">
+    <div class="display-label" id="remarks-label">
+        Remarks
+        <a href="@Url.Action("EditRemarks", "StudentProfile", new { id = Model.student.id })" class="editremarks-link"><img src="@Url.Content("~/Images/Action/edit.gif")" class="edit-btn" /></a>
+    </div>
+    <div class="display-field" id="remarks">
+        @Html.DisplayFor(model => model.student.remarks)
+    </div>
+</div>
+}
+
+<div class="clear-fix"></div>
+
+<ul id="tabs">
+    <li><a href="#" class="tab1">mySCI Applications</a></li>
+    <li><a href="#" class="tab2">Academic Records</a></li>
+    <li><a href="#" class="tab3">Particulars</a></li>
+    <li><a href="#" class="tab4">Experiences</a></li>
+    <li><a href="#" class="tab5">Qualifications</a></li>
+    <li><a href="#" class="tab6">Advising Records</a></li>
+    <li><a href="#" class="tab7">Activities Records</a></li>
+</ul>
+
+<div id="tabs-content"> 
+    <div id="tab1">
+        <table class="application-table">
+            <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Program Period</th>
+                    <th>Program Name</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model.programactions)
+            {
+                <tr>
+                    <td>
+                        @item.program.ProgramType.name
+                    </td>
+                    <td>
+                        @String.Format("{0:yyyy-MM-dd}", item.program.start_time)
+                    </td>
+                    <td>
+                        @Html.ActionLink(item.program.name, "Details", "Program", new { id = item.program.id }, new { @class = "program-details-link program-name" })
+                        @if (!String.IsNullOrEmpty(item.program.job_position))
+                        {
+                            <br />
+                            <div class="program-note">
+                            @(item.program.job_position)
+                            @if (!String.IsNullOrEmpty(item.program.host_name))
+                            {
+                                <br />
+                                if (!String.IsNullOrEmpty(item.program.website))
+                                {
+                                    <a href="@(item.program.website)" target="_blank">@(item.program.host_name)</a>
+                                }
+                                else
+                                {
+                                    @(item.program.host_name)
+                                }
+                            }
+                            </div>
+                        }
+                    </td>
+                    <td style="white-space: nowrap">
+                        @item.application.ApplicationStatus.name
+                        @if (!item.saved)
+                        {
+                            <a href="@Url.Action("Details", "Application", new { id = item.application.id })" class = "action-link" title = "View Application"><img src="@Url.Content("~/Images/Action/view.gif")" /></a>
+                        }
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+
+        <div class="clear-fix"></div>
+    </div>
+    <div id="tab2">
+        <fieldset>
+            <legend>Registration Record</legend>
+            
+        @if (Model.student.StudentTerms.Count() > 0)
+        {
+            <table class="record-table">
+                <thead>
+                    <tr>
+                        <th>Semester</th>
+                        <th>Program</th>
+                        <th>Term GPA</th>
+                        <th>Cumulative GPA</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.student.StudentTerms)
+                    {
+                        <tr>
+                            <td>@item.term_description</td>
+                            <td>@item.term_academic_plan_description</td>
+                            <td>@item.term_gpa</td>
+                            <td>@item.cumulative_gpa</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        </fieldset>
+        
+        <fieldset>
+            <legend>Course History</legend>
+        @if (Model.student.StudentCourseHistories.Count() > 0)
+        {
+            <table class="record-table">
+                <thead>
+                    <tr>
+                        <th>Term</th>
+                        <th>Subject</th>
+                        <th>Title</th>
+                        <th>Grade</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.student.StudentCourseHistories)
+                    {
+                        <tr>
+                            <td>@item.course_attempt_description</td>
+                            <td>@item.course_subject_area @item.course_catalog_number</td>
+                            <td>@item.course_title</td>
+                            <td>@item.course_grade</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        </fieldset>
+        
+        <fieldset>
+            <legend>Public Exam</legend>
+        @if (Model.student.StudentPublicExams.Count() > 0)
+        {
+            <table class="record-table">
+                <thead>
+                    <tr>
+                        <th>Test/Exam</th>
+                        <th>Year</th>
+                        <th>Description / Component</th>
+                        <th>Score/Level</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.student.StudentPublicExams)
+                    {
+                        <tr>
+                            <td>@item.test_description</td>
+                            <td>@item.test_year</td>
+                            <td>@item.test_component</td>
+                            <td>@(item.letter_score + "(" + item.test_score + ")")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        </fieldset>
+
+        @if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment"))
+        {
+            if (Model.student.StudentMajorChoices.Count() > 0)
+            {
+            <fieldset>
+                <legend>Preferred Major Choice</legend>
+
+                <table class="majorchoice-table">
+                    <thead>
+                        <tr>
+                            <th>Period</th>
+                            <th>Choice 1</th>
+                            <th>Choice 2</th>
+                            <th>Choice 3</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var choice in Model.student.StudentMajorChoices)
+                        {
+                            <tr>
+                                <td>@choice.period</td>
+                                <td>@choice.choice1</td>
+                                <td>@choice.choice2</td>
+                                <td>@choice.choice3</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </fieldset>
+            }
+        }
+
+        <div class="clear-fix"></div>
+    </div>
+    
+    <div id="tab3">
+        <div class="particulars-wrapper">
+        @foreach (var type in Model.particulartypes.OrderBy(t => t.priority))
+        {
+            <div class="item">
+                <fieldset>
+                    <legend>@type.name</legend>
+
+                @foreach (var particular in Model.student.StudentParticulars.Where(p => p.type_id == type.id))
+                {
+                    <div class="editor-field">
+                        @particular.name
+                    </div>
+                }
+                </fieldset>
+            </div>
+        }
+        </div>
+        <div class="clear-fix"></div>
+    </div>
+    <div id="tab4">
+        @foreach (var type in Model.experiencetypes)
+        {
+            <fieldset class="collapse">
+                <legend>@type.name</legend>
+
+                <div class="clear-fix"></div>
+                @if (Model.student.StudentExperiences.Where(p => p.type_id == type.id).Count() > 0)
+                {
+                <table class="experience-table">
+                    <thead>
+                        <tr>
+                            <th>Period</th>
+                            <th>Organization</th>
+                            <th>Position</th>
+                            <th>Duties</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var experience in Model.student.StudentExperiences.Where(p => p.type_id == type.id))
+                    {        
+                        <tr>
+                            <td>
+                                @experience.start_year-@experience.start_month to @experience.end_year-@experience.end_month
+                            </td>
+                            <td>
+                                @experience.organization
+                            </td>
+                            <td>
+                                @experience.position
+                            </td>
+                            <td>
+                                <pre>
+                                    @experience.duty_description
+                                </pre>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+                }
+            </fieldset>
+        }
+    </div>
+    <div id="tab5">
+        <fieldset class="collapse">
+            <legend>Awards / Qualifications</legend>
+
+            <div class="clear-fix"></div>
+            @if (Model.student.StudentQualifications.Count() > 0)
+            {
+            <table class="qualification-table">
+                <thead>
+                    <tr>
+                        <th>Date Obtained</th>
+                        <th>Name of Awarding Body</th>
+                        <th>Award / Qualification</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var qualification in Model.student.StudentQualifications)
+                {        
+                    <tr>
+                        <td>
+                            @String.Format("{0:yyyy-MM-dd}", qualification.award_date)
+                        </td>
+                        <td>
+                            @qualification.organization
+                        </td>
+                        <td>
+                            @qualification.name
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+            }
+        </fieldset>
+    </div>
+    <div id="tab6">
+        @Html.Action("AdvisingRemark", new { student_id = Model.student.id, opener_id = "tab6" })
+    </div>
+    <div id="tab7">
+        @Html.Action("ActivityRecord", new { student_id = Model.student.id, opener_id = "tab7" })
+    </div>
+</div>
+
+@Scripts.Render("~/bundles/gridalicious")
+<script>
+    $(function () {
+        $(".application-table").dataTable({
+            "aaSorting": [[3, "asc"]],
+            "bPaginate": false,
+            "bInfo": false,
+            "bFilter": false,
+            "oLanguage": {
+                "sSearch": ""
+            }
+        });
+
+        $(".experience-table").dataTable({
+            "aaSorting": [[0, "desc"]],
+            "bPaginate": false,
+            "bInfo": false,
+            "bFilter": false,
+            "oLanguage": {
+                "sSearch": ""
+            }
+        });
+
+        $(".qualification-table").dataTable({
+            "aaSorting": [[0, "desc"]],
+            "bPaginate": false,
+            "bInfo": false,
+            "bFilter": false,
+            "oLanguage": {
+                "sSearch": ""
+            }
+        });
+
+        $(".record-table").dataTable({
+            "bRetrieve": true,
+            "bPaginate": false,
+            "bInfo": false,
+            "bFilter": false,
+            "bSort": false
+        });
+
+        $(".majorchoice-table").dataTable({
+            "bRetrieve": true,
+            "bPaginate": false,
+            "bInfo": false,
+            "bFilter": false,
+            "bSort": false
+        });
+
+        $(".particulars-wrapper").gridalicious({
+            width: 300
+        });
+
+        $("#tabs-content").find("[id^='tab']").hide(); // Hide all content
+        $("#tabs li:first").attr("id", "current"); // Activate the first tab
+        $("#tabs-content #tab1").fadeIn(); // Show first tab's content
+
+        $('#tabs a').click(function (e) {
+            e.preventDefault();
+            if ($(this).closest("li").attr("id") == "current") { //detection for current tab
+                return;
+            }
+            else {
+                $("#tabs-content").find("[id^='tab']").hide(); // Hide all content
+                $("#tabs li").attr("id", ""); //Reset id's
+                $(this).parent().attr("id", "current"); // Activate this
+                $('#' + $(this).attr('class')).fadeIn(); // Show content for the current tab
+            }
+        });
+
+        $(".action-link").click(function (e) {
+            e.preventDefault();
+            showDialog($(this).prop("href"), "#error-dialog", "#dialog2");
+        });
+
+        $(".program-details-link").click(function (e) {
+            e.preventDefault();
+            showDialog($(this).prop("href"), "#error-dialog", "#dialog2");
+        });
+
+        $(".editremarks-link").click(function (e) {
+            e.preventDefault();
+            showDialog($(this).prop("href"), "#error-dialog", "#dialog2", 400, 200);
+        });
+    });
+</script>
+

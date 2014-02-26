@@ -1,0 +1,44 @@
+﻿
+            <div id="session@(ViewBag.index)" class="session-wrapper">
+                <p>Session @(ViewBag.index+1)</p>
+                <div class="field-wrapper">
+                    <div class="editor-label">
+                        Start Time
+                    </div>
+                    <div class="editor-field">
+                        <input class="time-picker starttime" data-val="true" data-val-required="The Start Time field is required." id="sessions_@(ViewBag.index)__start_time" name="sessions[@(ViewBag.index)].start_time" type="text" value="" />
+                        <span class="field-validation-valid" data-valmsg-for="sessions[@(ViewBag.index)].start_time" data-valmsg-replace="true"></span>
+                    </div>
+                </div>
+                <div class="field-wrapper">
+                    <div class="editor-label">
+                        End Time
+                    </div>
+                    <div class="editor-field">
+                        <input class="time-picker endtime" data-val="true" data-val-required="The End Time field is required." id="sessions_@(ViewBag.index)__end_time" name="sessions[@(ViewBag.index)].end_time" type="text" value="" />
+                        <span class="field-validation-valid" data-valmsg-for="sessions[@(ViewBag.index)].end_time" data-valmsg-replace="true"></span>
+                    </div>
+                </div>
+                <div class="field-wrapper">
+                    <div class="editor-label">
+                        Excluded
+                    </div>
+                    <div class="editor-field">
+                        <input class="checkbox" data-val="true" data-val-required="The Excluded field is required." id="sessions_@(ViewBag.index)__excluded" name="sessions[@(ViewBag.index)].excluded" type="checkbox" value="true" /><input name="sessions[@(ViewBag.index)].excluded" type="hidden" value="false" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="clear-fix"></div>
+
+<script>
+    $(function () {
+        $("#sessions_@(ViewBag.index)__end_time").rules('add', { greaterThan: "#sessions_@(ViewBag.index)__start_time" });
+
+        $(".time-picker").css("width", "100px").timepicker({
+            'timeFormat': 'H:i',
+            'minTime': '9:00',
+            'maxTime': '18:30'
+        });
+    });
+</script>

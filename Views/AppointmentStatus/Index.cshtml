@@ -1,0 +1,56 @@
+﻿@model IEnumerable<SchoolOfScience.Models.AppointmentStatus>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Appointment Status Management</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.locked)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.locked)
+            </td>
+            <td>
+                @if (!item.locked)
+                {
+                    @Html.ActionLink("Edit", "Edit", new { id=item.id }) <text>|</text>
+                    @Html.ActionLink("Delete", "Delete", new { id=item.id })
+                } else 
+                {
+                    <text>System properties cannot be modified.</text>
+                }
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+
+@section Scripts {
+    <script>
+        $(function () {
+            $(".data-table").dataTable();
+        });
+    </script>
+}
+

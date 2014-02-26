@@ -1,0 +1,114 @@
+﻿@model SchoolOfScience.Models.ViewModels.NominationViewModel
+
+@{
+    ViewBag.Title = "Create";
+}
+
+<h2>Edit Existing Nomination</h2>
+
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    
+    @Html.HiddenFor(model => model.nomination.id)
+    @Html.HiddenFor(model => model.nomination.program_id)
+
+    <fieldset>
+        <legend>Nomination</legend>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.nomination.program_id)
+        </div>
+        <div class="editor-field">
+            @Html.DisplayFor(model => model.nomination.Program.name)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.nomination.nominator_id, "Nominator")
+        </div>
+        <div class="editor-field">
+            @Html.DropDownListFor(model => model.nomination.nominator_id, ViewBag.nominatorList as SelectList, String.Empty)
+            @Html.ValidationMessageFor(model => model.nomination.nominator_id)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.nomination.status_id, "NominationStatus")
+        </div>
+        <div class="editor-field">
+            @Html.DropDownListFor(model => model.nomination.status_id, ViewBag.statusList as SelectList, String.Empty)
+            @Html.ValidationMessageFor(model => model.nomination.status_id)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.nomination.quota)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.nomination.quota)
+            @Html.ValidationMessageFor(model => model.nomination.quota)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.nomination.start_date)
+        </div>
+        <div class="editor-field">
+            @Html.TextBoxFor(model => model.nomination.start_date, "{0:MM/dd/yyyy}", new { @class = "date-picker" })
+            @Html.ValidationMessageFor(model => model.nomination.start_date)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.nomination.end_date)
+        </div>
+        <div class="editor-field">
+            @Html.TextBoxFor(model => model.nomination.end_date, "{0:MM/dd/yyyy}", new { @class = "date-picker" })
+            @Html.ValidationMessageFor(model => model.nomination.end_date)
+        </div>
+
+    </fieldset>
+    
+    <fieldset>
+        <legend>Shortlisted Applications</legend>
+
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Student Name</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0 ; i < Model.applications.Count(); i++)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(model => model.applications[i].id)</td>
+                        <td>@Html.DisplayFor(model => model.applications[i].StudentProfile.name) (@Html.ActionLink(Model.applications[i].StudentProfile.id.ToString(), "Details", "StudentProfile", new { id = Model.applications[i].StudentProfile.id }, null))</td>
+                        <td>@Html.DisplayFor(model => model.applications[i].ApplicationStatus.name)</td>
+                        <td>
+                            @Html.CheckBoxFor(model => model.applications[i].shortlisted)
+                            @Html.HiddenFor(model => model.applications[i].id)
+                        </td> 
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </fieldset>
+
+        <p>
+            <input type="submit" value="Edit" />
+        </p>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        $(function () {
+            $(".data-table").dataTable();
+        });
+    </script>
+}

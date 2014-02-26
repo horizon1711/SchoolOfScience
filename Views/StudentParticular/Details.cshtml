@@ -1,0 +1,43 @@
+﻿@model SchoolOfScience.Models.StudentParticular
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>StudentParticular</legend>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.StudentProfile.name)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.StudentProfile.name)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.StudentParticularType.name)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.StudentParticularType.name)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.name)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.name)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.description)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.description)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id=Model.id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

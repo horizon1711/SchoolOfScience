@@ -1,0 +1,168 @@
+﻿@model SchoolOfScience.Models.Notification
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>Notification</legend>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.send_time)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.send_time)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.sender)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.sender)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.subject)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.subject)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.body)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.body)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.NotificationTemplate.body)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.NotificationTemplate.body)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.NotificationStatus.name)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.NotificationStatus.name)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.NotificationType.name)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.NotificationType.name)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.created_by)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.created_by)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.created)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.created)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.modified_by)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.modified_by)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.modified)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.modified)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.program_id)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.program_id)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.application_id)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.application_id)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.interview_id)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.interview_id)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.appointment_id)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.appointment_id)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.nomination_id)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.nomination_id)
+    </div>
+</fieldset>
+
+<fieldset class="">
+    <legend>Recipients</legend>
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Type</th>
+                <th>Email</th>
+                <th>Student ID</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.NotificationRecipients)
+            {
+            <tr>
+                <td>
+                    @item.id
+                </td>
+                <td>
+                    @item.recipient_type
+                </td>
+                <td>
+                    @item.email
+                </td>
+                <td>
+                    @item.student_id
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id=Model.id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
+
+@section Scripts{
+    <script>
+        $(function () {
+            $(".data-table").dataTable();
+        });
+    </script>
+}

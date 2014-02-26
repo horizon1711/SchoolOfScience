@@ -1,0 +1,124 @@
+﻿@model SchoolOfScience.Models.ViewModels.ApplicationViewModel
+
+<h2>@Html.DisplayFor(model => model.program.name)</h2>
+<h3>Delete Application</h3>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    
+    @Html.HiddenFor(model => model.application.id)
+    @Html.HiddenFor(model => model.application.created)
+    @Html.HiddenFor(model => model.application.created_by)
+    @Html.HiddenFor(model => model.application.program_id)
+    @Html.HiddenFor(model => model.application.student_id)
+    @Html.HiddenFor(model => model.application.status_id)
+
+    <fieldset class="collapse">
+        <legend>Student Information</legend>
+        
+        <div class="field-wrapper">
+            <div class="display-label">
+                @Html.LabelFor(model => model.student.name)
+            </div>
+            <div class="editor-field">
+                @Html.DisplayFor(model => model.student.name)
+                (ID: @Html.DisplayFor(model => model.student.id))
+            </div>
+        </div>
+
+        <div class="clear-fix"></div>
+        
+        @for (int i = 0; i < Model.options.Count(); i++)
+        {
+            <div class="field-wrapper">
+                <div class="display-label">
+                    @Html.DisplayFor(model => model.options[i].ProgramOptionValue.name)
+                </div>
+                <div class="editor-field">
+                    @if (Model.options[i].ProgramOptionValue.required)
+                    {
+                        @Html.DisplayFor(model => model.options[i].value); <span class="required-text">(required)</span>
+                    }
+                    else
+                    {
+                        @Html.DisplayFor(model => model.options[i].value)
+                    }
+                </div>
+            </div>
+        }
+        
+        <div class="clear-fix"></div>
+        
+        @for (int i = 0; i < Model.attachments.Count(); i++)
+        {
+            <div class="field-wrapper">
+                <div class="display-label">
+                    @Html.DisplayFor(model => model.attachments[i].ProgramApplicationAttachment.name)
+                    @if (Model.attachments[i].ProgramApplicationAttachment.required)
+                    {
+                        <span class="required-text">(required)</span>
+                    }
+                    :
+                    @Html.HiddenFor(model => model.attachments[i].id)
+                    @Html.HiddenFor(model => model.attachments[i].application_id)
+                    @Html.HiddenFor(model => model.attachments[i].program_application_attachment_id)
+                    <label id="attachments_@(i)__filename_label">
+                        <a href="@Url.Action("Download", "FileHandler", new { filename = Model.attachments[i].filename, folder = Model.attachments[i].filepath })" target="_blank">@Html.DisplayFor(model => model.attachments[i].filename)</a>
+                    </label>
+                    <img src="@Url.Content("~/Images/cross.png")" class="delete-btn" id="delete-btn@(i)" title="Remove attachment" />
+                    <img src="@Url.Content("~/Images/upload-attachment.png")" class="upload-btn" id="upload-btn@(i)" title="Upload attachment" />
+                    @if (Model.attachments[i].ProgramApplicationAttachment.required)
+                    {
+                        @Html.HiddenFor(model => model.attachments[i].filename, new { @class = "filename-hidden", required = "required" })
+                    }
+                    else
+                    {
+                        @Html.HiddenFor(model => model.attachments[i].filename, new { @class = "filename-hidden" })
+                    }
+                    @Html.HiddenFor(model => model.attachments[i].filepath, new { @class = "filepath-hidden" })
+                    @Html.ValidationMessageFor(model => model.attachments[i].filename)
+                </div>
+            </div>
+        }
+        
+        <div class="clear-fix"></div>
+        
+        <div class="field-wrapper">
+        @for (int i = 0; i < Model.exchange_options.Count(); i++)
+        {
+                <div class="display-label">
+                    Desired Exchange Destination @(i + 1)
+                </div>
+                <div class="editor-field">
+                    @Html.DisplayFor(model => model.exchange_options[i].ExchangeOption.name)
+
+                </div>
+        }
+        </div>
+        
+        <div class="clear-fix"></div>
+        
+    </fieldset>
+        
+        <p>
+            <input type="submit" id="delete" name="delete" value="Delete" />
+        </p>
+        <p>
+            <button type="button" id="close-btn">Close</button>
+        </p>
+}
+
+@Scripts.Render("~/bundles/jqueryval")
+<script>
+    $(function () {
+        $("#delete").click( function () {
+            $("#application_status_id").val(6);
+        });
+        $("#close-btn").click( function () {
+            $("#dialog1").dialog("close");
+        });
+    });
+</script>

@@ -1,0 +1,80 @@
+﻿@model IEnumerable<SchoolOfScience.Models.Appointment>
+
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>
+                ID
+            </th>
+            <th>
+                Concerns
+            </th>
+            <th>
+                Date
+            </th>
+            <th>
+                Time
+            </th>
+            <th>
+                Student Reservation
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @item.id
+            </td>
+            <td>
+                @foreach (var concern in item.AppointmentConcerns)
+                {
+                    <div>@concern.name</div>
+                }
+            </td>
+            <td>
+                @String.Format("{0:yyyy-MM-dd}", item.start_time)
+            </td>
+            <td>
+                @String.Format("{0:HH:mm}", item.start_time) - @String.Format("{0:HH:mm}", item.end_time)
+            </td>
+            <td>
+                @if (item.student_id!=null)
+                {
+                <strong>@Html.DisplayFor(modelItem => item.StudentProfile.name) @Html.ActionLink(item.StudentProfile.id.ToString(), "Details", "StudentProfile", new { id = item.StudentProfile.id }, new { @class = "student-link" })</strong>
+                }
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<div class="clear-fix"></div>
+@using (Html.BeginForm())
+{
+    @Html.Hidden("items", ViewBag.items as String)
+    <p>
+        Appointment session with reservation will not be deleted.
+    </p>
+    <p>
+        <input type="submit" value="Delete" />
+    </p>
+}
+
+<script>
+    $(function () {
+        $(".data-table").dataTable({
+            "bFilter": false,
+            "bLengthChange": false,
+            "bPaginate" : false,
+            "bInfo": false,
+            "bRetrieve": true
+        });
+
+        $(".student-link").click(function (e) {
+            e.preventDefault();
+            showDialog($(this).prop("href"), "#error-dialog", "#dialog1");
+        });
+    });
+</script>

@@ -1,0 +1,57 @@
+﻿@model SchoolOfScience.Models.ViewModels.EmailViewModel
+<h1>Email Test</h1>
+
+@using (Html.BeginForm())
+{
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.to)
+    </div>
+    <div class="editor-field">
+        @Html.EditorFor(model => model.to)
+    </div>
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.from)
+    </div>
+    <div class="editor-field">
+        @Html.EditorFor(model => model.from)
+    </div>
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.subject)
+    </div>
+    <div class="editor-field">
+        @Html.EditorFor(model => model.subject)
+    </div>
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.body)
+    </div>
+    <div class="editor-field">
+        @Html.EditorFor(model => model.body)
+    </div>
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.host)
+    </div>
+    <div class="editor-field">
+        @Html.EditorFor(model => model.host)
+    </div>
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.port)
+    </div>
+    <div class="editor-field">
+        @Html.EditorFor(model => model.port)
+    </div>
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.username)
+    </div>
+    <div class="editor-field">
+        @Html.EditorFor(model => model.username)
+    </div>
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.password)
+    </div>
+    <div class="editor-field">
+        @Html.PasswordFor(model => model.password)
+    </div>
+    
+    <input type="submit" value="Send" />
+}
+<div class="clear-fix"></div>

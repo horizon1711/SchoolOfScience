@@ -1,0 +1,219 @@
+﻿@model IEnumerable<SchoolOfScience.Models.Program>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Program Management</h2>
+
+@using (Html.BeginForm())
+{
+    
+    <div class="filter">
+        <div class="filter-field">
+            <label for="program">Program:</label>
+            @Html.DropDownList("program", ViewBag.programList as IEnumerable<SelectListItem>, "All", null)
+        </div>
+        <div class="filter-field">
+            <label for="program_type">Program Type:</label>
+            @Html.DropDownList("program_type", ViewBag.programTypeList as IEnumerable<SelectListItem>, "All", null)
+        </div>
+        <div class="filter-field">
+            <label for="program_status">Program Status:</label>
+            @Html.DropDownList("program_status", ViewBag.programStatusList as IEnumerable<SelectListItem>, "All", null)
+        </div>
+        <div class="filter-field">
+            <div class="field-wrapper">
+                <label for="interview">Interview Required:</label>
+                @Html.CheckBox("interview")
+            </div>
+            <div class="field-wrapper">
+                <label for="appointment">Appointment Required:</label>
+                @Html.CheckBox("appointment")
+            </div>
+            <div class="field-wrapper">
+                <label for="exchange">Exchange Destination Required:</label>
+                @Html.CheckBox("exchange")
+            </div>
+            <div class="field-wrapper">
+                <label for="nomination">Nomination Required:</label>
+                @Html.CheckBox("nomination")
+            </div>
+        </div>
+        <div class="clear-fix"></div>
+        <div class="filter-field">
+            <input type="submit" value="Search" />
+            <input type="reset" value="Reset" />
+        </div>
+    </div>
+}
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>
+                <input type="checkbox" id="checkAll"/>
+            </th>
+            <th>
+                Id
+            </th>
+            <th>
+                Type
+            </th>
+            <th>
+                Name
+            </th>
+            <th>
+                Eligible Criteria
+            </th>
+            <th>
+                Deadline
+            </th>
+            <th>
+                Status
+            </th>
+            <th>
+                Modified
+            </th>
+            <th>
+                Vacancies
+            </th>
+            <th>
+            </th>
+        </tr>
+    </thead>
+
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                <input type="checkbox" class="checkItem" value="@item.id"/>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProgramType.name)
+            </td>
+            <td>
+                @Html.ActionLink(item.name, "Details", "Program", new { id = item.id }, new { @class = "program-details-link" })
+                <div class="program-note">
+                    <div>
+                    @if (!String.IsNullOrEmpty(item.job_position))
+                    {
+                        @(item.job_position)
+                    }
+                    </div>
+                    <div>
+                    @if (!String.IsNullOrEmpty(item.host_name))
+                    {
+                        if (!String.IsNullOrEmpty(item.website))
+                        {
+                            <a href="@(item.website)" target="_blank" title="@(item.website)">@(item.host_name)</a>
+                        }
+                        else
+                        {
+                            @(item.host_name)
+                        }
+                    }
+                    </div>
+                </div>
+            </td>
+            <td>
+                <div>@Html.DisplayFor(modelItem => item.eligible_academic_career)</div>
+                <div>@Html.DisplayFor(modelItem => item.eligible_academic_organization)</div>
+                <div>@Html.DisplayFor(modelItem => item.eligible_academic_plan)</div>
+                <div>@Html.DisplayFor(modelItem => item.eligible_program_status)</div>
+                <div>@Html.DisplayFor(modelItem => item.eligible_academic_level)</div>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.application_end_time)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProgramStatus.name)
+            </td>
+            <td>
+                @String.Format("{0:yyyy-MM-dd HH:mm}", item.modified)<br />
+                [@Html.DisplayFor(modelItem => item.modified_by)]
+            </td>
+            <td>
+                @if (item.vacancies != null || item.vacancies > 0)
+                {
+                    @item.Applications.Count()
+                    @("/" + @item.vacancies)
+                } 
+                else
+                {
+                    <text> - </text>
+                }
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.id }) |
+                @*@Html.ActionLink("Details", "Details", new { id=item.id })*@ 
+                @Html.ActionLink("Delete", "Delete", new { id = item.id })
+                @if (item.status_id == ViewBag.draftStatusId)
+                {
+                    <text>|</text>
+                    @Html.ActionLink("Publish", "Publish", new { id = item.id });
+                }
+                else
+                {
+                    <text>|</text>
+                    @Html.ActionLink("Applications", "Index", "Application", new { programId = item.id }, null);
+                    <text>|</text>
+                    @Html.ActionLink("Export", "ExportExcel", "Program", new { id = item.id }, null);
+                }
+                    
+            </td>
+        </tr>
+    }
+    </tbody>
+
+</table>
+
+<div class="clear-fix"></div>
+
+<p>
+    <button type="button" id="batch-btn">Batch Action</button>
+</p>
+
+@section Scripts {
+    <script>
+        $(function () {
+            $(".data-table").dataTable({
+                "aaSorting": [[7, "desc"]],
+                "bPaginate": false,
+                "aoColumnDefs": [
+                    { 'bSortable': false, 'aTargets': [ 0 ] }]
+            });
+
+            $(".program-details-link").click( function (e) {
+                e.preventDefault();
+                showDialog($(this).prop("href"), "#error-dialog", "#dialog1");
+            });
+
+            $("#checkAll").click(function () {
+                $(".checkItem").attr("checked", $(this).is(":checked"));
+            });
+
+            $("#batch-btn").click( function (e) {
+                e.preventDefault();
+                var items = $(".checkItem:checked").map(function () { return $(this).val() }).get();
+                var url = "@Html.Raw(Url.Action("BatchUpdate", "Program", new { items = "replaceItems" }))";
+                url = url.replace("replaceItems", items.join('_'));
+                showDialog(url, "#error-dialog", "#dialog1", "50%");
+            });
+
+            $("input[type=reset]").click(function (e) {
+                e.preventDefault();
+                $(".filter select").val('');
+                $(".filter input[type=text]").val('');
+                $(".filter input[type=checkbox]").attr("checked", false);
+            });
+        });
+    </script>
+}

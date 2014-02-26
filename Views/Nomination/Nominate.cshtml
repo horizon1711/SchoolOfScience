@@ -1,0 +1,102 @@
+﻿@model SchoolOfScience.Models.ViewModels.NominationViewModel
+
+@{
+    ViewBag.Title = "Index";
+}
+    
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    
+    @Html.HiddenFor(model => model.nomination.id)
+    @Html.HiddenFor(model => model.nomination.program_id)
+    @Html.HiddenFor(model => model.nomination.nominator_id)
+    @Html.HiddenFor(model => model.nomination.status_id)
+    @Html.HiddenFor(model => model.nomination.quota)
+    @Html.HiddenFor(model => model.nomination.start_date)
+    @Html.HiddenFor(model => model.nomination.end_date)
+    
+<h2>Shortlisted Applications for Nomination</h2>
+
+    <div class="field-wrapper">
+        <div class="display-label">
+            @Html.DisplayNameFor(model=> model.nomination.program_id)
+        </div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.nomination.Program.name)
+        </div>
+    </div>
+    <div class="field-wrapper">
+        <div class="display-label">
+            @Html.DisplayNameFor(model => model.nomination.NominationStatus.name)
+        </div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.nomination.NominationStatus.name)
+        </div>
+    </div>
+    <div class="field-wrapper">
+        <div class="display-label">
+            @Html.DisplayNameFor(model => model.nomination.quota)
+        </div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.nomination.quota)
+        </div>
+    </div>
+    <div class="field-wrapper">
+        <div class="display-label">
+            @Html.DisplayNameFor(model => model.nomination.start_date)
+        </div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.nomination.start_date)
+        </div>
+    </div>
+    <div class="field-wrapper">
+        <div class="display-label">
+            @Html.DisplayNameFor(model => model.nomination.end_date)
+        </div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.nomination.end_date)
+        </div>
+    </div>
+    
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Student Name</th>
+                <th>Status</th>
+                <th>Nominate</th>
+            </tr>
+        </thead>
+        <tbody>
+        @for (int i = 0; i < Model.applications.Count(); i++)
+        {
+            <tr>
+                <td>@Html.DisplayFor(model => Model.applications[i].StudentProfile.name) (@Html.ActionLink(Model.applications[i].StudentProfile.id.ToString(), "Details", "StudentProfile", new { id = Model.applications[i].StudentProfile.id }, null))</td>
+                <td>@Html.DisplayFor(model => Model.applications[i].ApplicationStatus.name)</td>
+                <td>
+                    @Html.CheckBoxFor(model => Model.applications[i].nominated)
+                    @Html.HiddenFor(model => Model.applications[i].id)
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+    
+    <div class="clear-fix"></div>
+        
+        <p>
+            <input type="submit" value="Confirm Nomination" />
+        </p>
+}
+
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+@section Scripts {
+    <script>
+        $(function () {
+            $(".data-table").dataTable();
+        });
+    </script>
+}

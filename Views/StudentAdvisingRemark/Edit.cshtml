@@ -1,0 +1,141 @@
+﻿@model SchoolOfScience.Models.StudentAdvisingRemark
+
+@{
+    Layout = null;
+}
+
+@using (Html.BeginForm("Create", "StudentAdvisingRemark", new { opener_id = ViewBag.opener_id }, FormMethod.Post, new { id = "form" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(model => model.id)
+    @Html.HiddenFor(model => model.created)
+    @Html.HiddenFor(model => model.created_by)
+    @Html.HiddenFor(model => model.student_id)
+    
+        
+        <div class="display-label">
+            Edit Advising Comment
+        </div>
+    
+        <div class="editor-label">
+            @Html.DisplayNameFor(model => model.display_date)
+        </div>
+        <div class="editor-field">
+            @Html.TextBoxFor(model => model.display_date, "{0:yyyy-MM-dd}", new { @class = "date-picker" })
+            @Html.ValidationMessageFor(model => model.display_date)
+        </div>
+    
+        <div class="editor-label">
+            @Html.LabelFor(model => model.text, "Comment")
+        </div>
+        <div class="editor-field">
+            @Html.TextAreaFor(model => model.text, new { @class = "advisingremark-textarea" })
+            @Html.ValidationMessageFor(model => model.text)
+        </div>
+    
+        <div class="editor-label">
+            @Html.LabelFor(model => model.@private)
+            @Html.EditorFor(model => model.@private)
+            @Html.ValidationMessageFor(model => model.@private)
+        </div>
+    
+        <div class="display-label">
+            @Html.DisplayNameFor(model => model.filename):
+            <label id="filename_label">
+                <a href="@Url.Action("Download", "FileHandler", new { filename = Model.filename, folder = Model.filepath })" target="_blank">@Html.DisplayFor(model => model.filename)</a>
+            </label>
+            <img src="@Url.Content("~/Images/Action/delete.gif")" class="delete-btn" id="delete-btn" title="Remove attachment" />
+            <img src="@Url.Content("~/Images/Action/upload.gif")" class="upload-btn" id="upload-btn" title="Upload attachment" />
+            @Html.HiddenFor(model => model.filename, new { @class = "filename-hidden" })
+            @Html.HiddenFor(model => model.filepath, new { @class = "filepath-hidden" })
+            @Html.ValidationMessageFor(model => model.filename)
+        </div>
+    
+    <div class="clear-fix"></div>
+    
+    <p>
+        <button type="button" class="add-button">Done</button>
+    </p>
+}
+
+@Scripts.Render("~/bundles/dtpicker")
+@Scripts.Render("~/bundles/jqueryval")
+<script>
+    $(function () {
+        $.ajaxSetup({ cache: false });
+
+        $(".date-picker").datetimepicker({
+            timepicker: false,
+            format: "Y-m-d",
+            validateOnBlur: false
+        });
+
+        $(".add-button").button();
+
+        $(".add-button").click(function (e) {
+            e.preventDefault();
+            if ($("#form").valid()) {
+                $.ajax({
+                    cache: false,
+                    url: "@Url.Action("Edit", "StudentAdvisingRemark", new { opener_id = ViewBag.opener_id })",
+                    type: "POST",
+                    data: $("#form").serializeArray(),
+                    error: function (jqXHR, status, error) {
+                        $("#dialog2").dialog("close");
+                        $("#error-dialog").dialog({
+                            width: 350,
+                            height: 100,
+                            overflow: "auto",
+                            modal: true,
+                            resizable: false,
+                            draggable: false,
+                            open: function () {
+                                $(this).scrollTop(0);
+                                $('.ui-widget-overlay').hide().fadeIn();
+                            },
+                            show: {
+                                effect: 'fade',
+                                duration: 200
+                            },
+                            hide: {
+                                effect: 'fade',
+                                duration: 100
+                            }
+                        }).html(error);
+                    },
+                    success: function (result) {
+                        $("#dialog2").dialog("close");
+                        $("#@ViewBag.opener_id").html(result);
+                    }
+                });
+            } else {
+                $(".input-validation-error").first().focus();
+            }
+        });
+
+        $(".filename-hidden[value='']").prevAll(".delete-btn").hide();
+        $(".filename-hidden[value!='']").prevAll(".upload-btn").hide();
+
+        $(".upload-btn").click(function (e) {
+            e.preventDefault();
+            var actionUrl = '@Html.Raw(Url.Action("Upload", "FileHandler", new { elementId = "replace_elementId", folder = "Temp/AdvisingRemark/" + Model.id, advisingremarkid = Model.id }))';
+            actionUrl = actionUrl.replace("replace_elementId", $(this).nextAll("input.filename-hidden").prop("id"));
+            window.open(actionUrl, 'popup', 'width=500,height=150,toolbar=0,menubar=0,location=0,status=0,scrollbars=0,resizable=1,left=0,top=0');
+        });
+
+        $(".delete-btn").click(function (e) {
+            e.preventDefault();
+            var elementId = "#" + $(this).nextAll(".filename-hidden").prop("id");
+            $(elementId).val("");
+            $(elementId).next(".filepath-hidden").val("");
+            $(elementId + "_label a").html("");
+            $(elementId + "_label a").prop("href", "");
+            $(elementId).prevAll(".delete-btn").hide();
+            $(elementId).prevAll(".upload-btn").show();
+        });
+
+
+        $("#text").focus();
+    });
+</script>

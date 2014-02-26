@@ -1,0 +1,101 @@
+﻿@model SchoolOfScience.Models.ViewModels.InterviewAssignMultipleViewModel
+
+@{
+    int i = ViewBag.index;
+}
+        <div class="session-wrapper">
+            <p>Session @(ViewBag.index +1)</p>
+            <div class="field-wrapper">
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.avoided_sessions[i].academic_organizations, "Departments")
+                </div>
+                <div class="editor-field">
+                    @Html.ListBoxFor(model => model.avoided_sessions[i].academic_organizations, ViewBag.academicOrganizationList as SelectList, new { @class = " selectList" })
+                </div>
+            </div>
+        
+            <div class="field-wrapper">
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.avoided_sessions[i].academic_plans, "Academic Plan")
+                </div>
+                <div class="editor-field">
+                    @Html.ListBoxFor(model => model.avoided_sessions[i].academic_plans, ViewBag.academicPlanList as SelectList, new { @class = " selectList" })
+                </div>
+            </div>
+        
+            <div class="field-wrapper">
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.avoided_sessions[i].academic_levels, "Academic Level")
+                </div>
+                <div class="editor-field">
+                    @Html.ListBoxFor(model => model.avoided_sessions[i].academic_levels, ViewBag.academicLevelList as SelectList, new { @class = " selectList" })
+                </div>
+            </div>
+        
+            <div class="field-wrapper">
+                <div class="editor-label">
+                    Avoided on:
+                </div>
+                <div class="editor-field">
+                    @Html.CheckBoxFor(model => model.avoided_sessions[i].monday, new { @class = "checkbox" })
+                    @Html.LabelFor(model => model.avoided_sessions[i].monday)
+                    <br />
+                    @Html.CheckBoxFor(model => model.avoided_sessions[i].tuesday, new { @class = "checkbox" })
+                    @Html.LabelFor(model => model.avoided_sessions[i].tuesday)
+                    <br />
+                    @Html.CheckBoxFor(model => model.avoided_sessions[i].wednesday, new { @class = "checkbox" })
+                    @Html.LabelFor(model => model.avoided_sessions[i].wednesday)
+                    <br />
+                    @Html.CheckBoxFor(model => model.avoided_sessions[i].thursday, new { @class = "checkbox" })
+                    @Html.LabelFor(model => model.avoided_sessions[i].thursday)
+                    <br />
+                    @Html.CheckBoxFor(model => model.avoided_sessions[i].friday, new { @class = "checkbox" })
+                    @Html.LabelFor(model => model.avoided_sessions[i].friday)
+                    <br />
+                    @Html.CheckBoxFor(model => model.avoided_sessions[i].saturday, new { @class = "checkbox" })
+                    @Html.LabelFor(model => model.avoided_sessions[i].saturday)
+                    <br />
+                    @Html.CheckBoxFor(model => model.avoided_sessions[i].sunday, new { @class = "checkbox" })
+                    @Html.LabelFor(model => model.avoided_sessions[i].sunday)
+                    <br />
+                    @*@Html.CheckBoxFor(model => model.avoided_sessions[i].holiday, new { @class = "checkbox" })
+                    @Html.LabelFor(model => model.avoided_sessions[i].holiday)*@
+                </div>
+            </div>
+        
+            <div class="field-wrapper">
+                <div class="editor-label">
+                    @Html.DisplayNameFor(model => model.avoided_sessions[i].start_time)
+                </div>
+                <div class="editor-field">
+                    @Html.TextBoxFor(model => model.avoided_sessions[i].start_time, new { @class = "time-picker" })
+                    @Html.ValidationMessageFor(model => model.avoided_sessions[i].start_time)
+                </div>
+            </div>
+            <div class="field-wrapper">
+                <div class="editor-label">
+                    @Html.DisplayNameFor(model => model.avoided_sessions[i].end_time)
+                </div>
+                <div class="editor-field">
+                    @Html.TextBoxFor(model => model.avoided_sessions[i].end_time, new { @class = "time-picker" })
+                    @Html.ValidationMessageFor(model => model.avoided_sessions[i].end_time)
+                </div>
+            </div>
+        </div>
+
+        <div class="clear-fix"></div>
+
+    @Scripts.Render("~/bundles/jqueryval")
+<script>
+    $(function () {
+
+        $("#avoided_sessions_@(i)__end_time").rules('add', { greaterThan: "#avoided_sessions_@(i)__start_time" });
+
+        $(".time-picker").css("width", "100px").timepicker({
+            'timeFormat': 'H:i',
+            'minTime': '9:00',
+            'maxTime': '18:30'
+        });
+
+    });
+</script>

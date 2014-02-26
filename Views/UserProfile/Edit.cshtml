@@ -1,0 +1,46 @@
+﻿@model SchoolOfScience.Models.ViewModels.UserProfileViewModel
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+<h2>Edit</h2>
+
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>UserProfile</legend>
+
+        @Html.HiddenFor(model => model.profile.UserId)
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.profile.UserName)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.profile.UserName)
+            @Html.ValidationMessageFor(model => model.profile.UserName)
+        </div>
+        
+        <div class="editor-label">
+            @Html.LabelFor(model => model.role_id)
+        </div>
+        <div class="editor-field">
+            @Html.DropDownListFor(model => model.role_id, ViewBag.roleList as SelectList, String.Empty)
+            @Html.ValidationMessageFor(model => model.role_id)
+        </div>
+
+        <p>
+            <input type="submit" value="Save" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

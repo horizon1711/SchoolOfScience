@@ -1,0 +1,79 @@
+﻿@model SchoolOfScience.Models.StudentProfile
+
+@{
+    Layout = null;
+}
+
+
+@using (Html.BeginForm("EditRemarks", "StudentProfile", FormMethod.Post, new { id = "form" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(model => model.id)
+
+        
+        <div class="display-label">
+            Edit Student Profile Remarks
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.remarks)
+            @Html.ValidationMessageFor(model => model.remarks)
+        </div>
+    
+        <p>
+            <button type="button" class="add-button">Done</button>
+        </p>
+}
+
+@Scripts.Render("~/bundles/jqueryval")
+<script>
+    $(function () {
+        $.ajaxSetup({ cache: false });
+
+        $("#form").submit(function (e) {
+            e.preventDefault();
+        });
+
+        $(".add-button").button();
+
+        $(".add-button").click(function (e) {
+            e.preventDefault();
+            if ($("#form").valid()) {
+                $.ajax({
+                    url: "@Url.Action("EditRemarks", "StudentProfile", null)",
+                    type: "POST",
+                    data: $("#form").serializeArray(),
+                    cache: false,
+                    error: function (jqXHR, status, error) {
+                        $("#error-dialog").html(error).dialog({
+                            width: 350,
+                            height: 100,
+                            overflow: "auto",
+                            modal: true,
+                            resizable: false,
+                            draggable: false,
+                            open: function () {
+                                $(this).scrollTop(0);
+                                $('.ui-widget-overlay').hide().fadeIn();
+                            },
+                            show: {
+                                effect: 'fade',
+                                duration: 200
+                            },
+                            hide: {
+                                effect: 'fade',
+                                duration: 100
+                            }
+                        });
+                    },
+                    success: function (result) {
+                        $("#dialog2").dialog("close");
+                        $("#remarks").html(result);
+                    }
+                });
+            }
+        });
+
+        $("input#name").focus();
+    });
+</script>

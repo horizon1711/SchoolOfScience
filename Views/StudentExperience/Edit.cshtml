@@ -1,0 +1,157 @@
+﻿@model SchoolOfScience.Models.StudentExperience
+
+@{
+    Layout = null;
+}
+
+@using (Html.BeginForm("Edit", "StudentExperience", FormMethod.Post, new { id = "form" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(model => model.id)
+    @Html.HiddenFor(model => model.type_id)
+    @Html.HiddenFor(model => model.student_id)
+    
+        
+        <div class="display-label">
+            Edit @Model.StudentExperienceType.name
+        </div>
+    
+        <div class="editor-label">
+            @Html.DisplayNameFor(model => model.organization)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.organization)
+            @Html.ValidationMessageFor(model => model.organization)
+        </div>
+    
+        <div class="editor-label">
+            @Html.DisplayNameFor(model => model.position)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.position)
+            @Html.ValidationMessageFor(model => model.position)
+        </div>
+    
+        <div class="editor-label">
+            @Html.DisplayNameFor(model => model.duty_description)
+        </div>
+        <div class="editor-field">
+            @Html.TextAreaFor(model => model.duty_description, new { @class = "experience-textarea" })
+            @Html.ValidationMessageFor(model => model.duty_description)
+        </div>
+    <div class="field-wrapper">
+        <div class="editor-label">
+            @Html.DisplayNameFor(model => model.start_year)
+        </div>
+        <div class="editor-field">
+            @Html.DropDownListFor(model => model.start_year, ViewBag.startyearList as SelectList, String.Empty)
+            @Html.ValidationMessageFor(model => model.start_year)
+        </div>
+    </div>
+    <div class="field-wrapper">
+        <div class="editor-label">
+            @Html.DisplayNameFor(model => model.start_month)
+        </div>
+        <div class="editor-field">
+            @Html.DropDownListFor(model => model.start_month, ViewBag.startmonthList as SelectList, String.Empty)
+            @Html.ValidationMessageFor(model => model.start_month)
+        </div>
+    </div>
+    <div class="clear-fix"></div>
+    <div class="field-wrapper">
+        <div class="editor-label">
+            @Html.DisplayNameFor(model => model.end_year)
+        </div>
+        <div class="editor-field">
+            @Html.DropDownListFor(model => model.end_year, ViewBag.yearList as SelectList, String.Empty)
+            @Html.ValidationMessageFor(model => model.end_year)
+        </div>
+    </div>
+    <div class="field-wrapper">
+        <div class="editor-label">
+            @Html.DisplayNameFor(model => model.end_month)
+        </div>
+        <div class="editor-field">
+            @Html.DropDownListFor(model => model.end_month, ViewBag.monthList as SelectList, String.Empty)
+            @Html.ValidationMessageFor(model => model.end_month)
+        </div>
+    </div>
+    <div class="clear-fix"></div>
+    
+    <p>
+        <button type="button" class="add-button">Done</button>
+    </p>
+}
+
+@Scripts.Render("~/bundles/jqueryval")
+<script>
+    $(function () {
+        $.ajaxSetup({ cache: false });
+
+        $(".add-button").button();
+
+        $(".add-button").click(function (e) {
+            e.preventDefault();
+            if ($("#form").valid()) {
+                $.ajax({
+                    cache: false,
+                    url: "@Url.Action("Edit", "StudentExperience", null)",
+                    type: "POST",
+                    data: $("#form").serializeArray(),
+                    error: function (jqXHR, status, error) {
+                        $("#dialog1").dialog("close");
+                        $("#error-dialog").dialog({
+                            width: 350,
+                            height: 100,
+                            overflow: "auto",
+                            modal: true,
+                            resizable: false,
+                            draggable: false,
+                            open: function () {
+                                $(this).scrollTop(0);
+                                $('.ui-widget-overlay').hide().fadeIn();
+                            },
+                            show: {
+                                effect: 'fade',
+                                duration: 200
+                            },
+                            hide: {
+                                effect: 'fade',
+                                duration: 100
+                            }
+                        }).html(error);
+                    },
+                    success: function (result) {
+                        $("#dialog1").dialog("close");
+                        $("#tab3").html(result);
+                    }
+                });
+            } else {
+                $(".input-validation-error").first().focus();
+            }
+        });
+
+        $("input#organization").focus();
+
+        $("#end_year").change(function () {
+            if ($("#end_year").val() == "-1") {
+                $("#end_month").val("-1");
+            } else {
+                if ($("#end_month").val() == "-1") {
+                    $("#end_month").val("");
+                }
+            }
+        });
+
+        $("#end_month").change(function () {
+            if ($("#end_month").val() == "-1") {
+                $("#end_year").val("-1");
+            } else {
+                if ($("#end_year").val() == "-1") {
+                    $("#end_year").val("");
+                }
+            }
+        });
+    });
+</script>

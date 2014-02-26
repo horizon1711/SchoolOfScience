@@ -1,0 +1,61 @@
+﻿@model SchoolOfScience.Models.Nomination
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<fieldset>
+    <legend>Nomination</legend>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Program.name)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Program.name)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.nominator_id)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.nominator_id)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.NominationStatus.name)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.NominationStatus.name)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.quota)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.quota)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.start_date)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.start_date)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.end_date)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.end_date)
+    </div>
+</fieldset>
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    <p>
+        <input type="submit" value="Delete" /> |
+        @Html.ActionLink("Back to List", "Index")
+    </p>
+}

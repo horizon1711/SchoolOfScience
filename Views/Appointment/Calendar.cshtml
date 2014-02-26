@@ -1,0 +1,181 @@
+﻿@model IEnumerable<SchoolOfScience.Models.Appointment>
+
+@{
+    Layout = null;
+}
+<script src="@Url.Content("~/Scripts/daypilot-all.min.js")"></script>
+
+@*<div>
+    <div id="nav"></div>
+</div>*@
+<div class="calendar-nav">
+    <div style="float:left">
+        <a href="javascript:dp.startDate = dp.startDate.addMonths(-1); dp.update();" class="button"><< Month</a>
+        <a href="javascript:dp.startDate = dp.startDate.addDays(-7); dp.update();" class="button">< Week</a>
+    </div>
+    <div style="float:right">
+        <a href="javascript:dp.startDate = dp.startDate.addDays(7); dp.update();" class="button">Week ></a>
+        <a href="javascript:dp.startDate = dp.startDate.addMonths(1); dp.update();" class="button">Month >></a>
+    </div>
+</div>
+
+<p style="text-align: center;">
+    Click to select...
+</p>
+<div class="clear-fix"></div>
+<div>
+    <div id="dp"></div>
+</div>
+
+<div id="print"></div>
+
+<div class="clear-fix"></div>
+
+<script type="text/javascript">
+    //var nav = new DayPilot.Navigator("nav");
+    //nav.showMonths = 3;
+    //nav.selectMode = "week";
+    //nav.onTimeRangeSelected = function(args) {
+    //    dp.startDate = args.start;
+    //    dp.update();
+    //};
+    //nav.events.list = [ {start: "2013-03-01", end: "2013-03-20"}];
+    //nav.init();
+    
+    var dp = new DayPilot.Calendar("dp");
+    dp.heightSpec = "Fixed";
+    dp.height = 400;
+
+    // view
+    @if(Model.Count() > 0)
+    {
+        <text>
+        dp.startDate = "@(String.Format("{0:yyyy-MM-dd}", Model.First().start_time))";  // or just dp.startDate = "2013-03-25";
+        </text>
+    }
+    dp.viewType = "Week";
+    dp.allDayEventHeight = 25;
+    dp.initScrollPos = 9 * 40;
+    dp.moveBy = 'None';
+    
+    // bubble, with async loading
+    //dp.bubble = new DayPilot.Bubble({
+    //    cssClassPrefix: "bubble_default",
+    //    onLoad: function(args) {
+    //        var ev = args.source;
+    //        args.async = true;  // notify manually using .loaded()
+            
+    //        // simulating slow server-side load
+    //        setTimeout(function() {
+    //            args.html = "testing bubble for: <br>" + ev.text();
+    //            args.loaded();
+    //        }, 500);
+    //    }
+    //});
+    
+    //dp.contextMenu = new DayPilot.Menu({
+    //    cssClassPrefix: "menu_default",
+    //    items: [
+    //    {text:"Show event ID", onclick: function() {alert("Event value: " + this.source.value());} },
+    //    {text:"Show event text", onclick: function() {alert("Event text: " + this.source.text());} },
+    //    {text:"Show event start", onclick: function() {alert("Event start: " + this.source.start().toStringSortable());} },
+    //    {text:"Delete", onclick: function() { dp.events.remove(this.source); } }
+    //]});
+
+    // event moving
+    dp.onEventMoved = function (args) {
+        dp.message("Moved: " + args.e.text());
+    };
+    
+    // event resizing
+    dp.onEventResized = function (args) {
+        dp.message("Resized: " + args.e.text());
+    };
+
+    // event creating
+    //dp.onTimeRangeSelected = function (args) {
+    //    var name = prompt("New event name:", "Event");
+    //    if (!name) return;
+    //    var e = new DayPilot.Event({
+    //        start: args.start,
+    //        end: args.end,
+    //        id: DayPilot.guid(),
+    //        resource: args.resource,
+    //        text: "Event"
+    //    });
+    //    dp.events.add(e);
+    //    dp.clearSelection();
+    //    dp.message("Created");
+    //};
+    
+    //dp.onTimeRangeDoubleClicked = function(args) {
+    //    alert("DoubleClick: start: " + args.start + " end: " + args.end + " resource: " + args.resource);
+    //};
+
+    //dp.onEventClick = function (args) {
+    //    alert("clicked: " + args.e.id());
+    //};
+    
+    dp.onEventClick = function (args) {
+        if (args.e.text() == "Available") {
+            $("#application_appointment_id").val(args.e.id());
+            $("#dialog3").dialog("close");
+        }
+    };
+
+    dp.init();
+
+    var e = new DayPilot.Event();
+
+    @foreach(var item in Model.Where(o => o.student_id==null))
+    {
+    <text>
+    e = new DayPilot.Event({
+        start: new DayPilot.Date("@String.Format("{0:yyyy-MM-ddTHH:mm:ss}",item.start_time)"),
+        end: new DayPilot.Date("@String.Format("{0:yyyy-MM-ddTHH:mm:ss}",item.end_time)"),
+        id: "@item.id",
+        text: "Available",
+        durationBarColor : "#FFF"
+    });
+    e.EventClickEnabled = false;
+    e.EventDeleteEnabled = false;
+    e.EventMoveEnabled = false;
+    e.EventResizeEnabled = false;
+    e.EventRightClickEnabled = false;
+    dp.events.add(e);
+    </text>
+    }
+
+    @foreach(var item in Model.Where(o => o.student_id!=null))
+    {
+    <text>
+    e = new DayPilot.Event({
+        start: new DayPilot.Date("@String.Format("{0:yyyy-MM-ddTHH:mm:ss}",item.start_time)"),
+        end: new DayPilot.Date("@String.Format("{0:yyyy-MM-ddTHH:mm:ss}",item.end_time)"),
+        id: "@item.id",
+        text: "Booked by others"
+        , backColor: "#cccccc"
+    });
+    e.EventClickEnabled = false;
+    e.EventDeleteEnabled = false;
+    e.EventMoveEnabled = false;
+    e.EventResizeEnabled = false;
+    e.EventRightClickEnabled = false;
+    dp.events.add(e);
+    </text>
+    }
+
+    //var e = new DayPilot.Event({
+    //    start: new DayPilot.Date("2013-03-25T12:00:00"),
+    //    end: new DayPilot.Date("2013-03-25T12:00:00").addHours(3),
+    //    id: DayPilot.guid(),
+    //    text: "Special event"
+    //});
+    //dp.events.add(e);
+
+    $(".calendar_default_corner div").html("");
+
+    $(".button").button();
+</script>
+
+

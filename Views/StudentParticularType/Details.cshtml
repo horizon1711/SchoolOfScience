@@ -1,0 +1,34 @@
+﻿@model SchoolOfScience.Models.StudentParticularType
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>StudentParticularType</legend>
+    
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.name)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.name)
+    </div>
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.priority)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.priority)
+    </div>
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.example)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.example)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id=Model.id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

@@ -1,0 +1,71 @@
+﻿@model IEnumerable<SchoolOfScience.Models.ProgramType>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Program Type Management</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="data-table">
+    <thead>
+    <tr>
+        <th>
+            Program Type
+        </th>
+        <th>
+            Shortname
+        </th>
+        <th>
+            Display Date
+        </th>
+        <th>
+            Display on Menu
+        </th>
+        <th>
+            Display on Showcase
+        </th>
+        <th>
+            Priority
+        </th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.shortname)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.display_date)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.display_on_menu)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.display_on_showcase)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.priority)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.id }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.id })
+        </td>
+    </tr>
+}
+    </tbody>    
+</table>
+
+
+@section Scripts {
+    <script>
+        $(".data-table").dataTable();
+    </script>
+}

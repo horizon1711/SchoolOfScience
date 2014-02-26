@@ -1,0 +1,78 @@
+﻿@model SchoolOfScience.Models.Interview
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Interview Timeslot Details</h2>
+
+<fieldset>
+    <legend>Interview</legend>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Program.name)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Program.name)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.InterviewStatus.name)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.InterviewStatus.name)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.start_time)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.start_time)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.end_time)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.end_time)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.no_of_interviewee)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.no_of_interviewee)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.duration)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.duration)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.buffer)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.buffer)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.venue_id)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.InterviewVenue.name)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.remarks)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.remarks)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id=Model.id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

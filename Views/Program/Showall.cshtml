@@ -1,0 +1,260 @@
+﻿@model IEnumerable<SchoolOfScience.Models.ProgramAction>
+
+
+
+<div class="showcase-title">
+    <img src="~/Images/Dashboard/program.png" />
+    <h2>Enrichment Programs</h2>
+</div>
+
+<h2>@ViewBag.title</h2>
+
+@using (Html.BeginForm("Showall", "Program", new { id = 0 }))
+{
+    
+    <div class="filter">
+        <div class="filter-field">
+            <label for="program">Program:</label>
+            @Html.DropDownList("program", ViewBag.programList as IEnumerable<SelectListItem>, "All", new { @class = "chosen", id = "programselect" })
+        </div>
+        <div class="filter-field">
+            <label for="program_type">Program Type:</label>
+            @Html.ListBox("program_type", ViewBag.programTypeList as MultiSelectList, new { @class = "chosen programtype", data_placeholder = "Click to select...", id = "typeselect" })
+        </div>
+@*        <div class="filter-field">
+            <label for="program_status">Program Status:</label>
+            @Html.DropDownList("program_status", ViewBag.programStatusList as IEnumerable<SelectListItem>, "All", null)
+        </div>*@
+        <div class="filter-field">
+            <div class="field-wrapper">
+                <label for="eligible">Eligible to Apply:</label>
+                @Html.CheckBox("eligible")
+            </div>
+            <div class="field-wrapper">
+                <label for="saved">Saved Application:</label>
+                @Html.CheckBox("saved")
+            </div>
+            <div class="field-wrapper">
+                <label for="submitted">Submitted Application:</label>
+                @Html.CheckBox("submitted")
+            </div>
+        </div>
+    </div>
+    <div class="clear-fix"></div>
+    <p>
+        <input type="submit" class="button" value="Search" />
+        <input type="reset" class="button" value="Reset" />
+    </p>
+}
+
+<div class="showcase-note">Date Format: Year-Month-Day</div>
+
+<div class="clear-fix"></div>
+
+<table class="data-table">
+    <thead>
+        <tr>
+            @if (ViewBag.typeid == 0)
+            {
+            <th>
+                Type
+            </th>
+            }
+            <th style="width: 35%">
+                Program
+                @if (ViewBag.typeid != 0)
+                {
+                    <text>(</text>
+                    @Html.ActionLink("View All", "Showall", "Program", new { id = 0 }, null)
+                    <text>)</text>
+                }
+            </th>
+            <th>
+                Program Period
+            </th>
+            <th>
+                Deadline
+            </th>
+            <th>
+                Status
+            </th>
+        </tr>
+    </thead>
+
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            @if (ViewBag.typeid == 0)
+            {
+            <td>
+                @Html.ActionLink(item.program.ProgramType.name, "Showall", "Program", new { id = item.program.ProgramType.id }, null)
+            </td>
+            }
+            <td>
+                @Html.ActionLink(item.program.name, "Details", "Program", new { id = item.program.id }, new { @class = "details-link program-name", title = "View Program Details" })
+                <div class="program-note">
+                    <div>
+                    @if (!String.IsNullOrEmpty(item.program.job_position))
+                    {
+                        @(item.program.job_position)
+                    }
+                    </div>
+                    <div>
+                    @if (!String.IsNullOrEmpty(item.program.host_name))
+                    {
+                        if (!String.IsNullOrEmpty(item.program.website))
+                        {
+                            <a href="@(item.program.website)" target="_blank" title="@(item.program.website)">@(item.program.host_name)</a>
+                        }
+                        else
+                        {
+                            @(item.program.host_name)
+                        }
+                    }
+                    </div>
+                </div>
+            </td>
+            <td>
+                @String.Format("{0:yyyy-MM-dd}", item.program.start_time)
+            </td>
+            <td>
+                @String.Format("{0:yyyy-MM-dd}", item.program.application_end_time)
+            </td>
+            <td style="white-space:nowrap;">
+            @if (item.eligible)
+            {
+                if (item.inperiod && item.open)
+                {
+                    if (item.existed)
+                    {
+                        if (item.saved)
+                        {
+                            <div class="action-wrapper">
+                                <label>Application @Html.DisplayFor(modelItem => item.application.ApplicationStatus.name)</label>
+                                <a href="@Url.Action("Edit", "Application", new { id = item.application.id })" class = "action-link" title = "Edit My Application"><img src="@Url.Content("~/Images/Action/edit.gif")" /></a>
+                                @*@Html.ActionLink("[ Edit My Application ]", "Edit", "Application", new { id = item.application.id }, new { @class = "action-link", title = "Warning: Your application is saved, but is NOT submitted yet!" })*@
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="action-wrapper">
+                                <label>Application @Html.DisplayFor(modelItem => item.application.ApplicationStatus.name)</label>
+                                <a href="@Url.Action("Details", "Application", new { id = item.application.id })" class = "action-link" title = "View My Application"><img src="@Url.Content("~/Images/Action/view.gif")" /></a>
+                                @*@Html.ActionLink("[ View My Application ]", "Details", "Application", new { id = item.application.id }, new { @class = "action-link" })*@
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="action-wrapper">
+                            <label>Apply Now</label>
+                            @if (item.program.apply_action == "default")
+                            {
+                                <text><a href="@Url.Action("Create", "Application", new { id = item.program.id })" class = "action-link" title="Apply Now"><img src="@Url.Content("~/Images/Action/apply.gif")" /></a></text>
+                            }
+                            else
+                            {
+                                <text><a href="@Url.Action("Details", "Program", new { id = item.program.id })" class = "action-link" title="Apply Now"><img src="@Url.Content("~/Images/Action/apply.gif")" /></a></text>
+                            } 
+                        </div>
+                    }
+                }
+                else
+                {
+                    if (item.beforestart)
+                    {
+                        <div class="action-wrapper"><label>Application Begins On <br />@String.Format("{0:yyyy-MM-dd HH:mm}", item.program.application_start_time)</label></div>
+                    }
+                    else
+                    {
+                        if (item.existed && !item.saved)
+                        {
+                            <div class="action-wrapper">
+                                <label>Application @Html.DisplayFor(modelItem => item.application.ApplicationStatus.name)</label>
+                                <a href="@Url.Action("Details", "Application", new { id = item.application.id })" class = "action-link" title = "View My Application"><img src="@Url.Content("~/Images/Action/view.gif")" /></a>
+                                @*@Html.ActionLink("[ View My Application ]", "Details", "Application", new { id = item.application.id }, new { @class = "action-link" })*@
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="action-wrapper"><label>Application Closed</label></div>
+                        }
+                    }
+                }
+            }
+            else
+            {
+                <div class="action-wrapper"><label>Not Eligible</label></div>
+            }
+            </td>
+        </tr>
+    }
+    </tbody>
+
+</table>
+
+
+<div class="clear-fix"></div>
+
+<div>
+    <p>
+        @Html.ActionLink("Back", "Showcase", "Program", new { @class = "button" })
+    </p>
+</div>
+
+<div class="clear-fix"></div>
+
+
+
+@section Scripts {
+    <script>
+        $(function () {
+            @if (ViewBag.typeid == 0)
+            {
+            <text>
+                $(".data-table").dataTable({
+                    "aaSorting": [[3, "asc"]],
+                    "bPaginate": false,
+                    "oLanguage": {
+                        "sSearch": "",
+                        "sInfo": "_TOTAL_ entries",
+                        "sEmptyTable": "No matching record found"
+                    }
+                });
+            </text>
+            }
+            else
+            {
+            <text>
+                $(".data-table").dataTable({
+                    "aaSorting": [[2, "asc"]],
+                    "bPaginate": false,
+                    "oLanguage": {
+                        "sSearch": "",
+                        "sInfo": "_TOTAL_ entries",
+                        "sEmptyTable": "No matching record found"
+                    }
+                });
+            </text>
+            }
+            $(".action-link").click(function (e) {
+                e.preventDefault();
+                showDialog($(this).prop("href"), "#error-dialog", "#dialog1");
+            });
+
+            $(".details-link").click( function (e) {
+                e.preventDefault();
+                showDialog($(this).prop("href"), "#error-dialog", "#dialog1");
+            });
+
+            $(".button").button();
+
+            $("input[type=reset]").click(function (e) {
+                e.preventDefault();
+                $(".chosen").val('').trigger("chosen:updated");
+                $("input[type=checkbox]").attr("checked", false);
+            });
+        });
+    </script>
+}

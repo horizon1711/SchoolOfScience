@@ -1,0 +1,17 @@
+﻿            <div class="date-wrapper">
+                <div class="field-wrapper">
+                    <p>
+                        Date @(ViewBag.index+1)
+                        <input class="date-picker" data-val="true" data-val-date="The field DateTime must be a date." data-val-required="The DateTime field is required." id="skipped_dates_@(ViewBag.index)_" name="skipped_dates[@(ViewBag.index)]" type="text" value="" />
+                         <span class="field-validation-valid" data-valmsg-for="skipped_dates[@(ViewBag.index)]" data-valmsg-replace="true"></span>
+                    </p>
+                </div>
+            </div><script>
+    $(function () {
+        $(".date-picker").datetimepicker({
+            timepicker: false,
+            format: "m/j/Y",
+            validateOnBlur: false
+        });
+    });
+</script>

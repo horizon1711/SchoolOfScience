@@ -1,0 +1,75 @@
+﻿@model SchoolOfScience.Models.ProgramType
+
+@{
+    ViewBag.Title = "Create";
+}
+
+<h2>Create</h2>
+
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>ProgramType</legend>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.name)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.name)
+            @Html.ValidationMessageFor(model => model.name)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.shortname) (max: 5 characters)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.shortname)
+            @Html.ValidationMessageFor(model => model.shortname)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.display_date)
+        </div>
+        <div class="editor-field">
+            @Html.DropDownList("display_date")
+        </div>
+        
+        <div class="editor-label">
+            @Html.LabelFor(model => model.display_on_menu)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.display_on_menu)
+            @Html.ValidationMessageFor(model => model.display_on_menu)
+        </div>
+        
+        <div class="editor-label">
+            @Html.LabelFor(model => model.display_on_showcase)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.display_on_showcase)
+            @Html.ValidationMessageFor(model => model.display_on_showcase)
+        </div>
+        
+        <div class="editor-label">
+            @Html.LabelFor(model => model.priority)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.priority)
+            @Html.ValidationMessageFor(model => model.priority)
+        </div>
+
+        <p>
+            <input type="submit" value="Create" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

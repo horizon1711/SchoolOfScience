@@ -1,0 +1,127 @@
+﻿@model IEnumerable<SchoolOfScience.Models.Application>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Application Management</h2>
+
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.StudentProfile.name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.StudentProfile.academic_program)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.StudentProfile.academic_level)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Program.name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.created_by)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.created)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.StudentProfile.name) (@Html.ActionLink(item.StudentProfile.id.ToString(), "Details", "StudentProfile", new { id = item.StudentProfile.id }, null))
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StudentProfile.academic_program)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StudentProfile.academic_level)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Program.name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.created_by)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.created)
+            </td>
+            <td>
+                @Html.ActionLink("Review", "Review", new { id = item.id }, new { @class = "review-link" })
+            </td>
+        </tr>
+    }
+    </tbody>
+
+</table>
+
+@section Scripts {
+    <script>
+        $(function () {
+            $(".data-table").dataTable({
+                "aaSorting": [[6, "desc"]]
+            });
+
+            $(".review-link").click( function (e) {
+                e.preventDefault();
+                $.ajax({
+                    url: $(this).prop("href"),
+                    cache: false,
+                    error: function (jqXHR, status, error) {
+                        $("#dialog2").html(error).dialog({
+                            width: 200,
+                            height: 100,
+                            overflow: "auto",
+                            modal: true,
+                            resizable: false,
+                            draggable: false,
+                            open: function () {
+                                $(this).scrollTop(0);
+                                $('.ui-widget-overlay').hide().fadeIn().bind('click', function () {
+                                    $('#dialog2').dialog('close');
+                                });
+                            },
+                            show: {
+                                effect: 'fade',
+                                duration: 200
+                            },
+                            hide: {
+                                effect: 'fade',
+                                duration: 100
+                            }
+                        });
+                    },
+                    success: function (result) {
+                        $("#dialog1").html(result).dialog({
+                            width: "50%",
+                            height: 500,
+                            overflow: "auto",
+                            modal: true,
+                            resizable: false,
+                            draggable: false,
+                            open: function () {
+                                $(this).scrollTop(0);
+                                $('.ui-widget-overlay').hide().fadeIn().bind('click', function () {
+                                    $('#dialog1').dialog('close');
+                                });
+                            },
+                            show: {
+                                effect: 'fade',
+                                duration: 200
+                            },
+                            hide: {
+                                effect: 'fade',
+                                duration: 100
+                            }
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+}

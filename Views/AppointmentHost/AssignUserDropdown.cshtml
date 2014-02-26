@@ -1,0 +1,12 @@
+﻿@model SchoolOfScience.Models.ViewModels.AppointmentHostViewModel
+
+@{
+    Layout = null;
+    int i = ViewBag.index;
+}
+
+                    <div class="user-wrapper">
+                        User @(i+1)
+                        @Html.DropDownListFor(model => model.users[i].UserId, ViewBag.userList as SelectList)
+                        @Html.ValidationMessageFor(model => model.users[i].UserId)
+                    </div>
