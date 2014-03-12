@@ -21,6 +21,7 @@
           <EntitySet Name="ExchangeOption" EntityType="SchoolOfScienceModel.Store.ExchangeOption" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="Interview" EntityType="SchoolOfScienceModel.Store.Interview" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="InterviewApplication" EntityType="SchoolOfScienceModel.Store.InterviewApplication" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="InterviewComment" EntityType="SchoolOfScienceModel.Store.InterviewComment" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="InterviewStatus" EntityType="SchoolOfScienceModel.Store.InterviewStatus" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="InterviewVenue" EntityType="SchoolOfScienceModel.Store.InterviewVenue" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="Nomination" EntityType="SchoolOfScienceModel.Store.Nomination" store:Type="Tables" Schema="dbo" />
@@ -142,6 +143,14 @@
           <AssociationSet Name="FK_InterviewApplication_Interview" Association="SchoolOfScienceModel.Store.FK_InterviewApplication_Interview">
             <End Role="Interview" EntitySet="Interview" />
             <End Role="InterviewApplication" EntitySet="InterviewApplication" />
+          </AssociationSet>
+          <AssociationSet Name="FK_InterviewComment_Application" Association="SchoolOfScienceModel.Store.FK_InterviewComment_Application">
+            <End Role="Application" EntitySet="Application" />
+            <End Role="InterviewComment" EntitySet="InterviewComment" />
+          </AssociationSet>
+          <AssociationSet Name="FK_InterviewComment_Interview" Association="SchoolOfScienceModel.Store.FK_InterviewComment_Interview">
+            <End Role="Interview" EntitySet="Interview" />
+            <End Role="InterviewComment" EntitySet="InterviewComment" />
           </AssociationSet>
           <AssociationSet Name="FK_Nomination_NominationStatus" Association="SchoolOfScienceModel.Store.FK_Nomination_NominationStatus">
             <End Role="NominationStatus" EntitySet="NominationStatus" />
@@ -427,6 +436,19 @@
           <Property Name="interview_id" Type="int" Nullable="false" />
           <Property Name="application_id" Type="int" Nullable="false" />
         </EntityType>
+        <EntityType Name="InterviewComment">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="interview_id" Type="int" Nullable="false" />
+          <Property Name="application_id" Type="int" Nullable="false" />
+          <Property Name="comment" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="created" Type="datetime" Nullable="false" />
+          <Property Name="created_by" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="modified" Type="datetime" Nullable="false" />
+          <Property Name="modified_by" Type="nvarchar" Nullable="false" MaxLength="50" />
+        </EntityType>
         <EntityType Name="InterviewStatus">
           <Key>
             <PropertyRef Name="id" />
@@ -435,6 +457,7 @@
           <Property Name="name" Type="nvarchar" Nullable="false" MaxLength="50" />
           <Property Name="locked" Type="bit" Nullable="false" />
           <Property Name="display_to_student" Type="bit" Nullable="false" />
+          <Property Name="default_status" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="InterviewVenue">
           <Key>
@@ -1253,6 +1276,30 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_InterviewComment_Application">
+          <End Role="Application" Type="SchoolOfScienceModel.Store.Application" Multiplicity="1" />
+          <End Role="InterviewComment" Type="SchoolOfScienceModel.Store.InterviewComment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Application">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="InterviewComment">
+              <PropertyRef Name="application_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_InterviewComment_Interview">
+          <End Role="Interview" Type="SchoolOfScienceModel.Store.Interview" Multiplicity="1" />
+          <End Role="InterviewComment" Type="SchoolOfScienceModel.Store.InterviewComment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Interview">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="InterviewComment">
+              <PropertyRef Name="interview_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Nomination_NominationStatus">
           <End Role="NominationStatus" Type="SchoolOfScienceModel.Store.NominationStatus" Multiplicity="1" />
           <End Role="Nomination" Type="SchoolOfScienceModel.Store.Nomination" Multiplicity="*" />
@@ -1924,7 +1971,16 @@
             <End Role="StudentProfile" EntitySet="StudentProfiles" />
             <End Role="StudentActivity" EntitySet="StudentActivities" />
           </AssociationSet>
-        </EntityContainer>
+          <EntitySet Name="InterviewComments" EntityType="SchoolOfScienceModel.InterviewComment" />
+          <AssociationSet Name="FK_InterviewComment_Application" Association="SchoolOfScienceModel.FK_InterviewComment_Application">
+            <End Role="Application" EntitySet="Applications" />
+            <End Role="InterviewComment" EntitySet="InterviewComments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_InterviewComment_Interview" Association="SchoolOfScienceModel.FK_InterviewComment_Interview">
+            <End Role="Interview" EntitySet="Interviews" />
+            <End Role="InterviewComment" EntitySet="InterviewComments" />
+          </AssociationSet>
+          </EntityContainer>
         <EntityType Name="C__MigrationHistory">
           <Key>
             <PropertyRef Name="MigrationId" />
@@ -1956,6 +2012,7 @@
           <NavigationProperty Name="ApplicationExchangeOptions" Relationship="SchoolOfScienceModel.FK_ApplicationExchangeOption_Application" FromRole="Application" ToRole="ApplicationExchangeOption" />
           <NavigationProperty Name="ApplicationOptionValues" Relationship="SchoolOfScienceModel.FK_ApplicationOptionValue_ApplicationOptionValue" FromRole="Application" ToRole="ApplicationOptionValue" />
           <NavigationProperty Name="Interviews" Relationship="SchoolOfScienceModel.InterviewApplication" FromRole="Application" ToRole="Interview" />
+          <NavigationProperty Name="InterviewComments" Relationship="SchoolOfScienceModel.FK_InterviewComment_Application" FromRole="Application" ToRole="InterviewComment" />
         </EntityType>
         <EntityType Name="ApplicationAttachment">
           <Key>
@@ -2085,6 +2142,7 @@
           <NavigationProperty Name="Program" Relationship="SchoolOfScienceModel.FK_Interview_Program" FromRole="Interview" ToRole="Program" />
           <NavigationProperty Name="Applications" Relationship="SchoolOfScienceModel.InterviewApplication" FromRole="Interview" ToRole="Application" />
           <NavigationProperty Name="InterviewStatus" Relationship="SchoolOfScienceModel.FK_Interview_InterviewStatus" FromRole="Interview" ToRole="InterviewStatu" />
+          <NavigationProperty Name="InterviewComments" Relationship="SchoolOfScienceModel.FK_InterviewComment_Interview" FromRole="Interview" ToRole="InterviewComment" />
         </EntityType>
         <EntityType Name="InterviewStatus">
           <Key>
@@ -2095,6 +2153,7 @@
           <Property Name="locked" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="Interviews" Relationship="SchoolOfScienceModel.FK_Interview_InterviewStatus" FromRole="InterviewStatu" ToRole="Interview" />
           <Property Type="Boolean" Name="display_to_student" Nullable="false" />
+          <Property Type="Boolean" Name="default_status" Nullable="false" />
         </EntityType>
         <EntityType Name="InterviewVenue">
           <Key>
@@ -3326,7 +3385,46 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-      </Schema>
+        <EntityType Name="InterviewComment">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Type="Int32" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Int32" Name="interview_id" Nullable="false" />
+          <Property Type="Int32" Name="application_id" Nullable="false" />
+          <Property Type="String" Name="comment" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Type="DateTime" Name="created" Nullable="false" Precision="3" />
+          <Property Type="String" Name="created_by" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="DateTime" Name="modified" Nullable="false" Precision="3" />
+          <Property Type="String" Name="modified_by" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Application" Relationship="SchoolOfScienceModel.FK_InterviewComment_Application" FromRole="InterviewComment" ToRole="Application" />
+          <NavigationProperty Name="Interview" Relationship="SchoolOfScienceModel.FK_InterviewComment_Interview" FromRole="InterviewComment" ToRole="Interview" />
+        </EntityType>
+        <Association Name="FK_InterviewComment_Application">
+          <End Type="SchoolOfScienceModel.Application" Role="Application" Multiplicity="1" />
+          <End Type="SchoolOfScienceModel.InterviewComment" Role="InterviewComment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Application">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="InterviewComment">
+              <PropertyRef Name="application_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_InterviewComment_Interview">
+          <End Type="SchoolOfScienceModel.Interview" Role="Interview" Multiplicity="1" />
+          <End Type="SchoolOfScienceModel.InterviewComment" Role="InterviewComment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Interview">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="InterviewComment">
+              <PropertyRef Name="interview_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
@@ -3479,6 +3577,7 @@
           <EntitySetMapping Name="InterviewStatus">
             <EntityTypeMapping TypeName="SchoolOfScienceModel.InterviewStatus">
               <MappingFragment StoreEntitySet="InterviewStatus">
+                <ScalarProperty Name="default_status" ColumnName="default_status" />
                 <ScalarProperty Name="display_to_student" ColumnName="display_to_student" />
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="name" ColumnName="name" />
@@ -4098,6 +4197,20 @@
                 <ScalarProperty Name="end_date" ColumnName="end_date" />
                 <ScalarProperty Name="start_date" ColumnName="start_date" />
                 <ScalarProperty Name="student_id" ColumnName="student_id" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="InterviewComments">
+            <EntityTypeMapping TypeName="SchoolOfScienceModel.InterviewComment">
+              <MappingFragment StoreEntitySet="InterviewComment">
+                <ScalarProperty Name="modified_by" ColumnName="modified_by" />
+                <ScalarProperty Name="modified" ColumnName="modified" />
+                <ScalarProperty Name="created_by" ColumnName="created_by" />
+                <ScalarProperty Name="created" ColumnName="created" />
+                <ScalarProperty Name="comment" ColumnName="comment" />
+                <ScalarProperty Name="application_id" ColumnName="application_id" />
+                <ScalarProperty Name="interview_id" ColumnName="interview_id" />
                 <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>

@@ -176,15 +176,18 @@ namespace SchoolOfScience.Controllers
             }
             try
             {
+                int count = 0;
                 var excel = new ExcelQueryFactory(filepath);
-                var activities = from c in excel.Worksheet<StudentActivity>()
+                var sheetnames = excel.GetWorksheetNames();
+                var activities = from c in excel.Worksheet<StudentActivity>(sheetnames.First())
                                  select c;
                 foreach (var activity in activities)
                 {
                     db.StudentActivities.Add(activity);
+                    count++;
                 }
                 db.SaveChanges();
-                Session["FlashMessage"] = activities.Count() + " record(s) successfully imported.";
+                Session["FlashMessage"] = count + " record(s) successfully imported.";
                 //clear files uploaded after import
                 if (Directory.Exists(Server.MapPath("~/App_Data/Import/StudentActivity/" + User.Identity.Name)))
                 {

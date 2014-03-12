@@ -1069,6 +1069,7 @@ namespace SchoolOfScience.Controllers
 
         //
         // POST: /Application/ExportToExcel/5
+
         public ActionResult ExportExcel(int id = 0)
         {
             ApplicationExportViewModel ViewModel = new ApplicationExportViewModel();
@@ -1099,6 +1100,50 @@ namespace SchoolOfScience.Controllers
             //Response.End();
 
             //return View("MyView");
+        }
+
+        //
+        // GET: /Application/MakeNotification/5
+
+        public ActionResult MakeNotification(int id = 0)
+        {
+            var program = db.Programs.Find(id);
+            if (program == null)
+            {
+                Session["FlashMessage"] = "Program not found.";
+                return RedirectToAction("Index");
+            }
+            var notification = CreateNotification("ProgramPublished", program);
+            if (notification != null)
+            {
+                return RedirectToAction("Index", "Notification", new { notification_id = notification.id });
+            }
+            else
+            {
+                return RedirectToAction("Index");
+            }
+        }
+
+        //
+        // GET: /Application/MakeReminder/5
+
+        public ActionResult MakeReminder(int id = 0)
+        {
+            var program = db.Programs.Find(id);
+            if (program == null)
+            {
+                Session["FlashMessage"] = "Program not found.";
+                return RedirectToAction("Index");
+            }
+            var notification = CreateNotification("ProgramDeadlindReminder", program);
+            if (notification != null)
+            {
+                return RedirectToAction("Index", "Notification", new { notification_id = notification.id });
+            }
+            else
+            {
+                return RedirectToAction("Index");
+            }
         }
 
         protected override void Dispose(bool disposing)

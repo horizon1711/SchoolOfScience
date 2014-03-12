@@ -27,7 +27,7 @@ namespace SchoolOfScience.Models
         [Display(Name = "CC")]
         public string cc { get; set; }
 
-        [Display(Name = "BCC")]
+        [Display(Name = "BCC(TO for MassMail)")]
         public string bcc { get; set; }
 
         [Required(ErrorMessage = "*Required Field.")]

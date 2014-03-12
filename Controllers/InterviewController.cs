@@ -13,7 +13,7 @@ using System.Data.Objects.SqlClient;
 
 namespace SchoolOfScience.Controllers
 {
-    public class InterviewController : Controller
+    public class InterviewController : ControllerBase
     {
         private SchoolOfScienceEntities db = new SchoolOfScienceEntities();
 
@@ -114,7 +114,13 @@ namespace SchoolOfScience.Controllers
         public ActionResult CreateMultiple(InterviewCreateMultipleViewModel ViewModel)
         {
             Interview interview = ViewModel.interview;
-            int openedStatusId = db.InterviewStatus.Where(x => x.name == "Opened").FirstOrDefault().id;
+            var openStatus = db.InterviewStatus.FirstOrDefault(s => s.default_status);
+            if (openStatus == null)
+            {
+                Session["FlashMessage"] = "Default Status not found.";
+                return RedirectToAction("CreateMultiple");
+            }
+            int openedStatusId = openStatus.id;
             List<bool> availableDaysOfWeek = PrepareAvailableDaysOfWeek(ViewModel.config);
             List<Timeslot> timeslots = new List<Timeslot>();
             DateTime datecursor = ViewModel.config.start_date.Date;
@@ -361,15 +367,13 @@ namespace SchoolOfScience.Controllers
         [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
         public ActionResult Create()
         {
-            int openedStatusId = 0;
-            try
+            var openStatus = db.InterviewStatus.FirstOrDefault(s => s.default_status);
+            if (openStatus == null)
             {
-                openedStatusId = db.InterviewStatus.FirstOrDefault(i => i.name == "Opened").id;
+                Session["FlashMessage"] = "Default Status not found.";
+                return RedirectToAction("Index");
             }
-            catch (Exception e)
-            {
-                Session["FlashMessage"] = "Opened Status not found." + e.Message;
-            }
+            int openedStatusId = openStatus.id;
             ViewBag.statusList = new SelectList(db.InterviewStatus, "id", "name", openedStatusId);
             ViewBag.programList = new SelectList(db.Programs.Where(p => p.require_interview), "id", "name");
             ViewBag.venueList = new SelectList(db.InterviewVenues.Where(v => v.status), "id", "name");
@@ -586,6 +590,22 @@ namespace SchoolOfScience.Controllers
                 Session["FlashMessage"] = "Failed to delete interviews. <br/><br/>" + e.Message;
             }
             return RedirectToAction("Index");
+        }
+
+        //
+        // GET: /Interview/CommentTemplate/
+
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
+        public ActionResult CommentTemplate(string items)
+        {
+            var i = items.Split('_');
+            var interviews = db.Interviews.Where(p => i.Contains(SqlFunctions.StringConvert((double)p.id).Trim()));
+
+            string strHtml = RenderRazorViewToString("CommentTemplate", interviews.ToList());
+            strHtml = HttpUtility.HtmlDecode(strHtml);//Html解碼
+            byte[] b = System.Text.Encoding.UTF8.GetBytes(strHtml);//字串轉byte陣列
+            Response.Write("<meta http-equiv=Content-Type content=text/html;charset=utf-8>");
+            return File(b, "application/vnd.ms-excel", "Comment Template " + String.Format("{0:yyyyMMddHHmm}", DateTime.Now) + ".xls");//輸出檔案給Client端
         }
 
         public List<bool> PrepareAvailableDaysOfWeek(TimeslotConfig config)

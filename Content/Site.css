@@ -740,7 +740,7 @@ div.remove-btn  {
     display: inline-block;
 }
 
-img.delete-btn, img.upload-btn, img.edit-btn {
+img.delete-btn, img.upload-btn, img.edit-btn, img.comment-btn {
     height: 22px;
     cursor: pointer;
     border: none;
@@ -793,6 +793,10 @@ div#remarks-label {
 
 .program-details-description {
     font-size: 1.2em;
+}
+
+tr.highlight {
+    background-color: yellow !important;
 }
 
 

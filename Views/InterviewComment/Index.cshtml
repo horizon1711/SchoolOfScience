@@ -1,0 +1,100 @@
+﻿@model IEnumerable<SchoolOfScience.Models.InterviewComment>
+
+@{
+    Layout = null;
+}
+
+<h2>Interview Comments</h2>
+
+<table class="comment-table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.id)
+            </th>
+            <th>
+                Applicant
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.comment)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.modified)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.id)
+            </td>
+            <td>
+                @(item.Application.StudentProfile.name + " " + item.Application.StudentProfile.id + "[" + item.Application.StudentProfile.academic_organization + "]")
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.comment)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.modified) <br />
+                [@Html.DisplayFor(modelItem => item.modified_by)]
+            </td>
+            <td>
+                <a href="@Url.Action("Edit", "InterviewComment", new { id = item.id })" class="edit-comment-btn"><img src="@Url.Content("~/Images/Action/edit.gif")" class="edit-btn" title="Edit this comment"/></a>
+                <a href="@Url.Action("Delete", "InterviewComment", new { id = item.id })" class="delete-comment-btn"><img src="@Url.Content("~/Images/Action/delete.gif")" class="delete-btn" title="Remove this comment"/></a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+
+<div class="clear-fix"></div>
+
+<script>
+    $(function () {
+        $(".comment-table").dataTable({
+            "bPaginate": false
+        });
+
+        $(".edit-comment-btn").click(function (e) {
+            e.preventDefault();
+            showDialog($(this).prop("href"), "#error-dialog", "#dialog3");
+        });
+
+        $(".delete-comment-btn").click(function (e) {
+            e.preventDefault();
+            $.ajax({
+                cache: false,
+                url: $(this).prop("href"),
+                error: function (jqXHR, status, error) {
+                    $("#error-dialog").html(error).dialog({
+                        width: 350,
+                        height: 100,
+                        overflow: "auto",
+                        modal: true,
+                        resizable: false,
+                        draggable: false,
+                        open: function () {
+                            $(this).scrollTop(0);
+                            $('.ui-widget-overlay').hide().fadeIn();
+                        },
+                        show: {
+                            effect: 'fade',
+                            duration: 200
+                        },
+                        hide: {
+                            effect: 'fade',
+                            duration: 100
+                        }
+                    });
+                },
+                success: function (result) {
+                    $("#dialog3").html(result);
+                }
+            });
+            return false;
+        });
+    });
+</script>

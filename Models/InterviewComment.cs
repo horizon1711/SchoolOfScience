@@ -12,19 +12,18 @@ namespace SchoolOfScience.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class InterviewStatus
+    public partial class InterviewComment
     {
-        public InterviewStatus()
-        {
-            this.Interviews = new HashSet<Interview>();
-        }
-    
         public int id { get; set; }
-        public string name { get; set; }
-        public bool locked { get; set; }
-        public bool display_to_student { get; set; }
-        public bool default_status { get; set; }
+        public int interview_id { get; set; }
+        public int application_id { get; set; }
+        public string comment { get; set; }
+        public System.DateTime created { get; set; }
+        public string created_by { get; set; }
+        public System.DateTime modified { get; set; }
+        public string modified_by { get; set; }
     
-        public virtual ICollection<Interview> Interviews { get; set; }
+        public virtual Application Application { get; set; }
+        public virtual Interview Interview { get; set; }
     }
 }

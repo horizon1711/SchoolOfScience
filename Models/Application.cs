@@ -20,6 +20,7 @@ namespace SchoolOfScience.Models
             this.ApplicationExchangeOptions = new HashSet<ApplicationExchangeOption>();
             this.ApplicationOptionValues = new HashSet<ApplicationOptionValue>();
             this.Interviews = new HashSet<Interview>();
+            this.InterviewComments = new HashSet<InterviewComment>();
         }
     
         public int id { get; set; }
@@ -42,5 +43,6 @@ namespace SchoolOfScience.Models
         public virtual ICollection<ApplicationExchangeOption> ApplicationExchangeOptions { get; set; }
         public virtual ICollection<ApplicationOptionValue> ApplicationOptionValues { get; set; }
         public virtual ICollection<Interview> Interviews { get; set; }
+        public virtual ICollection<InterviewComment> InterviewComments { get; set; }
     }
 }

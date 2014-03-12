@@ -234,6 +234,7 @@
     <Compile Include="Controllers\AppointmentStatusController.cs" />
     <Compile Include="Controllers\AppointmentVenueController.cs" />
     <Compile Include="Controllers\ControllerBase.cs" />
+    <Compile Include="Controllers\InterviewCommentController.cs" />
     <Compile Include="Controllers\StudentActivityController.cs" />
     <Compile Include="Controllers\StudentAdvisingRemarkController.cs" />
     <Compile Include="Controllers\StudentExperienceController.cs" />
@@ -309,6 +310,7 @@
     <Compile Include="Models\Helper\AppointmentConcernHelper.cs" />
     <Compile Include="Models\Helper\AppointmentVenueHelper.cs" />
     <Compile Include="Models\Helper\ApplicationOptionValueHelper.cs" />
+    <Compile Include="Models\Helper\InterviewCommentHelper.cs" />
     <Compile Include="Models\Helper\StudentActivityHelper.cs" />
     <Compile Include="Models\Helper\StudentMajorChoiceHelper.cs" />
     <Compile Include="Models\Helper\StudentAdvisingRemarkHelper.cs" />
@@ -339,6 +341,9 @@
     <Compile Include="Models\Helper\ProgramTypeHelper.cs" />
     <Compile Include="Models\Helper\ProgramHelper.cs" />
     <Compile Include="Models\Interview.cs">
+      <DependentUpon>SchoolOfScienceModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\InterviewComment.cs">
       <DependentUpon>SchoolOfScienceModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\InterviewStatus.cs">
@@ -1350,6 +1355,14 @@
     <Content Include="Views\StudentActivity\Delete.cshtml" />
     <Content Include="Views\StudentProfile\ActivityRecord.cshtml" />
     <Content Include="Views\StudentActivity\Import.cshtml" />
+    <Content Include="Views\InterviewComment\Index.cshtml" />
+    <Content Include="Views\InterviewComment\Details.cshtml" />
+    <Content Include="Views\InterviewComment\Create.cshtml" />
+    <Content Include="Views\InterviewComment\Edit.cshtml" />
+    <Content Include="Views\InterviewComment\Delete.cshtml" />
+    <Content Include="Views\InterviewComment\Import.cshtml" />
+    <Content Include="Views\Interview\CommentTemplate.cshtml" />
+    <Content Include="Views\Notification\Send.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -166,6 +166,10 @@
                     @Html.ActionLink("Applications", "Index", "Application", new { programId = item.id }, null);
                     <text>|</text>
                     @Html.ActionLink("Export", "ExportExcel", "Program", new { id = item.id }, null);
+                    <text>|</text>
+                    @Html.ActionLink("Notification", "MakeNotification", "Program", new { id = item.id }, null);
+                    <text>|</text>
+                    @Html.ActionLink("Reminder", "MakeReminder", "Program", new { id = item.id }, null);
                 }
                     
             </td>

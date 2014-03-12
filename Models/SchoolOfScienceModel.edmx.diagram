@@ -109,6 +109,9 @@
         <AssociationConnector Association="SchoolOfScienceModel.FK_StudentMajorChoice_StudentProfile" />
         <EntityTypeShape EntityType="SchoolOfScienceModel.StudentActivity" Width="1.5" PointX="8.625" PointY="24.25" />
         <AssociationConnector Association="SchoolOfScienceModel.FK_StudentActivity_StudentProfile" />
+        <EntityTypeShape EntityType="SchoolOfScienceModel.InterviewComment" Width="1.5" PointX="11.608418147828624" PointY="27.432450903315306" />
+        <AssociationConnector Association="SchoolOfScienceModel.FK_InterviewComment_Application" />
+        <AssociationConnector Association="SchoolOfScienceModel.FK_InterviewComment_Interview" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

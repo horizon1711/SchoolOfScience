@@ -18,15 +18,51 @@ namespace SchoolOfScience.Controllers
         //
         // GET: /Notification/
 
-        public ActionResult Index()
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
+        public ActionResult Index(int notification_type = 0, int notification_status = 0, int notification_id = 0)
         {
+            ViewBag.NotificationTypeList = new SelectList(db.NotificationTypes, "id", "name", notification_type);
+            ViewBag.NotificationStatusList = new SelectList(db.NotificationStatus, "id", "name", notification_status);
             var notifications = db.Notifications;
-            return View(notifications.ToList());
+            if ((notification_type != 0 && notification_status != 0) || notification_id != 0)
+            {
+                if (notification_id != 0)
+                {
+                    ViewBag.highlight_id = notification_id;
+                    return View(notifications.ToList().Where(n => n.status_id == 1 || n.id == notification_id));
+                }
+
+                return View(notifications.ToList().Where(n => true
+                    && (n.type_id == notification_type)
+                    && (n.status_id == notification_status)
+                    ));
+            }
+            else
+            {
+                return View(notifications.ToList().Where(n => n.status_id == 1));
+            }
+        }
+
+        //
+        // POST: /Notification/
+
+        [HttpPost]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
+        public ActionResult Index(FormCollection Form)
+        {
+            ViewBag.NotificationTypeList = new SelectList(db.NotificationTypes, "id", "name", Form["notification_type"]);
+            ViewBag.NotificationStatusList = new SelectList(db.NotificationStatus, "id", "name", Form["notification_status"]);
+            var notifications = db.Notifications;
+            return View(notifications.ToList().Where(n => true
+                && (String.IsNullOrEmpty(Form["notification_type"]) || n.type_id.ToString() == Form["notification_type"])
+                && (String.IsNullOrEmpty(Form["notification_status"]) || n.status_id.ToString() == Form["notification_status"])
+                ));
         }
 
         //
         // GET: /Notification/Details/5
 
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
         public ActionResult Details(int id = 0)
         {
             Notification notification = db.Notifications.Find(id);
@@ -37,16 +73,19 @@ namespace SchoolOfScience.Controllers
             return View(notification);
         }
 
-        public ActionResult Send(int id = 0, string returnUrl = null)
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
+        public ActionResult Send(int id = 0)
         {
             Notification notification = db.Notifications.Find(id);
-            SendNotification(notification);
-            return RedirectToAction("Index");
+            db.Entry(notification).CurrentValues.SetValues(SendNotification(notification));
+            db.SaveChanges();
+            return RedirectToAction("Index", new { notification_id = id });
         }
 
         //
         // GET: /Notification/Create
 
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
         public ActionResult Create()
         {
             ViewBag.status_id = new SelectList(db.NotificationStatus, "id", "name");
@@ -59,6 +98,7 @@ namespace SchoolOfScience.Controllers
         // POST: /Notification/Create
 
         [HttpPost]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
         [ValidateAntiForgeryToken]
         [ValidateInput(false)]
         public ActionResult Create(Notification notification)
@@ -79,6 +119,7 @@ namespace SchoolOfScience.Controllers
         //
         // GET: /Notification/Edit/5
 
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
         public ActionResult Edit(int id = 0)
         {
             Notification notification = db.Notifications.Find(id);
@@ -96,6 +137,7 @@ namespace SchoolOfScience.Controllers
         // POST: /Notification/Edit/5
 
         [HttpPost]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
         [ValidateAntiForgeryToken]
         [ValidateInput(false)]
         public ActionResult Edit(Notification notification)
@@ -115,6 +157,7 @@ namespace SchoolOfScience.Controllers
         //
         // GET: /Notification/Delete/5
 
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
         public ActionResult Delete(int id = 0)
         {
             Notification notification = db.Notifications.Find(id);
@@ -129,10 +172,13 @@ namespace SchoolOfScience.Controllers
         // POST: /Notification/Delete/5
 
         [HttpPost, ActionName("Delete")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
             Notification notification = db.Notifications.Find(id);
+            var recipients = db.NotificationRecipients.Where(r => r.notification_id == id);
+            recipients.ToList().ForEach(r => db.NotificationRecipients.Remove(r));
             db.Notifications.Remove(notification);
             db.SaveChanges();
             return RedirectToAction("Index");

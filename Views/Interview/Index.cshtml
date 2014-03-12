@@ -76,7 +76,10 @@
                 @Html.DisplayNameFor(model => model.venue_id)
             </th>
             <th>
-                Applications
+                #
+            </th>
+            <th>
+                Applicant
             </th>
             <th></th>
         </tr>
@@ -108,12 +111,25 @@
             <td>
                 @foreach (var application in item.Applications)
                 {
-                    <div><strong>@Html.DisplayFor(modelItem => application.StudentProfile.name) @Html.ActionLink(application.StudentProfile.id.ToString(), "Details", "StudentProfile", new { id = application.StudentProfile.id }, new { @class = "student-link" })</strong>[@Html.DisplayFor(modelItem => application.StudentProfile.academic_organization)]</div>
+                    <div>
+                        @Html.ActionLink(application.id.ToString(), "Details", "Application", new { id = application.id }, new { @class = "view-link" })
+                    </div>
+                }
+            </td>
+            <td>
+                @foreach (var application in item.Applications)
+                {
+                    <div>
+                        <strong>@Html.DisplayFor(modelItem => application.StudentProfile.name) @Html.ActionLink(application.StudentProfile.id.ToString(), "Details", "StudentProfile", new { id = application.StudentProfile.id }, new { @class = "student-link" })</strong>[@Html.DisplayFor(modelItem => application.StudentProfile.academic_organization)]
+                        <a href="@Url.Action("Create", "InterviewComment", new { interview_id = item.id, application_id = application.id })" class="comment-link"><img src="@Url.Content("~/Images/Action/apply.gif")" class="comment-btn"/></a>
+                        @*@Html.ActionLink("Add Comment", "Create", "InterviewComment", new { interview_id = item.id, application_id = application.id }, new { @class = "comment-link" })*@
+                    </div>
                 }
             </td>
             <td>
                 @Html.ActionLink("Manage", "Edit", new { id=item.id }) |
-                @Html.ActionLink("Delete", "Delete", new { id=item.id })
+                @Html.ActionLink("Delete", "Delete", new { id=item.id }) |
+                @Html.ActionLink("Comments", "Index", "InterviewComment", new { interview_id = item.id }, new { @class = "comments-link" })
             </td>
         </tr>
     }
@@ -129,6 +145,9 @@
 <p>
     <button type="button" id="batchupdate-btn">Batch Update</button>
 </p>
+<p>
+    <button type="button" id="commenttemplate-btn">Download Comment Template</button>
+</p>
 
 @section Scripts {
     <script>
@@ -141,7 +160,17 @@
             });
 
 
-            $(".review-link").click( function (e) {
+            $(".comment-link").click(function (e) {
+                e.preventDefault();
+                showDialog($(this).prop("href"), "#error-dialog", "#dialog3");
+            });
+
+            $(".comments-link").click(function (e) {
+                e.preventDefault();
+                showDialog($(this).prop("href"), "#error-dialog", "#dialog3");
+            });
+
+            $(".view-link").click(function (e) {
                 e.preventDefault();
                 showDialog($(this).prop("href"), "#error-dialog", "#dialog1");
             });
@@ -175,6 +204,14 @@
                 var url = "@Html.Raw(Url.Action("BatchUpdate", "Interview", new { items = "replaceItems" }))";
                 url = url.replace("replaceItems", items.join('_'));
                 showDialog(url, "#error-dialog", "#dialog3");
+            });
+
+            $("#commenttemplate-btn").click(function (e) {
+                e.preventDefault();
+                var items = $(".checkItem:checked").map(function () { return $(this).val() }).get();
+                var url = "@Html.Raw(Url.Action("CommentTemplate", "Interview", new { items = "replaceItems" }))";
+                url = url.replace("replaceItems", items.join('_'));
+                window.open(url, "Download Comment Template");
             });
 
             $("input[type=reset]").click(function (e) {

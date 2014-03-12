@@ -75,5 +75,6 @@ namespace SchoolOfScience.Models
         public DbSet<StudentAdmission> StudentAdmissions { get; set; }
         public DbSet<StudentMajorChoice> StudentMajorChoices { get; set; }
         public DbSet<StudentActivity> StudentActivities { get; set; }
+        public DbSet<InterviewComment> InterviewComments { get; set; }
     }
 }

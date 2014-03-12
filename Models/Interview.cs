@@ -17,6 +17,7 @@ namespace SchoolOfScience.Models
         public Interview()
         {
             this.Applications = new HashSet<Application>();
+            this.InterviewComments = new HashSet<InterviewComment>();
         }
     
         public int id { get; set; }
@@ -34,5 +35,6 @@ namespace SchoolOfScience.Models
         public virtual Program Program { get; set; }
         public virtual ICollection<Application> Applications { get; set; }
         public virtual InterviewStatus InterviewStatus { get; set; }
+        public virtual ICollection<InterviewComment> InterviewComments { get; set; }
     }
 }

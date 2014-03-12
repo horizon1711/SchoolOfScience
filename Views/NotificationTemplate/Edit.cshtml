@@ -6,7 +6,8 @@
 
 <h2>Edit</h2>
 
-@using (Html.BeginForm()) {
+@using (Html.BeginForm())
+{
     @Html.AntiForgeryToken()
     @Html.ValidationSummary(true)
 
@@ -79,37 +80,59 @@
 
 <fieldset>
     <legend>Variables List</legend>
-    <table class="data-table" style="width:30%; float:left;">
+    <table class="data-table" style="width:50%; float:left;">
         <thead>
             <tr>
                 <th>Code</th>
                 <th>Replaced by</th>
+                <th>Used In Type</th>
             </tr>
         </thead>
         <tbody>
             <tr>
                 <td>[student id]</td>
                 <td>Student ID</td>
+                <td>ApplicationSubmitted</td>
             </tr>
             <tr>
                 <td>[student name]</td>
                 <td>Student Name</td>
+                <td>ApplicationSubmitted</td>
             </tr>
             <tr>
                 <td>[application id]</td>
                 <td>Application ID</td>
+                <td>ApplicationSubmitted</td>
             </tr>
             <tr>
                 <td>[program id]</td>
                 <td>Program ID</td>
+                <td>ProgramPublished, ProgramDeadlindReminder, ApplicationSubmitted</td>
             </tr>
             <tr>
                 <td>[program name]</td>
                 <td>Program Name</td>
+                <td>ProgramPublished, ProgramDeadlindReminder, ApplicationSubmitted</td>
+            </tr>
+            <tr>
+                <td>[program period]</td>
+                <td>Program Period</td>
+                <td>ProgramPublished, ProgramDeadlindReminder, ApplicationSubmitted</td>
+            </tr>
+            <tr>
+                <td>[program deadline]</td>
+                <td>Program Application Deadline</td>
+                <td>ProgramPublished, ProgramDeadlindReminder, ApplicationSubmitted</td>
+            </tr>
+            <tr>
+                <td>[program directlink]</td>
+                <td>Program Direct Link</td>
+                <td>ProgramPublished, ProgramDeadlindReminder, ApplicationSubmitted</td>
             </tr>
             <tr>
                 <td>[submit date]</td>
                 <td>Date of Submission</td>
+                <td>ApplicationSubmitted</td>
             </tr>
         </tbody>
     </table>
@@ -121,4 +144,11 @@
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+<script>
+    $(".data-table").dataTable({
+        "bInfo": false,
+        "bFilter": false,
+        "bPaginate": false
+    });
+</script>
 }

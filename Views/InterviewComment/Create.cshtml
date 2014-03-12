@@ -1,0 +1,105 @@
+﻿@model SchoolOfScience.Models.InterviewComment
+
+@{
+    Layout = null;
+}
+
+<h2>Add Interview Comment</h2>
+
+@using (Html.BeginForm("Create", "InterviewComment", FormMethod.Post, new { id = "form" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(model => model.interview_id)
+    @Html.HiddenFor(model => model.application_id)
+
+    <div class="display-label">
+        Date:
+    </div>
+    <div class="display-field">
+        @String.Format("{0:yyyy-MM-dd}", Model.Interview.start_time)
+    </div>
+
+    <div class="display-label">
+        Time:
+    </div>
+    <div class="display-field">
+        @String.Format("{0:HH:mm}", Model.Interview.start_time) to @String.Format("{0:HH:mm}", Model.Interview.end_time)
+    </div>
+
+    <div class="display-label">
+        Venue:
+    </div>
+    <div class="display-field">
+        @Model.Interview.InterviewVenue.name
+    </div>
+
+    <div class="display-label">
+        @Html.LabelFor(model => model.application_id, "Applicant")
+    </div>
+    <div class="display-field">
+        @(Model.Application.StudentProfile.name + " " + Model.Application.StudentProfile.id + "[" + Model.Application.StudentProfile.academic_organization + "]")
+    </div>
+
+    <div class="display-label">
+        @Html.LabelFor(model => model.comment)
+    </div>
+    <div class="editor-field">
+        @Html.TextAreaFor(model => model.comment)
+        @Html.ValidationMessageFor(model => model.comment)
+    </div>
+
+    <p>
+        <input type="submit" value="Add" class="add-button" />
+    </p>
+}
+
+@Scripts.Render("~/bundles/jqueryval")
+
+<script>
+    $(function () {
+        $(".add-button").button();
+
+        $(".add-button").click(function (e) {
+            e.preventDefault();
+            if ($("#form").valid()) {
+                $.ajax({
+                    cache: false,
+                    url: "@Url.Action("Create", "InterviewComment")",
+                    type: "POST",
+                    data: $("#form").serializeArray(),
+                    error: function (jqXHR, status, error) {
+                        $("#dialog3").dialog("close");
+                        $("#error-dialog").dialog({
+                            width: 350,
+                            height: 100,
+                            overflow: "auto",
+                            modal: true,
+                            resizable: false,
+                            draggable: false,
+                            open: function () {
+                                $(this).scrollTop(0);
+                                $('.ui-widget-overlay').hide().fadeIn();
+                            },
+                            show: {
+                                effect: 'fade',
+                                duration: 200
+                            },
+                            hide: {
+                                effect: 'fade',
+                                duration: 100
+                            }
+                        }).html(error);
+                    },
+                    success: function (result) {
+                        $("#dialog3").html(result);
+                    }
+                });
+            } else {
+                $(".input-validation-error").first().focus();
+            }
+        });
+
+        $("#comment").focus();
+    });
+</script>

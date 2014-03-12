@@ -29,6 +29,14 @@
             @Html.ValidationMessageFor(model => model.display_to_student)
         </div>
 
+        <div class="editor-label">
+            @Html.LabelFor(model => model.default_status)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.default_status)
+            @Html.ValidationMessageFor(model => model.default_status)
+        </div>
+
         <p>
             <input type="submit" value="Create" />
         </p>

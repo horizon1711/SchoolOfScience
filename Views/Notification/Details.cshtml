@@ -34,14 +34,14 @@
          @Html.DisplayNameFor(model => model.body)
     </div>
     <div class="display-field">
-        @Html.DisplayFor(model => model.body)
+         @Html.Raw(Model.body)
     </div>
 
     <div class="display-label">
-         @Html.DisplayNameFor(model => model.NotificationTemplate.body)
+         Template @Html.DisplayNameFor(model => model.NotificationTemplate.body)
     </div>
     <div class="display-field">
-        @Html.DisplayFor(model => model.NotificationTemplate.body)
+         @Html.Raw(Model.NotificationTemplate.body)
     </div>
 
     <div class="display-label">
@@ -156,7 +156,7 @@
 </fieldset>
 <p>
     @Html.ActionLink("Edit", "Edit", new { id=Model.id }) |
-    @Html.ActionLink("Back to List", "Index")
+    @Html.ActionLink("Back", "Index", new { notification_id = Model.id })
 </p>
 
 @section Scripts{

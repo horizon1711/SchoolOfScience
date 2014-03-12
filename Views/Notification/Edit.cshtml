@@ -43,7 +43,7 @@
             @Html.LabelFor(model => model.body)
         </div>
         <div class="editor-field">
-            @Html.EditorFor(model => model.body)
+            @Html.TextAreaFor(model => model.body, new { @class = "ckeditor" })
             @Html.ValidationMessageFor(model => model.body)
         </div>
 
@@ -150,7 +150,7 @@
 }
 
 <div>
-    @Html.ActionLink("Back to List", "Index")
+    @Html.ActionLink("Back", "Index", new { notification_id = Model.id })
 </div>
 
 @section Scripts {

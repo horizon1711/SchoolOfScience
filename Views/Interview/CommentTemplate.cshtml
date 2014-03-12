@@ -1,0 +1,34 @@
+﻿@model IEnumerable<SchoolOfScience.Models.Interview>
+@{
+    Layout = null;
+}
+
+<table>
+    <tr>
+        <th>interview_id</th>
+        <th>application_id</th>
+        <th>Date</th>
+        <th>Time</th>
+        <th>Venue</th>
+        <th>Program</th>
+        <th>Applicant</th>
+        <th>comment</th>
+    </tr>
+    @foreach(var interview in Model)
+    {
+        foreach(var application in interview.Applications)
+        {
+        <tr>
+            <td>@interview.id</td>
+            <td>@application.id</td>
+            <td>@String.Format("{0:yyyy-MM-dd}", interview.start_time)</td>
+            <td>@(String.Format("{0:HH:mm}", interview.start_time) + " - " + String.Format("{0:HH:mm}", interview.end_time))</td>
+            <td>@interview.InterviewVenue.name</td>
+            <td>@interview.Program.name</td>
+            <td>@(application.StudentProfile.name + " " + application.StudentProfile.id + "[" + application.StudentProfile.academic_organization + "]")</td>
+            <td>
+            </td>
+        </tr>
+        }
+    }
+</table>

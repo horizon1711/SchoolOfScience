@@ -6,12 +6,34 @@
 
 <h2>Notification Management</h2>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
+@using (Html.BeginForm())
+{
+    
+    <div class="filter">
+        <div class="filter-field">
+            <label for="notification_type">Notification Type:</label>
+            @Html.DropDownList("notification_type", ViewBag.NotificationTypeList as IEnumerable<SelectListItem>, "All", null)
+        </div>
+        <div class="filter-field">
+            <label for="notification_status">Notification Status:</label>
+            @Html.DropDownList("notification_status", ViewBag.NotificationStatusList as IEnumerable<SelectListItem>, "All", null)
+        </div>
+        <div class="clear-fix"></div>
+        <div class="filter-field">
+            <input type="submit" value="Search" />
+            <input type="reset" value="Reset" />
+        </div>
+    </div>
+}
+
+@if (Model.Count() > 0)
+{
 <table class="data-table">
     <thead>
         <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.id)
+            </th>
             <th>
                 @Html.DisplayNameFor(model => model.send_time)
             </th>
@@ -38,7 +60,10 @@
     </thead>
     <tbody>
     @foreach (var item in Model) {
-        <tr>
+        <tr class="@if (item.id == ViewBag.highlight_id) { <text>highlight</text> }">
+            <td>
+                @Html.DisplayFor(modelItem => item.id)
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.send_time)
             </td>
@@ -67,22 +92,26 @@
                 @Html.ActionLink("Details", "Details", new { id=item.id }) |
                 @Html.ActionLink("Delete", "Delete", new { id=item.id }) |
                 @if (item.NotificationStatus.name == "Pending") {
-                    @Html.ActionLink("Send", "Send", new { id = item.id }, new { @class = "send-link" })
+                    @Html.ActionLink("Send", "Send", new { id = item.id })
                 }
             </td>
         </tr>
     }
     </tbody>
 </table>
-
+}
 @section Scripts {
     <script>
         $(function () {
-            $(".data-table").dataTable();
+            $(".data-table").dataTable({
+                "aaSorting": [[6, "desc"]]
+            });
 
-            $(".send-link").click( function (e) {
+            $("input[type=reset]").click(function (e) {
                 e.preventDefault();
-                showDialog($(this).prop("href"), "#error-dialog", "");
+                $(".filter select").val('');
+                $(".filter input[type=text]").val('');
+                $(".filter input[type=checkbox]").attr("checked", false);
             });
         });
     </script>

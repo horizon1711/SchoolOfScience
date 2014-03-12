@@ -18,6 +18,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.display_to_student)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.default_status)
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -29,6 +32,9 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.display_to_student)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.default_status)
             </td>
             <td>
             @if (!item.locked)

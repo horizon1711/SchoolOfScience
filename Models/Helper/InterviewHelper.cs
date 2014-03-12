@@ -43,6 +43,7 @@ namespace SchoolOfScience.Models
         [Display(Name = "Venue")]
         public int venue_id { get; set; }
 
+        [StringLength(200, ErrorMessage = "*Maximum length exceeded.")]
         [Display(Name = "Remarks")]
         public string remarks { get; set; }
     }

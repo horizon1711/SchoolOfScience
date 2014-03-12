@@ -18,5 +18,9 @@ namespace SchoolOfScience.Models
         [Required(ErrorMessage = "*Required Field.")]
         [Display(Name = "Display to Student")]
         public bool display_to_student { get; set; }
+
+        [Required(ErrorMessage = "*Required Field.")]
+        [Display(Name = "Default Status")]
+        public bool default_status { get; set; }
     }
 }
