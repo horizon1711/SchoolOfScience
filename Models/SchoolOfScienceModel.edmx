@@ -260,7 +260,7 @@
             <End Role="StudentProfile" EntitySet="StudentProfile" />
             <End Role="StudentPublicExam" EntitySet="StudentPublicExam" />
           </AssociationSet>
-          <AssociationSet Name="FK_StudentQualification_StudentProfile1" Association="SchoolOfScienceModel.Store.FK_StudentQualification_StudentProfile1">
+          <AssociationSet Name="FK_StudentQualification_StudentProfile" Association="SchoolOfScienceModel.Store.FK_StudentQualification_StudentProfile">
             <End Role="StudentProfile" EntitySet="StudentProfile" />
             <End Role="StudentQualification" EntitySet="StudentQualification" />
           </AssociationSet>
@@ -378,6 +378,7 @@
           <Property Name="id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
           <Property Name="name" Type="nvarchar" Nullable="false" MaxLength="100" />
           <Property Name="program_id" Type="int" />
+          <Property Name="custom" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="AppointmentHost">
           <Key>
@@ -385,6 +386,7 @@
           </Key>
           <Property Name="id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
           <Property Name="name" Type="nvarchar" Nullable="false" MaxLength="100" />
+          <Property Name="booking" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="AppointmentStatus">
           <Key>
@@ -561,7 +563,6 @@
           <Property Name="host_name" Type="nvarchar" MaxLength="100" />
           <Property Name="website" Type="nvarchar" MaxLength="200" />
           <Property Name="job_position" Type="nvarchar" MaxLength="100" />
-          <Property Name="enquiry" Type="nvarchar" MaxLength="200" />
           <Property Name="eligible_academic_career" Type="nvarchar" Nullable="false" MaxLength="100" />
           <Property Name="eligible_academic_organization" Type="nvarchar" Nullable="false" MaxLength="100" />
           <Property Name="eligible_academic_plan" Type="nvarchar" Nullable="false" MaxLength="100" />
@@ -586,6 +587,7 @@
           <Property Name="created" Type="datetime" Nullable="false" />
           <Property Name="modified" Type="datetime" Nullable="false" />
           <Property Name="published" Type="datetime" />
+          <Property Name="enquiry" Type="nvarchar" MaxLength="200" />
         </EntityType>
         <EntityType Name="ProgramApplicationAttachment">
           <Key>
@@ -664,81 +666,81 @@
           <Property Name="end_date" Type="datetime" />
           <Property Name="name" Type="nvarchar" MaxLength="200" />
           <Property Name="data_source" Type="nvarchar" MaxLength="100" />
-          <Property Name="remarks" Type="nvarchar" MaxLength="200" />
+          <Property Name="remarks" Type="nvarchar" MaxLength="100" />
         </EntityType>
         <EntityType Name="StudentAdmission">
           <Key>
             <PropertyRef Name="student_id" />
           </Key>
           <Property Name="student_id" Type="nvarchar" Nullable="false" MaxLength="10" />
-          <Property Name="Student Name" Type="nvarchar" MaxLength="50" />
-          <Property Name="Admit Type" Type="nvarchar" MaxLength="50" />
-          <Property Name="Admit Type Description" Type="nvarchar" MaxLength="50" />
-          <Property Name="Basis of Admission" Type="nvarchar" MaxLength="50" />
-          <Property Name="Basis of Admission description" Type="nvarchar" MaxLength="50" />
-          <Property Name="Cohort Term" Type="nvarchar" MaxLength="50" />
-          <Property Name="Cohort Term Description" Type="nvarchar" MaxLength="50" />
-          <Property Name="Admit Term" Type="nvarchar" MaxLength="50" />
-          <Property Name="Admit Term Description" Type="nvarchar" MaxLength="50" />
-          <Property Name="Admitted Primary Plan" Type="nvarchar" MaxLength="50" />
-          <Property Name="Admitted Primary Plan Description" Type="nvarchar" MaxLength="50" />
-          <Property Name="Admitted Academic Load" Type="nvarchar" MaxLength="50" />
-          <Property Name="Admitted Academic Level" Type="nvarchar" MaxLength="50" />
-          <Property Name="Last Attended Secondary School Code" Type="nvarchar" MaxLength="50" />
-          <Property Name="Last Attended Secondary School Name" Type="nvarchar" MaxLength="200" />
-          <Property Name="Last Attended Institution Code" Type="nvarchar" MaxLength="50" />
-          <Property Name="Last Attended Institution Name" Type="nvarchar" MaxLength="200" />
-          <Property Name="Current Academic Group" Type="nvarchar" MaxLength="50" />
-          <Property Name="Current Academic Organization Description" Type="nvarchar" MaxLength="50" />
-          <Property Name="Current Academic Career" Type="nvarchar" MaxLength="50" />
-          <Property Name="Current Student Career Number" Type="nvarchar" MaxLength="50" />
-          <Property Name="Current Academic Program" Type="nvarchar" MaxLength="50" />
-          <Property Name="Current Academic Plan (Primary)" Type="nvarchar" MaxLength="50" />
-          <Property Name="Current Academic Plan Description" Type="nvarchar" MaxLength="50" />
-          <Property Name="Current Major Plan 2" Type="nvarchar" MaxLength="50" />
-          <Property Name="Current Major Plan 3" Type="nvarchar" MaxLength="50" />
-          <Property Name="Current Major Plan 4" Type="nvarchar" MaxLength="50" />
-          <Property Name="Current Minor Plan 1" Type="nvarchar" MaxLength="50" />
-          <Property Name="Current Minor Plan 2" Type="nvarchar" MaxLength="50" />
-          <Property Name="Current Minor Plan 3" Type="nvarchar" MaxLength="50" />
-          <Property Name="Current Minor Plan 4" Type="nvarchar" MaxLength="50" />
-          <Property Name="Current Prep EAS Plan" Type="nvarchar" MaxLength="50" />
-          <Property Name="Current Academic Load" Type="nvarchar" MaxLength="50" />
-          <Property Name="Current Academic Level" Type="nvarchar" MaxLength="50" />
-          <Property Name="Current Form of Study" Type="nvarchar" MaxLength="50" />
-          <Property Name="Current Form of Study Descritpion" Type="nvarchar" MaxLength="50" />
-          <Property Name="Current Program Status" Type="nvarchar" MaxLength="50" />
-          <Property Name="Current Program Status Description" Type="nvarchar" MaxLength="50" />
-          <Property Name="Current Study Agreement" Type="nvarchar" MaxLength="50" />
-          <Property Name="As of Term" Type="nvarchar" MaxLength="50" />
-          <Property Name="As of Term Description" Type="nvarchar" MaxLength="50" />
-          <Property Name="Term GPA" Type="nvarchar" MaxLength="50" />
-          <Property Name="Cumulative GPA" Type="nvarchar" MaxLength="50" />
-          <Property Name="Cumulative Credits Earned in UST" Type="nvarchar" MaxLength="50" />
-          <Property Name="Credits Earned Elsewhere" Type="nvarchar" MaxLength="50" />
-          <Property Name="Potential Graduate Indicator" Type="nvarchar" MaxLength="50" />
-          <Property Name="Degree Check out status" Type="nvarchar" MaxLength="50" />
-          <Property Name="Degree Check out status Description" Type="nvarchar" MaxLength="50" />
-          <Property Name="Expected Graduation Term" Type="nvarchar" MaxLength="50" />
-          <Property Name="Expected Graduation Term Description" Type="nvarchar" MaxLength="50" />
-          <Property Name="Completion Term" Type="nvarchar" MaxLength="50" />
-          <Property Name="Completion Term Description" Type="nvarchar" MaxLength="50" />
-          <Property Name="Confer Date - 01" Type="nvarchar" MaxLength="50" />
-          <Property Name="Degree Code - 01" Type="nvarchar" MaxLength="50" />
-          <Property Name="Degree Title - 01" Type="nvarchar" MaxLength="50" />
-          <Property Name="Degree Honor Code - 01" Type="nvarchar" MaxLength="50" />
-          <Property Name="Degree Honor Description - 01" Type="nvarchar" MaxLength="50" />
-          <Property Name="Confer Date - 02" Type="nvarchar" MaxLength="50" />
-          <Property Name="Degree Code - 02" Type="nvarchar" MaxLength="50" />
-          <Property Name="Degree Title - 02" Type="nvarchar" MaxLength="50" />
-          <Property Name="Degree Honor Code - 02" Type="nvarchar" MaxLength="50" />
-          <Property Name="Degree Honor Description - 02" Type="nvarchar" MaxLength="50" />
-          <Property Name="GGA Grade Points (Primary Degree Plan)" Type="nvarchar" MaxLength="50" />
-          <Property Name="GGA Grade Points (2nd Degree Plan)" Type="nvarchar" MaxLength="50" />
-          <Property Name="SGA (12pts)" Type="nvarchar" MaxLength="50" />
-          <Property Name="CGA (12pts)" Type="nvarchar" MaxLength="50" />
-          <Property Name="Overall GGA (12pts)" Type="nvarchar" MaxLength="50" />
-          <Property Name="12 points scale" Type="nvarchar" MaxLength="50" />
+          <Property Name="Student Name" Type="varchar" MaxLength="50" />
+          <Property Name="Admit Type" Type="varchar" MaxLength="50" />
+          <Property Name="Admit Type Description" Type="varchar" MaxLength="50" />
+          <Property Name="Basis of Admission" Type="varchar" MaxLength="50" />
+          <Property Name="Basis of Admission description" Type="varchar" MaxLength="50" />
+          <Property Name="Cohort Term" Type="varchar" MaxLength="50" />
+          <Property Name="Cohort Term Description" Type="varchar" MaxLength="50" />
+          <Property Name="Admit Term" Type="varchar" MaxLength="50" />
+          <Property Name="Admit Term Description" Type="varchar" MaxLength="50" />
+          <Property Name="Admitted Primary Plan" Type="varchar" MaxLength="50" />
+          <Property Name="Admitted Primary Plan Description" Type="varchar" MaxLength="50" />
+          <Property Name="Admitted Academic Load" Type="varchar" MaxLength="50" />
+          <Property Name="Admitted Academic Level" Type="varchar" MaxLength="50" />
+          <Property Name="Last Attended Secondary School Code" Type="varchar" MaxLength="50" />
+          <Property Name="Last Attended Secondary School Name" Type="varchar" MaxLength="200" />
+          <Property Name="Last Attended Institution Code" Type="varchar" MaxLength="50" />
+          <Property Name="Last Attended Institution Name" Type="varchar" MaxLength="200" />
+          <Property Name="Current Academic Group" Type="varchar" MaxLength="50" />
+          <Property Name="Current Academic Organization Description" Type="varchar" MaxLength="50" />
+          <Property Name="Current Academic Career" Type="varchar" MaxLength="50" />
+          <Property Name="Current Student Career Number" Type="varchar" MaxLength="50" />
+          <Property Name="Current Academic Program" Type="varchar" MaxLength="50" />
+          <Property Name="Current Academic Plan (Primary)" Type="varchar" MaxLength="50" />
+          <Property Name="Current Academic Plan Description" Type="varchar" MaxLength="50" />
+          <Property Name="Current Major Plan 2" Type="varchar" MaxLength="50" />
+          <Property Name="Current Major Plan 3" Type="varchar" MaxLength="50" />
+          <Property Name="Current Major Plan 4" Type="varchar" MaxLength="50" />
+          <Property Name="Current Minor Plan 1" Type="varchar" MaxLength="50" />
+          <Property Name="Current Minor Plan 2" Type="varchar" MaxLength="50" />
+          <Property Name="Current Minor Plan 3" Type="varchar" MaxLength="50" />
+          <Property Name="Current Minor Plan 4" Type="varchar" MaxLength="50" />
+          <Property Name="Current Prep EAS Plan" Type="varchar" MaxLength="50" />
+          <Property Name="Current Academic Load" Type="varchar" MaxLength="50" />
+          <Property Name="Current Academic Level" Type="varchar" MaxLength="50" />
+          <Property Name="Current Form of Study" Type="varchar" MaxLength="50" />
+          <Property Name="Current Form of Study Descritpion" Type="varchar" MaxLength="50" />
+          <Property Name="Current Program Status" Type="varchar" MaxLength="50" />
+          <Property Name="Current Program Status Description" Type="varchar" MaxLength="50" />
+          <Property Name="Current Study Agreement" Type="varchar" MaxLength="50" />
+          <Property Name="As of Term" Type="varchar" MaxLength="50" />
+          <Property Name="As of Term Description" Type="varchar" MaxLength="50" />
+          <Property Name="Term GPA" Type="varchar" MaxLength="50" />
+          <Property Name="Cumulative GPA" Type="varchar" MaxLength="50" />
+          <Property Name="Cumulative Credits Earned in UST" Type="varchar" MaxLength="50" />
+          <Property Name="Credits Earned Elsewhere" Type="varchar" MaxLength="50" />
+          <Property Name="Potential Graduate Indicator" Type="varchar" MaxLength="50" />
+          <Property Name="Degree Check out status" Type="varchar" MaxLength="50" />
+          <Property Name="Degree Check out status Description" Type="varchar" MaxLength="50" />
+          <Property Name="Expected Graduation Term" Type="varchar" MaxLength="50" />
+          <Property Name="Expected Graduation Term Description" Type="varchar" MaxLength="50" />
+          <Property Name="Completion Term" Type="varchar" MaxLength="50" />
+          <Property Name="Completion Term Description" Type="varchar" MaxLength="50" />
+          <Property Name="Confer Date - 01" Type="varchar" MaxLength="50" />
+          <Property Name="Degree Code - 01" Type="varchar" MaxLength="50" />
+          <Property Name="Degree Title - 01" Type="varchar" MaxLength="50" />
+          <Property Name="Degree Honor Code - 01" Type="varchar" MaxLength="50" />
+          <Property Name="Degree Honor Description - 01" Type="varchar" MaxLength="50" />
+          <Property Name="Confer Date - 02" Type="varchar" MaxLength="50" />
+          <Property Name="Degree Code - 02" Type="varchar" MaxLength="50" />
+          <Property Name="Degree Title - 02" Type="varchar" MaxLength="50" />
+          <Property Name="Degree Honor Code - 02" Type="varchar" MaxLength="50" />
+          <Property Name="Degree Honor Description - 02" Type="varchar" MaxLength="50" />
+          <Property Name="GGA Grade Points (Primary Degree Plan)" Type="varchar" MaxLength="50" />
+          <Property Name="GGA Grade Points (2nd Degree Plan)" Type="varchar" MaxLength="50" />
+          <Property Name="SGA (12pts)" Type="varchar" MaxLength="50" />
+          <Property Name="CGA (12pts)" Type="varchar" MaxLength="50" />
+          <Property Name="Overall GGA (12pts)" Type="varchar" MaxLength="50" />
+          <Property Name="12 points scale" Type="varchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="StudentAdvisingRemark">
           <Key>
@@ -820,8 +822,8 @@
           <Property Name="student_id" Type="nvarchar" Nullable="false" MaxLength="10" />
           <Property Name="period" Type="nvarchar" MaxLength="50" />
           <Property Name="choice1" Type="nvarchar" MaxLength="50" />
-          <Property Name="choice2" Type="nvarchar" MaxLength="50" />
-          <Property Name="choice3" Type="nvarchar" MaxLength="50" />
+          <Property Name="choice2" Type="nchar" MaxLength="10" />
+          <Property Name="choice3" Type="nchar" MaxLength="10" />
         </EntityType>
         <EntityType Name="StudentParticular">
           <Key>
@@ -925,7 +927,7 @@
           <Property Name="student_id" Type="nvarchar" Nullable="false" MaxLength="10" />
           <Property Name="organization" Type="nvarchar" Nullable="false" MaxLength="100" />
           <Property Name="name" Type="nvarchar" Nullable="false" MaxLength="200" />
-          <Property Name="award_date" Type="datetime" Nullable="false" />
+          <Property Name="award_date" Type="datetime" />
         </EntityType>
         <EntityType Name="StudentTerm">
           <Key>
@@ -1624,7 +1626,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_StudentQualification_StudentProfile1">
+        <Association Name="FK_StudentQualification_StudentProfile">
           <End Role="StudentProfile" Type="SchoolOfScienceModel.Store.StudentProfile" Multiplicity="1" />
           <End Role="StudentQualification" Type="SchoolOfScienceModel.Store.StudentQualification" Multiplicity="*" />
           <ReferentialConstraint>
@@ -2084,6 +2086,7 @@
           <Property Name="program_id" Type="Int32" />
           <NavigationProperty Name="Program" Relationship="SchoolOfScienceModel.FK_AppointmentConcern_Program" FromRole="AppointmentConcern" ToRole="Program" />
           <NavigationProperty Name="Appointments" Relationship="SchoolOfScienceModel.AppointmentAppointmentConcern" FromRole="AppointmentConcern" ToRole="Appointment" />
+          <Property Type="Boolean" Name="custom" Nullable="false" />
         </EntityType>
         <EntityType Name="AppointmentHost">
           <Key>
@@ -2093,6 +2096,7 @@
           <Property Name="name" Type="String" Nullable="false" MaxLength="100" Unicode="true" FixedLength="false" />
           <NavigationProperty Name="Appointments" Relationship="SchoolOfScienceModel.FK_Appointment_AppointmentHost" FromRole="AppointmentHost" ToRole="Appointment" />
           <NavigationProperty Name="SystemUsers" Relationship="SchoolOfScienceModel.FK_UserProfile_AppointmentHost" FromRole="AppointmentHost" ToRole="UserProfile" />
+          <Property Type="Boolean" Name="booking" Nullable="false" />
         </EntityType>
         <EntityType Name="AppointmentStatus">
           <Key>
@@ -3178,7 +3182,7 @@
           <Property Type="Int32" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Type="String" Name="student_id" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="organization" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Type="DateTime" Name="award_date" Nullable="false" Precision="3" />
+          <Property Type="DateTime" Name="award_date" Precision="3" />
           <NavigationProperty Name="StudentProfile" Relationship="SchoolOfScienceModel.FK_StudentQualification_StudentProfile" FromRole="StudentQualification" ToRole="StudentProfile" />
           <Property Type="String" Name="name" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
         </EntityType>
@@ -3254,74 +3258,74 @@
             <PropertyRef Name="student_id" />
           </Key>
           <Property Type="String" Name="student_id" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Student_Name" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Admit_Type" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Admit_Type_Description" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Basis_of_Admission" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Basis_of_Admission_description" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Cohort_Term" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Cohort_Term_Description" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Admit_Term" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Admit_Term_Description" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Admitted_Primary_Plan" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Admitted_Primary_Plan_Description" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Admitted_Academic_Load" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Admitted_Academic_Level" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Last_Attended_Secondary_School_Code" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Last_Attended_Secondary_School_Name" MaxLength="200" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Last_Attended_Institution_Code" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Last_Attended_Institution_Name" MaxLength="200" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Current_Academic_Group" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Current_Academic_Organization_Description" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Current_Academic_Career" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Current_Student_Career_Number" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Current_Academic_Program" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Current_Academic_Plan__Primary_" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Current_Academic_Plan_Description" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Current_Major_Plan_2" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Current_Major_Plan_3" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Current_Major_Plan_4" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Current_Minor_Plan_1" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Current_Minor_Plan_2" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Current_Minor_Plan_3" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Current_Minor_Plan_4" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Current_Prep_EAS_Plan" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Current_Academic_Load" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Current_Academic_Level" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Current_Form_of_Study" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Current_Form_of_Study_Descritpion" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Current_Program_Status" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Current_Program_Status_Description" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Current_Study_Agreement" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="As_of_Term" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="As_of_Term_Description" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Term_GPA" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Cumulative_GPA" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Cumulative_Credits_Earned_in_UST" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Credits_Earned_Elsewhere" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Potential_Graduate_Indicator" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Degree_Check_out_status" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Degree_Check_out_status_Description" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Expected_Graduation_Term" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Expected_Graduation_Term_Description" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Completion_Term" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Completion_Term_Description" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Confer_Date___01" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Degree_Code___01" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Degree_Title___01" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Degree_Honor_Code___01" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Degree_Honor_Description___01" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Confer_Date___02" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Degree_Code___02" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Degree_Title___02" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Degree_Honor_Code___02" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Degree_Honor_Description___02" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="GGA_Grade_Points__Primary_Degree_Plan_" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="GGA_Grade_Points__2nd_Degree_Plan_" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="SGA__12pts_" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="CGA__12pts_" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Overall_GGA__12pts_" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="C12_points_scale" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="Student_Name" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Admit_Type" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Admit_Type_Description" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Basis_of_Admission" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Basis_of_Admission_description" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Cohort_Term" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Cohort_Term_Description" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Admit_Term" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Admit_Term_Description" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Admitted_Primary_Plan" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Admitted_Primary_Plan_Description" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Admitted_Academic_Load" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Admitted_Academic_Level" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Last_Attended_Secondary_School_Code" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Last_Attended_Secondary_School_Name" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Last_Attended_Institution_Code" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Last_Attended_Institution_Name" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Current_Academic_Group" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Current_Academic_Organization_Description" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Current_Academic_Career" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Current_Student_Career_Number" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Current_Academic_Program" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Current_Academic_Plan__Primary_" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Current_Academic_Plan_Description" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Current_Major_Plan_2" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Current_Major_Plan_3" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Current_Major_Plan_4" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Current_Minor_Plan_1" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Current_Minor_Plan_2" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Current_Minor_Plan_3" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Current_Minor_Plan_4" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Current_Prep_EAS_Plan" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Current_Academic_Load" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Current_Academic_Level" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Current_Form_of_Study" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Current_Form_of_Study_Descritpion" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Current_Program_Status" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Current_Program_Status_Description" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Current_Study_Agreement" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="As_of_Term" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="As_of_Term_Description" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Term_GPA" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Cumulative_GPA" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Cumulative_Credits_Earned_in_UST" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Credits_Earned_Elsewhere" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Potential_Graduate_Indicator" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Degree_Check_out_status" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Degree_Check_out_status_Description" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Expected_Graduation_Term" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Expected_Graduation_Term_Description" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Completion_Term" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Completion_Term_Description" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Confer_Date___01" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Degree_Code___01" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Degree_Title___01" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Degree_Honor_Code___01" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Degree_Honor_Description___01" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Confer_Date___02" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Degree_Code___02" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Degree_Title___02" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Degree_Honor_Code___02" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Degree_Honor_Description___02" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="GGA_Grade_Points__Primary_Degree_Plan_" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="GGA_Grade_Points__2nd_Degree_Plan_" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="SGA__12pts_" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="CGA__12pts_" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Overall_GGA__12pts_" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="C12_points_scale" MaxLength="50" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="StudentProfile" Relationship="SchoolOfScienceModel.FK_StudentAdmission_StudentProfile" FromRole="StudentAdmission" ToRole="StudentProfile" />
         </EntityType>
         <EntityType Name="StudentMajorChoice">
@@ -3332,8 +3336,8 @@
           <Property Type="String" Name="student_id" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="period" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="choice1" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="choice2" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="choice3" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="choice2" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Type="String" Name="choice3" MaxLength="10" FixedLength="true" Unicode="true" />
           <NavigationProperty Name="StudentProfile" Relationship="SchoolOfScienceModel.FK_StudentMajorChoice_StudentProfile" FromRole="StudentMajorChoice" ToRole="StudentProfile" />
         </EntityType>
         <Association Name="FK_StudentAdmission_StudentProfile">
@@ -3370,7 +3374,7 @@
           <Property Type="DateTime" Name="end_date" Precision="3" />
           <Property Type="String" Name="name" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="data_source" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="remarks" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="remarks" MaxLength="100" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="StudentProfile" Relationship="SchoolOfScienceModel.FK_StudentActivity_StudentProfile" FromRole="StudentActivity" ToRole="StudentProfile" />
         </EntityType>
         <Association Name="FK_StudentActivity_StudentProfile">
@@ -3514,6 +3518,7 @@
           <EntitySetMapping Name="AppointmentConcerns">
             <EntityTypeMapping TypeName="SchoolOfScienceModel.AppointmentConcern">
               <MappingFragment StoreEntitySet="AppointmentConcern">
+                <ScalarProperty Name="custom" ColumnName="custom" />
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="name" ColumnName="name" />
                 <ScalarProperty Name="program_id" ColumnName="program_id" />
@@ -3523,6 +3528,7 @@
           <EntitySetMapping Name="AppointmentHosts">
             <EntityTypeMapping TypeName="SchoolOfScienceModel.AppointmentHost">
               <MappingFragment StoreEntitySet="AppointmentHost">
+                <ScalarProperty Name="booking" ColumnName="booking" />
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="name" ColumnName="name" />
               </MappingFragment>

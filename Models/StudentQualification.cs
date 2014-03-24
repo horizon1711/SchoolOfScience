@@ -17,7 +17,7 @@ namespace SchoolOfScience.Models
         public int id { get; set; }
         public string student_id { get; set; }
         public string organization { get; set; }
-        public System.DateTime award_date { get; set; }
+        public Nullable<System.DateTime> award_date { get; set; }
         public string name { get; set; }
     
         public virtual StudentProfile StudentProfile { get; set; }

@@ -1,0 +1,115 @@
+﻿@model IEnumerable<SchoolOfScience.Models.StudentProfile>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Student Profiles</h2>
+
+@using (Html.BeginForm())
+{
+    
+    <div class="filter">
+        <div class="filter-field">
+            <label for="career">Academic Career:</label>
+            @Html.DropDownList("career", ViewBag.careerList as IEnumerable<SelectListItem>, "All", null)
+            <label for="academic_group">Academic Group:</label>
+            @Html.DropDownList("academic_group", ViewBag.groupList as IEnumerable<SelectListItem>, "All", null)
+            <label for="academic_organization">Department:</label>
+            @Html.DropDownList("academic_organization", ViewBag.departmentList as IEnumerable<SelectListItem>, "All", null)
+            <label for="academic_plan_description">Academic Plan:</label>
+            @Html.DropDownList("academic_plan_description", ViewBag.planList as IEnumerable<SelectListItem>, "All", null)
+            <label for="academic_level">Academic Level:</label>
+            @Html.DropDownList("academic_level", ViewBag.levelList as IEnumerable<SelectListItem>, "All", null)
+        </div>
+        <div class="filter-field">
+            <label for="studentid">Student ID:</label>
+            @Html.TextBox("studentid", ViewBag.studentid as String)
+            <label for="firstname">First Name:</label>
+            @Html.TextBox("firstname", ViewBag.firstname as String)
+            <label for="lastname">Last Name:</label>
+            @Html.TextBox("lastname", ViewBag.lastname as String)
+        </div>
+        <div class="filter-field">
+            <label for="commentkeyword">Advising Comment Keyword:</label>
+            @Html.TextBox("commentkeyword", ViewBag.commentkeyword as String)
+        </div>
+        <div class="filter-field">
+            <input type="submit" value="Search" />
+            <input type="reset" class="button" value="Reset" />
+        </div>
+    </div>
+}
+@if (ViewBag.showTable)
+{
+<table class="data-table">
+    <thead>
+    <tr>
+        <th>
+            ID
+        </th>
+        <th>
+            Name
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.email)
+        </th>
+        <th>
+            Academic Details
+        </th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            <strong>@Html.ActionLink(item.id.ToString(), "Details", "StudentProfile", new { id = item.id }, new { @class = "student-link" })</strong>
+        </td>
+        <td>
+            <strong>@Html.ActionLink(item.name, "Details", "StudentProfile", new { id = item.id }, new { @class = "student-link" })</strong>
+        </td>
+        <td>
+            <a href="mailto:@Html.DisplayFor(modelItem => item.email)">@Html.DisplayFor(modelItem => item.email)</a>
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.academic_group)
+            -
+            @Html.DisplayFor(modelItem => item.academic_organization)
+            -
+            @Html.DisplayFor(modelItem => item.academic_career)
+            -
+            @Html.DisplayFor(modelItem => item.academic_plan_description)
+            -
+            @Html.DisplayFor(modelItem => item.academic_level)
+        </td>
+        <td>
+            @Html.ActionLink("Details", "Details", new { id = item.id }, new { @class = "student-link" })
+        </td>
+    </tr>
+}
+    </tbody>
+</table>
+}
+
+@section Scripts {
+    <script>
+        $(function () {
+            $(".data-table").dataTable({
+                "iDisplayLength": 100
+            });
+
+            $(".student-link").click( function (e) {
+                e.preventDefault();
+                showDialog($(this).prop("href"), "#error-dialog", "#dialog1");
+            });
+
+            $("input[type=reset]").click(function (e) {
+                e.preventDefault();
+                $(".filter select").val('');
+                $(".filter input[type=text]").val('');
+                $(".filter input[type=checkbox]").attr("checked", false);
+            });
+        });
+    </script>
+}

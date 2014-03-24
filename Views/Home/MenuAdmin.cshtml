@@ -28,13 +28,18 @@
 						</ul>
 					</li>
                     <li>
-                        @Html.ActionLink("Consultations", "Index", "Appointment", new { programonly = true }, null)
+                        @Html.ActionLink("Consultations", "Index", "Appointment", new { consultation = true }, null)
                         <ul>
-                            <li>@Html.ActionLink("Create Timeslots", "CreateMultiple", "Appointment")</li>
+                            <li>@Html.ActionLink("Create Timeslots", "CreateMultiple", "Appointment", new { consultation = true }, null)</li>
                         </ul>
                     </li>
 				</ul>
 			</li>
+			@*<li>@Html.ActionLink("Advising Appointment", "Index", "Appointment")
+				<ul>
+                    <li>@Html.ActionLink("Create Timeslots", "CreateMultiple", "Appointment")</li>
+				</ul>
+			</li>*@
 			<li>@Html.ActionLink("Advising Appointment", "ComingSoon", "Home")
 			</li>
 			<li>

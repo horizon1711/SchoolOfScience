@@ -20,16 +20,27 @@ namespace SchoolOfScience.Controllers
         //
         // GET: /Appointment/
 
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
-        public ActionResult Index(bool programonly = false)
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,FacultyAdvisor")]
+        public ActionResult Index(bool consultation = false)
         {
-            var appointments = db.Appointments.Include(a => a.AppointmentStatus).Include(a => a.StudentProfile).Include(a => a.AppointmentHost);
-            ViewBag.concernList = new SelectList(db.AppointmentConcerns, "id", "name");
-            ViewBag.hostList = new SelectList(db.AppointmentHosts, "id", "name");
+            IQueryable<Appointment> appointments;
+            if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment"))
+            {
+                appointments = db.Appointments;
+                ViewBag.hostList = new SelectList(db.AppointmentHosts, "id", "name");
+            }
+            else
+            {
+                appointments = db.Appointments.Where(a => a.AppointmentHost.SystemUsers.Any(u => u.UserName == User.Identity.Name));
+                consultation = false;
+                ViewBag.hostList = new SelectList(db.AppointmentHosts.Where(h => h.SystemUsers.Any(u => u.UserName == User.Identity.Name)), "id", "name");
+            }
+            ViewBag.concernList = new SelectList(db.AppointmentConcerns.Where(c => c.program_id == null && !c.custom), "id", "name");
             ViewBag.venueList = new SelectList(db.AppointmentVenues, "id", "name");
             ViewBag.statusList = new SelectList(db.AppointmentStatus, "id", "name");
+            ViewBag.consultation = consultation;
             return View(appointments.ToList().Where(a => (true)
-                && (!programonly || a.AppointmentConcerns.Any(c => c.program_id != null))
+                && (!consultation || a.AppointmentConcerns.Any(c => c.program_id != null))
             ));
         }
 
@@ -37,14 +48,25 @@ namespace SchoolOfScience.Controllers
         // POST: /Appointment/
 
         [HttpPost]
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
-        public ActionResult Index(FormCollection Form, bool reserved, bool programonly, bool available)
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,FacultyAdvisor")]
+        public ActionResult Index(FormCollection Form, bool reserved, bool available, bool consultation = false)
         {
-            var appointments = db.Appointments.Include(a => a.AppointmentStatus).Include(a => a.StudentProfile).Include(a => a.AppointmentHost);
-            ViewBag.concernList = new SelectList(db.AppointmentConcerns, "id", "name", Form["concern"]);
-            ViewBag.hostList = new SelectList(db.AppointmentHosts, "id", "name", Form["host"]);
+            IQueryable<Appointment> appointments;
+            if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment"))
+            {
+                appointments = db.Appointments;
+                ViewBag.hostList = new SelectList(db.AppointmentHosts, "id", "name", Form["host"]);
+            }
+            else
+            {
+                appointments = db.Appointments.Where(a => a.AppointmentHost.SystemUsers.Any(u => u.UserName == User.Identity.Name));
+                consultation = false;
+                ViewBag.hostList = new SelectList(db.AppointmentHosts.Where(h => h.SystemUsers.Any(u => u.UserName == User.Identity.Name)), "id", "name", Form["host"]);
+            }
+            ViewBag.concernList = new SelectList(db.AppointmentConcerns.Where(c => c.program_id == null && !c.custom), "id", "name", Form["concern"]);
             ViewBag.venueList = new SelectList(db.AppointmentVenues, "id", "name", Form["venue"]);
             ViewBag.statusList = new SelectList(db.AppointmentStatus, "id", "name", Form["status"]);
+            ViewBag.consultation = consultation;
             return View(appointments.ToList().Where(a => (true)
                 && (String.IsNullOrEmpty(Form["concern"]) || a.AppointmentConcerns.Any(c => c.id.ToString() == Form["concern"]))
                 && (String.IsNullOrEmpty(Form["host"]) || a.host_id.ToString() == Form["host"])
@@ -52,14 +74,14 @@ namespace SchoolOfScience.Controllers
                 && (String.IsNullOrEmpty(Form["status"]) || a.status_id.ToString() == Form["status"])
                 && (!reserved || a.student_id != null)
                 && (!available || a.student_id == null)
-                && (!programonly || a.AppointmentConcerns.Any(c => c.program_id != null))
+                && (!consultation || a.AppointmentConcerns.Any(c => c.program_id != null))
                 ));
         }
 
         //
         // GET: /Appointment/Details/5
 
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,FacultyAdvisor")]
         public ActionResult Details(int id = 0)
         {
             Appointment appointment = db.Appointments.Find(id);
@@ -72,7 +94,7 @@ namespace SchoolOfScience.Controllers
         }
 
         //
-        // GET: /Appointment/Details/5
+        // GET: /Appointment/Calendar
 
         public ActionResult Calendar(int programid = 0)
         {
@@ -80,18 +102,32 @@ namespace SchoolOfScience.Controllers
             return View(appointments.ToList());
         }
 
+        //
+        // GET: /Appointment/BookingCalendar
 
+        public ActionResult BookingCalendar(int host_id = 0)
+        {
+            var appointments = db.Appointments.Where(a => a.host_id == host_id);
+            return View(appointments.ToList());
+        }
 
         //
         // GET: /Appointment/Create
 
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,FacultyAdvisor")]
         public ActionResult Create()
         {
             var status = db.AppointmentStatus.Where(s => s.name == "Opened").SingleOrDefault();
             ViewBag.statusList = new SelectList(db.AppointmentStatus, "id", "name", status.id);
-            ViewBag.hostList = new SelectList(db.AppointmentHosts, "id", "name");
-            ViewBag.concernList = new SelectList(db.AppointmentConcerns.Where(c => c.program_id == null), "id", "name");
+            if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment"))
+            {
+                ViewBag.hostList = new SelectList(db.AppointmentHosts, "id", "name");
+            }
+            else
+            {
+                ViewBag.hostList = new SelectList(db.AppointmentHosts.Where(h => h.SystemUsers.Any(u => u.UserName == User.Identity.Name)), "id", "name");
+            }
+            ViewBag.concernList = new SelectList(db.AppointmentConcerns.Where(c => c.program_id == null && !c.custom), "id", "name");
             ViewBag.venueList = new SelectList(db.AppointmentVenues, "id", "name");
             return View();
         }
@@ -100,12 +136,25 @@ namespace SchoolOfScience.Controllers
         // POST: /Appointment/Create
 
         [HttpPost]
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,FacultyAdvisor")]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(Appointment appointment)
+        public ActionResult Create(AppointmentCreateMultipleViewModel ViewModel)
         {
+            Appointment appointment = ViewModel.appointment;
             if (ModelState.IsValid)
             {
+                if (ViewModel.concerns != null)
+                {
+                    foreach (var concernid in ViewModel.concerns)
+                    {
+                        var concern = db.AppointmentConcerns.Find(concernid);
+                        if (concern != null)
+                        {
+                            appointment.AppointmentConcerns.Add(concern);
+                        }
+                    }
+                }
+                appointment.end_time = appointment.start_time.AddMinutes(ViewModel.duration);
                 db.Appointments.Add(appointment);
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -113,8 +162,15 @@ namespace SchoolOfScience.Controllers
 
             var status = db.AppointmentStatus.Where(s => s.name == "Opened").SingleOrDefault();
             ViewBag.statusList = new SelectList(db.AppointmentStatus, "id", "name", status.id);
-            ViewBag.hostList = new SelectList(db.AppointmentHosts, "id", "name");
-            ViewBag.concernList = new SelectList(db.AppointmentConcerns.Where(c => c.program_id == null), "id", "name");
+            if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment"))
+            {
+                ViewBag.hostList = new SelectList(db.AppointmentHosts, "id", "name");
+            }
+            else
+            {
+                ViewBag.hostList = new SelectList(db.AppointmentHosts.Where(h => h.SystemUsers.Any(u => u.UserName == User.Identity.Name)), "id", "name");
+            }
+            ViewBag.concernList = new SelectList(db.AppointmentConcerns.Where(c => c.program_id == null && !c.custom), "id", "name");
             ViewBag.venueList = new SelectList(db.AppointmentVenues, "id", "name");
             return View(appointment);
         }
@@ -123,7 +179,7 @@ namespace SchoolOfScience.Controllers
         // GET: /Interview/CreateTimeslotSession
 
         [Ajax(true)]
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,FacultyAdvisor")]
         public ActionResult CreateTimeslotSession(int index)
         {
             ViewBag.index = index;
@@ -134,7 +190,7 @@ namespace SchoolOfScience.Controllers
         // GET: /Interview/CreateTimeslotSkippedDate
 
         [Ajax(true)]
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,FacultyAdvisor")]
         public ActionResult CreateTimeslotSkippedDate(int index)
         {
             ViewBag.index = index;
@@ -144,17 +200,26 @@ namespace SchoolOfScience.Controllers
         //
         // GET: /Interview/CreateMultiple
 
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
-        public ActionResult CreateMultiple()
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,FacultyAdvisor")]
+        public ActionResult CreateMultiple(bool consultation = false)
         {
             AppointmentCreateMultipleViewModel ViewModel = new AppointmentCreateMultipleViewModel();
             ViewModel.appointment = new Appointment();
-
+            ViewModel.duration = 30;
             var status = db.AppointmentStatus.Where(s => s.name == "Opened").SingleOrDefault();
             ViewBag.statusList = new SelectList(db.AppointmentStatus, "id", "name", status.id);
+            ViewBag.concernList = new MultiSelectList(db.AppointmentConcerns.Where(c => c.program_id == null && !c.custom), "id", "name");
             ViewBag.programList = new SelectList(programdb.Programs.Where(p => p.require_appointment), "id", "name");
-            ViewBag.hostList = new SelectList(db.AppointmentHosts, "id", "name");
+            if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment"))
+            {
+                ViewBag.hostList = new SelectList(db.AppointmentHosts, "id", "name");
+            }
+            else
+            {
+                ViewBag.hostList = new SelectList(db.AppointmentHosts.Where(h => h.SystemUsers.Any(u => u.UserName == User.Identity.Name)), "id", "name");
+            }
             ViewBag.venueList = new SelectList(db.AppointmentVenues, "id", "name");
+            ViewBag.consultation = consultation;
             return View(ViewModel);
         }
 
@@ -162,29 +227,41 @@ namespace SchoolOfScience.Controllers
         // POST: /Interview/CreateMultiple
 
         [HttpPost]
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,FacultyAdvisor")]
         [ValidateAntiForgeryToken]
-        public ActionResult CreateMultiple(AppointmentCreateMultipleViewModel ViewModel)
+        public ActionResult CreateMultiple(AppointmentCreateMultipleViewModel ViewModel, bool consultation = false)
         {
             Appointment appointment = ViewModel.appointment;
-
-            var concern = db.AppointmentConcerns.Where(c => c.program_id == ViewModel.concern).SingleOrDefault();
-            if (concern == null)
+            if (consultation)
             {
-                var program = programdb.Programs.Find(ViewModel.concern);
-                if (program != null)
+                int programid = ViewModel.concerns.First();
+                var concern = db.AppointmentConcerns.Where(c => c.program_id == programid).SingleOrDefault();
+                if (concern == null)
                 {
-                    concern = new AppointmentConcern { name = program.name, program_id = program.id };
-                    db.AppointmentConcerns.Add(concern);
+                    var program = programdb.Programs.Find(programid);
+                    if (program != null)
+                    {
+                        concern = new AppointmentConcern { name = "Consultation", program_id = program.id };
+                        db.AppointmentConcerns.Add(concern);
+                    }
                 }
-                else
+                appointment.AppointmentConcerns.Add(concern);
+            }
+            else
+            {
+                if (ViewModel.concerns != null)
                 {
-                    return HttpNotFound("Program not found.");
+                    foreach (var concernid in ViewModel.concerns)
+                    {
+                        var concern = db.AppointmentConcerns.Find(concernid);
+                        if (concern != null)
+                        {
+                            appointment.AppointmentConcerns.Add(concern);
+                        }
+                    }
                 }
             }
-
-            appointment.AppointmentConcerns.Add(concern);
-
+            
             int openedStatusId = db.AppointmentStatus.Where(x => x.name == "Opened").FirstOrDefault().id;
             appointment.status_id = openedStatusId;
             List<bool> availableDaysOfWeek = PrepareAvailableDaysOfWeek(ViewModel.config);
@@ -268,9 +345,18 @@ namespace SchoolOfScience.Controllers
             {
                 var status = db.AppointmentStatus.Where(s => s.name == "Opened").SingleOrDefault();
                 ViewBag.statusList = new SelectList(db.AppointmentStatus, "id", "name", status.id);
+                ViewBag.concernList = new MultiSelectList(db.AppointmentConcerns.Where(c => c.program_id == null && !c.custom), "id", "name");
                 ViewBag.programList = new SelectList(programdb.Programs.Where(p => p.require_appointment), "name", "name");
-                ViewBag.hostList = new SelectList(db.AppointmentHosts, "id", "name");
+                if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment"))
+                {
+                    ViewBag.hostList = new SelectList(db.AppointmentHosts, "id", "name");
+                }
+                else
+                {
+                    ViewBag.hostList = new SelectList(db.AppointmentHosts.Where(h => h.SystemUsers.Any(u => u.UserName == User.Identity.Name)), "id", "name");
+                }
                 ViewBag.venueList = new SelectList(db.AppointmentVenues, "id", "name");
+                ViewBag.consultation = consultation;
                 Session["FlashMessage"] = "Failed to create appointment timeslots." + e.Message;
                 return View(ViewModel);
             }
@@ -279,41 +365,74 @@ namespace SchoolOfScience.Controllers
         //
         // GET: /Appointment/Edit/5
 
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,FacultyAdvisor")]
         public ActionResult Edit(int id = 0)
         {
+            AppointmentCreateMultipleViewModel ViewModel = new AppointmentCreateMultipleViewModel();
             Appointment appointment = db.Appointments.Find(id);
             if (appointment == null)
             {
                 Session["FlashMessage"] = "Appointment not found.";
                 return RedirectToAction("Index");
             }
-
+            ViewModel.appointment = appointment;
+            TimeSpan duration = appointment.end_time.TimeOfDay - appointment.start_time.TimeOfDay;
+            ViewModel.duration = duration.Minutes;
             ViewBag.statusList = new SelectList(db.AppointmentStatus, "id", "name");
+            ViewBag.concernList = new MultiSelectList(db.AppointmentConcerns.Where(c => c.program_id == null && !c.custom), "id", "name", appointment.AppointmentConcerns.Select(c => c.id));
             ViewBag.programList = new SelectList(programdb.Programs.Where(p => p.require_appointment), "name", "name");
-            ViewBag.hostList = new SelectList(db.AppointmentHosts, "id", "name");
+            if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment"))
+            {
+                ViewBag.hostList = new SelectList(db.AppointmentHosts, "id", "name");
+            }
+            else
+            {
+                ViewBag.hostList = new SelectList(db.AppointmentHosts.Where(h => h.SystemUsers.Any(u => u.UserName == User.Identity.Name)), "id", "name");
+            }
             ViewBag.venueList = new SelectList(db.AppointmentVenues, "id", "name");
-            return View(appointment);
+            return View(ViewModel);
         }
 
         //
         // POST: /Appointment/Edit/5
 
         [HttpPost]
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,FacultyAdvisor")]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(Appointment appointment)
+        public ActionResult Edit(AppointmentCreateMultipleViewModel ViewModel)
         {
+            Appointment appointment = db.Appointments.Find(ViewModel.appointment.id);
             if (ModelState.IsValid)
             {
-                db.Entry(appointment).State = EntityState.Modified;
+                ViewModel.appointment.end_time = ViewModel.appointment.start_time.AddMinutes(ViewModel.duration);
+                db.Entry(appointment).CurrentValues.SetValues(ViewModel.appointment);
+                appointment.AppointmentConcerns.Clear();
+                if (ViewModel.concerns != null)
+                {
+                    foreach (var concernid in ViewModel.concerns)
+                    {
+                        var concern = db.AppointmentConcerns.Find(concernid);
+                        if (concern != null)
+                        {
+                            appointment.AppointmentConcerns.Add(concern);
+                        }
+                    }
+                }
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
 
             ViewBag.statusList = new SelectList(db.AppointmentStatus, "id", "name");
+            ViewBag.concernList = new SelectList(db.AppointmentConcerns.Where(c => c.program_id == null && !c.custom), "id", "name");
             ViewBag.programList = new SelectList(programdb.Programs.Where(p => p.require_appointment), "name", "name");
-            ViewBag.hostList = new SelectList(db.AppointmentHosts, "id", "name");
+            if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment"))
+            {
+                ViewBag.hostList = new SelectList(db.AppointmentHosts, "id", "name");
+            }
+            else
+            {
+                ViewBag.hostList = new SelectList(db.AppointmentHosts.Where(h => h.SystemUsers.Any(u => u.UserName == User.Identity.Name)), "id", "name");
+            }
             ViewBag.venueList = new SelectList(db.AppointmentVenues, "id", "name");
             return View(appointment);
         }
@@ -321,7 +440,7 @@ namespace SchoolOfScience.Controllers
         //
         // GET: /Appointment/Delete/5
 
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,FacultyAdvisor")]
         public ActionResult Delete(int id = 0)
         {
             Appointment appointment = db.Appointments.Find(id);
@@ -342,7 +461,7 @@ namespace SchoolOfScience.Controllers
         // POST: /Appointment/Delete/5
 
         [HttpPost, ActionName("Delete")]
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,FacultyAdvisor")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
@@ -356,7 +475,7 @@ namespace SchoolOfScience.Controllers
         //
         // GET: /Appointment/BatchDelete/
 
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,FacultyAdvisor")]
         public ActionResult BatchDelete(string items)
         {
             var i = items.Split('_');
@@ -370,7 +489,7 @@ namespace SchoolOfScience.Controllers
         // POST: /Appointment/BatchDelete/
 
         [HttpPost, ActionName("BatchDelete")]
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,FacultyAdvisor")]
         public ActionResult BatchDeleteConfirmed(string items)
         {
             var i = items.Split('_');
@@ -389,6 +508,153 @@ namespace SchoolOfScience.Controllers
                 Session["FlashMessage"] = "Failed to delete appointment sessions. <br/><br/>" + e.Message;
             }
             return RedirectToAction("Index");
+        }
+
+        [Authorize(Roles = "StudentUGRD,StudentRPGTPG,StudentNUGD")]
+        public ActionResult Booking()
+        {
+            return View();
+        }
+
+        [Ajax(true)]
+        [Authorize(Roles = "StudentUGRD,StudentRPGTPG,StudentNUGD")]
+        public ActionResult Booking1(AppointmentBookingViewModel ViewModel)
+        {
+            ViewModel.advisor = db.StudentAdvisors.FirstOrDefault(a => a.student_id == User.Identity.Name);
+            ViewModel.hostList = db.AppointmentHosts.Where(h => h.booking && !h.Appointments.Any(o => o.student_id == User.Identity.Name && o.start_time > DateTime.Now) && h.Appointments.Count() > 0).ToList();
+            if (ViewModel.advisor != null)
+            {
+                string email = ViewModel.advisor.advisor_email;
+                var advisorhost = db.AppointmentHosts.FirstOrDefault(h => h.SystemUsers.Any(u => u.UserName == email.Substring(0, email.IndexOf("@"))) && !h.Appointments.Any(o => o.student_id == User.Identity.Name && o.start_time > DateTime.Now));
+                if (advisorhost != null)
+                {
+                    ViewModel.hostList.Add(advisorhost);
+                }
+            }
+            return View(ViewModel);
+        }
+
+        [Ajax(true)]
+        [HttpPost]
+        [Authorize(Roles = "StudentUGRD,StudentRPGTPG,StudentNUGD")]
+        public ActionResult Booking2(AppointmentBookingViewModel ViewModel)
+        {
+            ViewModel.host = db.AppointmentHosts.Find(ViewModel.host_id);
+            ViewModel.appointmentList = db.Appointments.Where(o => o.AppointmentStatus.name == "Opened" && o.host_id == ViewModel.host_id && o.student_id == null).ToList();
+            return View(ViewModel);
+        }
+
+        [Ajax(true)]
+        [HttpPost]
+        [Authorize(Roles = "StudentUGRD,StudentRPGTPG,StudentNUGD")]
+        public ActionResult Booking3(AppointmentBookingViewModel ViewModel)
+        {
+            ViewModel.host = db.AppointmentHosts.Find(ViewModel.host_id);
+            ViewModel.appointment = db.Appointments.Find(ViewModel.appointment_id);
+            ViewModel.concernList = db.AppointmentConcerns.Where(c => !c.custom && c.program_id == null).ToList();
+            if (ViewModel.concern_ids == null && ViewModel.appointment.AppointmentConcerns.Count() > 0)
+            {
+                ViewModel.concern_ids = ViewModel.appointment.AppointmentConcerns.Select(c => c.id).ToArray();
+            }
+            return View(ViewModel);
+        }
+
+        [Ajax(true)]
+        [HttpPost]
+        [Authorize(Roles = "StudentUGRD,StudentRPGTPG,StudentNUGD")]
+        public ActionResult BookingConfirm(AppointmentBookingViewModel ViewModel)
+        {
+            ViewModel.host = db.AppointmentHosts.Find(ViewModel.host_id);
+            ViewModel.appointment = db.Appointments.Find(ViewModel.appointment_id);
+            ViewModel.concerns = db.AppointmentConcerns.Where(c => ViewModel.concern_ids.Contains(c.id)).ToList();
+            return View(ViewModel);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "StudentUGRD,StudentRPGTPG,StudentNUGD")]
+        public ActionResult BookingSubmit(AppointmentBookingViewModel ViewModel)
+        {
+            ViewModel.host = db.AppointmentHosts.Find(ViewModel.host_id);
+            ViewModel.appointment = db.Appointments.Find(ViewModel.appointment_id);
+            ViewModel.concerns = db.AppointmentConcerns.Where(c => ViewModel.concern_ids.Contains(c.id)).ToList();
+
+            ViewModel.appointment.AppointmentConcerns.Clear();
+            if (!String.IsNullOrEmpty(ViewModel.other_concern))
+            {
+                var otherconcern = new AppointmentConcern { name = ViewModel.other_concern, custom = true };
+                db.AppointmentConcerns.Add(otherconcern);
+                ViewModel.appointment.AppointmentConcerns.Add(otherconcern);
+            }
+            foreach (var concern in ViewModel.concerns)
+            {
+                ViewModel.appointment.AppointmentConcerns.Add(concern);
+            }
+            var student = db.StudentProfiles.Find(User.Identity.Name);
+            if (student != null)
+            {
+                ViewModel.appointment.student_id = student.id;
+            }
+            try
+            {
+                db.SaveChanges();
+                Session["FlashMessage"] = "Appointment has been successfully booked.";
+                return RedirectToAction("MyAppointment", "Appointment");
+            }
+            catch (Exception e)
+            {
+                Session["FlashMessage"] = "Failed to make the appointment booking.<br/><br/>" + e.Message;
+                return RedirectToAction("Booking", "Appointment");
+            }
+        }
+
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,FacultyAdvisor,StudentUGRD,StudentRPGTPG,StudentNUGD")]
+        public ActionResult MyAppointment()
+        {
+            if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment") || User.IsInRole("FacultyAdvisor"))
+            {
+                return RedirectToAction("Index", "Appointment");
+            }
+            var appointments = db.Appointments.Where(o => o.student_id == User.Identity.Name);
+            return View(appointments.ToList());
+        }
+
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,FacultyAdvisor,StudentUGRD,StudentRPGTPG,StudentNUGD")]
+        public ActionResult Cancel(int id = 0)
+        {
+            var appointment = db.Appointments.Where(o => o.student_id == User.Identity.Name && o.id == id).FirstOrDefault();
+            if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment") || User.IsInRole("FacultyAdvisor"))
+            {
+                appointment = db.Appointments.Find(id);
+            }
+            if (appointment == null)
+            {
+                Session["FlashMessage"] = "Appointment not found";
+                return RedirectToAction("MyAppointment", "Appointment");
+            }
+            return View(appointment);
+        }
+
+        [HttpPost, ActionName("Cancel")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,FacultyAdvisor,StudentUGRD,StudentRPGTPG,StudentNUGD")]
+        public ActionResult CancelConfirmed(int id = 0)
+        {
+            var appointment = db.Appointments.Where(o => o.student_id == User.Identity.Name && o.id == id).FirstOrDefault();
+            if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment") || User.IsInRole("FacultyAdvisor"))
+            {
+                appointment = db.Appointments.Find(id);
+            }
+            if (appointment == null)
+            {
+                Session["FlashMessage"] = "Appointment not found";
+                return RedirectToAction("MyAppointment", "Appointment");
+            }
+            appointment.student_id = null;
+            db.SaveChanges();
+            if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment") || User.IsInRole("FacultyAdvisor"))
+            {
+                return RedirectToAction("Index", "Appointment");
+            }
+            return RedirectToAction("MyAppointment", "Appointment");
         }
 
         public List<bool> PrepareAvailableDaysOfWeek(TimeslotConfig config)

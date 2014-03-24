@@ -22,6 +22,7 @@ namespace SchoolOfScience.Models
     
         public int id { get; set; }
         public string name { get; set; }
+        public bool booking { get; set; }
     
         public virtual ICollection<Appointment> Appointments { get; set; }
         public virtual ICollection<SystemUser> SystemUsers { get; set; }

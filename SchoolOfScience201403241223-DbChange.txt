@@ -1,0 +1,51 @@
+Date: 201403241223
+
+- Create table [StudentMajorChoice]
+	- [id] int not null, primary key, identity increment 1
+	- [student_id] nvarchar(10) not null
+	- [period] nvarchar(50)
+	- [choice1] nvarchar(50)
+	- [choice2] nvarchar(50)
+	- [choice3] nvarchar(50)
+	- relationship: [StudentProfile][id] = [StudentAdvisor][student_id]
+- [StudentParticularType] insert column [priority] int not null default 0
+- [StudentParticularType] insert column [example] nvarchar(200)
+- [StudentParticular] alter column [name] nvarchar(200) not null
+- [StudentParticular] delete column [description]
+- Import from sm_demo.csv to Create table [StudentAdmission] 
+(adjust the following fields length to 200 to avoid truncation)
+(Last Attended Secondary School Name)
+(Last Attended Institution Name)
+	- alter column [Student_Id] to [student_id] nvarchar(10) not null primary key
+	- relationship: [StudentProfile][id] = [StudentAdmission][student_id]
+- [StudentExperience] alter column [organization] nvarchar(200) not null
+- [StudentExperience] alter column [position] nvarchar(200)
+- [StudentExperience] alter column [duty_description] nvarchar(500)
+- [StudentAdvisingRemark] insert column [display_date] datetime not null default getdate()
+- [InterviewStatus] insert column [display_to_student] bit not null default 1
+- [InterviewStatus] insert column [default_status] bit not null default 0
+	(Edit "Open" status and set default_status to "1")
+- [StudentProfile] insert column [remarks] nvarchar(MAX)
+- Create table [StudentActivity]
+	- [id] int not null, primary key, identity increment 1
+	- [student_id] nvarchar(10) not null
+	- [start_date] datetime
+	- [end_date] datetime
+	- [name] nvarchar(200)
+	- [data_source] nvarcahr(100)
+	- [remarks] nvarchar(100)
+	- relationship: [StudentProfile][id] = [StudentAdvisor][student_id]
+- Download and Install Microsoft Access Database Engine 2010 Redistributable, x86/x64
+(http://www.microsoft.com/en-us/download/details.aspx?id=13255)
+- IIS->ApplicationPools->{ApplicationPool in use}->Advanced Settings->Enable 32-bit Applications->true
+- Create table [InterviewComment]
+	- [id] int not null, primary key, identity increment 1
+	- [interview_id] int not null
+	- [application_id] int not null
+	- [comment] nvarchar(MAX) not null
+	- [created] datetime not null default getdate()
+	- [created_by] nvarchar(50) not null default 'SYS'
+	- [modified] datetime not null default getdate()
+	- [modified_by] nvarchar(50) not null default 'SYS'
+	- relationship: [Interview][id] = [InterviewComment][interview_id]
+	- relationship: [Application][id] = [InterviewComment][application_id]

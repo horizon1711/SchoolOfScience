@@ -98,12 +98,17 @@
 </div>
 }
 
-@if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment"))
+@*201403241200 fai: show remarks only if admin role or remarks is not empty*@
+@if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment") || !String.IsNullOrEmpty(Model.student.remarks))
 {
 <div class="field-wrapper">
     <div class="display-label" id="remarks-label">
         Remarks
+        @*201403241200 fai: only admin role to edit remarks*@
+        @if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment"))
+        {
         <a href="@Url.Action("EditRemarks", "StudentProfile", new { id = Model.student.id })" class="editremarks-link"><img src="@Url.Content("~/Images/Action/edit.gif")" class="edit-btn" /></a>
+        }
     </div>
     <div class="display-field" id="remarks">
         @Html.DisplayFor(model => model.student.remarks)

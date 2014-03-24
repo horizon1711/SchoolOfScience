@@ -343,19 +343,26 @@ namespace SchoolOfScience.Controllers
             var SubmittedStatus = db.ApplicationStatus.Where(s => s.name == "Submitted").SingleOrDefault();
             if (SavedStatus == null || SubmittedStatus == null)
             {
-                Session["FlashMessage"] = ("Saved or Submitted Status not found.");
+                Session["FlashMessage"] = "Saved or Submitted Status not found.";
                 return RedirectToAction("Record");
             }
 
             if (!IsEligible(program, student))
             {
-                Session["FlashMessage"] = ("Not eligible to apply.");
+                Session["FlashMessage"] = "Not eligible to apply.";
                 return RedirectToAction("Record");
             }
 
             if (DateTime.Now > program.application_end_time)
             {
-                Session["FlashMessage"] = ("Application deadline has passed. ");
+                Session["FlashMessage"] = "Application deadline has passed. ";
+                return RedirectToAction("Record");
+            }
+
+            //201403241714 fai: prevent duplicated application
+            if (student.Applications.Any(a => a.program_id == program.id))
+            {
+                Session["FlashMessage"] = "Application of [" + program.name + "] already exists. You may Edit/View your application from the list.";
                 return RedirectToAction("Record");
             }
 

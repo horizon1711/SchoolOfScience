@@ -189,7 +189,9 @@
                     }
                 });
                 
-                $(".chosen").chosen();
+                $(".chosen").chosen({
+                    allow_single_deselect: true
+                });
 
                 $(".datetime-picker").datetimepicker({
                     format: "Y-m-d H:i",

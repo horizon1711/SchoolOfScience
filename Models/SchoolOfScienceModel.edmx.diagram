@@ -13,9 +13,9 @@
         <EntityTypeShape EntityType="SchoolOfScienceModel.ApplicationStatus" Width="1.5" PointX="5.125" PointY="0.625" IsExpanded="true" />
         <EntityTypeShape EntityType="SchoolOfScienceModel.Appointment" Width="1.5" PointX="14.875" PointY="0.625" IsExpanded="true" />
         <EntityTypeShape EntityType="SchoolOfScienceModel.AppointmentConcern" Width="1.5" PointX="12.875" PointY="3" IsExpanded="true" />
-        <EntityTypeShape EntityType="SchoolOfScienceModel.AppointmentHost" Width="1.5" PointX="12.875" PointY="5.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="SchoolOfScienceModel.AppointmentHost" Width="1.5" PointX="14.875" PointY="4.375" IsExpanded="true" />
         <EntityTypeShape EntityType="SchoolOfScienceModel.AppointmentStatus" Width="1.5" PointX="12.875" PointY="0.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="SchoolOfScienceModel.AppointmentVenue" Width="1.5" PointX="16.25" PointY="4.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="SchoolOfScienceModel.AppointmentVenue" Width="1.5" PointX="16.75" PointY="3" IsExpanded="true" />
         <EntityTypeShape EntityType="SchoolOfScienceModel.ExchangeOption" Width="1.5" PointX="5.125" PointY="5.25" IsExpanded="true" />
         <EntityTypeShape EntityType="SchoolOfScienceModel.Interview" Width="1.5" PointX="11" PointY="0.625" IsExpanded="true" />
         <EntityTypeShape EntityType="SchoolOfScienceModel.InterviewStatus" Width="1.5" PointX="9.125" PointY="0.625" IsExpanded="true" />

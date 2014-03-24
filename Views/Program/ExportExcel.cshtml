@@ -41,6 +41,11 @@
         <th>ExchangeOption3</th>
         <th>ExchangeOption4</th>
         <th>ExchangeOption5</th>
+        <th>Option Code1</th>
+        <th>Option Code2</th>
+        <th>Option Code3</th>
+        <th>Option Code4</th>
+        <th>Option Code5</th>
         }
         @if (Model.program.require_interview)
         {
@@ -74,7 +79,12 @@
         <td>@application.submitted</td>
         <td>@application.student_id</td>
         <td>@application.StudentProfile.name</td>
-        <td>@application.StudentProfile.StudentAdmission.Admit_Type</td>
+        <td>
+            @if(application.StudentProfile.StudentAdmission != null)
+            {
+                @application.StudentProfile.StudentAdmission.Admit_Type
+            }
+        </td>
         <td>@application.StudentProfile.email</td>
         <td>@application.StudentProfile.contact_phone_country_code
             @if (!String.IsNullOrEmpty(application.StudentProfile.contact_phone_country_code))
@@ -98,11 +108,36 @@
         <td>@application.StudentProfile.academic_organization</td>
         <td>@application.StudentProfile.academic_plan_description</td>
         <td>@application.StudentProfile.academic_level</td>
-        <td>@application.StudentProfile.StudentAdmission.Cumulative_GPA</td>
-        <td>@application.StudentProfile.StudentAdmission.Cumulative_Credits_Earned_in_UST</td>
-        <td>@application.StudentProfile.StudentAdmission.Credits_Earned_Elsewhere</td>
-        <td>@application.StudentProfile.StudentAdmission.Potential_Graduate_Indicator</td>
-        <td>@application.StudentProfile.StudentAdmission.Expected_Graduation_Term_Description</td>
+        <td>
+            @if(application.StudentProfile.StudentAdmission != null)
+            {
+                @application.StudentProfile.StudentAdmission.Cumulative_GPA
+            }
+        </td>
+        <td>
+            @if(application.StudentProfile.StudentAdmission != null)
+            {
+                @application.StudentProfile.StudentAdmission.Cumulative_Credits_Earned_in_UST
+            }
+        </td>
+        <td>
+            @if(application.StudentProfile.StudentAdmission != null)
+            {
+                @application.StudentProfile.StudentAdmission.Credits_Earned_Elsewhere
+            }
+        </td>
+        <td>
+            @if(application.StudentProfile.StudentAdmission != null)
+            {
+                @application.StudentProfile.StudentAdmission.Potential_Graduate_Indicator
+            }
+        </td>
+        <td>
+            @if(application.StudentProfile.StudentAdmission != null)
+            {
+                @application.StudentProfile.StudentAdmission.Expected_Graduation_Term_Description
+            }
+        </td>
         @foreach (var option in application.ApplicationOptionValues)
         {
         <td>@option.value</td>
@@ -111,7 +146,21 @@
         {
             foreach (var item in application.ApplicationExchangeOptions.OrderBy(o => o.priority))
             {
-                <td>@item.ExchangeOption.name</td>
+                <td>
+                    @if(item.ExchangeOption!=null)
+                    {
+                        @item.ExchangeOption.name
+                    }
+                </td>
+            }
+            foreach (var item in application.ApplicationExchangeOptions.OrderBy(o => o.priority))
+            {
+                <td>
+                    @if(item.ExchangeOption!=null)
+                    {
+                        @item.ExchangeOption.shortcode
+                    }
+                </td>
             }
         }
         @if (Model.program.require_interview)

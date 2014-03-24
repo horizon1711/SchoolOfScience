@@ -69,7 +69,7 @@ namespace SchoolOfScience.Controllers
         public ActionResult Edit(int id = 0)
         {
             AppointmentHost appointmenthost = db.AppointmentHosts.Find(id);
-            ViewBag.userList = new SelectList(db.SystemUsers, "UserId", "UserName");
+            ViewBag.userList = new SelectList(db.SystemUsers.Where(u => !u.UserRoles.Any(r => r.RoleName.StartsWith("Student"))), "UserId", "UserName");
             if (appointmenthost == null)
             {
                 Session["FlashMessage"] = "Appointment Host not found.";
@@ -111,7 +111,7 @@ namespace SchoolOfScience.Controllers
         {
             AppointmentHostViewModel ViewModel = new AppointmentHostViewModel();
             ViewBag.index = index;
-            ViewBag.userList = new SelectList(db.SystemUsers, "UserId", "UserName");
+            ViewBag.userList = new SelectList(db.SystemUsers.Where(u => !u.UserRoles.Any(r => r.RoleName.StartsWith("Student"))), "UserId", "UserName");
             return PartialView(ViewModel);
         }
 
@@ -126,7 +126,7 @@ namespace SchoolOfScience.Controllers
                 Session["FlashMessage"] = "Appointment Host not found.";
                 return RedirectToAction("Index");
             }
-            if (appointmenthost.Appointments != null)
+            if (appointmenthost.Appointments != null && appointmenthost.Appointments.Count() > 0)
             {
                 Session["FlashMessage"] = "Appointment Host is attached to existing Appointment(s).";
                 return RedirectToAction("Index");

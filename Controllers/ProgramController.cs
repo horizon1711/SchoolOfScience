@@ -22,7 +22,7 @@ namespace SchoolOfScience.Controllers
         //
         // GET: /Program/
 
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP")]
         public ActionResult Index()
         {
 
@@ -45,7 +45,7 @@ namespace SchoolOfScience.Controllers
         //
         // POST: /Program/
         [HttpPost]
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP")]
         public ActionResult Index(FormCollection Form, bool interview, bool appointment, bool exchange, bool nomination)
         {
             var programs = db.Programs.Include(p => p.ProgramStatus).Include(p => p.ProgramType);
@@ -74,7 +74,7 @@ namespace SchoolOfScience.Controllers
 
         //
         // GET: /Program/Showcase/
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment,StudentUGRD,StudentRPGTPG,StudentNUGD")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP,StudentUGRD,StudentRPGTPG,StudentNUGD")]
         public ActionResult Showcase(int id = 0)
         {
             StudentProfile student = db.StudentProfiles.Find(User.Identity.Name);
@@ -113,7 +113,7 @@ namespace SchoolOfScience.Controllers
         public ActionResult Showall(int id = 0)
         {
             ViewBag.typeid = id;
-
+            ViewBag.eligible = true;
             ViewBag.programList = new SelectList(db.Programs.Where(p => p.ProgramStatus.shown_to_student).OrderBy(p => p.name), "id", "name");
             ViewBag.programTypeList = new SelectList(db.ProgramTypes, "id", "name", id);
             //ViewBag.programStatusList = new SelectList(db.ProgramStatus.Where(s => s.shown_to_student), "id", "name");
@@ -164,7 +164,7 @@ namespace SchoolOfScience.Controllers
                     programaction.open = program.ProgramStatus.name == "Opened";
                     programactions.Add(programaction);
                 }
-                return View(programactions.ToList());
+                return View(programactions.ToList().Where(p => p.eligible && p.inperiod && p.open));
             }
             else
             {
@@ -253,7 +253,7 @@ namespace SchoolOfScience.Controllers
         //
         // GET: /Program/Details/5
         [Ajax(true)]
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment,StudentUGRD,StudentRPGTPG,StudentNUGD")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP,StudentUGRD,StudentRPGTPG,StudentNUGD")]
         public ActionResult Details(int id = 0)
         {
             //get program
@@ -316,7 +316,7 @@ namespace SchoolOfScience.Controllers
 
         //
         // GET: /Program/Create
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP")]
         public ActionResult Create()
         {
             ProgramViewModel ViewModel = new ProgramViewModel();
@@ -356,7 +356,7 @@ namespace SchoolOfScience.Controllers
         // POST: /Program/Create
 
         [HttpPost]
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP")]
         [ValidateAntiForgeryToken]
         [ValidateInput(false)]
         public ActionResult Create(ProgramViewModel ViewModel)
@@ -484,7 +484,7 @@ namespace SchoolOfScience.Controllers
         //
         // POST: /Program/Copy
 
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP")]
         public ActionResult Copy(int id = 0, string name = null)
         {
             Program program = db.Programs.Find(id);
@@ -513,7 +513,7 @@ namespace SchoolOfScience.Controllers
             return RedirectToAction("Edit", new { id = program.id });
         }
 
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP")]
         public ActionResult Publish(int id = 0)
         {
             Program program = db.Programs.Find(id);
@@ -556,7 +556,7 @@ namespace SchoolOfScience.Controllers
         //
         // GET: /Program/Edit/5
 
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP")]
         public ActionResult Edit(int id = 0)
         {
             ProgramViewModel ViewModel = new ProgramViewModel();
@@ -599,7 +599,7 @@ namespace SchoolOfScience.Controllers
         // POST: /Program/Edit/5
 
         [HttpPost]
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP")]
         [ValidateAntiForgeryToken]
         [ValidateInput(false)]
         public ActionResult Edit(ProgramViewModel ViewModel)
@@ -835,7 +835,7 @@ namespace SchoolOfScience.Controllers
         //
         // GET: /Program/BatchUpdate
 
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP")]
         public ActionResult BatchUpdate(string items)
         {
             var i = items.Split('_');
@@ -848,7 +848,7 @@ namespace SchoolOfScience.Controllers
         //
         // POST: /Program/BatchUpdate
         [HttpPost]
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP")]
         public ActionResult BatchUpdate(string items, int status_id)
         {
             var i = items.Split('_');
@@ -881,7 +881,7 @@ namespace SchoolOfScience.Controllers
         //
         // GET: /Program/Delete/5
 
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP")]
         public ActionResult Delete(int id = 0)
         {
             Program program = db.Programs.Find(id);
@@ -896,7 +896,7 @@ namespace SchoolOfScience.Controllers
         // POST: /Program/Delete/5
 
         [HttpPost, ActionName("Delete")]
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
@@ -1135,7 +1135,7 @@ namespace SchoolOfScience.Controllers
                 Session["FlashMessage"] = "Program not found.";
                 return RedirectToAction("Index");
             }
-            var notification = CreateNotification("ProgramDeadlindReminder", program);
+            var notification = SendNotification(CreateNotification("ProgramDeadlindReminder", program));
             if (notification != null)
             {
                 return RedirectToAction("Index", "Notification", new { notification_id = notification.id });
@@ -1144,6 +1144,24 @@ namespace SchoolOfScience.Controllers
             {
                 return RedirectToAction("Index");
             }
+        }
+
+        //
+        // GET: /Application/MakeSubmissionReminder/5
+
+        public ActionResult MakeSubmissionReminder(int id = 0)
+        {
+            var program = db.Programs.Find(id);
+            if (program == null)
+            {
+                Session["FlashMessage"] = "Program not found.";
+                return RedirectToAction("Index");
+            }
+            foreach (var application in program.Applications.Where(a => a.ApplicationStatus.name == "Saved"))
+            {
+                SendNotification(CreateNotification("ApplicationSavedReminder", application));
+            }
+            return RedirectToAction("Index", "Notification");
         }
 
         protected override void Dispose(bool disposing)

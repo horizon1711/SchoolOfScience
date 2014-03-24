@@ -22,7 +22,7 @@ namespace SchoolOfScience.Models
         public System.DateTime end_time { get; set; }
 
         [Required(ErrorMessage = "*Required Field.")]
-        [Display(Name = "Appointment Host")]
+        [Display(Name = "Host")]
         public int host_id { get; set; }
 
         [Required(ErrorMessage = "*Required Field.")]
@@ -37,6 +37,7 @@ namespace SchoolOfScience.Models
         public Nullable<int> student_id { get; set; }
 
         [Display(Name = "Remarks")]
+        [StringLength(200, ErrorMessage = "*Maximum length exceeded.")]
         public string remarks { get; set; }
     }
 }

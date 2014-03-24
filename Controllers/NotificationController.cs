@@ -19,28 +19,16 @@ namespace SchoolOfScience.Controllers
         // GET: /Notification/
 
         [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
-        public ActionResult Index(int notification_type = 0, int notification_status = 0, int notification_id = 0)
+        public ActionResult Index(int notification_id = 0)
         {
-            ViewBag.NotificationTypeList = new SelectList(db.NotificationTypes, "id", "name", notification_type);
-            ViewBag.NotificationStatusList = new SelectList(db.NotificationStatus, "id", "name", notification_status);
-            var notifications = db.Notifications;
-            if ((notification_type != 0 && notification_status != 0) || notification_id != 0)
+            ViewBag.NotificationTypeList = new SelectList(db.NotificationTypes, "id", "name");
+            ViewBag.NotificationStatusList = new SelectList(db.NotificationStatus, "id", "name");
+            var notifications = db.Notifications.OrderByDescending(n => n.modified).Take(100);
+            if (notification_id != 0)
             {
-                if (notification_id != 0)
-                {
-                    ViewBag.highlight_id = notification_id;
-                    return View(notifications.ToList().Where(n => n.status_id == 1 || n.id == notification_id));
-                }
-
-                return View(notifications.ToList().Where(n => true
-                    && (n.type_id == notification_type)
-                    && (n.status_id == notification_status)
-                    ));
+                ViewBag.highlight_id = notification_id;
             }
-            else
-            {
-                return View(notifications.ToList().Where(n => n.status_id == 1));
-            }
+            return View(notifications.ToList());
         }
 
         //
@@ -48,11 +36,15 @@ namespace SchoolOfScience.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
-        public ActionResult Index(FormCollection Form)
+        public ActionResult Index(FormCollection Form, int notification_id = 0)
         {
             ViewBag.NotificationTypeList = new SelectList(db.NotificationTypes, "id", "name", Form["notification_type"]);
             ViewBag.NotificationStatusList = new SelectList(db.NotificationStatus, "id", "name", Form["notification_status"]);
             var notifications = db.Notifications;
+            if (notification_id != 0)
+            {
+                ViewBag.highlight_id = notification_id;
+            }
             return View(notifications.ToList().Where(n => true
                 && (String.IsNullOrEmpty(Form["notification_type"]) || n.type_id.ToString() == Form["notification_type"])
                 && (String.IsNullOrEmpty(Form["notification_status"]) || n.status_id.ToString() == Form["notification_status"])

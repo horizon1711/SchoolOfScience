@@ -82,6 +82,10 @@
                 Vacancies
             </th>
             <th>
+                Action
+            </th>
+            <th>
+                Notification
             </th>
         </tr>
     </thead>
@@ -152,26 +156,35 @@
                 }
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.id }) |
-                @*@Html.ActionLink("Details", "Details", new { id=item.id })*@ 
-                @Html.ActionLink("Delete", "Delete", new { id = item.id })
+                <ul class="program-action-list">
+                    <li>@Html.ActionLink("Edit", "Edit", new { id = item.id })</li>
+                    <li>@Html.ActionLink("Delete", "Delete", new { id = item.id })</li>
                 @if (item.status_id == ViewBag.draftStatusId)
                 {
-                    <text>|</text>
-                    @Html.ActionLink("Publish", "Publish", new { id = item.id });
+                    <li>@Html.ActionLink("Publish", "Publish", new { id = item.id })</li>
                 }
-                else
+                @if (item.Applications.Count() > 0)
                 {
-                    <text>|</text>
-                    @Html.ActionLink("Applications", "Index", "Application", new { programId = item.id }, null);
-                    <text>|</text>
-                    @Html.ActionLink("Export", "ExportExcel", "Program", new { id = item.id }, null);
-                    <text>|</text>
-                    @Html.ActionLink("Notification", "MakeNotification", "Program", new { id = item.id }, null);
-                    <text>|</text>
-                    @Html.ActionLink("Reminder", "MakeReminder", "Program", new { id = item.id }, null);
+                    <li>@Html.ActionLink("Applications", "Index", "Application", new { programId = item.id }, null)</li>
+                    <li>@Html.ActionLink("Export", "ExportExcel", "Program", new { id = item.id }, new { target = "_blank" })</li>
                 }
-                    
+                </ul>
+            </td>
+            <td>
+                <ul class="program-action-list">
+                @if (item.status_id != ViewBag.draftStatusId)
+                {
+                    <li>@Html.ActionLink("Announce", "MakeNotification", "Program", new { id = item.id }, new { target = "_blank" })</li>
+                }
+                @if (DateTime.Now >= item.deadline_reminder_date)
+                {
+                    <li>@Html.ActionLink("Reminder*", "MakeReminder", "Program", new { id = item.id }, new { target = "_blank" })</li>
+                }
+                @if (item.Applications.Where(a => a.ApplicationStatus.name == "Saved").Count() > 0)
+                {
+                    <li>@Html.ActionLink("Submission*", "MakeSubmissionReminder", "Program", new { id = item.id }, new { target = "_blank" })</li>
+                }
+                </ul>
             </td>
         </tr>
     }

@@ -92,7 +92,7 @@
         {
             if (!String.IsNullOrEmpty(attachment.name))
             {
-                @Html.ActionLink(attachment.name, "Download", "FileHandler", new { filename = attachment.filename, folder = attachment.filepath }, null)<br />
+                @Html.ActionLink(attachment.name, "Download", "FileHandler", new { filename = attachment.filename, folder = attachment.filepath }, new { target = "_blank" })<br />
             }
         }
         </div>

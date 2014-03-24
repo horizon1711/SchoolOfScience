@@ -32,6 +32,30 @@ namespace SchoolOfScience.Controllers
             {
                 return View("HomeStudent");
             }
+            if (Roles.IsUserInRole("Admin") || Roles.IsUserInRole("Advising") || Roles.IsUserInRole("StudentDevelopment"))
+            {
+                return View("HomeAdmin");
+            }
+            if (Roles.IsUserInRole("FacultyAdvisor"))
+            {
+                return View("HomeFaculty");
+            }
+            if (Roles.IsUserInRole("EDP"))
+            {
+                return View("HomeEDP");
+            }
+            if (Roles.IsUserInRole("CommTutor"))
+            {
+                return View("HomeCommTutor");
+            }
+            if (Roles.IsUserInRole("Nominator"))
+            {
+                return View("HomeNominator");
+            }
+            if (Roles.IsUserInRole("ProgramAdmin"))
+            {
+                return View("HomeProgramAdmin");
+            }
             return View();
         }
 

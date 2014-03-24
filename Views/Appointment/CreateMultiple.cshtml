@@ -4,7 +4,14 @@
     ViewBag.Title = "CreateByTimeslot";
 }
 
+@if (ViewBag.consultation)
+{
+<h2>Create Multiple Consultation Timeslots</h2>
+}
+else
+{
 <h2>Create Multiple Appointment Timeslots</h2>
+}
 
 @using (Html.BeginForm())
 {
@@ -13,15 +20,39 @@
     
     
     <fieldset>
-        <legend>Appointment Information</legend>
+        <legend>
+                @if (ViewBag.consultation)
+                {
+                    @("Consultation Information")
+                }
+                else
+                {
+                    @("Appointment Information")
+                }
+        </legend>
+        
         
         <div class="field-wrapper">
             <div class="editor-label">
-                Program Concerned
+                @if (ViewBag.consultation)
+                {
+                    @("Program")
+                }
+                else
+                {
+                    @("Concern")
+                }
             </div>
             <div class="editor-field">
-                @Html.DropDownListFor(model => model.concern, ViewBag.programList as SelectList, String.Empty)
-                @Html.ValidationMessageFor(model => model.concern)
+                @if (ViewBag.consultation)
+                {
+                @Html.DropDownListFor(model => model.concerns, ViewBag.programList as SelectList, String.Empty, new { required = "required" })
+                }
+                else
+                {
+                @Html.ListBoxFor(model => model.concerns, ViewBag.concernList as MultiSelectList, new { @class = "chosen" })
+                }
+                @Html.ValidationMessageFor(model => model.concerns)
             </div>
         </div>
         
@@ -54,6 +85,8 @@
                 @Html.ValidationMessageFor(model => model.duration)
             </div>
         </div>
+    
+        <div class="clear-fix"></div>
         
         <div class="field-wrapper">
             <div class="editor-label">

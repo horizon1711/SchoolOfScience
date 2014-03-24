@@ -577,9 +577,17 @@ namespace SchoolOfScience.Controllers
         {
             var i = items.Split('_');
             var interviews = db.Interviews.Where(p => i.Contains(SqlFunctions.StringConvert((double)p.id).Trim()));
+            var status = db.InterviewStatus.Find(status_id);
             foreach (var interview in interviews)
             {
                 interview.status_id = status_id;
+                if (status.name == "Notified")
+                {
+                    foreach (var application in interview.Applications)
+                    {
+                        SendNotification(CreateNotification("InterviewAssigned", interview, application));
+                    }
+                }
             }
             try
             {
@@ -587,7 +595,7 @@ namespace SchoolOfScience.Controllers
             }
             catch (Exception e)
             {
-                Session["FlashMessage"] = "Failed to delete interviews. <br/><br/>" + e.Message;
+                Session["FlashMessage"] = "Failed to update interviews. <br/><br/>" + e.Message;
             }
             return RedirectToAction("Index");
         }

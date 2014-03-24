@@ -1,0 +1,42 @@
+﻿@model SchoolOfScience.Models.Appointment
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<div class="showcase-title">
+    <img src="~/Images/Dashboard/advising.png" />
+    <h2>Advising Appointments</h2>
+    @*<div class="remarks">
+        Only eligible programs will be displayed on this page. Click @Html.ActionLink("here", "Showall", "Program") to show all programs instead.
+    </div>*@
+</div>
+
+<h3>Are you sure you want to cancel this booking?</h3>
+
+<p class="booking-info">
+    Host: @Model.AppointmentHost.name<br />
+    Date: @String.Format("{0:yyyy-MM-dd}", Model.start_time)<br />
+    Time: @String.Format("{0:HH:mm}", Model.start_time) to @String.Format("{0:HH:mm}", Model.end_time)<br />
+    Venue: @Model.AppointmentVenue.name<br />
+    Concerns: @String.Join(", ", Model.AppointmentConcerns.Select(c => c.name).ToArray())<br />
+    @if (@Model.student_id != null)
+    {
+        <text>Reserved by: [@Model.StudentProfile.name] @Model.StudentProfile.id</text>
+    }
+</p>
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    <p>
+        <input type="submit" value="Confirm Cancel" /> |
+        @Html.ActionLink("Back to List", "MyAppointment")
+    </p>
+}
+
+@section Scripts {
+    <script>
+        $(function () {
+            $("input[type=submit]").button();
+        });
+    </script>
+}

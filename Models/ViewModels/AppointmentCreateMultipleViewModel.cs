@@ -18,10 +18,11 @@ namespace SchoolOfScience.Models.ViewModels
         public IList<Timeslot> timeslots { get; set; }
         public IList<DateTime> skipped_dates { get; set; }
         public Appointment appointment { get; set; }
-        
-        [Required]
+
+        [Required(ErrorMessage = "*Required Field.")]
+        [Display(Name = "Duration")]
         [Range(1, 180, ErrorMessage = "Duration must be between 1 and 180.")]
         public int duration { get; set; }
-        public int concern { get; set; }
+        public int[] concerns { get; set; }
     }
 }

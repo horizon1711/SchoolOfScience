@@ -18,7 +18,7 @@ namespace SchoolOfScience.Controllers
         //
         // GET: /StudentProfile/
 
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment,StudentDevelopment,FacultyAdvisor,EDP,CommTutor,ProgramAdmin,Nominator")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP,CommTutor,ProgramAdmin,Nominator")]
         public ActionResult Index()
         {
             ViewBag.careerList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_career }).Distinct(), "text", "text");
@@ -34,7 +34,7 @@ namespace SchoolOfScience.Controllers
         // POST: /StudentProfile/
 
         [HttpPost]
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment,StudentDevelopment,FacultyAdvisor,EDP,CommTutor,ProgramAdmin,Nominator")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP,CommTutor,ProgramAdmin,Nominator")]
         public ActionResult Index(FormCollection Form, bool assigned, bool requiredinterview, bool withcomment)
         {
             var students = db.StudentProfiles;
@@ -63,6 +63,55 @@ namespace SchoolOfScience.Controllers
                 && (!assigned || s.Applications.Any(a => a.Interviews.Count() > 0))
                 && (!requiredinterview || s.Applications.Any(a => a.Program.require_interview && a.Interviews.Count() == 0))
                 && (!withcomment || s.StudentAdvisingRemarks.Count() > 0)
+                ));
+        }
+
+        //
+        // GET: /StudentProfile/MyStudent
+
+        [Authorize(Roles = "FacultyAdvisor")]
+        public ActionResult MyStudent()
+        {
+            ViewBag.careerList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_career }).Distinct(), "text", "text");
+            ViewBag.groupList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_group }).Distinct(), "text", "text");
+            ViewBag.departmentList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_organization }).Distinct(), "text", "text");
+            ViewBag.planList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_plan_description }).Distinct(), "text", "text");
+            ViewBag.levelList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_level }).Distinct(), "text", "text");
+            ViewBag.showTable = true;
+            var students = db.StudentProfiles.Where(s => s.StudentAdvisors.Any(a => a.advisor_email.Substring(0, a.advisor_email.IndexOf("@")) == User.Identity.Name));
+            return View(students.ToList());
+        }
+
+        //
+        // POST: /StudentProfile/MyStudent
+
+        [HttpPost]
+        [Authorize(Roles = "FacultyAdvisor")]
+        public ActionResult MyStudent(FormCollection Form)
+        {
+            var students = db.StudentProfiles.Where(s => s.StudentAdvisors.Any(a => a.advisor_email.Substring(0, a.advisor_email.IndexOf("@")) == User.Identity.Name));
+            ViewBag.studentid = Form["studentid"];
+            ViewBag.firstname = Form["firstname"];
+            ViewBag.lastname = Form["lastname"];
+            ViewBag.careerList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_career }).Distinct(), "text", "text", Form["career"]);
+            ViewBag.groupList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_group }).Distinct(), "text", "text", Form["academic_group"]);
+            ViewBag.departmentList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_organization }).Distinct(), "text", "text", Form["academic_organization"]);
+            ViewBag.planList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_plan_description }).Distinct(), "text", "text", Form["academic_plan_description"]);
+            ViewBag.levelList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_level }).Distinct(), "text", "text", Form["academic_level"]);
+            ViewBag.commentkeyword = Form["commentkeyword"];
+            ViewBag.showTable = true;
+            return View(students.ToList().Where(s => (true)
+                && (String.IsNullOrEmpty(Form["career"]) || s.academic_career == Form["career"])
+                && (String.IsNullOrEmpty(Form["academic_group"]) || s.academic_group == Form["academic_group"])
+                && (String.IsNullOrEmpty(Form["academic_organization"]) || s.academic_organization == Form["academic_organization"])
+                && (String.IsNullOrEmpty(Form["academic_plan_description"]) || s.academic_plan_description == Form["academic_plan_description"])
+                && (String.IsNullOrEmpty(Form["academic_level"]) || s.academic_level == Form["academic_level"])
+                && (String.IsNullOrEmpty(Form["studentid"]) || s.id == Form["studentid"])
+                && (String.IsNullOrEmpty(Form["firstname"]) || (s.name.IndexOf(Form["firstname"], StringComparison.OrdinalIgnoreCase) >= 0 && s.name.IndexOf(Form["firstname"], StringComparison.OrdinalIgnoreCase) < s.name.IndexOf(",")))
+                && (String.IsNullOrEmpty(Form["lastname"]) || (s.name.IndexOf(Form["lastname"], StringComparison.OrdinalIgnoreCase) >= 0 && s.name.IndexOf(Form["lastname"], StringComparison.OrdinalIgnoreCase) > s.name.IndexOf(",")))
+                && (String.IsNullOrEmpty(Form["commentkeyword"]) || s.StudentAdvisingRemarks.Any(r =>
+                    r.text.IndexOf(Form["commentkeyword"], StringComparison.OrdinalIgnoreCase) >= 0
+                    && (!r.@private && r.created_by == User.Identity.Name)))
                 ));
         }
 

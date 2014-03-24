@@ -21,6 +21,14 @@
             @Html.ValidationMessageFor(model => model.name)
         </div>
 
+        <div class="editor-label">
+            @Html.LabelFor(model => model.booking)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.booking)
+            @Html.ValidationMessageFor(model => model.booking)
+        </div>
+
         <p>
             <input type="submit" value="Create" />
         </p>

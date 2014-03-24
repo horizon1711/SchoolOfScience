@@ -325,7 +325,7 @@ select:focus, input[type="text"]:focus {
     clear: right;
 }
 
-.eligible, .programtype {
+.eligible, .programtype, .chosen {
     width: 350px;
 }
 
@@ -798,6 +798,25 @@ div#remarks-label {
 tr.highlight {
     background-color: yellow !important;
 }
+
+.program-action-list {
+    list-style: disc;
+    padding-left: 20px;
+}
+
+ol.booking-notes {
+    list-style-type: decimal;
+}
+
+    ol.booking-notes li {
+        font-weight: normal;
+    }
+
+.booking-info {
+    font-weight: 100;
+}
+
+
 
 
 

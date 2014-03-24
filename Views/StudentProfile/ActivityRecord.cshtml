@@ -6,10 +6,12 @@
 
 <fieldset class="collapse">
     <legend>Activities Records</legend>
-
+    @if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment") || User.IsInRole("EDP") || User.IsInRole("CommTutor"))
+    {
     <div class="add-btn-wrapper">
         @Html.ActionLink("Add", "Create", "StudentActivity", new { student_id = ViewBag.student_id, opener_id = ViewBag.opener_id }, new { @class = "add-activity-link add-activity-btn" })
     </div>
+    }
 
     <div class="clear-fix"></div>
     @if (Model.Count() > 0)
@@ -42,8 +44,11 @@
                     @activity.remarks
                 </td>
                 <td>
+                @if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment") || User.IsInRole("EDP") || User.IsInRole("CommTutor"))
+                {
                     <a href="@Url.Action("Edit", "StudentActivity", new { id = activity.id, opener_id = ViewBag.opener_id })" class="edit-activity-btn"><img src="@Url.Content("~/Images/Action/edit.gif")" class="edit-btn" title="Edit this activity"/></a>
                     <a href="@Url.Action("Delete", "StudentActivity", new { id = activity.id, opener_id = ViewBag.opener_id })" class="delete-activity-btn"><img src="@Url.Content("~/Images/Action/delete.gif")" class="delete-btn" title="Remove this activity"/></a>
+                }
                 </td>
             </tr>
         }

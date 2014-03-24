@@ -14,6 +14,10 @@ namespace SchoolOfScience.Models
 
         [Required(ErrorMessage = "*Required Field.")]
         [Display(Name = "Host")]
-        public string name{ get; set; }
+        public string name { get; set; }
+
+        [Required(ErrorMessage = "*Required Field.")]
+        [Display(Name = "Available for Booking")]
+        public bool booking { get; set; }
     }
 }

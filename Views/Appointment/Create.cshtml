@@ -1,4 +1,4 @@
-﻿@model SchoolOfScience.Models.Appointment
+﻿@model SchoolOfScience.Models.ViewModels.AppointmentCreateMultipleViewModel
 
 @{
     ViewBag.Title = "Create";
@@ -14,51 +14,59 @@
         <legend>Appointment</legend>
 
         <div class="editor-label">
-            @Html.LabelFor(model => model.start_time)
+            @Html.LabelFor(model => model.appointment.start_time)
         </div>
         <div class="editor-field">
-            @Html.EditorFor(model => model.start_time)
-            @Html.ValidationMessageFor(model => model.start_time)
+            @Html.TextBoxFor(model => model.appointment.start_time, "{0:yyyy-MM-dd HH:mm}", new { @class = "datetime-picker" })
+            @Html.ValidationMessageFor(model => model.appointment.start_time)
         </div>
 
         <div class="editor-label">
-            @Html.LabelFor(model => model.end_time)
+            @Html.LabelFor(model => model.duration)
         </div>
         <div class="editor-field">
-            @Html.EditorFor(model => model.end_time)
-            @Html.ValidationMessageFor(model => model.end_time)
-        </div>
-
-        <div class="editor-label">
-            @Html.LabelFor(model => model.host_id, "Appointment Host")
-        </div>
-        <div class="editor-field">
-            @Html.DropDownListFor(model => model.host_id, ViewBag.hostList as SelectList)
-            @Html.ValidationMessageFor(model => model.host_id)
+            @Html.EditorFor(model => model.duration)
+            @Html.ValidationMessageFor(model => model.duration)
         </div>
         
         <div class="editor-label">
-            @Html.LabelFor(model => model.venue_id, "Venue")
+            Conerns
         </div>
         <div class="editor-field">
-            @Html.DropDownListFor(model => model.venue_id, ViewBag.venueList as SelectList, String.Empty)
-            @Html.ValidationMessageFor(model => model.venue_id)
+            @Html.ListBoxFor(model => model.concerns, ViewBag.concernList as MultiSelectList, new { @class = "chosen" })
+            @Html.ValidationMessageFor(model => model.concerns)
         </div>
 
         <div class="editor-label">
-            @Html.LabelFor(model => model.status_id, "Appointment Status")
+            @Html.LabelFor(model => model.appointment.host_id, "Host")
         </div>
         <div class="editor-field">
-            @Html.DropDownListFor(model => model.status_id, ViewBag.statusList as SelectList)
-            @Html.ValidationMessageFor(model => model.status_id)
+            @Html.DropDownListFor(model => model.appointment.host_id, ViewBag.hostList as SelectList)
+            @Html.ValidationMessageFor(model => model.appointment.host_id)
+        </div>
+        
+        <div class="editor-label">
+            @Html.LabelFor(model => model.appointment.venue_id, "Venue")
+        </div>
+        <div class="editor-field">
+            @Html.DropDownListFor(model => model.appointment.venue_id, ViewBag.venueList as SelectList, String.Empty)
+            @Html.ValidationMessageFor(model => model.appointment.venue_id)
         </div>
 
         <div class="editor-label">
-            @Html.LabelFor(model => model.remarks)
+            @Html.LabelFor(model => model.appointment.status_id, "Status")
         </div>
         <div class="editor-field">
-            @Html.EditorFor(model => model.remarks)
-            @Html.ValidationMessageFor(model => model.remarks)
+            @Html.DropDownListFor(model => model.appointment.status_id, ViewBag.statusList as SelectList)
+            @Html.ValidationMessageFor(model => model.appointment.status_id)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.appointment.remarks)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.appointment.remarks)
+            @Html.ValidationMessageFor(model => model.appointment.remarks)
         </div>
 
         <p>

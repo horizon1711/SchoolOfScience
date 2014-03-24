@@ -19,30 +19,9 @@
 					<li>
 						@Html.ActionLink("Applications", "Index", "Application")
 					</li>
-					<li>
-						@Html.ActionLink("Interviews", "Index", "Interview")
-						<ul>
-                            <li>@Html.ActionLink("Create Timeslots", "CreateMultiple", "Interview")</li>
-                            <li>@Html.ActionLink("Assign Applications", "AssignMultiple", "Interview")</li>
-						</ul>
-					</li>
-                    <li>
-                        @Html.ActionLink("Appointments", "Index", "Appointment", new { programonly = true }, null)
-                        <ul>
-                            <li>@Html.ActionLink("Create Timeslots", "CreateMultiple", "Appointment")</li>
-                        </ul>
-                    </li>
-                    <li>
-                        @Html.ActionLink("Exchange Destinations", "Index", "ExchangeOption")
-                        <ul>
-                            <li>@Html.ActionLink("Add Destination", "Create", "ExchangeOption")</li>
-                        </ul>
-                    </li>
 				</ul>
 			</li>
-			<li>@Html.ActionLink("Advising Appointment", "ComingSoon", "Home")
-			</li>
 			<li>
-				@Html.ActionLink("Student Profile", "Index", "StudentProfile")
+				@Html.ActionLink("Student Profile", "MyStudent", "StudentProfile")
 			</li>	
 		</ul>

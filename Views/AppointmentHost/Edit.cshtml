@@ -24,6 +24,14 @@
         </div>
 
         <div class="editor-label">
+            @Html.LabelFor(model => model.host.booking)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.host.booking)
+            @Html.ValidationMessageFor(model => model.host.booking)
+        </div>
+
+        <div class="editor-label">
             Assigned Users
         </div>
         <div class="editor-field">

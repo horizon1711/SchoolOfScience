@@ -22,6 +22,7 @@ namespace SchoolOfScience.Models
         public int id { get; set; }
         public string name { get; set; }
         public Nullable<int> program_id { get; set; }
+        public bool custom { get; set; }
     
         public virtual Program Program { get; set; }
         public virtual ICollection<Appointment> Appointments { get; set; }

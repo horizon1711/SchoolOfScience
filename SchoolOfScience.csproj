@@ -470,6 +470,7 @@
     <Compile Include="Models\ViewModels\AppointmentHostViewModel.cs" />
     <Compile Include="Models\ViewModels\AppointmentCreateMultipleViewModel.cs" />
     <Compile Include="Models\ViewModels\ApplicationExportViewModel.cs" />
+    <Compile Include="Models\ViewModels\AppointmentBookingViewModel.cs" />
     <Compile Include="Models\ViewModels\StudentExperienceViewModel.cs" />
     <Compile Include="Models\ViewModels\StudentParticularViewModel.cs" />
     <Compile Include="Models\ViewModels\StudentProfileViewModel.cs" />
@@ -1155,7 +1156,7 @@
     <Content Include="Views\Account\ExternalLoginConfirmation.cshtml" />
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
-    <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Home\HomeAdmin.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
@@ -1363,6 +1364,18 @@
     <Content Include="Views\InterviewComment\Import.cshtml" />
     <Content Include="Views\Interview\CommentTemplate.cshtml" />
     <Content Include="Views\Notification\Send.cshtml" />
+    <Content Include="Views\Home\HomeFaculty.cshtml" />
+    <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\StudentProfile\MyStudent.cshtml" />
+    <Content Include="Views\Home\HomeEDP.cshtml" />
+    <Content Include="Views\Appointment\Booking.cshtml" />
+    <Content Include="Views\Appointment\Booking1.cshtml" />
+    <Content Include="Views\Appointment\Booking2.cshtml" />
+    <Content Include="Views\Appointment\BookingCalendar.cshtml" />
+    <Content Include="Views\Appointment\Booking3.cshtml" />
+    <Content Include="Views\Appointment\BookingConfirm.cshtml" />
+    <Content Include="Views\Appointment\MyAppointment.cshtml" />
+    <Content Include="Views\Appointment\Cancel.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

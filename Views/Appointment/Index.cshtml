@@ -3,8 +3,14 @@
 @{
     ViewBag.Title = "Index";
 }
-
-<h2>Appointment Timeslots (Program Appointment Only)</h2>
+@if (ViewBag.consultation)
+{
+<h2>Consultation Timeslots</h2>
+}
+else
+{
+<h2>Appointment Timeslots</h2>
+}
 
 @using (Html.BeginForm())
 {
@@ -27,10 +33,14 @@
             @Html.DropDownList("venue", ViewBag.venueList as IEnumerable<SelectListItem>, "All", null)
         </div>
         <div class="filter-field">
+            
+            @if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment"))
+            {
             <div class="field-wrapper">
-                <label for="programonly">Program Appointment Only:</label>
-                @Html.CheckBox("programonly")
+                <label for="consultation">Consultation:</label>
+                @Html.CheckBox("consultation")
             </div>
+            } 
             <div class="field-wrapper">
                 <label for="reserved">Reserved:</label>
                 @Html.CheckBox("reserved", false)
@@ -61,10 +71,10 @@
                 ID
             </th>
             <th>
-                Date
+                Date/Time
             </th>
             <th>
-                Time
+                Venue
             </th>
             <th>
                 Concerns
@@ -76,10 +86,7 @@
                 Status
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.venue_id)
-            </th>
-            <th>
-                Applications
+                Student
             </th>
             <th></th>
         </tr>
@@ -95,10 +102,11 @@
                 @Html.DisplayFor(modelItem => item.id)
             </td>
             <td>
-                @String.Format("{0:yyyy-MM-dd}", item.start_time)
+                @String.Format("{0:yyyy-MM-dd}", item.start_time)<br />
+                @String.Format("{0:HH:mm}", item.start_time) - @String.Format("{0:HH:mm}", item.end_time)
             </td>
             <td>
-                @String.Format("{0:HH:mm}", item.start_time) - @String.Format("{0:HH:mm}", item.end_time)
+                @Html.DisplayFor(modelItem => item.AppointmentVenue.name)
             </td>
             <td>
                 @foreach (var concern in item.AppointmentConcerns)
@@ -120,17 +128,23 @@
                 @Html.DisplayFor(modelItem => item.AppointmentStatus.name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.AppointmentVenue.name)
-            </td>
-            <td>
                 @if (item.StudentProfile != null)
                 {
                 <strong>@Html.DisplayFor(modelItem => item.StudentProfile.name) @Html.ActionLink(item.StudentProfile.id.ToString(), "Details", "StudentProfile", new { id = item.StudentProfile.id }, new { @class = "student-link" })</strong><text>[@(Html.DisplayFor(modelItem => item.StudentProfile.academic_organization))]</text>
                 }
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.id }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.id })
+                @Html.ActionLink("Edit", "Edit", new { id = item.id }) 
+                @if (item.student_id == null)
+                {
+                    <text> | </text>
+                    @Html.ActionLink("Delete", "Delete", new { id = item.id }) 
+                }
+                else
+                {
+                    <text> | </text>
+                    @Html.ActionLink("Cancel", "Cancel", new { id = item.id })
+                }
             </td>
         </tr>
     }
@@ -148,7 +162,7 @@
     <script>
         $(function () {
             $(".data-table").dataTable({
-                "aaSorting": [[2, "asc"], [3, "asc"]],
+                "aaSorting": [[2, "asc"]],
                 "bPaginate": false,
                 "aoColumnDefs": [
                     { 'bSortable': false, 'aTargets': [0] }]

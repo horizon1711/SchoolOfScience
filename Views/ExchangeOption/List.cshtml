@@ -10,7 +10,13 @@
         <thead>
             <tr>
                 <th>
+                    Select
+                </th>
+                <th>
                     @Html.DisplayNameFor(model => model.name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.shortcode)
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => model.country)
@@ -21,8 +27,14 @@
         @foreach (var item in Model) {
             <tr>
                 <td>
-                    @Html.ActionLink(item.name, "", null, new { @class = "select-link" })
+                    @Html.ActionLink("Select", "", null, new { @class = "select-link" })
                     @Html.Hidden("dest", item.id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.shortcode)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.country)
@@ -37,6 +49,7 @@
     <script>
         $(function () {
             $(".list-table").dataTable({
+                "aaSorting": [[1, "asc"]],
                 "sScrollY": "300px",
                 "bRetrieve": true,
                 "bInfo": false,

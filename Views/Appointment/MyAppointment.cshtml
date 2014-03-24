@@ -1,0 +1,101 @@
+﻿@model IEnumerable<SchoolOfScience.Models.Appointment>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<div class="showcase-title">
+    <img src="~/Images/Dashboard/advising.png" />
+    <h2>Advising Appointments</h2>
+    @*<div class="remarks">
+        Only eligible programs will be displayed on this page. Click @Html.ActionLink("here", "Showall", "Program") to show all programs instead.
+    </div>*@
+</div>
+
+<h2>My Appointments</h2>
+
+<p>
+    @Html.ActionLink("Make Booking", "Booking", "Appointment")
+</p>
+
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>
+                Date/Time
+            </th>
+            <th>
+                Venue
+            </th>
+            <th>
+                Concerns
+            </th>
+            <th>
+                Host
+            </th>
+            <th>
+                Status
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @String.Format("{0:yyyy-MM-dd}", item.start_time)<br />
+                @String.Format("{0:HH:mm}", item.start_time) - @String.Format("{0:HH:mm}", item.end_time)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AppointmentVenue.name)
+            </td>
+            <td>
+                @foreach (var concern in item.AppointmentConcerns)
+                {
+                    if (concern.program_id != null)
+                    {
+                        <div>@Html.ActionLink(concern.Program.name, "Details", "Program", new { id = concern.program_id }, new { @class = "program-details-link" })</div>
+                    }
+                    else 
+                    {
+                        <div>@Html.DisplayFor(modelItem => concern.name)</div>
+                    }
+                }
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AppointmentHost.name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AppointmentStatus.name)
+            </td>
+            <td>
+                @Html.ActionLink("Cancel", "Cancel", new { id = item.id })
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<div class="clear-fix"></div>
+
+@section Scripts {
+    <script>
+        $(function () {
+            $(".data-table").dataTable({
+                "aaSorting": [[2, "asc"]],
+                "bPaginate": false,
+                "aoColumnDefs": [
+                    { 'bSortable': false, 'aTargets': [0] }]
+            });
+
+            $(".program-details-link").click( function (e) {
+                e.preventDefault();
+                showDialog($(this).prop("href"), "#error-dialog", "#dialog1");
+            });
+
+        });
+    </script>
+}
+
+
