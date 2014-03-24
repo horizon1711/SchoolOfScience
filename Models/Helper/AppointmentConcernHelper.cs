@@ -13,6 +13,7 @@ namespace SchoolOfScience.Models
     {
 
         [Required(ErrorMessage = "*Required Field.")]
+        [StringLength(100, ErrorMessage = "*Maximum length exceeded.")]
         [Display(Name = "Concern")]
         public string name { get; set; }
 

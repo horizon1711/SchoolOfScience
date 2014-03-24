@@ -8,7 +8,7 @@
 </h2>
 <p class="booking-info">
     Host: @Model.host.name<br />
-    Date: @String.Format("{0:yyyy-MM-dd}", Model.appointment.start_time)<br />
+    Date: @String.Format("{0:yyyy-MM-dd (ddd)}", Model.appointment.start_time)<br />
     Time: @String.Format("{0:HH:mm}", Model.appointment.start_time) to @String.Format("{0:HH:mm}", Model.appointment.end_time)<br />
     Venue: @Model.appointment.AppointmentVenue.name
 </p>
@@ -21,9 +21,11 @@
     @Html.HiddenFor(model => model.appointment_id)
 <p>
     @Html.ListBoxFor(model => model.concern_ids, new MultiSelectList(Model.concernList, "id", "name"), new { @class = "chosen" })
+    @Html.ValidationMessageFor(model => model.concern_ids)
     <br />
     Others:<br />
     @Html.EditorFor(model => model.other_concern)
+    @Html.ValidationMessageFor(model => model.other_concern)
 </p>
 }
 <p>

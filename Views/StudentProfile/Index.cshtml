@@ -12,8 +12,8 @@
     <div class="filter">
         <div class="filter-field">
             <label for="career">Academic Career:</label>
-            @Html.DropDownList("career", ViewBag.careerList as IEnumerable<SelectListItem>, "All", null)
-            <label for="academic_group">Academic Group:</label>
+            @*@Html.DropDownList("career", ViewBag.careerList as IEnumerable<SelectListItem>, "All", null)
+            <label for="academic_group">Academic Group:</label>*@
             @Html.DropDownList("academic_group", ViewBag.groupList as IEnumerable<SelectListItem>, "All", null)
             <label for="academic_organization">Department:</label>
             @Html.DropDownList("academic_organization", ViewBag.departmentList as IEnumerable<SelectListItem>, "All", null)
@@ -63,7 +63,13 @@
             @Html.DisplayNameFor(model => model.email)
         </th>
         <th>
-            Academic Details
+            Department
+        </th>
+        <th>
+            Academic Plan
+        </th>
+        <th>
+            Academic Level
         </th>
         <th></th>
     </tr>
@@ -81,14 +87,12 @@
             <a href="mailto:@Html.DisplayFor(modelItem => item.email)">@Html.DisplayFor(modelItem => item.email)</a>
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.academic_group)
-            -
             @Html.DisplayFor(modelItem => item.academic_organization)
-            -
-            @Html.DisplayFor(modelItem => item.academic_career)
-            -
+        </td>
+        <td>
             @Html.DisplayFor(modelItem => item.academic_plan_description)
-            -
+        </td>
+        <td>
             @Html.DisplayFor(modelItem => item.academic_level)
         </td>
         <td>

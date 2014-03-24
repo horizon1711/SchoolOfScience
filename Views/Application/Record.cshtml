@@ -74,14 +74,14 @@
                 </div>
             </td>
             <td>
-                @String.Format("{0:yyyy-MM-dd}", item.program.start_time)
+                @String.Format("{0:yyyy-MM-dd (ddd)}", item.program.start_time)
             </td>
             <td>
             @if (ViewBag.title == "My Appointments")
             {
                 foreach (var appointment in item.application.StudentProfile.Appointments.Where(o => o.AppointmentConcerns.Any(c => c.program_id == item.program.id)))
                 {
-                    <div>@String.Format("{0:yyyy-MM-dd}", appointment.start_time)</div>
+                    <div>@String.Format("{0:yyyy-MM-dd (ddd)}", appointment.start_time)</div>
                     <div>@String.Format("{0:HH:mm}", appointment.start_time) - @String.Format("{0:HH:mm}", appointment.end_time)</div>
                     <div>@appointment.AppointmentVenue.name</div>
                 }
@@ -89,12 +89,12 @@
             {
                 foreach (var interview in item.application.Interviews)
                 {
-                    <div>@String.Format("{0:yyyy-MM-dd}", interview.start_time)</div>
+                    <div>@String.Format("{0:yyyy-MM-dd (ddd)}", interview.start_time)</div>
                     <div>@String.Format("{0:HH:mm}", interview.start_time) - @String.Format("{0:HH:mm}", interview.end_time)</div>
                     <div>@interview.InterviewVenue.name</div>
                 }
             } else {
-                @String.Format("{0:yyyy-MM-dd}", item.program.application_end_time)
+                @String.Format("{0:yyyy-MM-dd (ddd)}", item.program.application_end_time)
             }
             </td>
             <td>

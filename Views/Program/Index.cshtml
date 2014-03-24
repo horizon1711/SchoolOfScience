@@ -6,7 +6,7 @@
 
 <h2>Program Management</h2>
 
-@using (Html.BeginForm())
+@using (Html.BeginForm("Index", "Program", FormMethod.Post, new { id = "filter-form" }))
 {
     
     <div class="filter">
@@ -222,7 +222,7 @@
                 var items = $(".checkItem:checked").map(function () { return $(this).val() }).get();
                 var url = "@Html.Raw(Url.Action("BatchUpdate", "Program", new { items = "replaceItems" }))";
                 url = url.replace("replaceItems", items.join('_'));
-                showDialog(url, "#error-dialog", "#dialog1", "50%");
+                showDialog(url, "#error-dialog", "#dialog3");
             });
 
             $("input[type=reset]").click(function (e) {

@@ -19,9 +19,9 @@ namespace SchoolOfScience.Controllers
         // GET: /InterviewComment/
 
         [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
-        public ActionResult Index(int interview_id = 0)
+        public ActionResult Index(int interview_id = 0, string student_id = null)
         {
-            var interviewcomments = db.InterviewComments.Where(c => c.interview_id == interview_id);
+            var interviewcomments = db.InterviewComments.Where(c => c.interview_id == interview_id && (student_id == null || c.Application.student_id == student_id));
             return View(interviewcomments.ToList());
         }
 

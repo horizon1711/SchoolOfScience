@@ -177,7 +177,7 @@ else
                 {
                     foreach (var appointment in appointments)
                     {
-                        <div>Date: @String.Format("{0:yyyy-MM-dd}", appointment.start_time)</div>
+                        <div>Date: @String.Format("{0:yyyy-MM-dd (ddd)}", appointment.start_time)</div>
                         <div>Time: @String.Format("{0:HH:mm}", appointment.start_time) - @String.Format("{0:HH:mm}", appointment.end_time)</div>
                         <div>Venue: @appointment.AppointmentVenue.name</div>
                     }
@@ -201,9 +201,13 @@ else
                 {
                     foreach (var interview in Model.application.Interviews.Where(i => i.InterviewStatus.display_to_student))
                     {
-                    <div>Date: @String.Format("{0:yyyy-MM-dd}", interview.start_time)</div>
-                    <div>Time: @String.Format("{0:HH:mm}", interview.start_time) - @String.Format("{0:HH:mm}", interview.end_time)</div>
-                    <div>Venue: @interview.InterviewVenue.name</div>
+                        <div>Date: @String.Format("{0:yyyy-MM-dd (ddd)}", interview.start_time)</div>
+                        <div>Time: @String.Format("{0:HH:mm}", interview.start_time) - @String.Format("{0:HH:mm}", interview.end_time)</div>
+                        <div>Venue: @interview.InterviewVenue.name</div>
+                        if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment"))
+                        {
+                        <div>@Html.ActionLink("Interview Comments", "Index", "InterviewComment", new { interview_id = interview.id, student_id = @Model.student.id }, new { @class = "comments-link" })</div>
+                        }
                     }
                 }
                 else
@@ -224,5 +228,10 @@ else
 
         $("fieldset.collapse").collapse();
         $("fieldset.startCollapse").collapse({ closed: true });
+
+        $(".comments-link").click(function (e) {
+            e.preventDefault();
+            showDialog($(this).prop("href"), "#error-dialog", "#dialog3");
+        });
     });
 </script>

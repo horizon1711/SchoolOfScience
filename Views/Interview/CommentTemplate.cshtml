@@ -12,6 +12,8 @@
         <th>Venue</th>
         <th>Program</th>
         <th>Applicant</th>
+        <th>Academic Level</th>
+        <th>CGPA</th>
         <th>comment</th>
     </tr>
     @foreach(var interview in Model)
@@ -21,11 +23,22 @@
         <tr>
             <td>@interview.id</td>
             <td>@application.id</td>
-            <td>@String.Format("{0:yyyy-MM-dd}", interview.start_time)</td>
+            <td>@String.Format("{0:yyyy-MM-dd (ddd)}", interview.start_time)</td>
             <td>@(String.Format("{0:HH:mm}", interview.start_time) + " - " + String.Format("{0:HH:mm}", interview.end_time))</td>
             <td>@interview.InterviewVenue.name</td>
             <td>@interview.Program.name</td>
             <td>@(application.StudentProfile.name + " " + application.StudentProfile.id + "[" + application.StudentProfile.academic_organization + "]")</td>
+            <td>@application.StudentProfile.academic_level</td>
+            <td>
+            @if (application.StudentProfile.StudentAdmission != null)
+            {
+               @application.StudentProfile.StudentAdmission.Cumulative_GPA
+            } 
+            else
+            {
+                @("N/A")
+            }
+            </td>
             <td>
             </td>
         </tr>

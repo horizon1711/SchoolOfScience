@@ -7,8 +7,13 @@
 			<li class="current">
 				@Html.ActionLink("Dashboard", "Index", "Home")
 			</li>
+			<li>
+				@Html.ActionLink("Enrichment Programs", "ViewList", "Program")
+			</li>
 			<li>@Html.ActionLink("Advising Appointment", "Index", "Appointment")
                 <ul>
+                    <li>@Html.ActionLink("Pre-major Faculty Advisor", "Index", "Appointment", new { advisor = true }, null)</li>
+                    <li>@Html.ActionLink("Faculty Mentor", "Index", "Appointment", new { mentor = true }, null)</li>
                     <li>@Html.ActionLink("Create Timeslots", "CreateMultiple", "Appointment")</li>
                 </ul>
 			</li>

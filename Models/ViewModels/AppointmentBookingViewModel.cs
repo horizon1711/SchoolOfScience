@@ -22,9 +22,9 @@ namespace SchoolOfScience.Models.ViewModels
         public Appointment appointment { get; set; }
 
         public IList<AppointmentConcern> concernList { get; set; }
-        [Required(ErrorMessage = "*Required Field.")]
         public int[] concern_ids { get; set; }
         public IList<AppointmentConcern> concerns { get; set; }
+        [StringLength(100, ErrorMessage = "*Maximum length exceeded.")]
         public string other_concern { get; set; }
     }
 }

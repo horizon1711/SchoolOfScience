@@ -75,7 +75,6 @@
         @Html.DisplayFor(model => model.student.home_address1), @Html.DisplayFor(model => model.student.home_address2),@Html.DisplayFor(model => model.student.home_address3),@Html.DisplayFor(model => model.student.home_address4)
     </div>
 </div>
-<div class="clear-fix"></div>
 @if (Model.student.academic_plan_description.Contains("4Y"))
 {
 <div class="field-wrapper">
@@ -97,6 +96,7 @@
     </div>
 </div>
 }
+<div class="clear-fix"></div>
 
 @*201403241200 fai: show remarks only if admin role or remarks is not empty*@
 @if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment") || !String.IsNullOrEmpty(Model.student.remarks))
@@ -125,7 +125,7 @@
     <li><a href="#" class="tab4">Experiences</a></li>
     <li><a href="#" class="tab5">Qualifications</a></li>
     <li><a href="#" class="tab6">Advising Records</a></li>
-    <li><a href="#" class="tab7">Activities Records</a></li>
+    <li><a href="#" class="tab7">Other Activities</a></li>
 </ul>
 
 <div id="tabs-content"> 

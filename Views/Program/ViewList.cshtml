@@ -1,0 +1,173 @@
+﻿@model IEnumerable<SchoolOfScience.Models.Program>
+
+
+
+<div class="showcase-title">
+    <img src="~/Images/Dashboard/program.png" />
+    <h2>Enrichment Programs</h2>
+</div>
+
+<h2>@ViewBag.title</h2>
+
+@using (Html.BeginForm("ViewList", "Program", new { id = 0 }))
+{
+    
+    <div class="filter">
+        <div class="filter-field">
+            <label for="program">Program:</label>
+            @Html.DropDownList("program", ViewBag.programList as IEnumerable<SelectListItem>, "All", new { @class = "chosen", id = "programselect" })
+        </div>
+        <div class="filter-field">
+            <label for="program_type">Program Type:</label>
+            @Html.ListBox("program_type", ViewBag.programTypeList as MultiSelectList, new { @class = "chosen programtype", data_placeholder = "Click to select...", id = "typeselect" })
+        </div>
+@*        <div class="filter-field">
+            <label for="program_status">Program Status:</label>
+            @Html.DropDownList("program_status", ViewBag.programStatusList as IEnumerable<SelectListItem>, "All", null)
+        </div>*@
+    </div>
+    <div class="clear-fix"></div>
+    <p>
+        <input type="submit" class="button" value="Search" />
+        <input type="reset" class="button" value="Reset" />
+    </p>
+}
+
+<div class="showcase-note">Date Format: Year-Month-Day</div>
+
+<div class="clear-fix"></div>
+
+<table class="data-table">
+    <thead>
+        <tr>
+            @if (ViewBag.typeid == 0)
+            {
+            <th>
+                Type
+            </th>
+            }
+            <th style="width: 35%">
+                Program
+                @if (ViewBag.typeid != 0)
+                {
+                    <text>(</text>
+                    @Html.ActionLink("View All", "ViewList", "Program", new { id = 0 }, null)
+                    <text>)</text>
+                }
+            </th>
+            <th>
+                Program Period
+            </th>
+            <th>
+                Deadline
+            </th>
+            <th>
+                Eligibility
+            </th>
+        </tr>
+    </thead>
+
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            @if (ViewBag.typeid == 0)
+            {
+            <td>
+                @Html.ActionLink(item.ProgramType.name, "ViewList", "Program", new { id = item.ProgramType.id }, null)
+            </td>
+            }
+            <td>
+                @Html.ActionLink(item.name, "Details", "Program", new { id = item.id }, new { @class = "details-link program-name", title = "View Program Details" })
+                <div class="program-note">
+                    <div>
+                    @if (!String.IsNullOrEmpty(item.job_position))
+                    {
+                        @(item.job_position)
+                    }
+                    </div>
+                    <div>
+                    @if (!String.IsNullOrEmpty(item.host_name))
+                    {
+                        if (!String.IsNullOrEmpty(item.website))
+                        {
+                            <a href="@(item.website)" target="_blank" title="@(item.website)">@(item.host_name)</a>
+                        }
+                        else
+                        {
+                            @(item.host_name)
+                        }
+                    }
+                    </div>
+                </div>
+            </td>
+            <td>
+                @item.start_time
+            </td>
+            <td>
+                @String.Format("{0:yyyy-MM-dd (ddd)}", item.application_end_time)
+            </td>
+            <td>
+                <pre>
+                    @item.eligibility
+                </pre>
+            </td>
+        </tr>
+    }
+    </tbody>
+
+</table>
+
+<div class="clear-fix"></div>
+
+
+
+@section Scripts {
+    <script>
+        $(function () {
+            @if (ViewBag.typeid == 0)
+            {
+            <text>
+                $(".data-table").dataTable({
+                    "aaSorting": [[3, "asc"]],
+                    "bPaginate": false,
+                    "oLanguage": {
+                        "sSearch": "",
+                        "sInfo": "_TOTAL_ entries",
+                        "sEmptyTable": "No matching record found"
+                    }
+                });
+            </text>
+            }
+            else
+            {
+            <text>
+                $(".data-table").dataTable({
+                    "aaSorting": [[2, "asc"]],
+                    "bPaginate": false,
+                    "oLanguage": {
+                        "sSearch": "",
+                        "sInfo": "_TOTAL_ entries",
+                        "sEmptyTable": "No matching record found"
+                    }
+                });
+            </text>
+            }
+            $(".action-link").click(function (e) {
+                e.preventDefault();
+                showDialog($(this).prop("href"), "#error-dialog", "#dialog1");
+            });
+
+            $(".details-link").click( function (e) {
+                e.preventDefault();
+                showDialog($(this).prop("href"), "#error-dialog", "#dialog1");
+            });
+
+            $("input[type=reset]").click(function (e) {
+                e.preventDefault();
+                $(".chosen").val('').trigger("chosen:updated");
+                $("input[type=checkbox]").attr("checked", false);
+            });
+        });
+    </script>
+}

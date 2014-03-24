@@ -8,13 +8,16 @@
 </h2>
 <p class="booking-info">
     Host: @Model.host.name<br />
-    Date: @String.Format("{0:yyyy-MM-dd}", Model.appointment.start_time)<br />
+    Date: @String.Format("{0:yyyy-MM-dd (ddd)}", Model.appointment.start_time)<br />
     Time: @String.Format("{0:HH:mm}", Model.appointment.start_time) to @String.Format("{0:HH:mm}", Model.appointment.end_time)<br />
     Venue: @Model.appointment.AppointmentVenue.name<br />
-    Concerns: @String.Join(", ", Model.concerns.Select(c => c.name).ToArray())
+    @if (Model.concerns != null && Model.concerns.Count() > 0)
+    {
+        <text>Concerns: @String.Join(", ", Model.concerns.Select(c => c.name).ToArray())<br /></text>
+    }
     @if (!String.IsNullOrEmpty(Model.other_concern))
     {
-    <text><br />Other Concern: @Model.other_concern</text>
+    <text>Other Concern: @Model.other_concern<br /></text>
     }
 </p>
 <p>
@@ -25,10 +28,13 @@
     @Html.HiddenFor(model => model.host_id)
     @Html.HiddenFor(model => model.appointment_id)
     @Html.HiddenFor(model => model.other_concern)
-
-    for (int i = 0; i < Model.concerns.Count(); i++)
+    
+    if (Model.concerns != null && Model.concerns.Count() > 0)
     {
-        @Html.HiddenFor(model => model.concern_ids[i])
+        for (int i = 0; i < Model.concerns.Count(); i++)
+        {
+            @Html.HiddenFor(model => model.concern_ids[i])
+        }
     }
 }
 <p>

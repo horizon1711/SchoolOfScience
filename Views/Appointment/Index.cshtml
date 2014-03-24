@@ -12,7 +12,7 @@ else
 <h2>Appointment Timeslots</h2>
 }
 
-@using (Html.BeginForm())
+@using (Html.BeginForm("Index", "Appointment", FormMethod.Post, new { id = "filter-form" }))
 {
     
     <div class="filter">
@@ -43,11 +43,29 @@ else
             } 
             <div class="field-wrapper">
                 <label for="reserved">Reserved:</label>
-                @Html.CheckBox("reserved", false)
+                @Html.CheckBox("reserved")
             </div>
             <div class="field-wrapper">
                 <label for="available">Space Available:</label>
-                @Html.CheckBox("available", false)
+                @Html.CheckBox("available")
+            </div>
+            <div class="field-wrapper">
+                <label for="past">Expired:</label>
+                @Html.CheckBox("past")
+            </div>
+
+            <div class="clear-fix"></div>
+
+            <div class="field-wrapper">
+                <label for="advisor">Reserved as Pre-major Faculty Advisor:</label>
+                @Html.CheckBox("advisor")
+            </div>
+
+            <div class="clear-fix"></div>
+
+            <div class="field-wrapper">
+                <label for="mentor">Reserved as Faculty Mentor:</label>
+                @Html.CheckBox("mentor")
             </div>
         </div>
         <div class="clear-fix"></div>
@@ -71,7 +89,10 @@ else
                 ID
             </th>
             <th>
-                Date/Time
+                Date
+            </th>
+            <th>
+                Time
             </th>
             <th>
                 Venue
@@ -81,9 +102,6 @@ else
             </th>
             <th>
                 Host
-            </th>
-            <th>
-                Status
             </th>
             <th>
                 Student
@@ -102,7 +120,9 @@ else
                 @Html.DisplayFor(modelItem => item.id)
             </td>
             <td>
-                @String.Format("{0:yyyy-MM-dd}", item.start_time)<br />
+                @String.Format("{0:yyyy-MM-dd (ddd)}", item.start_time)
+            </td>
+            <td>
                 @String.Format("{0:HH:mm}", item.start_time) - @String.Format("{0:HH:mm}", item.end_time)
             </td>
             <td>
@@ -117,7 +137,14 @@ else
                     }
                     else 
                     {
+                        if (!concern.custom)
+                        {
                         <div>@Html.DisplayFor(modelItem => concern.name)</div>
+                        }
+                        else
+                        {
+                        <div title="@Html.DisplayFor(modelItem => concern.name)">Others</div>
+                        }
                     }
                 }
             </td>
@@ -125,12 +152,9 @@ else
                 @Html.DisplayFor(modelItem => item.AppointmentHost.name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.AppointmentStatus.name)
-            </td>
-            <td>
                 @if (item.StudentProfile != null)
                 {
-                <strong>@Html.DisplayFor(modelItem => item.StudentProfile.name) @Html.ActionLink(item.StudentProfile.id.ToString(), "Details", "StudentProfile", new { id = item.StudentProfile.id }, new { @class = "student-link" })</strong><text>[@(Html.DisplayFor(modelItem => item.StudentProfile.academic_organization))]</text>
+                <strong>@Html.DisplayFor(modelItem => item.StudentProfile.name) <br />@Html.ActionLink(item.StudentProfile.id.ToString(), "Details", "StudentProfile", new { id = item.StudentProfile.id }, new { @class = "student-link" })</strong><text>[@(Html.DisplayFor(modelItem => item.StudentProfile.academic_organization))]</text>
                 }
             </td>
             <td>
@@ -162,7 +186,7 @@ else
     <script>
         $(function () {
             $(".data-table").dataTable({
-                "aaSorting": [[2, "asc"]],
+                "aaSorting": [[2, "asc"],[3, "asc"]],
                 "bPaginate": false,
                 "aoColumnDefs": [
                     { 'bSortable': false, 'aTargets': [0] }]

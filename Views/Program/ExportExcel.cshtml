@@ -169,7 +169,7 @@
             {
                 foreach (var interview in application.Interviews)
                 {
-                    <td>@String.Format("{0:yyyy-MM-dd}", interview.start_time)</td>
+                    <td>@String.Format("{0:yyyy-MM-dd (ddd)}", interview.start_time)</td>
                     <td>@String.Format("{0:HH:mm}", interview.start_time) to @String.Format("{0:HH:mm}", interview.end_time)</td>
                     <td>@interview.InterviewVenue.name</td>
                 }
@@ -188,7 +188,7 @@
             {
                 foreach (var appointment in appointments)
                 {
-                    <td>@String.Format("{0:yyyy-MM-dd}", appointment.start_time)</td>
+                    <td>@String.Format("{0:yyyy-MM-dd (ddd)}", appointment.start_time)</td>
                     <td>@String.Format("{0:HH:mm}", appointment.start_time) to @String.Format("{0:HH:mm}", appointment.end_time)</td>
                     <td>@appointment.AppointmentVenue.name</td>
                 }
@@ -207,7 +207,7 @@
                 {
                     if (particular.index > 0)
                     {
-                        <text><br /></text>
+                        <text>;<br /></text>
                     }
                     @particular.data.name
                 }
@@ -220,7 +220,7 @@
                 {
                     if (experience.index > 0)
                     {
-                        <text><br /></text>
+                        <text>;<br /></text>
                     }
                     @(experience.data.start_year + "-" + experience.data.start_month + " to " + experience.data.end_year + "-" + experience.data.end_month + " " + experience.data.organization + " " + experience.data.position) 
                 }
@@ -231,7 +231,7 @@
             {
                 if (qualification.index > 0)
                 {
-                    <text><br /></text>
+                    <text>;<br /></text>
                 }
                 @(String.Format("{0:yyyy-MM-dd}", qualification.data.award_date) + " " + qualification.data.organization + " " + qualification.data.name) 
             }

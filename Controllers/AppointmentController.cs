@@ -21,7 +21,7 @@ namespace SchoolOfScience.Controllers
         // GET: /Appointment/
 
         [Authorize(Roles = "Admin,Advising,StudentDevelopment,FacultyAdvisor")]
-        public ActionResult Index(bool consultation = false)
+        public ActionResult Index(bool consultation = false, bool advisor = false, bool mentor = false)
         {
             IQueryable<Appointment> appointments;
             if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment"))
@@ -31,8 +31,13 @@ namespace SchoolOfScience.Controllers
             }
             else
             {
-                appointments = db.Appointments.Where(a => a.AppointmentHost.SystemUsers.Any(u => u.UserName == User.Identity.Name));
+                appointments = db.Appointments.Where(a => a.student_id != null
+                    && a.AppointmentHost.SystemUsers.Any(u => u.UserName == User.Identity.Name)
+                    && (!advisor || (a.StudentProfile.academic_plan_description.Contains("4Y") && a.StudentProfile.academic_plan_description.Contains("Undeclared")) && !a.AppointmentConcerns.Any(c => c.program_id != null))
+                    && (!mentor || (a.StudentProfile.academic_plan_description.Contains("4Y") && !a.StudentProfile.academic_plan_description.Contains("Undeclared")) && !a.AppointmentConcerns.Any(c => c.program_id != null))
+                    );
                 consultation = false;
+                ViewBag.reserved = true;
                 ViewBag.hostList = new SelectList(db.AppointmentHosts.Where(h => h.SystemUsers.Any(u => u.UserName == User.Identity.Name)), "id", "name");
             }
             ViewBag.concernList = new SelectList(db.AppointmentConcerns.Where(c => c.program_id == null && !c.custom), "id", "name");
@@ -40,6 +45,7 @@ namespace SchoolOfScience.Controllers
             ViewBag.statusList = new SelectList(db.AppointmentStatus, "id", "name");
             ViewBag.consultation = consultation;
             return View(appointments.ToList().Where(a => (true)
+                && a.start_time > DateTime.Now
                 && (!consultation || a.AppointmentConcerns.Any(c => c.program_id != null))
             ));
         }
@@ -49,7 +55,7 @@ namespace SchoolOfScience.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin,Advising,StudentDevelopment,FacultyAdvisor")]
-        public ActionResult Index(FormCollection Form, bool reserved, bool available, bool consultation = false)
+        public ActionResult Index(FormCollection Form, bool reserved, bool available, bool past, bool consultation = false, bool advisor = false, bool mentor = false)
         {
             IQueryable<Appointment> appointments;
             if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment"))
@@ -74,7 +80,10 @@ namespace SchoolOfScience.Controllers
                 && (String.IsNullOrEmpty(Form["status"]) || a.status_id.ToString() == Form["status"])
                 && (!reserved || a.student_id != null)
                 && (!available || a.student_id == null)
+                && (past || a.start_time > DateTime.Now)
                 && (!consultation || a.AppointmentConcerns.Any(c => c.program_id != null))
+                && (!advisor || (a.student_id != null && a.StudentProfile.academic_plan_description.Contains("4Y") && a.StudentProfile.academic_plan_description.Contains("Undeclared")) && !a.AppointmentConcerns.Any(c => c.program_id != null))
+                && (!mentor || (a.student_id != null && a.StudentProfile.academic_plan_description.Contains("4Y") && !a.StudentProfile.academic_plan_description.Contains("Undeclared")) && !a.AppointmentConcerns.Any(c => c.program_id != null))
                 ));
         }
 
@@ -107,7 +116,8 @@ namespace SchoolOfScience.Controllers
 
         public ActionResult BookingCalendar(int host_id = 0)
         {
-            var appointments = db.Appointments.Where(a => a.host_id == host_id);
+            DateTime dt24 = DateTime.Now.AddHours(24);
+            var appointments = db.Appointments.Where(o => o.host_id == host_id && o.start_time > dt24);
             return View(appointments.ToList());
         }
 
@@ -155,6 +165,30 @@ namespace SchoolOfScience.Controllers
                     }
                 }
                 appointment.end_time = appointment.start_time.AddMinutes(ViewModel.duration);
+
+                foreach (var ex_session in db.Appointments.Where(a => a.venue_id == appointment.venue_id || a.host_id == appointment.host_id))
+                {
+                    DateTime ex_starttime = ex_session.start_time;
+                    DateTime ex_endtime = ex_session.end_time;
+                    if ((appointment.start_time >= ex_starttime && appointment.start_time < ex_endtime)
+                        || (appointment.end_time > ex_starttime && appointment.end_time <= ex_endtime)
+                        || (appointment.start_time <= ex_starttime && appointment.end_time >= ex_endtime))
+                    {
+                        Session["FlashMessage"] = "Failed to create appointment timeslot. Timeslot overlapped.";
+                        return RedirectToAction("Index");
+                    }
+                }
+
+                var student = db.StudentProfiles.Find(appointment.student_id);
+                if (student != null)
+                {
+                    appointment.student_id = student.id;
+                }
+                else
+                {
+                    appointment.student_id = null;
+                }
+
                 db.Appointments.Add(appointment);
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -306,7 +340,7 @@ namespace SchoolOfScience.Controllers
                                     }
                                 }
 
-                                foreach (var ex_session in db.Appointments.Where(a => a.venue_id == appointment.venue_id))
+                                foreach (var ex_session in db.Appointments.Where(a => a.venue_id == appointment.venue_id || a.host_id == appointment.host_id))
                                 {
                                     DateTime ex_starttime = ex_session.start_time;
                                     DateTime ex_endtime = ex_session.end_time;
@@ -405,6 +439,29 @@ namespace SchoolOfScience.Controllers
             if (ModelState.IsValid)
             {
                 ViewModel.appointment.end_time = ViewModel.appointment.start_time.AddMinutes(ViewModel.duration);
+
+                foreach (var ex_session in db.Appointments.Where(a => a.id != ViewModel.appointment.id && (a.venue_id == appointment.venue_id || a.host_id == appointment.host_id)))
+                {
+                    DateTime ex_starttime = ex_session.start_time;
+                    DateTime ex_endtime = ex_session.end_time;
+                    if ((ViewModel.appointment.start_time >= ex_starttime && ViewModel.appointment.start_time < ex_endtime)
+                        || (ViewModel.appointment.end_time > ex_starttime && ViewModel.appointment.end_time <= ex_endtime)
+                        || (ViewModel.appointment.start_time <= ex_starttime && ViewModel.appointment.end_time >= ex_endtime))
+                    {
+                        Session["FlashMessage"] = "Failed to edit appointment timeslot. Timeslot overlapped.";
+                        return RedirectToAction("Index");
+                    }
+                }
+                var student = db.StudentProfiles.Find(ViewModel.appointment.student_id);
+                if (student != null)
+                {
+                    ViewModel.appointment.student_id = student.id;
+                }
+                else
+                {
+                    ViewModel.appointment.student_id = null;
+                }
+
                 db.Entry(appointment).CurrentValues.SetValues(ViewModel.appointment);
                 appointment.AppointmentConcerns.Clear();
                 if (ViewModel.concerns != null)
@@ -520,15 +577,40 @@ namespace SchoolOfScience.Controllers
         [Authorize(Roles = "StudentUGRD,StudentRPGTPG,StudentNUGD")]
         public ActionResult Booking1(AppointmentBookingViewModel ViewModel)
         {
-            ViewModel.advisor = db.StudentAdvisors.FirstOrDefault(a => a.student_id == User.Identity.Name);
-            ViewModel.hostList = db.AppointmentHosts.Where(h => h.booking && !h.Appointments.Any(o => o.student_id == User.Identity.Name && o.start_time > DateTime.Now) && h.Appointments.Count() > 0).ToList();
+            var student = db.StudentProfiles.Find(User.Identity.Name);
+            if (student == null)
+            {
+                Session["FlashMessage"] = "Student not found.";
+                return RedirectToAction("Booking");
+            }
+            ViewModel.advisor = db.StudentAdvisors.FirstOrDefault(a => a.student_id == student.id);
+            DateTime dt24 = DateTime.Now.AddHours(24);
+            ViewModel.hostList = db.AppointmentHosts.Where(h => h.booking 
+                && !h.advisor
+                && !h.Appointments.Any(o => o.student_id == student.id && o.start_time > DateTime.Now) 
+                && h.Appointments.Where(o => o.start_time > dt24 && o.student_id == null).Count() > 0).ToList();
             if (ViewModel.advisor != null)
             {
                 string email = ViewModel.advisor.advisor_email;
-                var advisorhost = db.AppointmentHosts.FirstOrDefault(h => h.SystemUsers.Any(u => u.UserName == email.Substring(0, email.IndexOf("@"))) && !h.Appointments.Any(o => o.student_id == User.Identity.Name && o.start_time > DateTime.Now));
+                var advisorhost = db.AppointmentHosts.FirstOrDefault(h => h.booking
+                    && h.advisor
+                    && h.SystemUsers.Any(u => u.UserName == email.Substring(0, email.IndexOf("@")))
+                    && !h.Appointments.Any(o => o.student_id == student.id && o.start_time > DateTime.Now)
+                    && h.Appointments.Where(o => o.start_time > dt24 && o.student_id == null).Count() > 0);
                 if (advisorhost != null)
                 {
-                    ViewModel.hostList.Add(advisorhost);
+                    if (student.academic_plan_description.Contains("4Y"))
+                    {
+                        if (student.academic_plan_description.Contains("Undeclared"))
+                        {
+                            advisorhost.name = "Pre-major Faculty Advisor - " + advisorhost.name;
+                        }
+                        else
+                        {
+                            advisorhost.name = "Faculty Mentor - " + advisorhost.name;
+                        }
+                        ViewModel.hostList.Add(advisorhost);
+                    }
                 }
             }
             return View(ViewModel);
@@ -539,8 +621,28 @@ namespace SchoolOfScience.Controllers
         [Authorize(Roles = "StudentUGRD,StudentRPGTPG,StudentNUGD")]
         public ActionResult Booking2(AppointmentBookingViewModel ViewModel)
         {
+            var student = db.StudentProfiles.Find(User.Identity.Name);
+            if (student == null)
+            {
+                Session["FlashMessage"] = "Student not found.";
+                return RedirectToAction("Booking");
+            }
             ViewModel.host = db.AppointmentHosts.Find(ViewModel.host_id);
-            ViewModel.appointmentList = db.Appointments.Where(o => o.AppointmentStatus.name == "Opened" && o.host_id == ViewModel.host_id && o.student_id == null).ToList();
+            if (student.academic_plan_description.Contains("4Y"))
+            {
+                if (student.academic_plan_description.Contains("Undeclared"))
+                {
+                    ViewModel.host.name = "Pre-major Faculty Advisor - " + ViewModel.host.name;
+                }
+                else
+                {
+                    ViewModel.host.name = "Faculty Mentor - " + ViewModel.host.name;
+                }
+            }
+            DateTime dt24 = DateTime.Now.AddHours(24);
+            ViewModel.appointmentList = db.Appointments.Where(o => o.host_id == ViewModel.host_id 
+                && o.student_id == null
+                && o.start_time > dt24).OrderBy(o => o.start_time).ToList();
             return View(ViewModel);
         }
 
@@ -549,7 +651,24 @@ namespace SchoolOfScience.Controllers
         [Authorize(Roles = "StudentUGRD,StudentRPGTPG,StudentNUGD")]
         public ActionResult Booking3(AppointmentBookingViewModel ViewModel)
         {
+            var student = db.StudentProfiles.Find(User.Identity.Name);
+            if (student == null)
+            {
+                Session["FlashMessage"] = "Student not found.";
+                return RedirectToAction("Booking");
+            }
             ViewModel.host = db.AppointmentHosts.Find(ViewModel.host_id);
+            if (student.academic_plan_description.Contains("4Y"))
+            {
+                if (student.academic_plan_description.Contains("Undeclared"))
+                {
+                    ViewModel.host.name = "Pre-major Faculty Advisor - " + ViewModel.host.name;
+                }
+                else
+                {
+                    ViewModel.host.name = "Faculty Mentor - " + ViewModel.host.name;
+                }
+            }
             ViewModel.appointment = db.Appointments.Find(ViewModel.appointment_id);
             ViewModel.concernList = db.AppointmentConcerns.Where(c => !c.custom && c.program_id == null).ToList();
             if (ViewModel.concern_ids == null && ViewModel.appointment.AppointmentConcerns.Count() > 0)
@@ -564,9 +683,29 @@ namespace SchoolOfScience.Controllers
         [Authorize(Roles = "StudentUGRD,StudentRPGTPG,StudentNUGD")]
         public ActionResult BookingConfirm(AppointmentBookingViewModel ViewModel)
         {
+            var student = db.StudentProfiles.Find(User.Identity.Name);
+            if (student == null)
+            {
+                Session["FlashMessage"] = "Student not found.";
+                return RedirectToAction("Booking");
+            }
             ViewModel.host = db.AppointmentHosts.Find(ViewModel.host_id);
+            if (student.academic_plan_description.Contains("4Y"))
+            {
+                if (student.academic_plan_description.Contains("Undeclared"))
+                {
+                    ViewModel.host.name = "Pre-major Faculty Advisor - " + ViewModel.host.name;
+                }
+                else
+                {
+                    ViewModel.host.name = "Faculty Mentor - " + ViewModel.host.name;
+                }
+            }
             ViewModel.appointment = db.Appointments.Find(ViewModel.appointment_id);
-            ViewModel.concerns = db.AppointmentConcerns.Where(c => ViewModel.concern_ids.Contains(c.id)).ToList();
+            if (ViewModel.concern_ids != null)
+            {
+                ViewModel.concerns = db.AppointmentConcerns.Where(c => ViewModel.concern_ids.Contains(c.id)).ToList();
+            }
             return View(ViewModel);
         }
 
@@ -576,12 +715,29 @@ namespace SchoolOfScience.Controllers
         {
             ViewModel.host = db.AppointmentHosts.Find(ViewModel.host_id);
             ViewModel.appointment = db.Appointments.Find(ViewModel.appointment_id);
-            ViewModel.concerns = db.AppointmentConcerns.Where(c => ViewModel.concern_ids.Contains(c.id)).ToList();
+            DateTime dt24 = DateTime.Now.AddHours(24);
+            if (ViewModel.appointment.start_time < dt24)
+            {
+                Session["FlashMessage"] = "Appointment start time within 24 hours.";
+                return RedirectToAction("Booking", "Appointment");
+            }
+            if (ViewModel.concern_ids != null)
+            {
+                ViewModel.concerns = db.AppointmentConcerns.Where(c => ViewModel.concern_ids.Contains(c.id)).ToList();
+            }
+            else
+            {
+                ViewModel.concerns = new List<AppointmentConcern>();
+            }
 
             ViewModel.appointment.AppointmentConcerns.Clear();
             if (!String.IsNullOrEmpty(ViewModel.other_concern))
             {
-                var otherconcern = new AppointmentConcern { name = ViewModel.other_concern, custom = true };
+                var otherconcern = db.AppointmentConcerns.FirstOrDefault(c => c.name == ViewModel.other_concern && c.custom);
+                if (otherconcern == null)
+                {
+                    otherconcern = new AppointmentConcern { name = ViewModel.other_concern, custom = true };
+                }
                 db.AppointmentConcerns.Add(otherconcern);
                 ViewModel.appointment.AppointmentConcerns.Add(otherconcern);
             }
@@ -608,13 +764,14 @@ namespace SchoolOfScience.Controllers
         }
 
         [Authorize(Roles = "Admin,Advising,StudentDevelopment,FacultyAdvisor,StudentUGRD,StudentRPGTPG,StudentNUGD")]
-        public ActionResult MyAppointment()
+        public ActionResult MyAppointment(bool viewall = false)
         {
             if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment") || User.IsInRole("FacultyAdvisor"))
             {
                 return RedirectToAction("Index", "Appointment");
             }
-            var appointments = db.Appointments.Where(o => o.student_id == User.Identity.Name);
+            var appointments = db.Appointments.Where(o => o.student_id == User.Identity.Name 
+                && (viewall || o.start_time > DateTime.Now));
             return View(appointments.ToList());
         }
 
@@ -625,6 +782,15 @@ namespace SchoolOfScience.Controllers
             if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment") || User.IsInRole("FacultyAdvisor"))
             {
                 appointment = db.Appointments.Find(id);
+            }
+            else
+            {
+                DateTime dt24 = DateTime.Now.AddHours(24);
+                if (appointment.start_time < dt24)
+                {
+                    Session["FlashMessage"] = "Appointment start time within 24 hours.";
+                    return RedirectToAction("MyAppointment", "Appointment");
+                }
             }
             if (appointment == null)
             {

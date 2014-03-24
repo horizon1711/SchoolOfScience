@@ -6,7 +6,7 @@
 
 <h2>Interview Timeslots</h2>
 
-@using (Html.BeginForm())
+@using (Html.BeginForm("Index", "Interview", FormMethod.Post, new { id = "filter-form" }))
 {
     
     <div class="filter">
@@ -94,7 +94,7 @@
                 @Html.DisplayFor(modelItem => item.id)
             </td>
             <td>
-                @String.Format("{0:yyyy-MM-dd}", item.start_time)
+                @String.Format("{0:yyyy-MM-dd (ddd)}", item.start_time)
             </td>
             <td>
                 @String.Format("{0:HH:mm}", item.start_time) - @String.Format("{0:HH:mm}", item.end_time)

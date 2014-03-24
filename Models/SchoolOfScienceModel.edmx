@@ -387,6 +387,7 @@
           <Property Name="id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
           <Property Name="name" Type="nvarchar" Nullable="false" MaxLength="100" />
           <Property Name="booking" Type="bit" Nullable="false" />
+          <Property Name="advisor" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="AppointmentStatus">
           <Key>
@@ -2097,6 +2098,7 @@
           <NavigationProperty Name="Appointments" Relationship="SchoolOfScienceModel.FK_Appointment_AppointmentHost" FromRole="AppointmentHost" ToRole="Appointment" />
           <NavigationProperty Name="SystemUsers" Relationship="SchoolOfScienceModel.FK_UserProfile_AppointmentHost" FromRole="AppointmentHost" ToRole="UserProfile" />
           <Property Type="Boolean" Name="booking" Nullable="false" />
+          <Property Type="Boolean" Name="advisor" Nullable="false" />
         </EntityType>
         <EntityType Name="AppointmentStatus">
           <Key>
@@ -3528,6 +3530,7 @@
           <EntitySetMapping Name="AppointmentHosts">
             <EntityTypeMapping TypeName="SchoolOfScienceModel.AppointmentHost">
               <MappingFragment StoreEntitySet="AppointmentHost">
+                <ScalarProperty Name="advisor" ColumnName="advisor" />
                 <ScalarProperty Name="booking" ColumnName="booking" />
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="name" ColumnName="name" />

@@ -34,7 +34,7 @@
                 }
             </td>
             <td>
-                @String.Format("{0:yyyy-MM-dd}", item.start_time)
+                @String.Format("{0:yyyy-MM-dd (ddd)}", item.start_time)
             </td>
             <td>
                 @String.Format("{0:HH:mm}", item.start_time) - @String.Format("{0:HH:mm}", item.end_time)
@@ -51,14 +51,14 @@
 </table>
 
 <div class="clear-fix"></div>
-@using (Html.BeginForm())
+@using (Html.BeginForm("BatchDelete", "Appointment", FormMethod.Post, new { id = "form" }))
 {
     @Html.Hidden("items", ViewBag.items as String)
     <p>
         Appointment session with reservation will not be deleted.
     </p>
     <p>
-        <input type="submit" value="Delete" />
+        <input type="submit" value="Delete" id="batch-delete-btn" />
     </p>
 }
 
@@ -75,6 +75,43 @@
         $(".student-link").click(function (e) {
             e.preventDefault();
             showDialog($(this).prop("href"), "#error-dialog", "#dialog1");
+        });
+
+        $("#batch-delete-btn").click(function (e) {
+            e.preventDefault();
+            $.ajax({
+                cache: false,
+                url: $("#form").prop("action"),
+                type: "POST",
+                data: $("#form").serializeArray(),
+                error: function (jqXHR, status, error) {
+                    $("#dialog3").dialog("close");
+                    $("#error-dialog").dialog({
+                        width: 350,
+                        height: 100,
+                        overflow: "auto",
+                        modal: true,
+                        resizable: false,
+                        draggable: false,
+                        open: function () {
+                            $(this).scrollTop(0);
+                            $('.ui-widget-overlay').hide().fadeIn();
+                        },
+                        show: {
+                            effect: 'fade',
+                            duration: 200
+                        },
+                        hide: {
+                            effect: 'fade',
+                            duration: 100
+                        }
+                    }).html(error);
+                },
+                success: function (result) {
+                    $("#dialog3").dialog("close");
+                    $("#filter-form").submit();
+                }
+            })
         });
     });
 </script>

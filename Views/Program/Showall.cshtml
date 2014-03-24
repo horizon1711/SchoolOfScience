@@ -116,10 +116,10 @@
                 </div>
             </td>
             <td>
-                @String.Format("{0:yyyy-MM-dd}", item.program.start_time)
+                @item.program.start_time
             </td>
             <td>
-                @String.Format("{0:yyyy-MM-dd}", item.program.application_end_time)
+                @String.Format("{0:yyyy-MM-dd (ddd)}", item.program.application_end_time)
             </td>
             <td style="white-space:nowrap;">
             @if (item.eligible)
@@ -199,7 +199,7 @@
 
 <div>
     <p>
-        @Html.ActionLink("Back", "Showcase", "Program", new { @class = "button" })
+        @Html.ActionLink("Back", "Showcase", "Program", null, new { @class = "button" })
     </p>
 </div>
 

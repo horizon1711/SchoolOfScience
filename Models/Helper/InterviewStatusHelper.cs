@@ -12,6 +12,7 @@ namespace SchoolOfScience.Models
     public class InterviewStatusHelper
     {
         [Required(ErrorMessage = "*Required Field.")]
+        [StringLength(50, ErrorMessage = "*Maximum length exceeded.")]
         [Display(Name = "Interview Status")]
         public string name { get; set; }
 

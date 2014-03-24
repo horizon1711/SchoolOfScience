@@ -33,7 +33,7 @@ namespace SchoolOfScience.Models
         [Display(Name = "Status")]
         public int status_id { get; set; }
 
-        [Display(Name = "Student")]
+        [Display(Name = "Student ID")]
         public Nullable<int> student_id { get; set; }
 
         [Display(Name = "Remarks")]

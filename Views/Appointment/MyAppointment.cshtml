@@ -15,14 +15,17 @@
 <h2>My Appointments</h2>
 
 <p>
-    @Html.ActionLink("Make Booking", "Booking", "Appointment")
+    @Html.ActionLink("Make Booking", "Booking", "Appointment", new { @class = "button" })
 </p>
 
 <table class="data-table">
     <thead>
         <tr>
             <th>
-                Date/Time
+                Date
+            </th>
+            <th>
+                Time
             </th>
             <th>
                 Venue
@@ -33,9 +36,6 @@
             <th>
                 Host
             </th>
-            <th>
-                Status
-            </th>
             <th></th>
         </tr>
     </thead>
@@ -44,7 +44,9 @@
     {
         <tr>
             <td>
-                @String.Format("{0:yyyy-MM-dd}", item.start_time)<br />
+                @String.Format("{0:yyyy-MM-dd (ddd)}", item.start_time)
+            </td>
+            <td>
                 @String.Format("{0:HH:mm}", item.start_time) - @String.Format("{0:HH:mm}", item.end_time)
             </td>
             <td>
@@ -59,7 +61,14 @@
                     }
                     else 
                     {
+                        if (!concern.custom)
+                        {
                         <div>@Html.DisplayFor(modelItem => concern.name)</div>
+                        }
+                        else
+                        {
+                        <div title="@Html.DisplayFor(modelItem => concern.name)">Others</div>
+                        }
                     }
                 }
             </td>
@@ -67,10 +76,19 @@
                 @Html.DisplayFor(modelItem => item.AppointmentHost.name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.AppointmentStatus.name)
-            </td>
-            <td>
-                @Html.ActionLink("Cancel", "Cancel", new { id = item.id })
+                <div class="action-wrapper">
+                @if (item.start_time > DateTime.Now.AddHours(24))
+                {
+                    <text>
+                    Cancel
+                    <a href="@Url.Action("Cancel", "Appointment", new { id = item.id })" class = "action-link" title = "Cancel My Appointment"><img src="@Url.Content("~/Images/Action/delete.gif")" /></a>
+                    </text>
+                } 
+                else
+                {
+                    <text>Expired</text>
+                }
+                </div>
             </td>
         </tr>
     }
@@ -78,16 +96,28 @@
 </table>
 
 <div class="clear-fix"></div>
+@if (Request["viewall"] != "True")
+{
+<p>
+    @Html.ActionLink("View Also Expired Appointments", "MyAppointment", "Appointment", new { viewall = true }, new { @class = "button" })
+</p>
+}
+else
+{
+<p>
+    @Html.ActionLink("View Future Appointments Only", "MyAppointment", "Appointment", null, new { @class = "button" })
+</p>
+}
 
 @section Scripts {
     <script>
         $(function () {
             $(".data-table").dataTable({
-                "aaSorting": [[2, "asc"]],
-                "bPaginate": false,
-                "aoColumnDefs": [
-                    { 'bSortable': false, 'aTargets': [0] }]
+                "aaSorting": [[0, "asc"], [1, "asc"]],
+                "bPaginate": false
             });
+
+            $(".button").button();
 
             $(".program-details-link").click( function (e) {
                 e.preventDefault();

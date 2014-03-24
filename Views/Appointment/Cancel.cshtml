@@ -16,7 +16,7 @@
 
 <p class="booking-info">
     Host: @Model.AppointmentHost.name<br />
-    Date: @String.Format("{0:yyyy-MM-dd}", Model.start_time)<br />
+    Date: @String.Format("{0:yyyy-MM-dd (ddd)}", Model.start_time)<br />
     Time: @String.Format("{0:HH:mm}", Model.start_time) to @String.Format("{0:HH:mm}", Model.end_time)<br />
     Venue: @Model.AppointmentVenue.name<br />
     Concerns: @String.Join(", ", Model.AppointmentConcerns.Select(c => c.name).ToArray())<br />
@@ -28,15 +28,15 @@
 @using (Html.BeginForm()) {
     @Html.AntiForgeryToken()
     <p>
-        <input type="submit" value="Confirm Cancel" /> |
-        @Html.ActionLink("Back to List", "MyAppointment")
+        <input type="submit" value="Confirm Cancel" />
+        @Html.ActionLink("Back to List", "MyAppointment", null, new { @class = "button" })
     </p>
 }
 
 @section Scripts {
     <script>
         $(function () {
-            $("input[type=submit]").button();
+            $("input[type=submit], .button").button();
         });
     </script>
 }

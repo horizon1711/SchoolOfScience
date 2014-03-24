@@ -23,6 +23,13 @@
     <div class="display-field">
         @Html.DisplayFor(model => model.booking)
     </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.advisor)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.advisor)
+    </div>
 </fieldset>
 @using (Html.BeginForm()) {
     @Html.AntiForgeryToken()

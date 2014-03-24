@@ -7,7 +7,8 @@
 <h2>Application Management</h2>
 
 
-@using (Html.BeginForm()) {
+@using (Html.BeginForm("Index", "Application", FormMethod.Post, new { id = "filter-form" }))
+{
     
     <div class="filter">
         <div class="filter-field">

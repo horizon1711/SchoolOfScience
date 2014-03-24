@@ -50,7 +50,7 @@
                 @Html.DisplayNameFor(model => model.NotificationType.name)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.created)
+                TO Recipient
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.modified)
@@ -80,8 +80,10 @@
                 @Html.DisplayFor(modelItem => item.NotificationType.name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.created)<br />
-                [@Html.DisplayFor(modelItem => item.created_by)]
+                @foreach (var recipient in item.NotificationRecipients.Where(r => r.recipient_type == "to"))
+                {
+                    <div>@Html.DisplayFor(modelItem => recipient.email)</div>
+                }
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.modified)<br />
@@ -104,7 +106,7 @@
     <script>
         $(function () {
             $(".data-table").dataTable({
-                "aaSorting": [[6, "desc"]]
+                "aaSorting": [[7, "desc"]]
             });
 
             $("input[type=reset]").click(function (e) {

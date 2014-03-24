@@ -35,7 +35,7 @@
             Application Deadline
     </div>
     <div class="display-field">
-        @String.Format("{0:yyyy-MM-dd HH:mm}", Model.program.application_end_time)
+        @String.Format("{0:yyyy-MM-dd (ddd) HH:mm}", Model.program.application_end_time)
     </div>
 </div>
 }
@@ -143,6 +143,10 @@
                             @if (Model.program.apply_action == "email")
                             {
                                 <text><a href="mailto:@(Model.program.apply_link)" target="_blank" title="Click to open your default email client."><img src="@Url.Content("~/Images/Action/apply.gif")" /></a></text>
+                            }   
+                            @if (Model.program.apply_action == "noaction")
+                            {
+                                <text>No application is required</text>
                             }   
                         </div>
                     }

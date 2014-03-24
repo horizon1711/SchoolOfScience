@@ -108,7 +108,45 @@ namespace SchoolOfScience.Controllers
         }
 
         //
+        // GET: /Program/ViewList/5
+
+        [Authorize(Roles = "FacultyAdvisor")]
+        public ActionResult ViewList(int id = 0)
+        {
+            ViewBag.typeid = id;
+            ViewBag.programList = new SelectList(db.Programs.Where(p => p.ProgramStatus.shown_to_student).OrderBy(p => p.name), "id", "name");
+            ViewBag.programTypeList = new SelectList(db.ProgramTypes, "id", "name", id);
+            DateTime date_to_shown = new DateTime(DateTime.Now.Year - 2, 9, 1, 0, 0, 0);
+            var programs = db.Programs.Where(p => p.ProgramStatus.shown_to_student
+                    && ((id == 0) || (p.ProgramType.id == id))
+                    && (p.application_end_time >= date_to_shown));
+            return View(programs.ToList());
+        }
+
+        //
+        // POST: /Program/ViewList/5
+
+        [HttpPost]
+        [Authorize(Roles = "FacultyAdvisor")]
+        public ActionResult ViewList(FormCollection Form, int id = 0)
+        {
+            ViewBag.typeid = id;
+            var selectedtype = Form["program_type"] != null ? Form["program_type"].Split(',') : null;
+            ViewBag.programList = new SelectList(db.Programs.Where(p => p.ProgramStatus.shown_to_student).OrderBy(p => p.name), "id", "name", Form["program"]);
+            ViewBag.programTypeList = new MultiSelectList(db.ProgramTypes, "id", "name", selectedtype);
+            DateTime date_to_shown = new DateTime(DateTime.Now.Year - 2, 9, 1, 0, 0, 0);
+            var programs = db.Programs.Where(p => p.ProgramStatus.shown_to_student
+                    && ((id == 0) || (p.ProgramType.id == id))
+                    && (p.application_end_time >= date_to_shown));
+            return View(programs.ToList().Where(p => (true)
+                && (String.IsNullOrEmpty(Form["program"]) || p.id.ToString() == Form["program"])
+                && (String.IsNullOrEmpty(Form["program_type"]) || selectedtype.Contains(p.type_id.ToString()))
+            ));
+        }
+
+        //
         // GET: /Program/Showall/5
+
         [Authorize(Roles = "StudentUGRD,StudentRPGTPG,StudentNUGD")]
         public ActionResult Showall(int id = 0)
         {
@@ -253,7 +291,7 @@ namespace SchoolOfScience.Controllers
         //
         // GET: /Program/Details/5
         [Ajax(true)]
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP,StudentUGRD,StudentRPGTPG,StudentNUGD")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,FacultyAdvisor,EDP,StudentUGRD,StudentRPGTPG,StudentNUGD")]
         public ActionResult Details(int id = 0)
         {
             //get program
@@ -1064,6 +1102,7 @@ namespace SchoolOfScience.Controllers
             items.Add(new SelectListItem { Text = "Default", Value = "default", Selected = true });
             items.Add(new SelectListItem { Text = "External Link", Value = "link" });
             items.Add(new SelectListItem { Text = "Email", Value = "email" });
+            items.Add(new SelectListItem { Text = "No application required", Value = "noaction" });
             return new SelectList(items, "Value", "Text", program.apply_action);
         }
 
