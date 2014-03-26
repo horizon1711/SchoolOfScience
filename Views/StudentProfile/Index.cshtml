@@ -8,45 +8,53 @@
 
 @using (Html.BeginForm())
 {
-    
-    <div class="filter">
-        <div class="filter-field">
-            <label for="career">Academic Career:</label>
-            @*@Html.DropDownList("career", ViewBag.careerList as IEnumerable<SelectListItem>, "All", null)
-            <label for="academic_group">Academic Group:</label>*@
-            @Html.DropDownList("academic_group", ViewBag.groupList as IEnumerable<SelectListItem>, "All", null)
-            <label for="academic_organization">Department:</label>
-            @Html.DropDownList("academic_organization", ViewBag.departmentList as IEnumerable<SelectListItem>, "All", null)
-            <label for="academic_plan_description">Academic Plan:</label>
-            @Html.DropDownList("academic_plan_description", ViewBag.planList as IEnumerable<SelectListItem>, "All", null)
-            <label for="academic_level">Academic Level:</label>
-            @Html.DropDownList("academic_level", ViewBag.levelList as IEnumerable<SelectListItem>, "All", null)
+    <fieldset class="startCollapse">
+        <legend>Search by Filter (Click to expand)</legend>
+        <div class="filter">
+            <div class="filter-field">
+                <label for="career">Academic Career:</label>
+                @*@Html.DropDownList("career", ViewBag.careerList as IEnumerable<SelectListItem>, "All", null)
+                <label for="academic_group">Academic Group:</label>*@
+                @Html.DropDownList("academic_group", ViewBag.groupList as IEnumerable<SelectListItem>, "All", null)
+            </div>
+            <div class="filter-field">
+                <label for="academic_organization">Department:</label>
+                @Html.DropDownList("academic_organization", ViewBag.departmentList as IEnumerable<SelectListItem>, "All", null)
+            </div>
+            <div class="filter-field">
+                <label for="academic_plan_description">Academic Plan:</label>
+                @Html.DropDownList("academic_plan_description", ViewBag.planList as IEnumerable<SelectListItem>, "All", null)
+            </div>
+            <div class="filter-field">
+                <label for="academic_level">Academic Level:</label>
+                @Html.DropDownList("academic_level", ViewBag.levelList as IEnumerable<SelectListItem>, "All", null)
+            </div>
+            <div class="filter-field">
+                <label for="studentid">Student ID:</label>
+                @Html.TextBox("studentid", ViewBag.studentid as String)
+                <label for="firstname">First Name:</label>
+                @Html.TextBox("firstname", ViewBag.firstname as String)
+                <label for="lastname">Last Name:</label>
+                @Html.TextBox("lastname", ViewBag.lastname as String)
+            </div>
+            <div class="filter-field">
+                <label for="commentkeyword">Advising Comment Keyword:</label>
+                @Html.TextBox("commentkeyword", ViewBag.commentkeyword as String)
+            </div>
+            <div class="filter-field">
+                <label for="assigned">Assigned Interview:</label>
+                @Html.CheckBox("assigned", false)
+                <label for="requiredinterview">Required Interview but Not Assigned:</label>
+                @Html.CheckBox("requiredinterview", false)
+                <label for="withcomment">With Advising Comments:</label>
+                @Html.CheckBox("withcomment", false)
+            </div>
+            <div class="filter-field">
+                <input type="submit" value="Search" />
+                <input type="reset" class="button" value="Reset" />
+            </div>
         </div>
-        <div class="filter-field">
-            <label for="studentid">Student ID:</label>
-            @Html.TextBox("studentid", ViewBag.studentid as String)
-            <label for="firstname">First Name:</label>
-            @Html.TextBox("firstname", ViewBag.firstname as String)
-            <label for="lastname">Last Name:</label>
-            @Html.TextBox("lastname", ViewBag.lastname as String)
-        </div>
-        <div class="filter-field">
-            <label for="commentkeyword">Advising Comment Keyword:</label>
-            @Html.TextBox("commentkeyword", ViewBag.commentkeyword as String)
-        </div>
-        <div class="filter-field">
-            <label for="assigned">Assigned Interview:</label>
-            @Html.CheckBox("assigned", false)
-            <label for="requiredinterview">Required Interview but Not Assigned:</label>
-            @Html.CheckBox("requiredinterview", false)
-            <label for="withcomment">With Advising Comments:</label>
-            @Html.CheckBox("withcomment", false)
-        </div>
-        <div class="filter-field">
-            <input type="submit" value="Search" />
-            <input type="reset" class="button" value="Reset" />
-        </div>
-    </div>
+    </fieldset>
 }
 @if (ViewBag.showTable)
 {
@@ -75,7 +83,8 @@
     </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+@foreach (var item in Model)
+{
     <tr>
         <td>
             <strong>@Html.ActionLink(item.id.ToString(), "Details", "StudentProfile", new { id = item.id }, new { @class = "student-link" })</strong>

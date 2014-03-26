@@ -68,6 +68,7 @@
             <th>Experience - @experiencetype.name</th>
         }
         <th>Qualification</th>
+        <th>Other Activities</th>
     </tr>
     @foreach (var application in Model.program.Applications)
     {
@@ -234,6 +235,16 @@
                     <text>;<br /></text>
                 }
                 @(String.Format("{0:yyyy-MM-dd}", qualification.data.award_date) + " " + qualification.data.organization + " " + qualification.data.name) 
+            }
+        </td>
+        <td>
+            @foreach (var activity in application.StudentProfile.StudentActivities.Select((x, i) => new { data = x, index = i }))
+            {
+                if (activity.index > 0)
+                {
+                    <text>;<br /></text>
+                }
+                @(String.Format("{0:yyyy-MM-dd}", activity.data.start_date) + " " + activity.data.name) 
             }
         </td>
     </tr>

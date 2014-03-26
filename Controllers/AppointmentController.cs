@@ -12,7 +12,7 @@ using System.Data.Objects.SqlClient;
 
 namespace SchoolOfScience.Controllers
 {
-    public class AppointmentController : Controller
+    public class AppointmentController : ControllerBase
     {
         private SchoolOfScienceEntities db = new SchoolOfScienceEntities();
         private SchoolOfScienceEntities programdb = new SchoolOfScienceEntities();
@@ -33,8 +33,9 @@ namespace SchoolOfScience.Controllers
             {
                 appointments = db.Appointments.Where(a => a.student_id != null
                     && a.AppointmentHost.SystemUsers.Any(u => u.UserName == User.Identity.Name)
-                    && (!advisor || (a.StudentProfile.academic_plan_description.Contains("4Y") && a.StudentProfile.academic_plan_description.Contains("Undeclared")) && !a.AppointmentConcerns.Any(c => c.program_id != null))
-                    && (!mentor || (a.StudentProfile.academic_plan_description.Contains("4Y") && !a.StudentProfile.academic_plan_description.Contains("Undeclared")) && !a.AppointmentConcerns.Any(c => c.program_id != null))
+                    && (!(advisor && mentor) || (a.StudentProfile.academic_plan_description.Contains("4Y")))
+                    && (!(advisor && !mentor) || (a.StudentProfile.academic_plan_description.Contains("4Y") && a.StudentProfile.academic_plan_description.Contains("Undeclared")) && !a.AppointmentConcerns.Any(c => c.program_id != null))
+                    && (!(!advisor && mentor) || (a.StudentProfile.academic_plan_description.Contains("4Y") && !a.StudentProfile.academic_plan_description.Contains("Undeclared")) && !a.AppointmentConcerns.Any(c => c.program_id != null))
                     );
                 consultation = false;
                 ViewBag.reserved = true;
@@ -44,6 +45,7 @@ namespace SchoolOfScience.Controllers
             ViewBag.venueList = new SelectList(db.AppointmentVenues, "id", "name");
             ViewBag.statusList = new SelectList(db.AppointmentStatus, "id", "name");
             ViewBag.consultation = consultation;
+            ViewBag.host = db.AppointmentHosts.FirstOrDefault(h => h.SystemUsers.Any(u => u.UserName == User.Identity.Name));
             return View(appointments.ToList().Where(a => (true)
                 && a.start_time > DateTime.Now
                 && (!consultation || a.AppointmentConcerns.Any(c => c.program_id != null))
@@ -73,6 +75,7 @@ namespace SchoolOfScience.Controllers
             ViewBag.venueList = new SelectList(db.AppointmentVenues, "id", "name", Form["venue"]);
             ViewBag.statusList = new SelectList(db.AppointmentStatus, "id", "name", Form["status"]);
             ViewBag.consultation = consultation;
+            ViewBag.host = db.AppointmentHosts.FirstOrDefault(h => h.SystemUsers.Any(u => u.UserName == User.Identity.Name));
             return View(appointments.ToList().Where(a => (true)
                 && (String.IsNullOrEmpty(Form["concern"]) || a.AppointmentConcerns.Any(c => c.id.ToString() == Form["concern"]))
                 && (String.IsNullOrEmpty(Form["host"]) || a.host_id.ToString() == Form["host"])
@@ -82,8 +85,11 @@ namespace SchoolOfScience.Controllers
                 && (!available || a.student_id == null)
                 && (past || a.start_time > DateTime.Now)
                 && (!consultation || a.AppointmentConcerns.Any(c => c.program_id != null))
-                && (!advisor || (a.student_id != null && a.StudentProfile.academic_plan_description.Contains("4Y") && a.StudentProfile.academic_plan_description.Contains("Undeclared")) && !a.AppointmentConcerns.Any(c => c.program_id != null))
-                && (!mentor || (a.student_id != null && a.StudentProfile.academic_plan_description.Contains("4Y") && !a.StudentProfile.academic_plan_description.Contains("Undeclared")) && !a.AppointmentConcerns.Any(c => c.program_id != null))
+                && (!(advisor && mentor) || (a.student_id != null && a.StudentProfile.academic_plan_description.Contains("4Y")))
+                && (!(advisor && !mentor) || (a.student_id != null && a.StudentProfile.academic_plan_description.Contains("4Y") && a.StudentProfile.academic_plan_description.Contains("Undeclared")) && !a.AppointmentConcerns.Any(c => c.program_id != null))
+                && (!(!advisor && mentor) || (a.student_id != null && a.StudentProfile.academic_plan_description.Contains("4Y") && !a.StudentProfile.academic_plan_description.Contains("Undeclared")) && !a.AppointmentConcerns.Any(c => c.program_id != null))
+                //&& (!advisor || (a.student_id != null && a.StudentProfile.academic_plan_description.Contains("4Y") && a.StudentProfile.academic_plan_description.Contains("Undeclared")) && !a.AppointmentConcerns.Any(c => c.program_id != null))
+                //&& (!mentor || (a.student_id != null && a.StudentProfile.academic_plan_description.Contains("4Y") && !a.StudentProfile.academic_plan_description.Contains("Undeclared")) && !a.AppointmentConcerns.Any(c => c.program_id != null))
                 ));
         }
 
@@ -119,6 +125,30 @@ namespace SchoolOfScience.Controllers
             DateTime dt24 = DateTime.Now.AddHours(24);
             var appointments = db.Appointments.Where(o => o.host_id == host_id && o.start_time > dt24);
             return View(appointments.ToList());
+        }
+
+        //
+        // GET: /Appointment/HostCalendar
+
+        public ActionResult HostCalendar(int host_id = 0)
+        {
+            var appointments = db.Appointments.Where(o => o.host_id == host_id);
+            ViewBag.hostname = db.AppointmentHosts.Find(host_id).name;
+            return View(appointments.ToList());
+        }
+
+        //
+        // GET: /Appointment/HostCalendarDetails
+
+        [Ajax(true)]
+        public ActionResult HostCalendarDetails(int id = 0)
+        {
+            var appointment = db.Appointments.Find(id);
+            if (appointment == null)
+            {
+                return HttpNotFound("Appointment not found.");
+            }
+            return View(appointment);
         }
 
         //
@@ -628,7 +658,7 @@ namespace SchoolOfScience.Controllers
                 return RedirectToAction("Booking");
             }
             ViewModel.host = db.AppointmentHosts.Find(ViewModel.host_id);
-            if (student.academic_plan_description.Contains("4Y"))
+            if (ViewModel.host.advisor && student.academic_plan_description.Contains("4Y"))
             {
                 if (student.academic_plan_description.Contains("Undeclared"))
                 {
@@ -658,7 +688,7 @@ namespace SchoolOfScience.Controllers
                 return RedirectToAction("Booking");
             }
             ViewModel.host = db.AppointmentHosts.Find(ViewModel.host_id);
-            if (student.academic_plan_description.Contains("4Y"))
+            if (ViewModel.host.advisor && student.academic_plan_description.Contains("4Y"))
             {
                 if (student.academic_plan_description.Contains("Undeclared"))
                 {
@@ -690,7 +720,7 @@ namespace SchoolOfScience.Controllers
                 return RedirectToAction("Booking");
             }
             ViewModel.host = db.AppointmentHosts.Find(ViewModel.host_id);
-            if (student.academic_plan_description.Contains("4Y"))
+            if (ViewModel.host.advisor && student.academic_plan_description.Contains("4Y"))
             {
                 if (student.academic_plan_description.Contains("Undeclared"))
                 {
@@ -754,6 +784,8 @@ namespace SchoolOfScience.Controllers
             {
                 db.SaveChanges();
                 Session["FlashMessage"] = "Appointment has been successfully booked.";
+                SendNotification(CreateNotification("AppointmentReserved", ViewModel.appointment));
+                SendNotification(CreateNotification("AppointmentReservedAdvisor", ViewModel.appointment));
                 return RedirectToAction("MyAppointment", "Appointment");
             }
             catch (Exception e)

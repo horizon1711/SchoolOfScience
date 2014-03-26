@@ -8,22 +8,24 @@
 
 @using (Html.BeginForm())
 {
-    
-    <div class="filter">
-        <div class="filter-field">
-            <label for="notification_type">Notification Type:</label>
-            @Html.DropDownList("notification_type", ViewBag.NotificationTypeList as IEnumerable<SelectListItem>, "All", null)
+    <fieldset class="startCollapse">
+        <legend>Search by Filter (Click to expand)</legend>
+        <div class="filter">
+            <div class="filter-field">
+                <label for="notification_type">Notification Type:</label>
+                @Html.DropDownList("notification_type", ViewBag.NotificationTypeList as IEnumerable<SelectListItem>, "All", null)
+            </div>
+            <div class="filter-field">
+                <label for="notification_status">Notification Status:</label>
+                @Html.DropDownList("notification_status", ViewBag.NotificationStatusList as IEnumerable<SelectListItem>, "All", null)
+            </div>
+            <div class="clear-fix"></div>
+            <div class="filter-field">
+                <input type="submit" value="Search" />
+                <input type="reset" value="Reset" />
+            </div>
         </div>
-        <div class="filter-field">
-            <label for="notification_status">Notification Status:</label>
-            @Html.DropDownList("notification_status", ViewBag.NotificationStatusList as IEnumerable<SelectListItem>, "All", null)
-        </div>
-        <div class="clear-fix"></div>
-        <div class="filter-field">
-            <input type="submit" value="Search" />
-            <input type="reset" value="Reset" />
-        </div>
-    </div>
+    </fieldset>
 }
 
 @if (Model.Count() > 0)

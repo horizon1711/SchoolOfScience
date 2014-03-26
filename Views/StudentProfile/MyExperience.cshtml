@@ -74,6 +74,7 @@
         $.ajaxSetup({ cache: false });
 
         $(".experience-table").dataTable({
+            "sScrollX": "100%",
             "aaSorting": [[0, "desc"]],
             "bPaginate": false,
             "bInfo": false,

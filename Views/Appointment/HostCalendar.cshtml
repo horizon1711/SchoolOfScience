@@ -5,10 +5,12 @@
 }
 <script src="@Url.Content("~/Scripts/daypilot-all.min.js")"></script>
 
+<h3 style="margin-top:-10px;">Calendar View - @ViewBag.hostname</h3>
+
 @*<div>
     <div id="nav"></div>
 </div>*@
-<div class="calendar-nav">
+<div class="calendar-nav" style="margin: 0px;">
     <div style="float:left">
         <a href="javascript:dp.startDate = dp.startDate.addMonths(-1); dp.update();" class="button"><< Month</a>
         <a href="javascript:dp.startDate = dp.startDate.addDays(-7); dp.update();" class="button">< Week</a>
@@ -19,8 +21,8 @@
     </div>
 </div>
 
-<p style="text-align: center;">
-    Click to select...
+<p style="text-align: center; margin-top: 0px;">
+    <a href="javascript:dp.startDate = '@(String.Format("{0:yyyy-MM-dd}", DateTime.Now))'; dp.update();" class="button">Today</a>
 </p>
 <div class="clear-fix"></div>
 <div>
@@ -50,7 +52,7 @@
     @if(Model.Count() > 0)
     {
         <text>
-        dp.startDate = "@(String.Format("{0:yyyy-MM-dd}", Model.First().start_time))";  // or just dp.startDate = "2013-03-25";
+        dp.startDate = "@(String.Format("{0:yyyy-MM-dd}", DateTime.Now))";  // or just dp.startDate = "2013-03-25";
         </text>
     }
     dp.viewType = "Week";
@@ -103,9 +105,8 @@
     //dp.contextMenu = new DayPilot.Menu({
     //    cssClassPrefix: "menu_default",
     //    items: [
-    //    {text:"Show event ID", onclick: function() {alert("Event value: " + this.source.value());} },
-    //    {text:"Show event text", onclick: function() {alert("Event text: " + this.source.text());} },
-    //    {text:"Show event start", onclick: function() {alert("Event start: " + this.source.start().toStringSortable());} },
+    //    {text:"Edit", onclick: function() {alert("Event value: " + this.source.value());} },
+    //    {text:"Cancel", onclick: function() {alert("Event text: " + this.source.text());} },
     //    {text:"Delete", onclick: function() { dp.events.remove(this.source); } }
     //]});
 
@@ -144,10 +145,7 @@
     //};
     
     dp.onEventClick = function (args) {
-        if (args.e.text() == "Available") {
-            $("#application_appointment_id").val(args.e.id());
-            $("#dialog3").dialog("close");
-        }
+        showDialog("@Url.Action("HostCalendarDetails", "Appointment")/" + args.e.id(), "#error-dialog", "#dialog2", 300, 200);
     };
 
     dp.init();
@@ -180,7 +178,7 @@
         start: new DayPilot.Date("@String.Format("{0:yyyy-MM-ddTHH:mm:ss}",item.start_time)"),
         end: new DayPilot.Date("@String.Format("{0:yyyy-MM-ddTHH:mm:ss}",item.end_time)"),
         id: "@item.id",
-        text: "Booked by others"
+        text: "Booked: @item.student_id"
         , backColor: "#cccccc"
     });
     e.EventClickEnabled = false;

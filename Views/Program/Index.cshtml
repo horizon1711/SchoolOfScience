@@ -8,49 +8,48 @@
 
 @using (Html.BeginForm("Index", "Program", FormMethod.Post, new { id = "filter-form" }))
 {
-    
-    <div class="filter">
-        <div class="filter-field">
-            <label for="program">Program:</label>
-            @Html.DropDownList("program", ViewBag.programList as IEnumerable<SelectListItem>, "All", null)
-        </div>
-        <div class="filter-field">
-            <label for="program_type">Program Type:</label>
-            @Html.DropDownList("program_type", ViewBag.programTypeList as IEnumerable<SelectListItem>, "All", null)
-        </div>
-        <div class="filter-field">
-            <label for="program_status">Program Status:</label>
-            @Html.DropDownList("program_status", ViewBag.programStatusList as IEnumerable<SelectListItem>, "All", null)
-        </div>
-        <div class="filter-field">
-            <div class="field-wrapper">
-                <label for="interview">Interview Required:</label>
-                @Html.CheckBox("interview")
+    <fieldset class="startCollapse">
+        <legend>Search by Filter (Click to expand)</legend>
+        <div class="filter">
+            <div class="filter-field">
+                <label for="program">Program:</label>
+                @Html.DropDownList("program", ViewBag.programList as IEnumerable<SelectListItem>, "All", null)
             </div>
-            <div class="field-wrapper">
-                <label for="appointment">Appointment Required:</label>
-                @Html.CheckBox("appointment")
+            <div class="filter-field">
+                <label for="program_type">Program Type:</label>
+                @Html.DropDownList("program_type", ViewBag.programTypeList as IEnumerable<SelectListItem>, "All", null)
             </div>
-            <div class="field-wrapper">
-                <label for="exchange">Exchange Destination Required:</label>
-                @Html.CheckBox("exchange")
+            <div class="filter-field">
+                <label for="program_status">Program Status:</label>
+                @Html.DropDownList("program_status", ViewBag.programStatusList as IEnumerable<SelectListItem>, "All", null)
             </div>
-            <div class="field-wrapper">
-                <label for="nomination">Nomination Required:</label>
-                @Html.CheckBox("nomination")
+            <div class="filter-field">
+                <div class="field-wrapper">
+                    <label for="interview">Interview Required:</label>
+                    @Html.CheckBox("interview")
+                </div>
+                <div class="field-wrapper">
+                    <label for="appointment">Appointment Required:</label>
+                    @Html.CheckBox("appointment")
+                </div>
+                <div class="field-wrapper">
+                    <label for="exchange">Exchange Destination Required:</label>
+                    @Html.CheckBox("exchange")
+                </div>
+                <div class="field-wrapper">
+                    <label for="nomination">Nomination Required:</label>
+                    @Html.CheckBox("nomination")
+                </div>
+            </div>
+            <div class="clear-fix"></div>
+            <div class="filter-field">
+                <input type="submit" value="Search" />
+                <input type="reset" value="Reset" />
             </div>
         </div>
-        <div class="clear-fix"></div>
-        <div class="filter-field">
-            <input type="submit" value="Search" />
-            <input type="reset" value="Reset" />
-        </div>
-    </div>
+    </fieldset>
 }
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
 <table class="data-table">
     <thead>
         <tr>

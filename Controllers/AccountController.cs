@@ -226,7 +226,7 @@ namespace SchoolOfScience.Controllers
         [Ajax(true)]
         public ActionResult Login()
         {
-            return HttpNotFound("Session timeout. <br/>Please <a href='javascript:void(0)' onclick='window.location.reload()'>refresh</a> to login.");
+            return HttpNotFound("Session timeout / Not Authorized. <br/>Please <a href='javascript:void(0)' onclick='window.location.reload()'>refresh</a> to login.");
         }
 
         //

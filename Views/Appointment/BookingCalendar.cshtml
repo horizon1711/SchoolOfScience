@@ -57,7 +57,34 @@
     dp.allDayEventHeight = 25;
     dp.initScrollPos = 9 * 40;
     dp.moveBy = 'None';
-    
+
+
+    dp.onBeforeHeaderRender = function (args) {
+        var dayofweek;
+        if (args.header.start.getDayOfWeek() == 0) {
+            dayofweek = "Sun";
+        }
+        if (args.header.start.getDayOfWeek() == 1) {
+            dayofweek = "Mon";
+        }
+        if (args.header.start.getDayOfWeek() == 2) {
+            dayofweek = "Tue";
+        }
+        if (args.header.start.getDayOfWeek() == 3) {
+            dayofweek = "Wed";
+        }
+        if (args.header.start.getDayOfWeek() == 4) {
+            dayofweek = "Thu";
+        }
+        if (args.header.start.getDayOfWeek() == 5) {
+            dayofweek = "Fri";
+        }
+        if (args.header.start.getDayOfWeek() == 6) {
+            dayofweek = "Sat";
+        }
+        args.header.html = args.header.start.getYear() + "-" + (args.header.start.getMonth() + 1) + "-" + args.header.start.getDay() + " " + dayofweek;
+    };
+
     // bubble, with async loading
     //dp.bubble = new DayPilot.Bubble({
     //    cssClassPrefix: "bubble_default",

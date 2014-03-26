@@ -8,37 +8,46 @@
 
 @using (Html.BeginForm())
 {
-    
-    <div class="filter">
-        <div class="filter-field">
-            <label for="career">Academic Career:</label>
-            @Html.DropDownList("career", ViewBag.careerList as IEnumerable<SelectListItem>, "All", null)
-            <label for="academic_group">Academic Group:</label>
-            @*@Html.DropDownList("academic_group", ViewBag.groupList as IEnumerable<SelectListItem>, "All", null)
-            <label for="academic_organization">Department:</label>*@
-            @Html.DropDownList("academic_organization", ViewBag.departmentList as IEnumerable<SelectListItem>, "All", null)
-            <label for="academic_plan_description">Academic Plan:</label>
-            @Html.DropDownList("academic_plan_description", ViewBag.planList as IEnumerable<SelectListItem>, "All", null)
-            <label for="academic_level">Academic Level:</label>
-            @Html.DropDownList("academic_level", ViewBag.levelList as IEnumerable<SelectListItem>, "All", null)
+    <fieldset class="startCollapse">
+        <legend>Search by Filter (Click to expand)</legend>
+        <div class="filter">
+            <div class="filter-field">
+                <label for="career">Academic Career:</label>
+                @Html.DropDownList("career", ViewBag.careerList as IEnumerable<SelectListItem>, "All", null)
+                <label for="academic_group">Academic Group:</label>
+                @*@Html.DropDownList("academic_group", ViewBag.groupList as IEnumerable<SelectListItem>, "All", null)
+                <label for="academic_organization">Department:</label>*@
+                @Html.DropDownList("academic_organization", ViewBag.departmentList as IEnumerable<SelectListItem>, "All", null)
+                <label for="academic_plan_description">Academic Plan:</label>
+                @Html.DropDownList("academic_plan_description", ViewBag.planList as IEnumerable<SelectListItem>, "All", null)
+                <label for="academic_level">Academic Level:</label>
+                @Html.DropDownList("academic_level", ViewBag.levelList as IEnumerable<SelectListItem>, "All", null)
+            </div>
+            <div class="filter-field">
+                <label for="studentid">Student ID:</label>
+                @Html.TextBox("studentid", ViewBag.studentid as String)
+                <label for="firstname">First Name:</label>
+                @Html.TextBox("firstname", ViewBag.firstname as String)
+                <label for="lastname">Last Name:</label>
+                @Html.TextBox("lastname", ViewBag.lastname as String)
+            </div>
+            <div class="filter-field">
+                <label for="commentkeyword">Advising Comment Keyword:</label>
+                @Html.TextBox("commentkeyword", ViewBag.commentkeyword as String)
+            </div>
+            <div class="filter-field">
+                <label for="advisor">As Pre-major Faculty Advisor:</label>
+                @Html.CheckBox("advisor")
+                <label for="mentor">As Faculty Mentor:</label>
+                @Html.CheckBox("mentor")
+            </div>
+
+            <div class="filter-field">
+                <input type="submit" value="Search" />
+                <input type="reset" class="button" value="Reset" />
+            </div>
         </div>
-        <div class="filter-field">
-            <label for="studentid">Student ID:</label>
-            @Html.TextBox("studentid", ViewBag.studentid as String)
-            <label for="firstname">First Name:</label>
-            @Html.TextBox("firstname", ViewBag.firstname as String)
-            <label for="lastname">Last Name:</label>
-            @Html.TextBox("lastname", ViewBag.lastname as String)
-        </div>
-        <div class="filter-field">
-            <label for="commentkeyword">Advising Comment Keyword:</label>
-            @Html.TextBox("commentkeyword", ViewBag.commentkeyword as String)
-        </div>
-        <div class="filter-field">
-            <input type="submit" value="Search" />
-            <input type="reset" class="button" value="Reset" />
-        </div>
-    </div>
+    </fieldset>
 }
 @if (ViewBag.showTable)
 {

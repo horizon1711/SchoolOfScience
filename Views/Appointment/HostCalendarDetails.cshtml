@@ -1,0 +1,24 @@
+﻿@model SchoolOfScience.Models.Appointment
+
+@{
+    Layout = null;
+}
+
+
+<p class="booking-info">
+    
+    <strong>Date:</strong> @String.Format("{0:yyyy-MM-dd (ddd)}", Model.start_time)<br />
+    <strong>Time:</strong> @String.Format("{0:HH:mm}", Model.start_time) to @String.Format("{0:HH:mm}", Model.end_time)<br />
+    <b>Venue:</b> @Model.AppointmentVenue.name<br />
+    @if (Model.AppointmentConcerns != null && Model.AppointmentConcerns.Count() > 0)
+    {
+        <text><b>Concerns:</b> @String.Join(", ", Model.AppointmentConcerns.Select(c => c.name).ToArray())<br /></text>
+    }
+    @if (Model.student_id != null)
+    {
+        <text><b>Reserved by:</b> @Model.StudentProfile.name [@Model.StudentProfile.id]<br /></text>
+    }
+</p>
+<p>
+    @Html.ActionLink("Edit", "Edit", "Appointment", new { id = Model.id }, null)
+</p>

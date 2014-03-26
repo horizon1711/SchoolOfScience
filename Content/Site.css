@@ -41,7 +41,7 @@ html, body {
 
 body {
     margin: 0px;
-    padding-top: 210px;
+    /*padding-top: 210px;*/
     font-family: 'FreightSans', 'FreightSans_IE', sans-serif;
     font-size: 1em;
     color: black;
@@ -60,11 +60,11 @@ input, select, button {
 }
 
 header {
-    position: fixed;
-    top: 0px;
+    /*position: fixed;*/
+    /*top: 0px;*/
     background-color: rgb(236,232,231);
-    width: 100%;
-    height: 210px;
+    /*width: 100%;*/
+    /*height: 210px;*/
     z-index: 10;
 }
 
@@ -84,6 +84,7 @@ ul, ol {
 
 img {
     border: none;
+    max-width: 100%;
 }
 
 a {
@@ -114,7 +115,7 @@ strong, b, .button, .ui-button {
 }
 
 .content-wrapper {
-    /*max-width: 80%;*/
+    max-width: 100%;
     width: 950px;
     margin: 0px auto;
 }
@@ -195,13 +196,13 @@ footer {
 
 .footer-column {
     width: 260px;
-    margin: 0px 40px;
+    margin: 0px 20px;
     float: left;
 }
 
 .footer-column-small {
     width: 100px;
-    margin-right: 60px;
+    margin: 0px 20px;
     float: left;
 }
 
@@ -224,7 +225,7 @@ footer {
 
     
 .filter-field {
-    margin: 5px 0px;
+    margin: 10px 0px;
 }
 
 .filter-field label {
@@ -490,12 +491,14 @@ fieldset .dataTables_wrapper, #tabs-content .dataTables_wrapper{
 }
 
 .dashboard-wrapper {
-    margin: 80px 175px;
+    /*margin: 80px 175px;*/
+    text-align: center;
 }
 
 .dashboard-item {
+    display: inline-block;
     text-align: center;
-    float: left;
+    /*float: left;*/
     width: 200px;
 }
 
@@ -816,7 +819,9 @@ ol.booking-notes {
     font-weight: 100;
 }
 
-
+.calendar_default_event {
+    cursor: pointer !important;
+}
 
 
 

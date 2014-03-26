@@ -388,7 +388,7 @@ namespace SchoolOfScience.Controllers
                     body = body.Replace("[program id]", application.program_id.ToString());
                     body = body.Replace("[program name]", application.Program.name);
                     body = body.Replace("[submit date]", String.Format("{0:yyyy-MM-dd HH:mm:ss}", application.submitted));
-                    body = body.Replace("[interview date]", String.Format("{0:yyyy-MM-dd}", interview.start_time));
+                    body = body.Replace("[interview date]", String.Format("{0:yyyy-MM-dd (ddd)}", interview.start_time));
                     body = body.Replace("[interview time]", String.Format("{0:HH:mm}", interview.start_time) + " to " + String.Format("{0:HH:mm}", interview.end_time));
                     body = body.Replace("[interview venue]", interview.InterviewVenue.name);
 
@@ -399,7 +399,7 @@ namespace SchoolOfScience.Controllers
                     subject = subject.Replace("[program id]", application.program_id.ToString());
                     subject = subject.Replace("[program name]", application.Program.name);
                     subject = subject.Replace("[submit date]", String.Format("{0:yyyy-MM-dd HH:mm:ss}", application.submitted));
-                    subject = subject.Replace("[interview date]", String.Format("{0:yyyy-MM-dd}", interview.start_time));
+                    subject = subject.Replace("[interview date]", String.Format("{0:yyyy-MM-dd (ddd)}", interview.start_time));
                     subject = subject.Replace("[interview time]", String.Format("{0:HH:mm}", interview.start_time) + " to " + String.Format("{0:HH:mm}", interview.end_time));
                     subject = subject.Replace("[interview venue]", interview.InterviewVenue.name);
 
@@ -427,6 +427,205 @@ namespace SchoolOfScience.Controllers
                         recipient_type = "to",
                         student_id = application.student_id
                     });
+
+                    if (!String.IsNullOrEmpty(notificationtype.NotificationTemplate.cc))
+                    {
+                        List<NotificationRecipient> ccList = new List<NotificationRecipient>();
+                        notificationtype.NotificationTemplate.cc.Split(',').ToList().ForEach(s => ccList.Add(new NotificationRecipient { email = s.Trim(), recipient_type = "cc" }));
+                        notification.NotificationRecipients = notification.NotificationRecipients.Concat(ccList).ToList();
+                    }
+
+                    if (!String.IsNullOrEmpty(notificationtype.NotificationTemplate.bcc))
+                    {
+                        List<NotificationRecipient> bccList = new List<NotificationRecipient>();
+                        notificationtype.NotificationTemplate.bcc.Split(',').ToList().ForEach(s => bccList.Add(new NotificationRecipient { email = s.Trim(), recipient_type = "bcc" }));
+                        notification.NotificationRecipients = notification.NotificationRecipients.Concat(bccList).ToList();
+                    }
+
+                    db.Notifications.Add(notification);
+                    try
+                    {
+                        db.SaveChanges();
+                        return notification;
+                    }
+                    catch (Exception e)
+                    {
+                        Session["FlashMessage"] += "<br/><br/>Failed to create notification record. <br/><br/>" + e.Message;
+                    }
+                }
+                else
+                {
+                    Session["FlashMessage"] += "<br/><br/>Notification Template is not correctly configured";
+                }
+            }
+            return null;
+        }
+
+        public Notification CreateNotification(String type, Appointment appointment)
+        {
+            NotificationType notificationtype = db.NotificationTypes.Where(t => t.name == type).SingleOrDefault();
+            NotificationStatus notificationstatus = db.NotificationStatus.Where(s => s.name == "Pending").SingleOrDefault();
+            if (type == "AppointmentReserved")
+            {
+                if (notificationtype.NotificationTemplate != null)
+                {
+                    string body = "";
+                    string subject = "";
+                    body = notificationtype.NotificationTemplate.body;
+                    body = body.Replace("[student id]", appointment.student_id);
+                    body = body.Replace("[student name]", appointment.StudentProfile.name);
+                    body = body.Replace("[appointment host]", appointment.AppointmentHost.name);
+                    body = body.Replace("[appointment date]", String.Format("{0:yyyy-MM-dd (ddd)}", appointment.start_time));
+                    body = body.Replace("[appointment time]", String.Format("{0:HH:mm}", appointment.start_time) + " to " + String.Format("{0:HH:mm}", appointment.end_time));
+                    body = body.Replace("[appointment venue]", appointment.AppointmentVenue.name);
+                    if (appointment.AppointmentConcerns != null && appointment.AppointmentConcerns.Count() > 0)
+                    {
+                        string concerns = string.Join(",", appointment.AppointmentConcerns.Select(c => c.name));
+                        body = body.Replace("[appointment concern]", concerns);
+                    }
+                    else
+                    {
+                        body = body.Replace("[appointment concern]", "Not specified");
+                    }
+
+                    subject = notificationtype.NotificationTemplate.subject;
+                    subject = subject.Replace("[student id]", appointment.student_id);
+                    subject = subject.Replace("[student name]", appointment.StudentProfile.name);
+                    subject = subject.Replace("[appointment host]", appointment.AppointmentHost.name);
+                    subject = subject.Replace("[appointment date]", String.Format("{0:yyyy-MM-dd (ddd)}", appointment.start_time));
+                    subject = subject.Replace("[appointment time]", String.Format("{0:HH:mm}", appointment.start_time) + " to " + String.Format("{0:HH:mm}", appointment.end_time));
+                    subject = subject.Replace("[appointment venue]", appointment.AppointmentVenue.name);
+                    if (appointment.AppointmentConcerns != null && appointment.AppointmentConcerns.Count() > 0)
+                    {
+                        string concerns = string.Join(",", appointment.AppointmentConcerns.Select(c => c.name));
+                        subject = subject.Replace("[appointment concern]", concerns);
+                    }
+                    else
+                    {
+                        subject = subject.Replace("[appointment concern]", "Not specified");
+                    }
+
+                    Notification notification = new Notification
+                    {
+                        send_time = DateTime.Now,
+                        sender = notificationtype.NotificationTemplate.sender,
+                        subject = subject,
+                        body = body,
+                        status_id = notificationstatus.id,
+                        type_id = notificationtype.id,
+                        template_id = notificationtype.NotificationTemplate.id,
+                        appointment_id = appointment.id,
+                        created = DateTime.Now,
+                        created_by = WebSecurity.CurrentUserName,
+                        modified = DateTime.Now,
+                        modified_by = WebSecurity.CurrentUserName
+                    };
+                    //db.Notifications.Add(notification);
+                    //db.SaveChanges();
+
+                    notification.NotificationRecipients.Add(new NotificationRecipient
+                    {
+                        email = appointment.StudentProfile.email,
+                        recipient_type = "to",
+                        student_id = appointment.student_id
+                    });
+
+                    if (!String.IsNullOrEmpty(notificationtype.NotificationTemplate.cc))
+                    {
+                        List<NotificationRecipient> ccList = new List<NotificationRecipient>();
+                        notificationtype.NotificationTemplate.cc.Split(',').ToList().ForEach(s => ccList.Add(new NotificationRecipient { email = s.Trim(), recipient_type = "cc" }));
+                        notification.NotificationRecipients = notification.NotificationRecipients.Concat(ccList).ToList();
+                    }
+
+                    if (!String.IsNullOrEmpty(notificationtype.NotificationTemplate.bcc))
+                    {
+                        List<NotificationRecipient> bccList = new List<NotificationRecipient>();
+                        notificationtype.NotificationTemplate.bcc.Split(',').ToList().ForEach(s => bccList.Add(new NotificationRecipient { email = s.Trim(), recipient_type = "bcc" }));
+                        notification.NotificationRecipients = notification.NotificationRecipients.Concat(bccList).ToList();
+                    }
+
+                    db.Notifications.Add(notification);
+                    try
+                    {
+                        db.SaveChanges();
+                        return notification;
+                    }
+                    catch (Exception e)
+                    {
+                        Session["FlashMessage"] += "<br/><br/>Failed to create notification record. <br/><br/>" + e.Message;
+                    }
+                }
+                else
+                {
+                    Session["FlashMessage"] += "<br/><br/>Notification Template is not correctly configured";
+                }
+            }
+            if (type == "AppointmentReservedAdvisor")
+            {
+                if (notificationtype.NotificationTemplate != null)
+                {
+                    string body = "";
+                    string subject = "";
+                    body = notificationtype.NotificationTemplate.body;
+                    body = body.Replace("[student id]", appointment.student_id);
+                    body = body.Replace("[student name]", appointment.StudentProfile.name);
+                    body = body.Replace("[appointment host]", appointment.AppointmentHost.name);
+                    body = body.Replace("[appointment date]", String.Format("{0:yyyy-MM-dd (ddd)}", appointment.start_time));
+                    body = body.Replace("[appointment time]", String.Format("{0:HH:mm}", appointment.start_time) + " to " + String.Format("{0:HH:mm}", appointment.end_time));
+                    body = body.Replace("[appointment venue]", appointment.AppointmentVenue.name);
+                    if (appointment.AppointmentConcerns != null && appointment.AppointmentConcerns.Count() > 0)
+                    {
+                        string concerns = string.Join(",", appointment.AppointmentConcerns.Select(c => c.name));
+                        body = body.Replace("[appointment concern]", concerns);
+                    }
+                    else
+                    {
+                        body = body.Replace("[appointment concern]", "Not specified");
+                    }
+
+                    subject = notificationtype.NotificationTemplate.subject;
+                    subject = subject.Replace("[student id]", appointment.student_id);
+                    subject = subject.Replace("[student name]", appointment.StudentProfile.name);
+                    subject = subject.Replace("[appointment host]", appointment.AppointmentHost.name);
+                    subject = subject.Replace("[appointment date]", String.Format("{0:yyyy-MM-dd (ddd)}", appointment.start_time));
+                    subject = subject.Replace("[appointment time]", String.Format("{0:HH:mm}", appointment.start_time) + " to " + String.Format("{0:HH:mm}", appointment.end_time));
+                    subject = subject.Replace("[appointment venue]", appointment.AppointmentVenue.name);
+                    if (appointment.AppointmentConcerns != null && appointment.AppointmentConcerns.Count() > 0)
+                    {
+                        string concerns = string.Join(",", appointment.AppointmentConcerns.Select(c => c.name));
+                        subject = subject.Replace("[appointment concern]", concerns);
+                    }
+                    else
+                    {
+                        subject = subject.Replace("[appointment concern]", "Not specified");
+                    }
+
+                    Notification notification = new Notification
+                    {
+                        send_time = DateTime.Now,
+                        sender = notificationtype.NotificationTemplate.sender,
+                        subject = subject,
+                        body = body,
+                        status_id = notificationstatus.id,
+                        type_id = notificationtype.id,
+                        template_id = notificationtype.NotificationTemplate.id,
+                        appointment_id = appointment.id,
+                        created = DateTime.Now,
+                        created_by = WebSecurity.CurrentUserName,
+                        modified = DateTime.Now,
+                        modified_by = WebSecurity.CurrentUserName
+                    };
+                    //db.Notifications.Add(notification);
+                    //db.SaveChanges();
+
+                    foreach (var user in appointment.AppointmentHost.SystemUsers)
+                    {
+                        notification.NotificationRecipients.Add(new NotificationRecipient
+                        {
+                            email = user.UserName + "@ust.hk",
+                            recipient_type = "to"
+                        });
+                    }
 
                     if (!String.IsNullOrEmpty(notificationtype.NotificationTemplate.cc))
                     {

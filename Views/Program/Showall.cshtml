@@ -11,40 +11,42 @@
 
 @using (Html.BeginForm("Showall", "Program", new { id = 0 }))
 {
-    
-    <div class="filter">
-        <div class="filter-field">
-            <label for="program">Program:</label>
-            @Html.DropDownList("program", ViewBag.programList as IEnumerable<SelectListItem>, "All", new { @class = "chosen", id = "programselect" })
-        </div>
-        <div class="filter-field">
-            <label for="program_type">Program Type:</label>
-            @Html.ListBox("program_type", ViewBag.programTypeList as MultiSelectList, new { @class = "chosen programtype", data_placeholder = "Click to select...", id = "typeselect" })
-        </div>
-@*        <div class="filter-field">
-            <label for="program_status">Program Status:</label>
-            @Html.DropDownList("program_status", ViewBag.programStatusList as IEnumerable<SelectListItem>, "All", null)
-        </div>*@
-        <div class="filter-field">
-            <div class="field-wrapper">
-                <label for="eligible">Eligible to Apply:</label>
-                @Html.CheckBox("eligible")
+    <fieldset class="startCollapse">
+        <legend>Search by Filter (Click to expand)</legend>
+        <div class="filter">
+            <div class="filter-field">
+                <label for="program">Program:</label>
+                @Html.DropDownList("program", ViewBag.programList as IEnumerable<SelectListItem>, "All", new { @class = "chosen", id = "programselect" })
             </div>
-            <div class="field-wrapper">
-                <label for="saved">Saved Application:</label>
-                @Html.CheckBox("saved")
+            <div class="filter-field">
+                <label for="program_type">Program Type:</label>
+                @Html.ListBox("program_type", ViewBag.programTypeList as MultiSelectList, new { @class = "chosen programtype", data_placeholder = "Click to select...", id = "typeselect" })
             </div>
-            <div class="field-wrapper">
-                <label for="submitted">Submitted Application:</label>
-                @Html.CheckBox("submitted")
+    @*        <div class="filter-field">
+                <label for="program_status">Program Status:</label>
+                @Html.DropDownList("program_status", ViewBag.programStatusList as IEnumerable<SelectListItem>, "All", null)
+            </div>*@
+            <div class="filter-field">
+                <div class="field-wrapper">
+                    <label for="eligible">Eligible to Apply:</label>
+                    @Html.CheckBox("eligible")
+                </div>
+                <div class="field-wrapper">
+                    <label for="saved">Saved Application:</label>
+                    @Html.CheckBox("saved")
+                </div>
+                <div class="field-wrapper">
+                    <label for="submitted">Submitted Application:</label>
+                    @Html.CheckBox("submitted")
+                </div>
             </div>
         </div>
-    </div>
-    <div class="clear-fix"></div>
-    <p>
-        <input type="submit" class="button" value="Search" />
-        <input type="reset" class="button" value="Reset" />
-    </p>
+        <div class="clear-fix"></div>
+        <p>
+            <input type="submit" class="button" value="Search" />
+            <input type="reset" class="button" value="Reset" />
+        </p>
+    </fieldset>
 }
 
 <div class="showcase-note">Date Format: Year-Month-Day</div>
@@ -213,29 +215,31 @@
             @if (ViewBag.typeid == 0)
             {
             <text>
-                $(".data-table").dataTable({
-                    "aaSorting": [[3, "asc"]],
-                    "bPaginate": false,
-                    "oLanguage": {
-                        "sSearch": "",
-                        "sInfo": "_TOTAL_ entries",
-                        "sEmptyTable": "No matching record found"
-                    }
-                });
+            $(".data-table").dataTable({
+                "sScrollX": "100%",
+                "aaSorting": [[3, "asc"]],
+                "bPaginate": false,
+                "oLanguage": {
+                    "sSearch": "",
+                    "sInfo": "_TOTAL_ entries",
+                    "sEmptyTable": "No matching record found"
+                }
+            });
             </text>
             }
             else
             {
             <text>
-                $(".data-table").dataTable({
-                    "aaSorting": [[2, "asc"]],
-                    "bPaginate": false,
-                    "oLanguage": {
-                        "sSearch": "",
-                        "sInfo": "_TOTAL_ entries",
-                        "sEmptyTable": "No matching record found"
-                    }
-                });
+            $(".data-table").dataTable({
+                "sScrollX": "100%",
+                "aaSorting": [[2, "asc"]],
+                "bPaginate": false,
+                "oLanguage": {
+                    "sSearch": "",
+                    "sInfo": "_TOTAL_ entries",
+                    "sEmptyTable": "No matching record found"
+                }
+            });
             </text>
             }
             $(".action-link").click(function (e) {

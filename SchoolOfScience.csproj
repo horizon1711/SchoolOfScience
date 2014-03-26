@@ -57,12 +57,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DataAnnotationsExtensions">
-      <HintPath>..\packages\DataAnnotationsExtensions.1.1.0.0\lib\NETFramework40\DataAnnotationsExtensions.dll</HintPath>
-    </Reference>
-    <Reference Include="DataAnnotationsExtensions.ClientValidation">
-      <HintPath>..\packages\DataAnnotationsExtensions.MVC3.1.1.0.0\lib\NETFramework40\DataAnnotationsExtensions.ClientValidation.dll</HintPath>
-    </Reference>
     <Reference Include="Ionic.Zip, Version=1.9.1.8, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>bin\Ionic.Zip.dll</HintPath>
@@ -71,8 +65,7 @@
       <HintPath>..\packages\LinqToExcel_x64_1.7.1\LinqToExcel.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Remotion.Data.Linq, Version=1.13.52.2, Culture=neutral, PublicKeyToken=0669cf0452175907, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="Remotion.Data.Linq">
       <HintPath>..\packages\LinqToExcel_x64_1.7.1\Remotion.Data.Linq.dll</HintPath>
     </Reference>
     <Reference Include="System" />
@@ -151,9 +144,6 @@
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.AspNet.WebPages.2.0.20710.0\lib\net40\System.Web.WebPages.Razor.dll</HintPath>
     </Reference>
-    <Reference Include="WebActivator">
-      <HintPath>..\packages\WebActivator.1.2.0.0\lib\NETFramework40\WebActivator.dll</HintPath>
-    </Reference>
     <Reference Include="WebMatrix.Data, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.AspNet.WebPages.Data.2.0.20710.0\lib\net40\WebMatrix.Data.dll</HintPath>
@@ -219,7 +209,6 @@
     <Compile Include="App_Start\AuthConfig.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
-    <Compile Include="App_Start\RegisterClientValidationExtensions.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Attributes\AjaxAttribute.cs" />
@@ -301,7 +290,6 @@
     <Compile Include="Models\ExchangeOption.cs">
       <DependentUpon>SchoolOfScienceModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\GlobalVariables.cs" />
     <Compile Include="Models\Helper\ApplicationHelper.cs" />
     <Compile Include="Models\Helper\ApplicationStatusHelper.cs" />
     <Compile Include="Models\Helper\AppointmentHelper.cs" />
@@ -312,11 +300,10 @@
     <Compile Include="Models\Helper\ApplicationOptionValueHelper.cs" />
     <Compile Include="Models\Helper\InterviewCommentHelper.cs" />
     <Compile Include="Models\Helper\StudentActivityHelper.cs" />
-    <Compile Include="Models\Helper\StudentMajorChoiceHelper.cs" />
     <Compile Include="Models\Helper\StudentAdvisingRemarkHelper.cs" />
-    <Compile Include="Models\Helper\StudentQualificationHelper.cs" />
     <Compile Include="Models\Helper\StudentExperienceHelper.cs" />
     <Compile Include="Models\Helper\StudentExperienceTypeHelper.cs" />
+    <Compile Include="Models\Helper\StudentMajorChoiceHelper.cs" />
     <Compile Include="Models\Helper\StudentParticularHelper.cs" />
     <Compile Include="Models\Helper\StudentParticularTypeHelper.cs" />
     <Compile Include="Models\Helper\NotificationRecipientHelper.cs" />
@@ -329,6 +316,7 @@
     <Compile Include="Models\Helper\NominationStatusHelper.cs" />
     <Compile Include="Models\Helper\NominationApplicationHelper.cs" />
     <Compile Include="Models\Helper\NominationHelper.cs" />
+    <Compile Include="Models\Helper\StudentQualificationHelper.cs" />
     <Compile Include="Models\Helper\TimeslotConfigSessionHelper.cs" />
     <Compile Include="Models\Helper\TimeslotConfigHelper.cs" />
     <Compile Include="Models\Helper\InterviewStatusHelper.cs" />
@@ -466,11 +454,11 @@
     <Compile Include="Models\TimeslotConfigSession.cs">
       <DependentUpon>SchoolOfScienceModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ViewModels\ApplicationExportViewModel.cs" />
     <Compile Include="Models\ViewModels\ApplicationViewModel.cs" />
+    <Compile Include="Models\ViewModels\AppointmentBookingViewModel.cs" />
     <Compile Include="Models\ViewModels\AppointmentHostViewModel.cs" />
     <Compile Include="Models\ViewModels\AppointmentCreateMultipleViewModel.cs" />
-    <Compile Include="Models\ViewModels\ApplicationExportViewModel.cs" />
-    <Compile Include="Models\ViewModels\AppointmentBookingViewModel.cs" />
     <Compile Include="Models\ViewModels\StudentExperienceViewModel.cs" />
     <Compile Include="Models\ViewModels\StudentParticularViewModel.cs" />
     <Compile Include="Models\ViewModels\StudentProfileViewModel.cs" />
@@ -494,12 +482,29 @@
     <Content Include="Content\chosen.css" />
     <Content Include="Content\daypilot\areas.css" />
     <Content Include="Content\daypilot\areas\icons.png" />
-    <Content Include="Content\daypilot\bubble.css" />
-    <Content Include="Content\daypilot\calendar.css" />
+    <Content Include="Content\daypilot\bubble_default.css" />
+    <Content Include="Content\daypilot\calendar_blue.css" />
+    <Content Include="Content\daypilot\calendar_green.css" />
+    <Content Include="Content\daypilot\calendar_traditional.css" />
+    <Content Include="Content\daypilot\calendar_transparent.css" />
+    <Content Include="Content\daypilot\calendar_white.css" />
     <Content Include="Content\daypilot\menu_default.css" />
     <Content Include="Content\daypilot\month_blue.css" />
-    <Content Include="Content\daypilot\navigator.css" />
-    <Content Include="Content\daypilot\scheduler.css" />
+    <Content Include="Content\daypilot\month_green.css" />
+    <Content Include="Content\daypilot\month_traditional.css" />
+    <Content Include="Content\daypilot\month_transparent.css" />
+    <Content Include="Content\daypilot\month_white.css" />
+    <Content Include="Content\daypilot\navigator_8.css" />
+    <Content Include="Content\daypilot\navigator_blue.css" />
+    <Content Include="Content\daypilot\navigator_green.css" />
+    <Content Include="Content\daypilot\navigator_transparent.css" />
+    <Content Include="Content\daypilot\navigator_white.css" />
+    <Content Include="Content\daypilot\scheduler_8.css" />
+    <Content Include="Content\daypilot\scheduler_blue.css" />
+    <Content Include="Content\daypilot\scheduler_green.css" />
+    <Content Include="Content\daypilot\scheduler_traditional.css" />
+    <Content Include="Content\daypilot\scheduler_transparent.css" />
+    <Content Include="Content\daypilot\scheduler_white.css" />
     <Content Include="Content\dcmegamenu.css" />
     <Content Include="Content\megafish.css" />
     <Content Include="Content\daypilot.menu_default.css" />
@@ -624,7 +629,81 @@
     <Content Include="Content\themes\ui-lightness\jquery-ui-1.10.4.custom.min.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
+    <Content Include="Images\accent.png" />
+    <Content Include="Images\attachment.png" />
+    <Content Include="Images\back.jpg" />
+    <Content Include="Images\back.png" />
+    <Content Include="Images\Background.jpg" />
+    <Content Include="Images\backgroundMiddleOver.png" />
+    <Content Include="Images\back_disabled.png" />
+    <Content Include="Images\back_enabled.png" />
+    <Content Include="Images\back_enabled_hover.png" />
+    <Content Include="Images\bg_top-sub-menus.jpg" />
+    <Content Include="Images\bullet.png" />
+    <Content Include="Images\buttons.gif" />
+    <Content Include="Images\Dashboard\advising.png" />
+    <Content Include="Images\Dashboard\profile.png" />
+    <Content Include="Images\Dashboard\program.png" />
+    <Content Include="Images\dialog_background.gif" />
+    <Content Include="Images\dialog_background.png" />
+    <Content Include="Images\document.png" />
+    <Content Include="Images\facebook_icon.png" />
+    <Content Include="Images\favicon.ico" />
+    <Content Include="Images\forward_disabled.png" />
+    <Content Include="Images\forward_enabled.png" />
+    <Content Include="Images\forward_enabled_hover.png" />
+    <Content Include="Images\heroAccent.png" />
+    <Content Include="Images\HKUST_logo_large.png" />
+    <Content Include="Images\HKUST_logo_small.png" />
+    <Content Include="Images\jquery.menu.grey.css" />
+    <Content Include="Images\more.png" />
+    <Content Include="Images\orderedList0.png" />
+    <Content Include="Images\orderedList1.png" />
+    <Content Include="Images\orderedList2.png" />
+    <Content Include="Images\orderedList3.png" />
+    <Content Include="Images\orderedList4.png" />
+    <Content Include="Images\orderedList5.png" />
+    <Content Include="Images\orderedList6.png" />
+    <Content Include="Images\orderedList7.png" />
+    <Content Include="Images\orderedList8.png" />
+    <Content Include="Images\orderedList9.png" />
+    <Content Include="Images\pencil.png" />
+    <Content Include="Images\people.png" />
+    <Content Include="Images\pix.gif" />
+    <Content Include="Images\pointer.gif" />
+    <Content Include="Images\ProgramType\10\Triple-Spiral-Labyrinth-animated.gif" />
+    <Content Include="Images\ProgramType\1\Career.png" />
+    <Content Include="Images\ProgramType\1\Triple-Spiral-Labyrinth-animated.gif" />
+    <Content Include="Images\ProgramType\2\Career.png" />
+    <Content Include="Images\ProgramType\2\Exchange.png" />
+    <Content Include="Images\ProgramType\2\right-arrow.jpg" />
+    <Content Include="Images\ProgramType\3\talks.png" />
+    <Content Include="Images\ProgramType\5\Menternship.png" />
+    <Content Include="Images\search.png" />
+    <Content Include="Images\SFS_logo_large.png" />
+    <Content Include="Images\Sorting icons.psd" />
+    <Content Include="Images\sort_asc.png" />
+    <Content Include="Images\sort_asc_disabled.png" />
+    <Content Include="Images\sort_both.png" />
+    <Content Include="Images\sort_desc.png" />
+    <Content Include="Images\sort_desc_disabled.png" />
+    <Content Include="Images\toolbar.gif" />
+    <Content Include="Images\torderedList3.png" />
+    <Content Include="Images\triangle_sub.png" />
+    <Content Include="Images\triangle_sub_small.png" />
     <Content Include="Content\images\Sorting icons.psd" />
+    <Content Include="Scripts\additional-methods.js" />
+    <Content Include="Scripts\additional-methods.min.js" />
+    <Content Include="Scripts\chosen.jquery.js" />
+    <Content Include="Scripts\ckeditor\CHANGES.md" />
+    <Content Include="Scripts\ckeditor\LICENSE.md" />
+    <Content Include="Scripts\ckeditor\plugins\scayt\LICENSE.md" />
+    <Content Include="Scripts\ckeditor\plugins\scayt\README.md" />
+    <Content Include="Scripts\ckeditor\plugins\wsc\LICENSE.md" />
+    <Content Include="Scripts\ckeditor\plugins\wsc\README.md" />
+    <Content Include="Scripts\ckeditor\README.md" />
+    <Content Include="Scripts\ckeditor\samples\plugins\htmlwriter\assets\outputforflash\outputforflash.fla" />
+    <Content Include="Scripts\ckeditor\skins\moono\readme.md" />
     <Content Include="Content\font\FreightSans\FreightSans-Black.ttf" />
     <Content Include="Content\font\FreightSans\FreightSans-BlackItalic.ttf" />
     <Content Include="Content\font\FreightSans\FreightSans-BlackItalicSC.ttf" />
@@ -656,91 +735,6 @@
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>SchoolOfScienceModel.Designer.cs</LastGenOutput>
     </EntityDeploy>
-    <Content Include="Images\accent.png" />
-    <Content Include="Images\Action\Apply-Now.png" />
-    <Content Include="Images\Action\apply.gif" />
-    <Content Include="Images\Action\calendar.gif" />
-    <Content Include="Images\Action\cross.png" />
-    <Content Include="Images\Action\delete.gif" />
-    <Content Include="Images\Action\Delete.png" />
-    <Content Include="Images\Action\Edit-my-application.png" />
-    <Content Include="Images\Action\edit.gif" />
-    <Content Include="Images\Action\programdetails.gif" />
-    <Content Include="Images\Action\search.gif" />
-    <Content Include="Images\Action\upload-attachment.png" />
-    <Content Include="Images\Action\upload.gif" />
-    <Content Include="Images\Action\View-my-application.png" />
-    <Content Include="Images\Action\view.gif" />
-    <Content Include="Images\attachment.png" />
-    <Content Include="Images\back.jpg" />
-    <Content Include="Images\back.png" />
-    <Content Include="Images\Background.jpg" />
-    <Content Include="Images\backgroundMiddleOver.png" />
-    <Content Include="Images\back_disabled.png" />
-    <Content Include="Images\back_enabled.png" />
-    <Content Include="Images\back_enabled_hover.png" />
-    <Content Include="Images\bg_top-sub-menus.jpg" />
-    <Content Include="Images\bullet.png" />
-    <Content Include="Images\buttons.gif" />
-    <Content Include="Images\Calendar-Icon.png" />
-    <Content Include="Images\Dashboard\advising.png" />
-    <Content Include="Images\Dashboard\profile.png" />
-    <Content Include="Images\Dashboard\program.png" />
-    <Content Include="Images\dialog_background.gif" />
-    <Content Include="Images\dialog_background.png" />
-    <Content Include="Images\document.png" />
-    <Content Include="Images\facebook_icon.png" />
-    <Content Include="Images\favicon.ico" />
-    <Content Include="Images\forward_disabled.png" />
-    <Content Include="Images\forward_enabled.png" />
-    <Content Include="Images\forward_enabled_hover.png" />
-    <Content Include="Images\heroAccent.png" />
-    <Content Include="Images\HKUST_logo_large.png" />
-    <Content Include="Images\HKUST_logo_small.png" />
-    <Content Include="Images\jquery.menu.grey.css" />
-    <Content Include="Images\landing-logo.png" />
-    <Content Include="Images\Logoff.png" />
-    <Content Include="Images\more.png" />
-    <Content Include="Images\mySCI_logo.gif" />
-    <Content Include="Images\orderedList0.png" />
-    <Content Include="Images\orderedList1.png" />
-    <Content Include="Images\orderedList2.png" />
-    <Content Include="Images\orderedList3.png" />
-    <Content Include="Images\orderedList4.png" />
-    <Content Include="Images\orderedList5.png" />
-    <Content Include="Images\orderedList6.png" />
-    <Content Include="Images\orderedList7.png" />
-    <Content Include="Images\orderedList8.png" />
-    <Content Include="Images\orderedList9.png" />
-    <Content Include="Images\pencil.png" />
-    <Content Include="Images\people.png" />
-    <Content Include="Images\pix.gif" />
-    <Content Include="Images\pointer.gif" />
-    <Content Include="Images\ProgramType\10\Triple-Spiral-Labyrinth-animated.gif" />
-    <Content Include="Images\ProgramType\1\Career.png" />
-    <Content Include="Images\ProgramType\1\Triple-Spiral-Labyrinth-animated.gif" />
-    <Content Include="Images\ProgramType\2\Career.png" />
-    <Content Include="Images\ProgramType\2\Exchange.png" />
-    <Content Include="Images\ProgramType\2\right-arrow.jpg" />
-    <Content Include="Images\ProgramType\3\talks.png" />
-    <Content Include="Images\ProgramType\5\Menternship.png" />
-    <Content Include="Images\ProgramType\6\hongkong-creativity-and-society-science-science-alive-image-6.jpg" />
-    <Content Include="Images\ProgramType\7\orderedList2.png" />
-    <Content Include="Images\search.png" />
-    <Content Include="Images\SFS_logo_large.png" />
-    <Content Include="Images\Sorting icons.psd" />
-    <Content Include="Images\sort_asc1.png" />
-    <Content Include="Images\sort_asc3.png" />
-    <Content Include="Images\sort_asc_disabled.png" />
-    <Content Include="Images\sort_both1.png" />
-    <Content Include="Images\sort_both3.png" />
-    <Content Include="Images\sort_desc1.png" />
-    <Content Include="Images\sort_desc3.png" />
-    <Content Include="Images\sort_desc_disabled.png" />
-    <Content Include="Images\toolbar.gif" />
-    <Content Include="Images\torderedList3.png" />
-    <Content Include="Images\triangle_sub.png" />
-    <Content Include="Images\triangle_sub_small.png" />
     <Content Include="Models\SchoolOfScienceModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>SchoolOfScienceModel.edmx</DependentUpon>
@@ -755,10 +749,8 @@
       <LastGenOutput>SchoolOfScienceModel.cs</LastGenOutput>
     </Content>
     <None Include="Properties\PublishProfiles\Server.pubxml" />
-    <Content Include="Scripts\chosen.jquery.js" />
     <Content Include="Scripts\ckeditor\adapters\jquery.js" />
     <Content Include="Scripts\ckeditor\build-config.js" />
-    <Content Include="Scripts\ckeditor\CHANGES.md" />
     <Content Include="Scripts\ckeditor\ckeditor.js" />
     <Content Include="Scripts\ckeditor\config.js" />
     <Content Include="Scripts\ckeditor\contents.css" />
@@ -827,7 +819,6 @@
     <Content Include="Scripts\ckeditor\lang\vi.js" />
     <Content Include="Scripts\ckeditor\lang\zh-cn.js" />
     <Content Include="Scripts\ckeditor\lang\zh.js" />
-    <Content Include="Scripts\ckeditor\LICENSE.md" />
     <Content Include="Scripts\ckeditor\plugins\a11yhelp\dialogs\a11yhelp.js" />
     <Content Include="Scripts\ckeditor\plugins\a11yhelp\dialogs\lang\ar.js" />
     <Content Include="Scripts\ckeditor\plugins\a11yhelp\dialogs\lang\bg.js" />
@@ -921,8 +912,6 @@
     <Content Include="Scripts\ckeditor\plugins\preview\preview.html" />
     <Content Include="Scripts\ckeditor\plugins\scayt\dialogs\options.js" />
     <Content Include="Scripts\ckeditor\plugins\scayt\dialogs\toolbar.css" />
-    <Content Include="Scripts\ckeditor\plugins\scayt\LICENSE.md" />
-    <Content Include="Scripts\ckeditor\plugins\scayt\README.md" />
     <Content Include="Scripts\ckeditor\plugins\showblocks\images\block_address.png" />
     <Content Include="Scripts\ckeditor\plugins\showblocks\images\block_blockquote.png" />
     <Content Include="Scripts\ckeditor\plugins\showblocks\images\block_div.png" />
@@ -1038,9 +1027,6 @@
     <Content Include="Scripts\ckeditor\plugins\wsc\dialogs\wsc.css" />
     <Content Include="Scripts\ckeditor\plugins\wsc\dialogs\wsc.js" />
     <Content Include="Scripts\ckeditor\plugins\wsc\dialogs\wsc_ie.js" />
-    <Content Include="Scripts\ckeditor\plugins\wsc\LICENSE.md" />
-    <Content Include="Scripts\ckeditor\plugins\wsc\README.md" />
-    <Content Include="Scripts\ckeditor\README.md" />
     <Content Include="Scripts\ckeditor\samples\ajax.html" />
     <Content Include="Scripts\ckeditor\samples\api.html" />
     <Content Include="Scripts\ckeditor\samples\appendto.html" />
@@ -1060,7 +1046,6 @@
     <Content Include="Scripts\ckeditor\samples\plugins\dialog\assets\my_dialog.js" />
     <Content Include="Scripts\ckeditor\samples\plugins\dialog\dialog.html" />
     <Content Include="Scripts\ckeditor\samples\plugins\enterkey\enterkey.html" />
-    <Content Include="Scripts\ckeditor\samples\plugins\htmlwriter\assets\outputforflash\outputforflash.fla" />
     <Content Include="Scripts\ckeditor\samples\plugins\htmlwriter\assets\outputforflash\outputforflash.swf" />
     <Content Include="Scripts\ckeditor\samples\plugins\htmlwriter\assets\outputforflash\swfobject.js" />
     <Content Include="Scripts\ckeditor\samples\plugins\htmlwriter\outputforflash.html" />
@@ -1101,7 +1086,6 @@
     <Content Include="Scripts\ckeditor\skins\moono\images\lock-open.png" />
     <Content Include="Scripts\ckeditor\skins\moono\images\lock.png" />
     <Content Include="Scripts\ckeditor\skins\moono\images\refresh.png" />
-    <Content Include="Scripts\ckeditor\skins\moono\readme.md" />
     <Content Include="Scripts\ckeditor\styles.js" />
     <Content Include="Scripts\daypilot-all.min.js" />
     <Content Include="Scripts\expanding.js" />
@@ -1115,8 +1099,9 @@
     <Content Include="Scripts\jquery.dataTables.min.js" />
     <Content Include="Scripts\jquery.datetimepicker.js" />
     <Content Include="Scripts\jquery.dcmegamenu.1.3.3.js" />
-    <Content Include="Scripts\jquery.easing.js" />
     <Content Include="Scripts\jquery.grid-a-licious.js" />
+    <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery.easing.js" />
     <Content Include="Scripts\jquery.superfish.js" />
     <Content Include="Scripts\jquery.timepicker.js" />
     <Content Include="Scripts\jquery.ui.core.js" />
@@ -1134,7 +1119,6 @@
     <Content Include="Scripts\knockout-2.2.0.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\ZeroClipboard.swf" />
-    <Content Include="Scripts\_references.js" />
     <Content Include="Views\Appointment\Calendar.cshtml" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
@@ -1144,6 +1128,7 @@
       <DependentUpon>Web.config</DependentUpon>
     </Content>
     <Content Include="Content\Site.css" />
+    <Content Include="Scripts\_references.js" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Account\_ChangePasswordPartial.cshtml" />
     <Content Include="Views\Account\_ExternalLoginsListPartial.cshtml" />
@@ -1156,7 +1141,7 @@
     <Content Include="Views\Account\ExternalLoginConfirmation.cshtml" />
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
-    <Content Include="Views\Home\HomeAdmin.cshtml" />
+    <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
@@ -1184,6 +1169,7 @@
     <Content Include="Views\Application\Edit.cshtml" />
     <Content Include="Views\Application\Delete.cshtml" />
     <Content Include="Views\Application\Record.cshtml" />
+    <Content Include="Views\Application\Program.cshtml" />
     <Content Include="Views\Program\Showall.cshtml" />
     <Content Include="Views\StudentProfile\Index.cshtml" />
     <Content Include="Views\StudentProfile\Details.cshtml" />
@@ -1240,7 +1226,6 @@
     <Content Include="Views\Home\EmailTest.cshtml" />
     <Content Include="Views\Home\Menu.cshtml" />
     <Content Include="Views\Home\MenuStudent.cshtml" />
-    <Content Include="Views\Home\MenuAdmin.cshtml" />
     <Content Include="Views\UserProfile\Index.cshtml" />
     <Content Include="Views\UserProfile\Details.cshtml" />
     <Content Include="Views\UserProfile\Create.cshtml" />
@@ -1320,59 +1305,86 @@
     <Content Include="Views\StudentExperience\Create.cshtml" />
     <Content Include="Views\StudentExperience\Edit.cshtml" />
     <Content Include="Views\StudentExperience\Delete.cshtml" />
+    <Content Include="Views\Home\MenuStudentDevelopment.cshtml" />
     <Content Include="Views\Home\MenuEDP.cshtml" />
     <Content Include="Views\Home\MenuFacultyAdvisor.cshtml" />
     <Content Include="Views\Home\MenuCommTutor.cshtml" />
     <Content Include="Views\Home\MenuProgramAdmin.cshtml" />
     <Content Include="Views\Home\MenuNominator.cshtml" />
     <Content Include="Views\Account\CASLoginFail.cshtml" />
-    <Content Include="Views\Interview\BatchDelete.cshtml" />
-    <Content Include="Views\Appointment\BatchDelete.cshtml" />
-    <Content Include="Views\StudentParticular\EditLanguage.cshtml" />
-    <Content Include="Views\StudentQualification\Index.cshtml" />
-    <Content Include="Views\StudentQualification\Details.cshtml" />
-    <Content Include="Views\StudentQualification\Create.cshtml" />
-    <Content Include="Views\StudentQualification\Edit.cshtml" />
-    <Content Include="Views\StudentQualification\Delete.cshtml" />
-    <Content Include="Views\StudentProfile\MyQualification.cshtml" />
-    <None Include="Scripts\jquery.validate-vsdoc.js" />
-    <Content Include="Views\StudentAdvisingRemark\Index.cshtml" />
-    <Content Include="Views\StudentAdvisingRemark\Details.cshtml" />
-    <Content Include="Views\StudentAdvisingRemark\Create.cshtml" />
-    <Content Include="Views\StudentAdvisingRemark\Edit.cshtml" />
-    <Content Include="Views\StudentAdvisingRemark\Delete.cshtml" />
-    <Content Include="Views\StudentProfile\AdvisingRemark.cshtml" />
-    <Content Include="Views\Program\ExportExcel.cshtml" />
-    <Content Include="Views\Interview\BatchUpdate.cshtml" />
-    <Content Include="Views\StudentProfile\EditRemarks.cshtml" />
-    <Content Include="Views\StudentActivity\Index.cshtml" />
-    <Content Include="Views\StudentActivity\Details.cshtml" />
-    <Content Include="Views\StudentActivity\Create.cshtml" />
-    <Content Include="Views\StudentActivity\Edit.cshtml" />
-    <Content Include="Views\StudentActivity\Delete.cshtml" />
-    <Content Include="Views\StudentProfile\ActivityRecord.cshtml" />
-    <Content Include="Views\StudentActivity\Import.cshtml" />
-    <Content Include="Views\InterviewComment\Index.cshtml" />
-    <Content Include="Views\InterviewComment\Details.cshtml" />
-    <Content Include="Views\InterviewComment\Create.cshtml" />
-    <Content Include="Views\InterviewComment\Edit.cshtml" />
-    <Content Include="Views\InterviewComment\Delete.cshtml" />
-    <Content Include="Views\InterviewComment\Import.cshtml" />
-    <Content Include="Views\Interview\CommentTemplate.cshtml" />
-    <Content Include="Views\Notification\Send.cshtml" />
-    <Content Include="Views\Home\HomeFaculty.cshtml" />
-    <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Views\StudentProfile\MyStudent.cshtml" />
-    <Content Include="Views\Home\HomeEDP.cshtml" />
-    <Content Include="Views\Appointment\Booking.cshtml" />
-    <Content Include="Views\Appointment\Booking1.cshtml" />
-    <Content Include="Views\Appointment\Booking2.cshtml" />
-    <Content Include="Views\Appointment\BookingCalendar.cshtml" />
-    <Content Include="Views\Appointment\Booking3.cshtml" />
-    <Content Include="Views\Appointment\BookingConfirm.cshtml" />
-    <Content Include="Views\Appointment\MyAppointment.cshtml" />
+    <Content Include="Views\Appointment\BatchDelete.cshtml">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="Views\Appointment\Booking.cshtml">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="Views\Appointment\Booking1.cshtml">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="Views\Appointment\Booking2.cshtml">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="Views\Appointment\Booking3.cshtml">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="Views\Appointment\BookingCalendar.cshtml">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="Views\Appointment\BookingConfirm.cshtml">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="Views\Appointment\Cancel.cshtml" />
-    <Content Include="Views\Program\ViewList.cshtml" />
+    <Content Include="Views\Appointment\MyAppointment.cshtml">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="Views\Home\HomeAdmin.cshtml" />
+    <Content Include="Views\Home\HomeEDP.cshtml" />
+    <Content Include="Views\Home\HomeFaculty.cshtml">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="Views\Home\MenuAdmin.cshtml" />
+    <Content Include="Views\Interview\BatchDelete.cshtml" />
+    <Content Include="Views\Interview\BatchUpdate.cshtml" />
+    <Content Include="Views\Interview\CommentTemplate.cshtml" />
+    <Content Include="Views\InterviewComment\Create.cshtml" />
+    <Content Include="Views\InterviewComment\Delete.cshtml" />
+    <Content Include="Views\InterviewComment\Details.cshtml" />
+    <Content Include="Views\InterviewComment\Edit.cshtml" />
+    <Content Include="Views\InterviewComment\Import.cshtml" />
+    <Content Include="Views\InterviewComment\Index.cshtml" />
+    <Content Include="Views\Notification\Send.cshtml" />
+    <Content Include="Views\Program\ExportExcel.cshtml" />
+    <Content Include="Views\Program\ViewList.cshtml">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="Views\StudentActivity\Create.cshtml" />
+    <Content Include="Views\StudentActivity\Delete.cshtml" />
+    <Content Include="Views\StudentActivity\Details.cshtml" />
+    <Content Include="Views\StudentActivity\Edit.cshtml" />
+    <Content Include="Views\StudentActivity\Import.cshtml" />
+    <Content Include="Views\StudentActivity\Index.cshtml" />
+    <Content Include="Views\StudentAdvisingRemark\Create.cshtml" />
+    <Content Include="Views\StudentAdvisingRemark\Delete.cshtml" />
+    <Content Include="Views\StudentAdvisingRemark\Details.cshtml" />
+    <Content Include="Views\StudentAdvisingRemark\Edit.cshtml" />
+    <Content Include="Views\StudentAdvisingRemark\Index.cshtml" />
+    <Content Include="Views\StudentProfile\ActivityRecord.cshtml" />
+    <Content Include="Views\StudentProfile\AdvisingRemark.cshtml" />
+    <Content Include="Views\StudentParticular\EditLanguage.cshtml" />
+    <Content Include="Views\StudentProfile\EditRemarks.cshtml">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="Views\StudentProfile\MyQualification.cshtml" />
+    <Content Include="Views\StudentProfile\MyStudent.cshtml">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="Views\StudentQualification\Create.cshtml" />
+    <Content Include="Views\StudentQualification\Delete.cshtml" />
+    <Content Include="Views\StudentQualification\Details.cshtml" />
+    <Content Include="Views\StudentQualification\Edit.cshtml" />
+    <Content Include="Views\StudentQualification\Index.cshtml" />
+    <Content Include="Views\Appointment\HostCalendar.cshtml" />
+    <Content Include="Views\Appointment\HostCalendarDetails.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -1382,20 +1394,6 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
-  </ItemGroup>
-  <ItemGroup>
-    <WCFMetadata Include="Service References\" />
-  </ItemGroup>
-  <ItemGroup>
-    <COMReference Include="Microsoft.Office.Interop.Access.Dao">
-      <Guid>{4AC9E1DA-5BAD-4AC7-86E3-24F4CDCECA28}</Guid>
-      <VersionMajor>12</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>primary</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

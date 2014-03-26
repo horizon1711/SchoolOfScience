@@ -3,82 +3,76 @@
 @{
     ViewBag.Title = "Index";
 }
+
+
 @if (ViewBag.consultation)
 {
 <h2>Consultation Timeslots</h2>
 }
 else
 {
-<h2>Appointment Timeslots</h2>
+<div class="showcase-title">
+    <img src="~/Images/Dashboard/advising.png" />
+    <h2>Advising Appointments</h2>
+</div>
+}
+
+@if (ViewBag.host != null)
+{
+<p>
+    <button type="button" id="calendar-btn">Calendar View</button>
+</p>
 }
 
 @using (Html.BeginForm("Index", "Appointment", FormMethod.Post, new { id = "filter-form" }))
 {
-    
-    <div class="filter">
-        <div class="filter-field">
-            <label for="concern">Concern:</label>
-            @Html.DropDownList("concern", ViewBag.concernList as IEnumerable<SelectListItem>, "All", null)
-        </div>
-        <div class="filter-field">
-            <label for="host">Host:</label>
-            @Html.DropDownList("host", ViewBag.hostList as IEnumerable<SelectListItem>, "All", null)
-        </div>
-        <div class="filter-field">
-            <label for="status">Status:</label>
-            @Html.DropDownList("status", ViewBag.statusList as IEnumerable<SelectListItem>, "All", null)
-        </div>
-        <div class="filter-field">
-            <label for="venue">Venue:</label>
-            @Html.DropDownList("venue", ViewBag.venueList as IEnumerable<SelectListItem>, "All", null)
-        </div>
-        <div class="filter-field">
-            
-            @if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment"))
-            {
-            <div class="field-wrapper">
-                <label for="consultation">Consultation:</label>
-                @Html.CheckBox("consultation")
+    <fieldset class="startCollapse">
+        <legend>Search by Filter (Click to expand)</legend>
+        <div class="filter">
+            <div class="filter-field">
+                <label for="concern">Concern:</label>
+                @Html.DropDownList("concern", ViewBag.concernList as IEnumerable<SelectListItem>, "All", null)
             </div>
-            } 
-            <div class="field-wrapper">
-                <label for="reserved">Reserved:</label>
-                @Html.CheckBox("reserved")
+            <div class="filter-field">
+                <label for="host">Host:</label>
+                @Html.DropDownList("host", ViewBag.hostList as IEnumerable<SelectListItem>, "All", null)
             </div>
-            <div class="field-wrapper">
-                <label for="available">Space Available:</label>
-                @Html.CheckBox("available")
+            <div class="filter-field">
+                <label for="status">Status:</label>
+                @Html.DropDownList("status", ViewBag.statusList as IEnumerable<SelectListItem>, "All", null)
             </div>
-            <div class="field-wrapper">
-                <label for="past">Expired:</label>
-                @Html.CheckBox("past")
+            <div class="filter-field">
+                <label for="venue">Venue:</label>
+                @Html.DropDownList("venue", ViewBag.venueList as IEnumerable<SelectListItem>, "All", null)
             </div>
-
-            <div class="clear-fix"></div>
-
-            <div class="field-wrapper">
-                <label for="advisor">Reserved as Pre-major Faculty Advisor:</label>
+            <div class="filter-field">
+                @if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment"))
+                {
+                    <label for="consultation">Consultation:</label>
+                    @Html.CheckBox("consultation")
+                } 
+                    <label for="reserved">Reserved:</label>
+                    @Html.CheckBox("reserved")
+                    <label for="available">Open for Booking:</label>
+                    @Html.CheckBox("available")
+                    <label for="past">Expired:</label>
+                    @Html.CheckBox("past")
+            </div>
+            <div class="filter-field">
+                <label for="advisor">As Pre-major Faculty Advisor:</label>
                 @Html.CheckBox("advisor")
-            </div>
-
-            <div class="clear-fix"></div>
-
-            <div class="field-wrapper">
-                <label for="mentor">Reserved as Faculty Mentor:</label>
+                <label for="mentor">As Faculty Mentor:</label>
                 @Html.CheckBox("mentor")
             </div>
+
+            <div class="filter-field">
+                <input type="submit" value="Search" />
+                <input type="reset" value="Reset" />
+            </div>
         </div>
-        <div class="clear-fix"></div>
-        <div class="filter-field">
-            <input type="submit" value="Search" />
-            <input type="reset" value="Reset" />
-        </div>
-    </div>
+    </fieldset>
 }
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
 <table class="data-table">
     <thead>
         <tr>
@@ -135,7 +129,7 @@ else
                     {
                         <div>@Html.ActionLink(concern.Program.name, "Details", "Program", new { id = concern.program_id }, new { @class = "program-details-link" })</div>
                     }
-                    else 
+                    else
                     {
                         if (!concern.custom)
                         {
@@ -149,7 +143,7 @@ else
                 }
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.AppointmentHost.name)
+                <a href="@Url.Action("HostCalendar", "Appointment", new { item.host_id })" class="calendar-link">@Html.DisplayFor(modelItem => item.AppointmentHost.name)</a>
             </td>
             <td>
                 @if (item.StudentProfile != null)
@@ -201,6 +195,22 @@ else
                 e.preventDefault();
                 showDialog($(this).prop("href"), "#error-dialog", "#dialog1");
             });
+
+            $(".calendar-link").click(function (e) {
+                e.preventDefault();
+                showDialog($(this).prop("href"), "#error-dialog", "#dialog3", 900, 600);
+            });
+
+            @if (ViewBag.host != null)
+            {
+                <text>
+                    $("#calendar-btn").click(function (e) {
+                        e.preventDefault();
+                        showDialog("@Url.Action("HostCalendar", "Appointment", new { host_id = ViewBag.host.id })", "#error-dialog", "#dialog3", 900, 600);
+                    });
+                </text>
+            }
+
 
             $("#checkAll").click(function () {
                 $(".checkItem").attr("checked", $(this).is(":checked"));

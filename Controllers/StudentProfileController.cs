@@ -21,11 +21,11 @@ namespace SchoolOfScience.Controllers
         [Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP,CommTutor,ProgramAdmin,Nominator")]
         public ActionResult Index()
         {
-            ViewBag.careerList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_career }).Distinct(), "text", "text");
-            ViewBag.groupList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_group }).Distinct(), "text", "text");
-            ViewBag.departmentList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_organization }).Distinct(), "text", "text");
-            ViewBag.planList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_plan_description }).Distinct(), "text", "text");
-            ViewBag.levelList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_level }).Distinct(), "text", "text");
+            ViewBag.careerList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_career }).Distinct().OrderBy(t => t.text), "text", "text");
+            ViewBag.groupList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_group }).Distinct().OrderBy(t => t.text), "text", "text");
+            ViewBag.departmentList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_organization }).Distinct().OrderBy(t => t.text), "text", "text");
+            ViewBag.planList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_plan_description }).Distinct().OrderBy(t => t.text), "text", "text");
+            ViewBag.levelList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_level }).Distinct().OrderBy(t => t.text), "text", "text");
             ViewBag.showTable = false;
             return View(new List<StudentProfile>().ToList());
         }
@@ -41,11 +41,11 @@ namespace SchoolOfScience.Controllers
             ViewBag.studentid = Form["studentid"];
             ViewBag.firstname = Form["firstname"];
             ViewBag.lastname = Form["lastname"];
-            ViewBag.careerList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_career }).Distinct(), "text", "text", Form["career"]);
-            ViewBag.groupList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_group }).Distinct(), "text", "text", Form["academic_group"]);
-            ViewBag.departmentList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_organization }).Distinct(), "text", "text", Form["academic_organization"]);
-            ViewBag.planList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_plan_description }).Distinct(), "text", "text", Form["academic_plan_description"]);
-            ViewBag.levelList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_level }).Distinct(), "text", "text", Form["academic_level"]);
+            ViewBag.careerList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_career }).Distinct().OrderBy(t => t.text), "text", "text", Form["career"]);
+            ViewBag.groupList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_group }).Distinct().OrderBy(t => t.text), "text", "text", Form["academic_group"]);
+            ViewBag.departmentList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_organization }).Distinct().OrderBy(t => t.text), "text", "text", Form["academic_organization"]);
+            ViewBag.planList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_plan_description }).Distinct().OrderBy(t => t.text), "text", "text", Form["academic_plan_description"]);
+            ViewBag.levelList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_level }).Distinct().OrderBy(t => t.text), "text", "text", Form["academic_level"]);
             ViewBag.commentkeyword = Form["commentkeyword"];
             ViewBag.showTable = true;
             return View(students.ToList().Where(s => (true)
@@ -70,15 +70,19 @@ namespace SchoolOfScience.Controllers
         // GET: /StudentProfile/MyStudent
 
         [Authorize(Roles = "FacultyAdvisor")]
-        public ActionResult MyStudent()
+        public ActionResult MyStudent(bool advisor = false, bool mentor = false)
         {
-            ViewBag.careerList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_career }).Distinct(), "text", "text");
-            ViewBag.groupList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_group }).Distinct(), "text", "text");
-            ViewBag.departmentList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_organization }).Distinct(), "text", "text");
-            ViewBag.planList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_plan_description }).Distinct(), "text", "text");
-            ViewBag.levelList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_level }).Distinct(), "text", "text");
+            ViewBag.careerList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_career }).Distinct().OrderBy(t => t.text), "text", "text");
+            ViewBag.groupList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_group }).Distinct().OrderBy(t => t.text), "text", "text");
+            ViewBag.departmentList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_organization }).Distinct().OrderBy(t => t.text), "text", "text");
+            ViewBag.planList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_plan_description }).Distinct().OrderBy(t => t.text), "text", "text");
+            ViewBag.levelList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_level }).Distinct().OrderBy(t => t.text), "text", "text");
             ViewBag.showTable = true;
-            var students = db.StudentProfiles.Where(s => s.StudentAdvisors.Any(a => a.advisor_email.Substring(0, a.advisor_email.IndexOf("@")) == User.Identity.Name));
+            var students = db.StudentProfiles.Where(s => s.StudentAdvisors.Any(a => a.advisor_email.Substring(0, a.advisor_email.IndexOf("@")) == User.Identity.Name)
+                    && (!(advisor && mentor) || (s.academic_plan_description.Contains("4Y")))
+                    && (!(advisor && !mentor) || (s.academic_plan_description.Contains("4Y") && s.academic_plan_description.Contains("Undeclared")))
+                    && (!(!advisor && mentor) || (s.academic_plan_description.Contains("4Y") && !s.academic_plan_description.Contains("Undeclared")))
+                );
             return View(students.ToList());
         }
 
@@ -87,17 +91,17 @@ namespace SchoolOfScience.Controllers
 
         [HttpPost]
         [Authorize(Roles = "FacultyAdvisor")]
-        public ActionResult MyStudent(FormCollection Form)
+        public ActionResult MyStudent(FormCollection Form, bool advisor = false, bool mentor = false)
         {
             var students = db.StudentProfiles.Where(s => s.StudentAdvisors.Any(a => a.advisor_email.Substring(0, a.advisor_email.IndexOf("@")) == User.Identity.Name));
             ViewBag.studentid = Form["studentid"];
             ViewBag.firstname = Form["firstname"];
             ViewBag.lastname = Form["lastname"];
-            ViewBag.careerList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_career }).Distinct(), "text", "text", Form["career"]);
-            ViewBag.groupList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_group }).Distinct(), "text", "text", Form["academic_group"]);
-            ViewBag.departmentList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_organization }).Distinct(), "text", "text", Form["academic_organization"]);
-            ViewBag.planList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_plan_description }).Distinct(), "text", "text", Form["academic_plan_description"]);
-            ViewBag.levelList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_level }).Distinct(), "text", "text", Form["academic_level"]);
+            ViewBag.careerList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_career }).Distinct().OrderBy(t => t.text), "text", "text", Form["career"]);
+            ViewBag.groupList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_group }).Distinct().OrderBy(t => t.text), "text", "text", Form["academic_group"]);
+            ViewBag.departmentList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_organization }).Distinct().OrderBy(t => t.text), "text", "text", Form["academic_organization"]);
+            ViewBag.planList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_plan_description }).Distinct().OrderBy(t => t.text), "text", "text", Form["academic_plan_description"]);
+            ViewBag.levelList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_level }).Distinct().OrderBy(t => t.text), "text", "text", Form["academic_level"]);
             ViewBag.commentkeyword = Form["commentkeyword"];
             ViewBag.showTable = true;
             return View(students.ToList().Where(s => (true)
@@ -112,6 +116,9 @@ namespace SchoolOfScience.Controllers
                 && (String.IsNullOrEmpty(Form["commentkeyword"]) || s.StudentAdvisingRemarks.Any(r =>
                     r.text.IndexOf(Form["commentkeyword"], StringComparison.OrdinalIgnoreCase) >= 0
                     && (!r.@private && r.created_by == User.Identity.Name)))
+                && (!(advisor && mentor) || (s.academic_plan_description.Contains("4Y")))
+                && (!(advisor && !mentor) || (s.academic_plan_description.Contains("4Y") && s.academic_plan_description.Contains("Undeclared")))
+                && (!(!advisor && mentor) || (s.academic_plan_description.Contains("4Y") && !s.academic_plan_description.Contains("Undeclared")))
                 ));
         }
 
