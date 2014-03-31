@@ -75,7 +75,7 @@
 
         $(".student-link").click(function (e) {
             e.preventDefault();
-            showDialog($(this).prop("href"), "#error-dialog", "#dialog1");
+            showDialog($(this).prop("href"), "#error-dialog", "#student-profile-dialog");
         });
 
         $("#batch-update-btn").click(function (e) {
@@ -86,7 +86,7 @@
                     type: "POST",
                     data: $("#form").serializeArray(),
                     error: function (jqXHR, status, error) {
-                        $("#dialog3").dialog("close");
+                        $("#batch-action-dialog").dialog("close");
                         $("#error-dialog").dialog({
                             width: 350,
                             height: 100,
@@ -109,7 +109,7 @@
                         }).html(error);
                     },
                     success: function (result) {
-                        $("#dialog3").dialog("close");
+                        $("#batch-action-dialog").dialog("close");
                         $("#filter-form").submit();
                     }
             });

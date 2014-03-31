@@ -1,7 +1,6 @@
-﻿@model SchoolOfScience.Models.ViewModels.NominationViewModel
+﻿@model SchoolOfScience.Models.Nomination
 
 @{
-    ViewBag.Title = "Create";
 }
 
 <h2>Create</h2>
@@ -10,93 +9,119 @@
     @Html.AntiForgeryToken()
     @Html.ValidationSummary(true)
 
-    @Html.HiddenFor(model => model.nomination.program_id)
+    @Html.HiddenFor(model => model.program_id)
+    @Html.Hidden("applicationids")
 
-    <fieldset>
-        <legend>Nomination</legend>
+<fieldset>
+    <legend>Nomination</legend>
 
-        <div class="editor-label">
-            @Html.LabelFor(model => model.nomination.program_id)
-        </div>
-        <div class="editor-field">
-            @Html.DisplayFor(model => model.nomination.Program.name)
-        </div>
+    <div class="editor-label">
+        Program Name
+    </div>
+    <div class="editor-field">
+        @Html.DisplayFor(model => model.Program.name)
+    </div>
 
-        <div class="editor-label">
-            @Html.LabelFor(model => model.nomination.nominator_id, "Nominator")
-        </div>
-        <div class="editor-field">
-            @Html.DropDownListFor(model => model.nomination.nominator_id, ViewBag.nominatorList as SelectList, String.Empty)
-            @Html.ValidationMessageFor(model => model.nomination.nominator_id)
-        </div>
+    <div class="editor-label">
+        @Html.LabelFor(model => model.status_id, "Status")
+    </div>
+    <div class="editor-field">
+        @Html.DropDownListFor(model => model.status_id, ViewBag.statusList as SelectList, String.Empty)
+        @Html.ValidationMessageFor(model => model.status_id)
+    </div>
 
-        <div class="editor-label">
-            @Html.LabelFor(model => model.nomination.status_id, "NominationStatus")
-        </div>
-        <div class="editor-field">
-            @Html.DropDownListFor(model => model.nomination.status_id, ViewBag.statusList as SelectList, String.Empty)
-            @Html.ValidationMessageFor(model => model.nomination.status_id)
-        </div>
+    <div class="editor-label">
+        @Html.LabelFor(model => model.start_date)
+    </div>
+    <div class="editor-field">
+        @Html.TextBoxFor(model => model.start_date, "{0:yyyy-MM-dd}", new { @class = "date-picker" })
+        @Html.ValidationMessageFor(model => model.start_date)
+    </div>
 
-        <div class="editor-label">
-            @Html.LabelFor(model => model.nomination.quota)
-        </div>
-        <div class="editor-field">
-            @Html.EditorFor(model => model.nomination.quota)
-            @Html.ValidationMessageFor(model => model.nomination.quota)
-        </div>
+    <div class="editor-label">
+        @Html.LabelFor(model => model.end_date)
+    </div>
+    <div class="editor-field">
+        @Html.TextBoxFor(model => model.end_date, "{0:yyyy-MM-dd}", new { @class = "date-picker"})
+        @Html.ValidationMessageFor(model => model.end_date)
+    </div>
 
-        <div class="editor-label">
-            @Html.LabelFor(model => model.nomination.start_date)
-        </div>
-        <div class="editor-field">
-            @Html.TextBoxFor(model => model.nomination.start_date, "{0:MM/dd/yyyy}", new { @class = "date-picker" })
-            @Html.ValidationMessageFor(model => model.nomination.start_date)
-        </div>
+    <div class="editor-label">
+        @Html.LabelFor(model => model.remarks)
+    </div>
+    <div class="editor-field">
+        @Html.TextAreaFor(model => model.remarks, new { @class = "expanding" })
+        @Html.ValidationMessageFor(model => model.remarks)
+    </div>
 
-        <div class="editor-label">
-            @Html.LabelFor(model => model.nomination.end_date)
-        </div>
-        <div class="editor-field">
-            @Html.TextBoxFor(model => model.nomination.end_date, "{0:MM/dd/yyyy}", new { @class = "date-picker"})
-            @Html.ValidationMessageFor(model => model.nomination.end_date)
-        </div>
-
-    </fieldset>
+</fieldset>
     
-    <fieldset>
-        <legend>Shortlisted Applications</legend>
+<fieldset>
+    <legend>Tick the Checkbox to Shortlist Applications</legend>
 
-        <table class="data-table">
-            <thead>
-                <tr>
-                    <th>Id</th>
-                    <th>Student Name</th>
-                    <th>Status</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @for (int i = 0 ; i < Model.applications.Count(); i++)
-                {
-                    <tr>
-                        <td>@Html.DisplayFor(model => model.applications[i].id)</td>
-                        <td>@Html.DisplayFor(model => model.applications[i].StudentProfile.name) (@Html.ActionLink(Model.applications[i].StudentProfile.id.ToString(), "Details", "StudentProfile", new { id = Model.applications[i].StudentProfile.id }, null))</td>
-                        <td>@Html.DisplayFor(model => model.applications[i].ApplicationStatus.name)</td>
-                        <td>
-                            @Html.CheckBoxFor(model => model.applications[i].shortlisted)
-                            @Html.HiddenFor(model => model.applications[i].id)
-                        </td> 
-                    </tr>
-                }
-            </tbody>
-        </table>
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>
+                    <input type="checkbox" id="checkAll"/>
+                </th>
+                <th>
+                    ID
+                </th>
+                <th>
+                    Student Name
+                </th>
+                <th>
+                    Academic Organization
+                </th>
+                <th>
+                    Academic Plan
+                </th>
+                <th>
+                    Academic Level
+                </th>
+                <th>
+                    View Application
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            
+            @foreach (var application in Model.Program.Applications.Where(a => a.submitted != null))
+            {
+                //Status.name != "Saved"
+            <tr>
+                <td>
+                    <input type="checkbox" class="checkItem" value="@application.id"/>
+                </td>
+                <td>
+                    @application.id
+                </td>
+                <td>
+                    <strong>@Html.DisplayFor(modelItem => application.StudentProfile.name) @Html.ActionLink(application.StudentProfile.id.ToString(), "Details", "StudentProfile", new { id = application.StudentProfile.id }, new { @class = "student-link" })</strong>
+                </td>
+                <td>
+                    @application.StudentProfile.academic_organization
+                </td>
+                <td>
+                    @application.StudentProfile.academic_plan_description
+                </td>
+                <td>
+                    @application.StudentProfile.academic_level
+                </td>
+                <td>
+                    <a href="@Url.Action("Details", "Application", new { id = application.id })" class = "action-link" title = "View Application"><img src="@Url.Content("~/Images/Action/view.gif")" /></a>
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
 
-    </fieldset>
+</fieldset>
 
-        <p>
-            <input type="submit" value="Create" />
-        </p>
+<p>
+    <input type="submit" id="submit" value="Next" />
+</p>
 }
 
 <div>
@@ -107,7 +132,31 @@
     @Scripts.Render("~/bundles/jqueryval")
     <script>
         $(function () {
-            $(".data-table").dataTable();
+            $(".data-table").dataTable({
+                "aaSorting": [[3, "asc"]],
+                "bPaginate": false,
+                "aoColumnDefs": [
+                    { 'bSortable': false, 'aTargets': [0] }]
+            });
+        });
+
+        $(".student-link").click(function (e) {
+            e.preventDefault();
+            showDialog($(this).prop("href"), "#error-dialog", "#student-profile-dialog");
+        });
+
+        $(".action-link").click(function (e) {
+            e.preventDefault();
+            showDialog($(this).prop("href"), "#error-dialog", "#application-dialog");
+        });
+
+        $("#checkAll").click(function () {
+            $(".checkItem").prop("checked", $(this).is(":checked"));
+        });
+
+        $("input#submit").click(function (e) {
+            var items = $(".checkItem:checked").map(function () { return $(this).val() }).get();
+            $("#applicationids").val(items.join('_'));
         });
     </script>
 }

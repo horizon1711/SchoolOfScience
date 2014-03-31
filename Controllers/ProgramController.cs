@@ -110,7 +110,7 @@ namespace SchoolOfScience.Controllers
         //
         // GET: /Program/ViewList/5
 
-        [Authorize(Roles = "FacultyAdvisor")]
+        [Authorize(Roles = "FacultyAdvisor,Nominator")]
         public ActionResult ViewList(int id = 0)
         {
             ViewBag.typeid = id;
@@ -127,7 +127,7 @@ namespace SchoolOfScience.Controllers
         // POST: /Program/ViewList/5
 
         [HttpPost]
-        [Authorize(Roles = "FacultyAdvisor")]
+        [Authorize(Roles = "FacultyAdvisor,Nominator")]
         public ActionResult ViewList(FormCollection Form, int id = 0)
         {
             ViewBag.typeid = id;
@@ -291,22 +291,14 @@ namespace SchoolOfScience.Controllers
         //
         // GET: /Program/Details/5
         [Ajax(true)]
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment,FacultyAdvisor,EDP,StudentUGRD,StudentRPGTPG,StudentNUGD")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,FacultyAdvisor,EDP,Nominator,StudentUGRD,StudentRPGTPG,StudentNUGD")]
         public ActionResult Details(int id = 0)
         {
             //get program
             Program program = db.Programs.Find(id);
             if (program == null)
             {
-                Session["FlashMessage"] = "Program not found.";
-                if (User.IsInRole("Advising"))
-                {
-                    return RedirectToAction("Index");
-                }
-                else
-                {
-                    return RedirectToAction("Record");
-                }
+                return HttpNotFound("Program not found.");
             }
 
             var student = db.StudentProfiles.Find(User.Identity.Name);
@@ -338,6 +330,17 @@ namespace SchoolOfScience.Controllers
                 }
                 //check program status
                 programaction.open = program.ProgramStatus.name == "Opened";
+
+                //add view counter
+                try
+                {
+                    program.student_view_count++;
+                    db.SaveChanges();
+                }
+                catch (Exception e)
+                {
+                    Session["FlashMessage"] = "Program view counter error.<br/><br/>" + e.Message;
+                }
             }
             else
             {

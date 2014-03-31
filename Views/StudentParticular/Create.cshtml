@@ -48,6 +48,7 @@
                     data: $("#form").serializeArray(),
                     cache: false,
                     error: function (jqXHR, status, error) {
+                        $("#add-edit-dialog").dialog("close");
                         $("#error-dialog").html(error).dialog({
                             width: 350,
                             height: 100,
@@ -70,7 +71,7 @@
                         });
                     },
                     success: function (result) {
-                        $("#dialog1").dialog("close");
+                        $("#add-edit-dialog").dialog("close");
                         $("#tab2").html(result);
                     }
                 });

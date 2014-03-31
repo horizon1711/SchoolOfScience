@@ -22,6 +22,53 @@
 </div>
 <div class="field-wrapper">
     <div class="display-label">
+        @Html.DisplayNameFor(model => model.student.academic_level)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.student.academic_level)
+    </div>
+</div>
+@if (Model.student.academic_plan_description.Contains("4Y"))
+{
+<div class="field-wrapper">
+    <div class="display-label">
+        @if (Model.student.academic_plan_description.Contains("Undeclared"))
+        {
+            <text>Pre-major Faculty Advisor</text>
+        }
+        else
+        {
+            <text>Faculty Mentor</text>
+        }
+    </div>
+    <div class="display-field">
+        @foreach (var advisor in Model.student.StudentAdvisors)
+        {
+            <div>@advisor.advisor_name - <a href="mailto:@advisor.advisor_email">@advisor.advisor_email</a></div>
+        }
+    </div>
+</div>
+}
+
+@*201403241200 fai: show remarks only if admin role or remarks is not empty*@
+@if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment") || !String.IsNullOrEmpty(Model.student.remarks))
+{
+<div class="field-wrapper">
+    <div class="display-label" id="remarks-label">
+        Remarks
+    </div>
+    <div class="display-field" id="remarks">
+        <span id="remarks-content">@Html.DisplayFor(model => model.student.remarks)</span>
+        @*201403241200 fai: only admin role to edit remarks*@
+        @if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment"))
+        {
+        <a href="@Url.Action("EditRemarks", "StudentProfile", new { id = Model.student.id })" class="editremarks-link"><img src="@Url.Content("~/Images/Action/edit.gif")" class="edit-remarks-btn" /></a>
+        }
+    </div>
+</div>
+}
+<div class="field-wrapper clear-left">
+    <div class="display-label">
         @Html.DisplayNameFor(model => model.student.contact_phone_number)
     </div>
     <div class="display-field">
@@ -59,7 +106,7 @@
         @Html.DisplayFor(model => model.student.mobile_phone_number)
     </div>
 </div>
-<div class="field-wrapper clear-left">
+<div class="field-wrapper">
     <div class="display-label">
         @Html.DisplayNameFor(model => model.student.email)
     </div>
@@ -75,46 +122,6 @@
         @Html.DisplayFor(model => model.student.home_address1), @Html.DisplayFor(model => model.student.home_address2),@Html.DisplayFor(model => model.student.home_address3),@Html.DisplayFor(model => model.student.home_address4)
     </div>
 </div>
-@if (Model.student.academic_plan_description.Contains("4Y"))
-{
-<div class="field-wrapper">
-    <div class="display-label">
-        @if (Model.student.academic_plan_description.Contains("Undeclared"))
-        {
-            <text>Pre-major Faculty Advisor</text>
-        }
-        else
-        {
-            <text>Faculty Mentor</text>
-        }
-    </div>
-    <div class="display-field">
-        @foreach (var advisor in Model.student.StudentAdvisors)
-        {
-            <div>@advisor.advisor_name - <a href="mailto:@advisor.advisor_email">@advisor.advisor_email</a></div>
-        }
-    </div>
-</div>
-}
-<div class="clear-fix"></div>
-
-@*201403241200 fai: show remarks only if admin role or remarks is not empty*@
-@if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment") || !String.IsNullOrEmpty(Model.student.remarks))
-{
-<div class="field-wrapper">
-    <div class="display-label" id="remarks-label">
-        Remarks
-        @*201403241200 fai: only admin role to edit remarks*@
-        @if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment"))
-        {
-        <a href="@Url.Action("EditRemarks", "StudentProfile", new { id = Model.student.id })" class="editremarks-link"><img src="@Url.Content("~/Images/Action/edit.gif")" class="edit-btn" /></a>
-        }
-    </div>
-    <div class="display-field" id="remarks">
-        @Html.DisplayFor(model => model.student.remarks)
-    </div>
-</div>
-}
 
 <div class="clear-fix"></div>
 
@@ -421,6 +428,7 @@
             "bPaginate": false,
             "bInfo": false,
             "bFilter": false,
+            "bRetrieve": true,
             "oLanguage": {
                 "sSearch": ""
             }
@@ -431,6 +439,7 @@
             "bPaginate": false,
             "bInfo": false,
             "bFilter": false,
+            "bRetrieve": true,
             "oLanguage": {
                 "sSearch": ""
             }
@@ -441,6 +450,7 @@
             "bPaginate": false,
             "bInfo": false,
             "bFilter": false,
+            "bRetrieve": true,
             "oLanguage": {
                 "sSearch": ""
             }
@@ -485,17 +495,17 @@
 
         $(".action-link").click(function (e) {
             e.preventDefault();
-            showDialog($(this).prop("href"), "#error-dialog", "#dialog2");
+            showDialog($(this).prop("href"), "#error-dialog", "#application-dialog");
         });
 
         $(".program-details-link").click(function (e) {
             e.preventDefault();
-            showDialog($(this).prop("href"), "#error-dialog", "#dialog2");
+            showDialog($(this).prop("href"), "#error-dialog", "#program-details-dialog");
         });
 
         $(".editremarks-link").click(function (e) {
             e.preventDefault();
-            showDialog($(this).prop("href"), "#error-dialog", "#dialog2", 400, 200);
+            showDialog($(this).prop("href"), "#error-dialog", "#add-edit-dialog", 400, 200);
         });
     });
 </script>

@@ -16,7 +16,7 @@
 {
     @Html.HiddenFor(model => model.host_id)
 <p>
-    @Html.DropDownListFor(model => model.appointment_id, new SelectList(Model.appointmentList.Select(i => new { id = i.id, name = String.Format("{0:yyyy-MM-dd}", i.start_time) + " " + String.Format("{0:HH:mm}", i.start_time) + " at " + i.AppointmentVenue.name }), "id", "name"), String.Empty)
+    @Html.DropDownListFor(model => model.appointment_id, new SelectList(Model.appointmentList.Select(i => new { id = i.id, name = String.Format("{0:yyyy-MM-dd}", i.start_time) + " " + String.Format("{0:HH:mm}", i.start_time) + " at " + i.venue }), "id", "name"), String.Empty)
     <a href="@Url.Action("BookingCalendar", "Appointment", new { Model.host_id })" class="calendar-link"><img src="@Url.Content("~/Images/Action/calendar.gif")" /></a>
     @Html.ValidationMessageFor(model => model.appointment_id)
 </p>   
@@ -62,7 +62,7 @@
                         }).html(error);
                     },
                     success: function (result) {
-                        $("#dialog1").html(result);
+                        $("#appointment-booking-dialog").html(result);
                     }
                 });
             } else {
@@ -100,14 +100,14 @@
                     }).html(error);
                 },
                 success: function (result) {
-                    $("#dialog1").html(result);
+                    $("#appointment-booking-dialog").html(result);
                 }
             });
         });
 
         $(".calendar-link").click(function (e) {
             e.preventDefault();
-            showDialog($(this).prop("href"), "#error-dialog", "#dialog3", 900, 550);
+            showDialog($(this).prop("href"), "#error-dialog", "#calendar-dialog", 900, 550);
         });
     });
 </script>

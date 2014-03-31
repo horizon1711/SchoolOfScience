@@ -57,7 +57,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.modified)
             </th>
-            <th></th>
+            <th>
+                Action
+            </th>
         </tr>
     </thead>
     <tbody>
@@ -92,12 +94,22 @@
                 [@Html.DisplayFor(modelItem => item.modified_by)]
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { id=item.id }) |
-                @Html.ActionLink("Details", "Details", new { id=item.id }) |
-                @Html.ActionLink("Delete", "Delete", new { id=item.id }) |
-                @if (item.NotificationStatus.name == "Pending") {
-                    @Html.ActionLink("Send", "Send", new { id = item.id })
-                }
+                <ul class="action-list">
+                    <li>
+                        @Html.ActionLink("Edit", "Edit", new { id=item.id })
+                    </li>
+                    <li>
+                        @Html.ActionLink("Details", "Details", new { id=item.id })
+                    </li>
+                    <li>
+                        @Html.ActionLink("Delete", "Delete", new { id=item.id }) 
+                    </li>
+                    @if (item.NotificationStatus.name == "Pending") {
+                    <li>
+                        @Html.ActionLink("Send", "Send", new { id = item.id })
+                    </li>
+                    }
+                </ul>
             </td>
         </tr>
     }

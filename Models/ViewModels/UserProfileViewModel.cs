@@ -15,6 +15,6 @@ namespace SchoolOfScience.Models.ViewModels
         
         public UserProfile profile { get; set; }
         [Display(Name = "User Role")]
-        public int? role_id { get; set; }
+        public IList<int> roleids { get; set; }
     }
 }

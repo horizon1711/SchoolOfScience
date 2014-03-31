@@ -1,0 +1,7 @@
+Date: 201403241229
+
+- [AppointmentConcern] insert column [custom] bit not null default 0
+- UPDATE AppointmentConcern SET name = 'Consultation' WHERE program_id IS NOT NULL
+- [AppointmentHost] insert column [booking] bit not null default 0
+- [AppointmentHost] insert column [advisor] bit not null default 0
+- [NotificationType] insert row, [name] = AppointmentReservedAdvisor, [template_id] = NULL

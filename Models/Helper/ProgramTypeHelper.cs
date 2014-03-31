@@ -30,7 +30,7 @@ namespace SchoolOfScience.Models
         public bool display_on_showcase { get; set; }
 
         [Required(ErrorMessage = "*Required Field.")]
-        [Range(0, 1000, ErrorMessage = "Duration must be between 0 and 1000.")]
+        [Range(0, 1000, ErrorMessage = "Out of Range. Must be 0 to 1000.")]
         [Display(Name = "Display priority")]
         public int priority { get; set; }
 

@@ -60,6 +60,7 @@ namespace SchoolOfScience.Models
         public System.DateTime modified { get; set; }
         public Nullable<System.DateTime> published { get; set; }
         public string enquiry { get; set; }
+        public int student_view_count { get; set; }
     
         public virtual ICollection<Application> Applications { get; set; }
         public virtual ICollection<AppointmentConcern> AppointmentConcerns { get; set; }

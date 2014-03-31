@@ -16,6 +16,9 @@
                 @Html.DisplayNameFor(model => model.name)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.default_venue)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.booking)
             </th>
             <th>
@@ -32,6 +35,9 @@
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.default_venue)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.booking)

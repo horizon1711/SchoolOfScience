@@ -23,7 +23,7 @@
 </ol>
 
 <p>
-    <button id="booking-make">Make Booking</button>
+    <button id="booking-make">Make New Appointment</button>
 </p>
 
 @section Scripts {
@@ -33,7 +33,7 @@
 
             $("#booking-make").click(function (e) {
                 e.preventDefault();
-                showDialog("@Url.Action("Booking1")", "#error-dialog", "#dialog1", 400, 400);
+                showDialog("@Url.Action("Booking1")", "#error-dialog", "#appointment-booking-dialog", 400, 400);
             });
         });
     </script>

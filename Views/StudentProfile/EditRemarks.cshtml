@@ -45,6 +45,7 @@
                     data: $("#form").serializeArray(),
                     cache: false,
                     error: function (jqXHR, status, error) {
+                        $("#add-edit-dialog").dialog("close");
                         $("#error-dialog").html(error).dialog({
                             width: 350,
                             height: 100,
@@ -67,13 +68,13 @@
                         });
                     },
                     success: function (result) {
-                        $("#dialog2").dialog("close");
-                        $("#remarks").html(result);
+                        $("#add-edit-dialog").dialog("close");
+                        $("#remarks-content").html(result);
                     }
                 });
             }
         });
 
-        $("input#name").focus();
+        $("input#remarks").focus();
     });
 </script>

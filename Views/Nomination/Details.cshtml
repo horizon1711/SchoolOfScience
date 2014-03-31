@@ -4,54 +4,372 @@
     ViewBag.Title = "Details";
 }
 
-<h2>Details</h2>
+<h2>Nomination Details</h2>
 
-<fieldset>
-    <legend>Nomination</legend>
+<ul class="action-list">
+    <li>
+        @Html.ActionLink("Edit", "Edit", new { id = Model.id })
+    </li>
+    <li>
+        @Html.ActionLink("Cancel", "Delete", new { id = Model.id }, new { id = "nomination-cancel-link" })
+    </li>
+</ul>
 
+<div class="field-wrapper">
     <div class="display-label">
-         @Html.DisplayNameFor(model => model.Program.name)
+            @Html.DisplayNameFor(model => model.Program.name)
     </div>
     <div class="display-field">
-        @Html.DisplayFor(model => model.Program.name)
+        @Html.ActionLink(Model.Program.name, "Details", "Program", new { id = Model.program_id }, new { @class = "program-details-link" })
+        <div class="program-note">
+            <div>
+            @if (!String.IsNullOrEmpty(Model.Program.job_position))
+            {
+                @(Model.Program.job_position)
+            }
+            </div>
+            <div>
+            @if (!String.IsNullOrEmpty(Model.Program.host_name))
+            {
+                if (!String.IsNullOrEmpty(Model.Program.website))
+                {
+                    <a href="@(Model.Program.website)" target="_blank" title="@(Model.Program.website)">@(Model.Program.host_name)</a>
+                }
+                else
+                {
+                    @(Model.Program.host_name)
+                }
+            }
+            </div>
+        </div>
     </div>
-
+</div>
+<div class="field-wrapper">
     <div class="display-label">
-         @Html.DisplayNameFor(model => model.nominator_id)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.nominator_id)
-    </div>
-
-    <div class="display-label">
-         @Html.DisplayNameFor(model => model.NominationStatus.name)
+            @Html.DisplayNameFor(model => model.NominationStatus.name)
     </div>
     <div class="display-field">
         @Html.DisplayFor(model => model.NominationStatus.name)
     </div>
-
+</div>
+<div class="field-wrapper">
     <div class="display-label">
-         @Html.DisplayNameFor(model => model.quota)
+        Start Date
     </div>
     <div class="display-field">
-        @Html.DisplayFor(model => model.quota)
-    </div>
-
+        @String.Format("{0:yyyy-MM-dd (ddd)}", Model.start_date)
+    </div>    
+</div>
+<div class="field-wrapper">
     <div class="display-label">
-         @Html.DisplayNameFor(model => model.start_date)
+        End Date
     </div>
     <div class="display-field">
-        @Html.DisplayFor(model => model.start_date)
-    </div>
-
+        @String.Format("{0:yyyy-MM-dd (ddd)}", Model.end_date)
+    </div>    
+</div>
+<div class="field-wrapper">
     <div class="display-label">
-         @Html.DisplayNameFor(model => model.end_date)
+        Remarks
     </div>
     <div class="display-field">
-        @Html.DisplayFor(model => model.end_date)
+        <pre>
+            @Model.remarks
+        </pre>
+    </div>    
+</div>
+<div class="display-label clear-left">
+        Shortlisted Applications:
+</div>
+@if (Model.NominationLevels.FirstOrDefault(l => l.nomination_level == 0) != null)
+{
+<table class="nominated-application-table">
+    <thead>
+        <tr>
+            <th>
+                Application ID
+            </th>
+            <th>
+                Student Name
+            </th>
+            <th>
+                Academic Organization
+            </th>
+            <th>
+                Academic Plan
+            </th>
+            <th>
+                Academic Level
+            </th>
+            <th>
+                Shortlisted
+            </th>
+            <th>
+                Remarks
+            </th>
+            @foreach (var level in Model.NominationLevels.Where(l => l.nomination_level > 0))
+            {
+                <th>
+                    Level @level.nomination_level
+                </th>
+            }
+            <th>
+                View Application
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var nominated in Model.NominationLevels.FirstOrDefault(l => l.nomination_level == 0).NominationApplications)
+        {
+        <tr>
+            <td>
+                @nominated.Application.id
+            </td>
+            <td>
+                <strong>@Html.DisplayFor(modelItem => nominated.Application.StudentProfile.name) @Html.ActionLink(nominated.Application.StudentProfile.id.ToString(), "Details", "StudentProfile", new { id = nominated.Application.StudentProfile.id }, new { @class = "nominated-student-link" })</strong>
+            </td>
+            <td>
+                @nominated.Application.StudentProfile.academic_organization
+            </td>
+            <td>
+                @nominated.Application.StudentProfile.academic_plan_description
+            </td>
+            <td>
+                @nominated.Application.StudentProfile.academic_level
+            </td>
+            <td>
+                @String.Format("{0:yyyy-MM-dd HH:mm}", nominated.nominated_date)
+                [@nominated.Nominator.nominator_username]
+            </td>
+            <td>
+                <pre>
+                    @nominated.remarks
+                </pre>
+            </td>
+            @foreach (var level in Model.NominationLevels.Where(l => l.nomination_level > 0))
+            {
+                <th>
+                    @if (level.NominationApplications.Any(a => a.application_id == nominated.Application.id))
+                    {
+                        <input type="checkbox" disabled="disabled" checked="checked" />
+                    }
+                    else
+                    {
+                        <input type="checkbox" disabled="disabled" />
+                    }
+                </th>
+            }
+            <td>
+                <a href="@Url.Action("Details", "Application", new { id = nominated.Application.id })" class = "nominated-action-link action-link" title = "View Application"><img src="@Url.Content("~/Images/Action/view.gif")" /></a>
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>
+}
+else
+{
+    <div class="display-field">
+        None
+    </div> 
+}
+
+@foreach (var level in Model.NominationLevels.Where(l => l.nomination_level > 0))
+{
+<h2>Level @level.nomination_level Nomination</h2>
+
+<ul class="action-list">
+    <li>
+        @Html.ActionLink("Edit", "EditLevel", new { id = level.id })
+    </li>
+    <li>
+        @Html.ActionLink("Cancel", "DeleteLevel", new { id = level.id }, new { @class = "level-cancel-link" })
+    </li>
+</ul>
+
+<div class="field-wrapper">
+    <div class="display-label">
+            Nominators
     </div>
-</fieldset>
+    <div class="display-field">
+        @if (level.Nominators.Count() > 0)
+        {
+            @String.Join(", ", level.Nominators.Select(n => n.nominator_username))
+        }
+    </div>
+</div>
+<div class="field-wrapper">
+    <div class="display-label">
+        Start Date
+    </div>
+    <div class="display-field">
+        @String.Format("{0:yyyy-MM-dd (ddd)}", level.start_date)
+    </div>    
+</div>
+<div class="field-wrapper">
+    <div class="display-label">
+        End Date
+    </div>
+    <div class="display-field">
+        @String.Format("{0:yyyy-MM-dd (ddd)}", level.end_date)
+    </div>    
+</div>
+<div class="field-wrapper">
+    <div class="display-label">
+            Quota
+    </div>
+    <div class="display-field">
+        @if (level.quota == 0)
+        {
+            @("-")
+        }
+        else
+        {
+            @level.quota
+        }
+    </div>
+</div>
+<div class="field-wrapper">
+    <div class="display-label">
+            Remarks
+    </div>
+    <div class="display-field">
+        <pre>
+            @level.remarks
+        </pre>
+        
+    </div>
+</div>
+        
+<div class="display-label clear-left">
+        Nominated Applications:
+</div>
+        
+<div class="display-field">
+    @if (level.NominationApplications.Count() > 0)
+    {
+    <table class="nominated-application-table">
+        <thead>
+            <tr>
+                <th>
+                    Application ID
+                </th>
+                <th>
+                    Student Name
+                </th>
+                <th>
+                    Academic Organization
+                </th>
+                <th>
+                    Academic Plan
+                </th>
+                <th>
+                    Academic Level
+                </th>
+                <th>
+                    Nominated
+                </th>
+                <th>
+                    Remarks
+                </th>
+                <th>
+                    View Application
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var nominated in level.NominationApplications)
+            {
+            <tr>
+                <td>
+                    @nominated.Application.id
+                </td>
+                <td>
+                    <strong>@Html.DisplayFor(modelItem => nominated.Application.StudentProfile.name) @Html.ActionLink(nominated.Application.StudentProfile.id.ToString(), "Details", "StudentProfile", new { id = nominated.Application.StudentProfile.id }, new { @class = "nominated-student-link" })</strong>
+                </td>
+                <td>
+                    @nominated.Application.StudentProfile.academic_organization
+                </td>
+                <td>
+                    @nominated.Application.StudentProfile.academic_plan_description
+                </td>
+                <td>
+                    @nominated.Application.StudentProfile.academic_level
+                </td>
+                <td>
+                    @String.Format("{0:yyyy-MM-dd HH:mm}", nominated.nominated_date)
+                    [@nominated.Nominator.nominator_username]
+                </td>
+                <td>
+                    <pre>
+                        @nominated.remarks
+                    </pre>
+                </td>
+                <td>
+                    <a href="@Url.Action("Details", "Application", new { id = nominated.Application.id })" class = "nominated-action-link action-link" title = "View Application"><img src="@Url.Content("~/Images/Action/view.gif")" /></a>
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+    }
+    else
+    {
+        <text>None</text>
+    }
+    </div>
+}
+
+<p>@Html.ActionLink("Add Nomintation Level", "AddLevel", new { id = Model.id })</p>
+
 <p>
-    @Html.ActionLink("Edit", "Edit", new { id=Model.id }) |
     @Html.ActionLink("Back to List", "Index")
 </p>
+
+@section Scripts {
+    <script>
+        $(function () {
+            $(".nominated-application-table").dataTable({
+                "sScrollX": "100%",
+                "aaSorting": [[0, "asc"]],
+                "bPaginate": false,
+                "bInfo": false,
+                "bFilter": true,
+                "oLanguage": {
+                    "sSearch": "",
+                    "sInfo": "_TOTAL_ entries",
+                    "sEmptyTable": "No matching record found"
+                }
+            });
+
+            $(".program-details-link").click(function (e) {
+                e.preventDefault();
+                showDialog($(this).prop("href"), "#error-dialog", "#program-details-dialog");
+            });
+
+            $(".nominated-student-link").click(function (e) {
+                e.preventDefault();
+                showDialog($(this).prop("href"), "#error-dialog", "#student-profile-dialog");
+            });
+
+            $(".nominated-action-link").click(function (e) {
+                e.preventDefault();
+                showDialog($(this).prop("href"), "#error-dialog", "#application-dialog");
+            });
+
+            $("#nomination-cancel-link").click(function (e) {
+                var r = confirm("Are you sure to cancel the whole nomination process? \n\n***Related nomination levels, shortlisted applications and nominated applications will also be cancelled.");
+                if (!r) {
+                    e.preventDefault();
+                }
+            });
+
+            $(".level-cancel-link").click(function (e) {
+                var r = confirm("Are you sure to cancel this nomination level? \n\n***Related nominated applications and upper-level nominations will also be cancelled.");
+                if (!r) {
+                    e.preventDefault();
+                }
+            });
+        });
+    </script>
+}

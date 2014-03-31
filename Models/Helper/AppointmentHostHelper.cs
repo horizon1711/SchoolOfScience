@@ -11,11 +11,14 @@ namespace SchoolOfScience.Models
 
     public class AppointmentHostHelper
     {
-
         [Required(ErrorMessage = "*Required Field.")]
         [StringLength(100, ErrorMessage = "*Maximum length exceeded.")]
         [Display(Name = "Host")]
         public string name { get; set; }
+
+        [StringLength(50, ErrorMessage = "*Maximum length exceeded.")]
+        [Display(Name = "Default Venue")]
+        public string default_venue { get; set; }
 
         [Required(ErrorMessage = "*Required Field.")]
         [Display(Name = "Available for Booking")]

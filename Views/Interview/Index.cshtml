@@ -8,7 +8,7 @@
 
 @using (Html.BeginForm("Index", "Interview", FormMethod.Post, new { id = "filter-form" }))
 {
-    <fieldset class="startCollapse">
+    <fieldset class="collapse">
         <legend>Search by Filter (Click to expand)</legend>
         <div class="filter">
             <div class="filter-field">
@@ -32,13 +32,23 @@
                 @Html.DropDownList("interview_status", ViewBag.interviewStatusList as IEnumerable<SelectListItem>, "All", null)
             </div>
             <div class="filter-field">
+                <label for="startdate">Date from:</label>
+                @Html.TextBox("startdate", null, new { @class = "date-picker" })
+                <label for="enddate"> to:</label>
+                @Html.TextBox("enddate", null, new { @class = "date-picker" })
+            </div>
+            <div class="filter-field">
                 <div class="field-wrapper">
                     <label for="assigned">Assigned:</label>
                     @Html.CheckBox("assigned", false)
                 </div>
                 <div class="field-wrapper">
-                    <label for="available">Space Available:</label>
+                    <label for="available">Available:</label>
                     @Html.CheckBox("available", false)
+                </div>
+                <div class="field-wrapper">
+                    <label for="upcoming">Upcoming:</label>
+                    @Html.CheckBox("upcoming", false)
                 </div>
             </div>
             <div class="clear-fix"></div>
@@ -80,7 +90,9 @@
             <th>
                 Applicant
             </th>
-            <th></th>
+            <th>
+                Action
+            </th>
         </tr>
     </thead>
     <tbody>
@@ -111,7 +123,7 @@
                 @foreach (var application in item.Applications)
                 {
                     <div>
-                        @Html.ActionLink(application.id.ToString(), "Details", "Application", new { id = application.id }, new { @class = "view-link" })
+                        @Html.ActionLink(application.id.ToString(), "Details", "Application", new { id = application.id }, new { @class = "application-link" })
                     </div>
                 }
             </td>
@@ -120,15 +132,23 @@
                 {
                     <div>
                         <strong>@Html.DisplayFor(modelItem => application.StudentProfile.name) @Html.ActionLink(application.StudentProfile.id.ToString(), "Details", "StudentProfile", new { id = application.StudentProfile.id }, new { @class = "student-link" })</strong>[@Html.DisplayFor(modelItem => application.StudentProfile.academic_organization)]
-                        <a href="@Url.Action("Create", "InterviewComment", new { interview_id = item.id, application_id = application.id })" class="comment-link"><img src="@Url.Content("~/Images/Action/apply.gif")" class="comment-btn"/></a>
+                        <a href="@Url.Action("Create", "InterviewComment", new { interview_id = item.id, application_id = application.id })" class="add-comment-link"><img src="@Url.Content("~/Images/Action/apply.gif")" class="comment-btn"/></a>
                         @*@Html.ActionLink("Add Comment", "Create", "InterviewComment", new { interview_id = item.id, application_id = application.id }, new { @class = "comment-link" })*@
                     </div>
                 }
             </td>
             <td>
-                @Html.ActionLink("Manage", "Edit", new { id=item.id }) |
-                @Html.ActionLink("Delete", "Delete", new { id=item.id }) |
-                @Html.ActionLink("Comments", "Index", "InterviewComment", new { interview_id = item.id }, new { @class = "comments-link" })
+                <ul class="action-list">
+                    <li>
+                        @Html.ActionLink("Manage", "Edit", new { id=item.id })
+                    </li>
+                    <li>
+                        @Html.ActionLink("Comments", "Index", "InterviewComment", new { interview_id = item.id }, new { @class = "comments-link" })
+                    </li>
+                    <li>
+                        @Html.ActionLink("Delete", "Delete", new { id=item.id })
+                    </li>
+                </ul>
             </td>
         </tr>
     }
@@ -159,30 +179,30 @@
             });
 
 
-            $(".comment-link").click(function (e) {
+            $(".add-comment-link").click(function (e) {
                 e.preventDefault();
-                showDialog($(this).prop("href"), "#error-dialog", "#dialog3");
+                showDialog($(this).prop("href"), "#error-dialog", "#add-edit-dialog");
             });
 
             $(".comments-link").click(function (e) {
                 e.preventDefault();
-                showDialog($(this).prop("href"), "#error-dialog", "#dialog3");
+                showDialog($(this).prop("href"), "#error-dialog", "#interview-comment-dialog");
             });
 
-            $(".view-link").click(function (e) {
+            $(".application-link").click(function (e) {
                 e.preventDefault();
-                showDialog($(this).prop("href"), "#error-dialog", "#dialog1");
+                showDialog($(this).prop("href"), "#error-dialog", "#application-dialog");
             });
 
 
             $(".program-details-link").click( function (e) {
                 e.preventDefault();
-                showDialog($(this).prop("href"), "#error-dialog", "#dialog1");
+                showDialog($(this).prop("href"), "#error-dialog", "#program-details-dialog");
             });
 
             $(".student-link").click( function (e) {
                 e.preventDefault();
-                showDialog($(this).prop("href"), "#error-dialog", "#dialog1");
+                showDialog($(this).prop("href"), "#error-dialog", "#student-profile-dialog");
             });
 
             $("#checkAll").click(function () {
@@ -194,7 +214,7 @@
                 var items = $(".checkItem:checked").map(function () { return $(this).val() }).get();
                 var url = "@Html.Raw(Url.Action("BatchDelete", "Interview", new { items = "replaceItems" }))";
                 url = url.replace("replaceItems", items.join('_'));
-                showDialog(url, "#error-dialog", "#dialog3");
+                showDialog(url, "#error-dialog", "#batch-action-dialog");
             });
 
             $("#batchupdate-btn").click(function (e) {
@@ -202,7 +222,7 @@
                 var items = $(".checkItem:checked").map(function () { return $(this).val() }).get();
                 var url = "@Html.Raw(Url.Action("BatchUpdate", "Interview", new { items = "replaceItems" }))";
                 url = url.replace("replaceItems", items.join('_'));
-                showDialog(url, "#error-dialog", "#dialog3");
+                showDialog(url, "#error-dialog", "#batch-action-dialog");
             });
 
             $("#commenttemplate-btn").click(function (e) {

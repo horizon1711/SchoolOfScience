@@ -42,8 +42,10 @@ else
                 @Html.DropDownList("status", ViewBag.statusList as IEnumerable<SelectListItem>, "All", null)
             </div>
             <div class="filter-field">
-                <label for="venue">Venue:</label>
-                @Html.DropDownList("venue", ViewBag.venueList as IEnumerable<SelectListItem>, "All", null)
+                <label for="startdate">Date from:</label>
+                @Html.TextBox("startdate", null, new { @class = "date-picker" })
+                <label for="enddate"> to:</label>
+                @Html.TextBox("enddate", null, new { @class = "date-picker" })
             </div>
             <div class="filter-field">
                 @if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment"))
@@ -73,6 +75,16 @@ else
     </fieldset>
 }
 
+@if (User.IsInRole("FacultyAdvisor"))
+{
+    <p>
+        View as: 
+        @Html.ActionLink("Pre-major Faculty Advisor", "Index", new { advisor = true }, new { id = "advisor-link" }) | 
+        @Html.ActionLink("Faculty Mentor", "Index", new { mentor = true }, new { id = "mentor-link" }) | 
+        @Html.ActionLink("All", "Index", null, new { id = "all-link" })
+    </p>
+} 
+
 <table class="data-table">
     <thead>
         <tr>
@@ -91,16 +103,24 @@ else
             <th>
                 Venue
             </th>
+            @if (!User.IsInRole("FacultyAdvisor"))
+            {
+            <th>
+                Host
+            </th>
+            }
+            <th>
+                Student
+            </th>
+            <th>
+                Academic Plan
+            </th>
             <th>
                 Concerns
             </th>
             <th>
-                Host
+                Action
             </th>
-            <th>
-                Student
-            </th>
-            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -120,7 +140,25 @@ else
                 @String.Format("{0:HH:mm}", item.start_time) - @String.Format("{0:HH:mm}", item.end_time)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.AppointmentVenue.name)
+                @Html.DisplayFor(modelItem => item.venue)
+            </td>
+            @if (!User.IsInRole("FacultyAdvisor"))
+            {
+            <td>
+                <a href="@Url.Action("HostCalendar", "Appointment", new { item.host_id })" class="calendar-link">@Html.DisplayFor(modelItem => item.AppointmentHost.name)</a>
+            </td>
+            }
+            <td>
+                @if (item.StudentProfile != null)
+                {
+                <strong>@Html.DisplayFor(modelItem => item.StudentProfile.name) <br />@Html.ActionLink(item.StudentProfile.id.ToString(), "Details", "StudentProfile", new { id = item.StudentProfile.id }, new { @class = "student-link" })</strong><text>[@(Html.DisplayFor(modelItem => item.StudentProfile.academic_organization))]</text>
+                }
+            </td>
+            <td>
+                @if (item.StudentProfile != null)
+                {
+                    @Html.DisplayFor(modelItem => item.StudentProfile.academic_plan_description)
+                }
             </td>
             <td>
                 @foreach (var concern in item.AppointmentConcerns)
@@ -143,26 +181,23 @@ else
                 }
             </td>
             <td>
-                <a href="@Url.Action("HostCalendar", "Appointment", new { item.host_id })" class="calendar-link">@Html.DisplayFor(modelItem => item.AppointmentHost.name)</a>
-            </td>
-            <td>
-                @if (item.StudentProfile != null)
-                {
-                <strong>@Html.DisplayFor(modelItem => item.StudentProfile.name) <br />@Html.ActionLink(item.StudentProfile.id.ToString(), "Details", "StudentProfile", new { id = item.StudentProfile.id }, new { @class = "student-link" })</strong><text>[@(Html.DisplayFor(modelItem => item.StudentProfile.academic_organization))]</text>
-                }
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.id }) 
-                @if (item.student_id == null)
-                {
-                    <text> | </text>
-                    @Html.ActionLink("Delete", "Delete", new { id = item.id }) 
-                }
-                else
-                {
-                    <text> | </text>
-                    @Html.ActionLink("Cancel", "Cancel", new { id = item.id })
-                }
+                <ul class="action-list">
+                    <li>
+                        @Html.ActionLink("Edit", "Edit", new { id = item.id }) 
+                    </li>
+                    @if (item.student_id == null)
+                    {
+                    <li>
+                        @Html.ActionLink("Delete", "Delete", new { id = item.id }) 
+                    </li>
+                    }
+                    else
+                    {
+                    <li>
+                        @Html.ActionLink("Cancel", "Cancel", new { id = item.id })
+                    </li>
+                    }
+                </ul>
             </td>
         </tr>
     }
@@ -188,17 +223,17 @@ else
 
             $(".program-details-link").click( function (e) {
                 e.preventDefault();
-                showDialog($(this).prop("href"), "#error-dialog", "#dialog1");
+                showDialog($(this).prop("href"), "#error-dialog", "#program-details-dialog");
             });
 
             $(".student-link").click( function (e) {
                 e.preventDefault();
-                showDialog($(this).prop("href"), "#error-dialog", "#dialog1");
+                showDialog($(this).prop("href"), "#error-dialog", "#student-profile-dialog");
             });
 
             $(".calendar-link").click(function (e) {
                 e.preventDefault();
-                showDialog($(this).prop("href"), "#error-dialog", "#dialog3", 900, 600);
+                showDialog($(this).prop("href"), "#error-dialog", "#calendar-dialog", 900, 600);
             });
 
             @if (ViewBag.host != null)
@@ -206,7 +241,7 @@ else
                 <text>
                     $("#calendar-btn").click(function (e) {
                         e.preventDefault();
-                        showDialog("@Url.Action("HostCalendar", "Appointment", new { host_id = ViewBag.host.id })", "#error-dialog", "#dialog3", 900, 600);
+                        showDialog("@Url.Action("HostCalendar", "Appointment", new { host_id = ViewBag.host.id })", "#error-dialog", "#calendar-dialog", 900, 600);
                     });
                 </text>
             }
@@ -221,7 +256,7 @@ else
                 var items = $(".checkItem:checked").map(function () { return $(this).val() }).get();
                 var url = "@Html.Raw(Url.Action("BatchDelete", "Appointment", new { items = "replaceItems" }))";
                 url = url.replace("replaceItems", items.join('_'));
-                showDialog(url, "#error-dialog", "#dialog3");
+                showDialog(url, "#error-dialog", "#batch-action-dialog");
             });
 
             $("input[type=reset]").click(function (e) {
@@ -229,6 +264,29 @@ else
                 $(".filter select").val('');
                 $(".filter input[type=text]").val('');
                 $(".filter input[type=checkbox]").attr("checked", false);
+            });
+
+            $("#advisor-link").click(function (e) {
+                e.preventDefault();
+                $("#advisor").prop("checked", true);
+                $("#mentor").prop("checked", false);
+                $("#reserved").prop("checked", true);
+                $("#filter-form").submit();
+            });
+
+            $("#mentor-link").click(function (e) {
+                e.preventDefault();
+                $("#advisor").prop("checked", false);
+                $("#mentor").prop("checked", true);
+                $("#reserved").prop("checked", true);
+                $("#filter-form").submit();
+            });
+
+            $("#all-link").click(function (e) {
+                e.preventDefault();
+                $("#advisor").prop("checked", false);
+                $("#mentor").prop("checked", false);
+                $("#filter-form").submit();
             });
         });
     </script>

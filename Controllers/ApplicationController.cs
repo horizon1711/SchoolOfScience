@@ -203,7 +203,7 @@ namespace SchoolOfScience.Controllers
         // GET: /Application/Details/5
         [Ajax(true)]
         [Authorize]
-        public ActionResult Details(int id = 0)
+        public ActionResult Details(int id = 0, int levelid = 0)
         {
             Application application = db.Applications.Find(id);
             if (application == null)
@@ -242,6 +242,26 @@ namespace SchoolOfScience.Controllers
                 if (app != null)
                 {
                     ViewBag.appointment_start_time = app.start_time;
+                }
+            }
+
+            if (levelid != 0)
+            {
+                var level = db.NominationLevels.Find(levelid);
+                var nominator = level.Nominators.FirstOrDefault(n => n.nominator_username == User.Identity.Name);
+                var nominated_application = level.NominationApplications.SingleOrDefault(a => a.application_id == application.id);
+                if (nominated_application != null)
+                {
+                    ViewModel.nominated_application = nominated_application;
+                }
+                else
+                {
+                    ViewModel.nominated_application = new NominationApplication
+                    {
+                        nomination_level_id = level.id,
+                        application_id = application.id,
+                        nominator_id = nominator.id
+                    };
                 }
             }
 
@@ -616,7 +636,7 @@ namespace SchoolOfScience.Controllers
             StudentProfile student = application.StudentProfile;
 
 
-            if (DateTime.Now > program.application_end_time && !User.IsInRole("Advising"))
+            if (DateTime.Now > program.application_end_time && !User.IsInRole("Admin") && !User.IsInRole("Advising") && !User.IsInRole("StudentDevelopment"))
             {
                 Session["FlashMessage"] = ("Application deadline passed. ");
                 return RedirectToAction("Record");

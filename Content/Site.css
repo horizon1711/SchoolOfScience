@@ -110,8 +110,12 @@ fieldset {
     border-radius: 7px;
 }
 
-strong, b, .button, .ui-button {
+strong, .button, .ui-button {
     font-weight: 300 !important;
+}
+
+b {
+    font-weight: bold;
 }
 
 .content-wrapper {
@@ -277,9 +281,18 @@ select:focus, input[type="text"]:focus {
     font-size: 0.9em !important;
 }
 
+.field-validation-valid {
+    display: none;
+}
+
 .field-validation-error {
     font-size: 0.7em;
     color: red;
+    display: block;
+}
+
+.field-note {
+    font-size: 0.75em;
     display: block;
 }
 
@@ -324,6 +337,14 @@ select:focus, input[type="text"]:focus {
 
 .clear-right {
     clear: right;
+}
+
+float-left {
+    float: left;
+}
+
+float-right {
+    float: right;
 }
 
 .eligible, .programtype, .chosen {
@@ -751,9 +772,13 @@ img.delete-btn, img.upload-btn, img.edit-btn, img.comment-btn {
     position: relative;
 }
 
-div#remarks-label {
-    margin-top: 0px;
+img.edit-remarks-btn {
+    height: 22px;
+    cursor: pointer;
+    border: none;
+    vertical-align: middle;
 }
+
 
 .calendar-nav {
     margin-bottom: 10px;
@@ -772,8 +797,8 @@ div#remarks-label {
 .action-link img {
     width: 25px;
     position: relative;
-    top: 7px;
     border: none;
+    vertical-align: middle;
 }
 
 .action-wrapper {
@@ -802,9 +827,10 @@ tr.highlight {
     background-color: yellow !important;
 }
 
-.program-action-list {
+.action-list {
     list-style: disc;
     padding-left: 20px;
+    margin: 2px 0px;
 }
 
 ol.booking-notes {
@@ -823,8 +849,9 @@ ol.booking-notes {
     cursor: pointer !important;
 }
 
-
-
+.program-viewlist-remarks td {
+    padding-right: 20px;
+}
 
 
 

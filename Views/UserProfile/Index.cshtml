@@ -5,6 +5,9 @@
 <p>
     @Html.ActionLink("Create New User", "Register", "Account")
 </p>
+
+<h3>Staff</h3>
+
 <table class="data-table">
     <thead>
         <tr>
@@ -21,7 +24,53 @@
         </tr>
     </thead>
     <tbody>
-    @foreach (var item in Model) {
+    @foreach (var item in Model.Where(s => !s.UserRoles.Any(r => r.RoleName.StartsWith("Student")))) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserName)
+            </td>
+            <td>
+                @foreach (var role in item.UserRoles)
+                {
+                    @role.RoleName <br />
+                }
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id=item.UserId }) |
+                @Html.ActionLink("Details", "Details", new { id=item.UserId })
+            </td>
+        </tr>
+    }
+    </tbody>
+
+</table>
+
+<div class="clear-fix"></div>
+
+<hr />
+
+<h3>Student</h3>
+
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.UserId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserName)
+            </th>
+            <th>
+                Roles
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model.Where(s => s.UserRoles.Any(r => r.RoleName.StartsWith("Student")))) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.UserId)

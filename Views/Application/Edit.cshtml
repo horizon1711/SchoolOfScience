@@ -225,7 +225,7 @@
                 }
                 <div class="editor-field">
                     @{IEnumerable<SchoolOfScience.Models.Appointment> AppointmentList = ViewBag.AppointmentList;}
-                    @Html.DropDownListFor(model => model.application.appointment_id, new SelectList(AppointmentList.Select(a => new { id = a.id, text = String.Format("{0:yyyy-MM-dd}", a.start_time) + "<" + String.Format("{0:HH:mm}", a.start_time) + " to " + String.Format("{0:HH:mm}", a.end_time) + "> " + a.AppointmentHost.name + " at " + a.AppointmentVenue.name }), "id", "text"), String.Empty, new { required = "required" })
+                    @Html.DropDownListFor(model => model.application.appointment_id, new SelectList(AppointmentList.Select(a => new { id = a.id, text = String.Format("{0:yyyy-MM-dd}", a.start_time) + "<" + String.Format("{0:HH:mm}", a.start_time) + " to " + String.Format("{0:HH:mm}", a.end_time) + "> " + a.AppointmentHost.name + " at " + a.venue }), "id", "text"), String.Empty, new { required = "required" })
                     <a href="@Url.Action("Calendar", "Appointment", new { programid = Model.program.id })" class="calendar-link"><img src="@Url.Content("~/Images/Action/calendar.gif")" /></a>
                     @Html.ValidationMessageFor(model => model.application.appointment_id)
                 </div>
@@ -290,12 +290,12 @@
 
         $(".destination-link").click(function (e) {
             e.preventDefault();
-            showDialog($(this).prop("href"), "#error-dialog", "#dialog3", 700, 450);
+            showDialog($(this).prop("href"), "#error-dialog", "#exchange-list-dialog", 700, 450);
         });
 
         $(".calendar-link").click(function (e) {
             e.preventDefault();
-            showDialog($(this).prop("href"), "#error-dialog", "#dialog3", 900, 550);
+            showDialog($(this).prop("href"), "#error-dialog", "#calendar-dialog", 900, 550);
         });
 
         $(".dest-select").change(function (e) {

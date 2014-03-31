@@ -85,7 +85,7 @@
             <strong>@Html.ActionLink(item.name, "Details", "StudentProfile", new { id = item.id }, new { @class = "student-link" })</strong>
         </td>
         <td>
-            <a href="mailto:@Html.DisplayFor(modelItem => item.email)">@Html.DisplayFor(modelItem => item.email)</a>
+            <a href="mailto:@Html.DisplayFor(modelItem => item.email)" target="_blank">@Html.DisplayFor(modelItem => item.email)</a>
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.academic_organization)
@@ -114,14 +114,14 @@
 
             $(".student-link").click( function (e) {
                 e.preventDefault();
-                showDialog($(this).prop("href"), "#error-dialog", "#dialog1");
+                showDialog($(this).prop("href"), "#error-dialog", "#student-profile-dialog");
             });
 
             $("input[type=reset]").click(function (e) {
                 e.preventDefault();
                 $(".filter select").val('');
                 $(".filter input[type=text]").val('');
-                $(".filter input[type=checkbox]").attr("checked", false);
+                $(".filter input[type=checkbox]").prop("checked", false);
             });
         });
     </script>

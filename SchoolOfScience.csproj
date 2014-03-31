@@ -221,7 +221,6 @@
     <Compile Include="Controllers\AppointmentController.cs" />
     <Compile Include="Controllers\AppointmentHostController.cs" />
     <Compile Include="Controllers\AppointmentStatusController.cs" />
-    <Compile Include="Controllers\AppointmentVenueController.cs" />
     <Compile Include="Controllers\ControllerBase.cs" />
     <Compile Include="Controllers\InterviewCommentController.cs" />
     <Compile Include="Controllers\StudentActivityController.cs" />
@@ -231,7 +230,6 @@
     <Compile Include="Controllers\StudentParticularController.cs" />
     <Compile Include="Controllers\StudentParticularTypeController.cs" />
     <Compile Include="Controllers\StudentQualificationController.cs" />
-    <Compile Include="Controllers\_AccountController.cs" />
     <Compile Include="Controllers\ExchangeOptionController.cs" />
     <Compile Include="Controllers\FileHandlerController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -281,9 +279,6 @@
     <Compile Include="Models\AppointmentStatus.cs">
       <DependentUpon>SchoolOfScienceModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\AppointmentVenue.cs">
-      <DependentUpon>SchoolOfScienceModel.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\C__MigrationHistory.cs">
       <DependentUpon>SchoolOfScienceModel.tt</DependentUpon>
     </Compile>
@@ -296,8 +291,8 @@
     <Compile Include="Models\Helper\AppointmentHostHelper.cs" />
     <Compile Include="Models\Helper\AppointmentStatusHelper.cs" />
     <Compile Include="Models\Helper\AppointmentConcernHelper.cs" />
-    <Compile Include="Models\Helper\AppointmentVenueHelper.cs" />
     <Compile Include="Models\Helper\ApplicationOptionValueHelper.cs" />
+    <Compile Include="Models\Helper\NominationLevelHelper.cs" />
     <Compile Include="Models\Helper\InterviewCommentHelper.cs" />
     <Compile Include="Models\Helper\StudentActivityHelper.cs" />
     <Compile Include="Models\Helper\StudentAdvisingRemarkHelper.cs" />
@@ -314,7 +309,6 @@
     <Compile Include="Models\Helper\InterviewVenueHelper.cs" />
     <Compile Include="Models\Helper\ExchangeOptionHelper.cs" />
     <Compile Include="Models\Helper\NominationStatusHelper.cs" />
-    <Compile Include="Models\Helper\NominationApplicationHelper.cs" />
     <Compile Include="Models\Helper\NominationHelper.cs" />
     <Compile Include="Models\Helper\StudentQualificationHelper.cs" />
     <Compile Include="Models\Helper\TimeslotConfigSessionHelper.cs" />
@@ -343,7 +337,16 @@
     <Compile Include="Models\Nomination.cs">
       <DependentUpon>SchoolOfScienceModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\NominationApplication.cs">
+      <DependentUpon>SchoolOfScienceModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\NominationLevel.cs">
+      <DependentUpon>SchoolOfScienceModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\NominationStatus.cs">
+      <DependentUpon>SchoolOfScienceModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Nominator.cs">
       <DependentUpon>SchoolOfScienceModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Notification.cs">
@@ -1204,7 +1207,7 @@
     <Content Include="Views\NominationStatus\Create.cshtml" />
     <Content Include="Views\NominationStatus\Edit.cshtml" />
     <Content Include="Views\NominationStatus\Delete.cshtml" />
-    <Content Include="Views\Nomination\Nominate.cshtml" />
+    <Content Include="Views\Nomination\ApplicationList.cshtml" />
     <Content Include="Views\Interview\AssignMultiple.cshtml" />
     <Content Include="Views\Interview\AssignAvoidedSession.cshtml" />
     <Content Include="Views\Interview\AssignApplicationDropdown.cshtml" />
@@ -1241,7 +1244,6 @@
     <Content Include="Views\AppointmentHost\Create.cshtml" />
     <Content Include="Views\AppointmentHost\Edit.cshtml" />
     <Content Include="Views\AppointmentHost\Delete.cshtml" />
-    <Content Include="Views\AppointmentHost\AssignUserDropdown.cshtml" />
     <Content Include="Views\AppointmentStatus\Index.cshtml" />
     <Content Include="Views\AppointmentStatus\Details.cshtml" />
     <Content Include="Views\AppointmentStatus\Create.cshtml" />
@@ -1278,11 +1280,6 @@
     <Content Include="Views\Home\HomeStudent.cshtml" />
     <Content Include="Views\Home\ComingSoon.cshtml" />
     <Content Include="Views\StudentProfile\MyProfile.cshtml" />
-    <Content Include="Views\AppointmentVenue\Index.cshtml" />
-    <Content Include="Views\AppointmentVenue\Details.cshtml" />
-    <Content Include="Views\AppointmentVenue\Create.cshtml" />
-    <Content Include="Views\AppointmentVenue\Edit.cshtml" />
-    <Content Include="Views\AppointmentVenue\Delete.cshtml" />
     <Content Include="Views\StudentParticularType\Index.cshtml" />
     <Content Include="Views\StudentParticularType\Details.cshtml" />
     <Content Include="Views\StudentParticularType\Create.cshtml" />
@@ -1385,6 +1382,11 @@
     <Content Include="Views\StudentQualification\Index.cshtml" />
     <Content Include="Views\Appointment\HostCalendar.cshtml" />
     <Content Include="Views\Appointment\HostCalendarDetails.cshtml" />
+    <Content Include="Views\Nomination\AddLevel.cshtml" />
+    <Content Include="Views\Home\HomeNominator.cshtml" />
+    <Content Include="Views\Nomination\MyNomination.cshtml" />
+    <Content Include="Views\Nomination\NominateApplication.cshtml" />
+    <Content Include="Views\Nomination\EditLevel.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -22,8 +22,7 @@
 					<li>
 						@Html.ActionLink("Interviews", "Index", "Interview")
 						<ul>
-                            <li>@Html.ActionLink("Create Timeslot", "Create", "Interview")</li>
-                            <li>@Html.ActionLink("Create Multiple Timeslots", "CreateMultiple", "Interview")</li>
+                            <li>@Html.ActionLink("Create Interviews", "CreateMultiple", "Interview")</li>
                             <li>@Html.ActionLink("Assign Applications", "AssignMultiple", "Interview")</li>
                             <li>@Html.ActionLink("Import Comments", "Import", "InterviewComment")</li>
 						</ul>
@@ -34,12 +33,14 @@
                             <li>@Html.ActionLink("Create Timeslots", "CreateMultiple", "Appointment", new { consultation = true }, null)</li>
                         </ul>
                     </li>
+					<li>
+						@Html.ActionLink("Nominations", "Index", "Nomination")
+					</li>
 				</ul>
 			</li>
 			<li>@Html.ActionLink("Advising Appointment", "Index", "Appointment")
 				<ul>
-                    <li>@Html.ActionLink("Create Timeslot", "Create", "Appointment")</li>
-                    <li>@Html.ActionLink("Create Multiple Timeslots", "CreateMultiple", "Appointment")</li>
+                    <li>@Html.ActionLink("Create Appointments", "CreateMultiple", "Appointment")</li>
 				</ul>
 			</li>
 			@*<li>@Html.ActionLink("Advising Appointment", "ComingSoon", "Home")

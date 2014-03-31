@@ -15,7 +15,7 @@
 <h2>My Appointments</h2>
 
 <p>
-    @Html.ActionLink("Make Booking", "Booking", "Appointment", new { @class = "button" })
+    @Html.ActionLink("Make New Appointment", "Booking", "Appointment", new { @class = "button" })
 </p>
 
 <table class="data-table">
@@ -50,7 +50,7 @@
                 @String.Format("{0:HH:mm}", item.start_time) - @String.Format("{0:HH:mm}", item.end_time)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.AppointmentVenue.name)
+                @Html.DisplayFor(modelItem => item.venue)
             </td>
             <td>
                 @foreach (var concern in item.AppointmentConcerns)
@@ -83,7 +83,11 @@
                     Cancel
                     <a href="@Url.Action("Cancel", "Appointment", new { id = item.id })" class = "action-link" title = "Cancel My Appointment"><img src="@Url.Content("~/Images/Action/delete.gif")" /></a>
                     </text>
-                } 
+                }
+                else if (item.start_time > DateTime.Now)
+                {
+                    <text><div title="Cancellation is not allowed 24 hours before your appointment. Please email your advisor in case of any urgent matter.">Upcoming</div></text>
+                }
                 else
                 {
                     <text>Expired</text>
@@ -99,13 +103,13 @@
 @if (Request["viewall"] != "True")
 {
 <p>
-    @Html.ActionLink("View Also Expired Appointments", "MyAppointment", "Appointment", new { viewall = true }, new { @class = "button" })
+    @Html.ActionLink("Appointment History", "MyAppointment", "Appointment", new { viewall = true }, new { @class = "button" })
 </p>
 }
 else
 {
 <p>
-    @Html.ActionLink("View Future Appointments Only", "MyAppointment", "Appointment", null, new { @class = "button" })
+    @Html.ActionLink("Upcoming Appointments", "MyAppointment", "Appointment", null, new { @class = "button" })
 </p>
 }
 
@@ -115,14 +119,19 @@ else
             $(".data-table").dataTable({
                 "sScrollX": "100%",
                 "aaSorting": [[0, "asc"], [1, "asc"]],
-                "bPaginate": false
+                "bPaginate": false,
+                "oLanguage": {
+                    "sSearch": "",
+                    "sInfo": "_TOTAL_ entries",
+                    "sEmptyTable": "No matching record found"
+                }
             });
 
             $(".button").button();
 
             $(".program-details-link").click( function (e) {
                 e.preventDefault();
-                showDialog($(this).prop("href"), "#error-dialog", "#dialog1");
+                showDialog($(this).prop("href"), "#error-dialog", "#program-details-dialog");
             });
 
         });

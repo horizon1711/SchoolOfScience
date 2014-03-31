@@ -10,10 +10,16 @@
     <legend>NominationStatus</legend>
 
     <div class="display-label">
-         @Html.DisplayNameFor(model => model.name)
+        @Html.DisplayNameFor(model => model.name)
     </div>
     <div class="display-field">
         @Html.DisplayFor(model => model.name)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.shortlisted)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.nominated)
     </div>
 </fieldset>
 <p>

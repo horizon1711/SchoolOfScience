@@ -182,24 +182,40 @@ else
         </div>
     
         <div class="clear-fix"></div>
-
-        if (Model.program.require_interview)
-        {
+    
         <div class="field-wrapper">
+        @if (Model.program.require_interview)
+        {
             <div class="display-label">
                 Interview Session Assigned
             </div>
             <div class="editor-field">
-                @Html.DropDownListFor(model => model.interview_id, ViewBag.interviewList as SelectList, String.Empty)
+                @if (Model.application.Interviews != null && Model.application.Interviews.Where(i => i.InterviewStatus.display_to_student).Count() > 0)
+                {
+                    foreach (var interview in Model.application.Interviews.Where(i => i.InterviewStatus.display_to_student))
+                    {
+                        <div>Date: @String.Format("{0:yyyy-MM-dd (ddd)}", interview.start_time)</div>
+                        <div>Time: @String.Format("{0:HH:mm}", interview.start_time) - @String.Format("{0:HH:mm}", interview.end_time)</div>
+                        <div>Venue: @interview.InterviewVenue.name</div>
+                        if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment"))
+                        {
+                        <div>@Html.ActionLink("Interview Comments", "Index", "InterviewComment", new { interview_id = interview.id, student_id = @Model.student.id }, new { @class = "comments-link" })</div>
+                        }
+                    }
+                }
+                else
+                {
+                    <text>None</text>
+                }
             </div>
-        </div>
-        
-        <div class="clear-fix"></div>
         }
-        
+        </div>
+
 }
+
+        <div class="clear-fix"></div>
     
-    <hr />
+        <hr />
 
         <div class="field-wrapper">
             <div class="display-label">
@@ -217,21 +233,10 @@ else
         <p>
             <input type="submit" id="submit" name="submit" value="Submit" />
         </p>
-        <p>
-            <button type="button" id="close-btn">Close</button>
-        </p>
 }
 
 @Scripts.Render("~/bundles/jqueryval")
 <script>
     $(function () {
-        $("#close-btn").click( function () {
-            $("#dialog1").dialog("close");
-        });
-
-        $(".student-link2").click( function (e) {
-            e.preventDefault();
-            showDialog($(this).prop("href"), "#error-dialog", "#dialog2", "60%", 400);
-        });
     });
 </script>

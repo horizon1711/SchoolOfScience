@@ -79,7 +79,7 @@
                     type: "POST",
                     data: $("#form").serializeArray(),
                     error: function (jqXHR, status, error) {
-                        $("#dialog2").dialog("close");
+                        $("#add-edit-dialog").dialog("close");
                         $("#error-dialog").dialog({
                             width: 350,
                             height: 100,
@@ -102,7 +102,7 @@
                         }).html(error);
                     },
                     success: function (result) {
-                        $("#dialog2").dialog("close");
+                        $("#add-edit-dialog").dialog("close");
                         $("#@ViewBag.opener_id").html(result);
                     }
                 });

@@ -74,9 +74,9 @@ namespace SchoolOfScience.Controllers
                         template_id = notificationtype.NotificationTemplate.id,
                         application_id = application.id,
                         created = DateTime.Now,
-                        created_by = WebSecurity.CurrentUserName,
+                        created_by = User.Identity.Name,
                         modified = DateTime.Now,
-                        modified_by = WebSecurity.CurrentUserName
+                        modified_by = User.Identity.Name
                     };
                     //db.Notifications.Add(notification);
                     //db.SaveChanges();
@@ -154,9 +154,9 @@ namespace SchoolOfScience.Controllers
                         template_id = notificationtype.NotificationTemplate.id,
                         application_id = application.id,
                         created = DateTime.Now,
-                        created_by = WebSecurity.CurrentUserName,
+                        created_by = User.Identity.Name,
                         modified = DateTime.Now,
-                        modified_by = WebSecurity.CurrentUserName
+                        modified_by = User.Identity.Name
                     };
                     //db.Notifications.Add(notification);
                     //db.SaveChanges();
@@ -237,9 +237,9 @@ namespace SchoolOfScience.Controllers
                         template_id = notificationtype.NotificationTemplate.id,
                         program_id = program.id,
                         created = DateTime.Now,
-                        created_by = WebSecurity.CurrentUserName,
+                        created_by = User.Identity.Name,
                         modified = DateTime.Now,
-                        modified_by = WebSecurity.CurrentUserName
+                        modified_by = User.Identity.Name
                     };
                     //db.Notifications.Add(notification);
                     //db.SaveChanges();
@@ -319,9 +319,9 @@ namespace SchoolOfScience.Controllers
                         template_id = notificationtype.NotificationTemplate.id,
                         program_id = program.id,
                         created = DateTime.Now,
-                        created_by = WebSecurity.CurrentUserName,
+                        created_by = User.Identity.Name,
                         modified = DateTime.Now,
-                        modified_by = WebSecurity.CurrentUserName
+                        modified_by = User.Identity.Name
                     };
                     //db.Notifications.Add(notification);
                     //db.SaveChanges();
@@ -414,9 +414,9 @@ namespace SchoolOfScience.Controllers
                         template_id = notificationtype.NotificationTemplate.id,
                         application_id = application.id,
                         created = DateTime.Now,
-                        created_by = WebSecurity.CurrentUserName,
+                        created_by = User.Identity.Name,
                         modified = DateTime.Now,
-                        modified_by = WebSecurity.CurrentUserName
+                        modified_by = User.Identity.Name
                     };
                     //db.Notifications.Add(notification);
                     //db.SaveChanges();
@@ -477,7 +477,7 @@ namespace SchoolOfScience.Controllers
                     body = body.Replace("[appointment host]", appointment.AppointmentHost.name);
                     body = body.Replace("[appointment date]", String.Format("{0:yyyy-MM-dd (ddd)}", appointment.start_time));
                     body = body.Replace("[appointment time]", String.Format("{0:HH:mm}", appointment.start_time) + " to " + String.Format("{0:HH:mm}", appointment.end_time));
-                    body = body.Replace("[appointment venue]", appointment.AppointmentVenue.name);
+                    body = body.Replace("[appointment venue]", appointment.venue);
                     if (appointment.AppointmentConcerns != null && appointment.AppointmentConcerns.Count() > 0)
                     {
                         string concerns = string.Join(",", appointment.AppointmentConcerns.Select(c => c.name));
@@ -494,7 +494,7 @@ namespace SchoolOfScience.Controllers
                     subject = subject.Replace("[appointment host]", appointment.AppointmentHost.name);
                     subject = subject.Replace("[appointment date]", String.Format("{0:yyyy-MM-dd (ddd)}", appointment.start_time));
                     subject = subject.Replace("[appointment time]", String.Format("{0:HH:mm}", appointment.start_time) + " to " + String.Format("{0:HH:mm}", appointment.end_time));
-                    subject = subject.Replace("[appointment venue]", appointment.AppointmentVenue.name);
+                    subject = subject.Replace("[appointment venue]", appointment.venue);
                     if (appointment.AppointmentConcerns != null && appointment.AppointmentConcerns.Count() > 0)
                     {
                         string concerns = string.Join(",", appointment.AppointmentConcerns.Select(c => c.name));
@@ -516,9 +516,9 @@ namespace SchoolOfScience.Controllers
                         template_id = notificationtype.NotificationTemplate.id,
                         appointment_id = appointment.id,
                         created = DateTime.Now,
-                        created_by = WebSecurity.CurrentUserName,
+                        created_by = User.Identity.Name,
                         modified = DateTime.Now,
-                        modified_by = WebSecurity.CurrentUserName
+                        modified_by = User.Identity.Name
                     };
                     //db.Notifications.Add(notification);
                     //db.SaveChanges();
@@ -572,7 +572,7 @@ namespace SchoolOfScience.Controllers
                     body = body.Replace("[appointment host]", appointment.AppointmentHost.name);
                     body = body.Replace("[appointment date]", String.Format("{0:yyyy-MM-dd (ddd)}", appointment.start_time));
                     body = body.Replace("[appointment time]", String.Format("{0:HH:mm}", appointment.start_time) + " to " + String.Format("{0:HH:mm}", appointment.end_time));
-                    body = body.Replace("[appointment venue]", appointment.AppointmentVenue.name);
+                    body = body.Replace("[appointment venue]", appointment.venue);
                     if (appointment.AppointmentConcerns != null && appointment.AppointmentConcerns.Count() > 0)
                     {
                         string concerns = string.Join(",", appointment.AppointmentConcerns.Select(c => c.name));
@@ -589,7 +589,7 @@ namespace SchoolOfScience.Controllers
                     subject = subject.Replace("[appointment host]", appointment.AppointmentHost.name);
                     subject = subject.Replace("[appointment date]", String.Format("{0:yyyy-MM-dd (ddd)}", appointment.start_time));
                     subject = subject.Replace("[appointment time]", String.Format("{0:HH:mm}", appointment.start_time) + " to " + String.Format("{0:HH:mm}", appointment.end_time));
-                    subject = subject.Replace("[appointment venue]", appointment.AppointmentVenue.name);
+                    subject = subject.Replace("[appointment venue]", appointment.venue);
                     if (appointment.AppointmentConcerns != null && appointment.AppointmentConcerns.Count() > 0)
                     {
                         string concerns = string.Join(",", appointment.AppointmentConcerns.Select(c => c.name));
@@ -611,9 +611,9 @@ namespace SchoolOfScience.Controllers
                         template_id = notificationtype.NotificationTemplate.id,
                         appointment_id = appointment.id,
                         created = DateTime.Now,
-                        created_by = WebSecurity.CurrentUserName,
+                        created_by = User.Identity.Name,
                         modified = DateTime.Now,
-                        modified_by = WebSecurity.CurrentUserName
+                        modified_by = User.Identity.Name
                     };
                     //db.Notifications.Add(notification);
                     //db.SaveChanges();

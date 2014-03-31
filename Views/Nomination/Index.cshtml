@@ -5,25 +5,13 @@
     IEnumerable<SchoolOfScience.Models.Program> programs = ViewBag.programs;
 }
 
-<h2>Programs Available for Nomination</h2>
+<h2>Nomination Management</h2>
 
 <table class="data-table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Program.name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.nominator_id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.NominationStatus.name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.quota)
+                ID
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.start_date)
@@ -31,60 +19,113 @@
             <th>
                 @Html.DisplayNameFor(model => model.end_date)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Program.name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NominationStatus.name)
+            </th>
+            <th>
+                Nominators (Level)
+            </th>
+            <th>
+                Quota
+            </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-    @foreach (var item in Model) {
+    @foreach (var item in Model)
+    {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.id)
             </td>
             <td>
-                @Html.ActionLink(item.Program.name, "Details", "Program", new { id = item.program_id }, new { @class = "program-details-link" })
+                @String.Format("{0:yyyy-MM-dd (ddd)}", item.start_date)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.nominator_id)
+                @String.Format("{0:yyyy-MM-dd (ddd)}", item.end_date)
+            </td>
+            <td>
+                @Html.ActionLink(item.Program.name, "Details", "Program", new { id = item.program_id }, new { @class = "program-details-link" })
+                <div class="program-note">
+                    <div>
+                    @if (!String.IsNullOrEmpty(item.Program.job_position))
+                    {
+                        @(item.Program.job_position)
+                    }
+                    </div>
+                    <div>
+                    @if (!String.IsNullOrEmpty(item.Program.host_name))
+                    {
+                        if (!String.IsNullOrEmpty(item.Program.website))
+                        {
+                            <a href="@(item.Program.website)" target="_blank" title="@(item.Program.website)">@(item.Program.host_name)</a>
+                        }
+                        else
+                        {
+                            @(item.Program.host_name)
+                        }
+                    }
+                    </div>
+                </div>
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.NominationStatus.name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.quota)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.start_date)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.end_date)
-            </td>
-            <td>
-                @if (User.IsInRole("Advising"))
+                @foreach (var level in item.NominationLevels.Where(l => l.nomination_level > 0))
                 {
-                    @Html.ActionLink("Edit", "Edit", new { id=item.id }) <text> | </text>
-                    @Html.ActionLink("Delete", "Delete", new { id=item.id })
+                    <div>Level @level.nomination_level: @String.Join(", ", level.Nominators.Select(n => n.nominator_username))</div>
                 }
-                @if (User.IsInRole("Nominator"))
+            </td>
+            <td>
+                @foreach (var level in item.NominationLevels.Where(l => l.nomination_level > 0))
                 {
-                    @Html.ActionLink("Nominate", "Nominate", new { id = item.id })
+                    <div>Level @level.nomination_level: 
+                        @if (level.quota == 0)
+                        {
+                            @("-")
+                        }
+                        else
+                        {
+                            @level.quota
+                        }
+                    </div>
                 }
+            </td>
+            <td>
+                <ul class="action-list">
+                    <li>
+                        @Html.ActionLink("Details", "Details", new { id = item.id })
+                    </li>
+                </ul>
             </td>
         </tr>
     }
     </tbody>
 </table>
+
 <div class="clear-fix"></div>
 
-@if (User.IsInRole("Advising"))
+<p></p>
+
+@if (ViewBag.programs != null)
 {
 <hr />
+
 <h2>Programs Pending for Nomination</h2>
 
 <table class="data-table">
     <thead>
         <tr>
-            <th>Program Id</th>
+            <th>Program ID</th>
             <th>Program Name</th>
+            <th>
+                Eligible Criteria
+            </th>
+            <th>Submitted Applications</th>
             <th>Status</th>
             <th></th>
         </tr>
@@ -96,23 +137,69 @@
             <td>@program.id</td>
             <td>
                 @Html.ActionLink(program.name, "Details", "Program", new { id = program.id }, new { @class = "program-details-link" })
+                <div class="program-note">
+                    <div>
+                    @if (!String.IsNullOrEmpty(program.job_position))
+                    {
+                        @(program.job_position)
+                    }
+                    </div>
+                    <div>
+                    @if (!String.IsNullOrEmpty(program.host_name))
+                    {
+                        if (!String.IsNullOrEmpty(program.website))
+                        {
+                            <a href="@(program.website)" target="_blank" title="@(program.website)">@(program.host_name)</a>
+                        }
+                        else
+                        {
+                            @(program.host_name)
+                        }
+                    }
+                    </div>
+                </div>
             </td>
+            <td>
+                <div>@Html.DisplayFor(modelItem => program.eligible_academic_career)</div>
+                <div>@Html.DisplayFor(modelItem => program.eligible_academic_organization)</div>
+                <div>@Html.DisplayFor(modelItem => program.eligible_academic_plan)</div>
+                <div>@Html.DisplayFor(modelItem => program.eligible_program_status)</div>
+                <div>@Html.DisplayFor(modelItem => program.eligible_academic_level)</div>
+            </td>
+            <td>@program.Applications.Where(a => a.ApplicationStatus.name != "Saved").Count()</td>
             <td>@program.ProgramStatus.name</td>
-            <td>@Html.ActionLink("Create", "Create", "Nomination", new { id = program.id }, null)</td>
+            <td>
+                <ul class="action-list">
+                    <li>
+                        @Html.ActionLink("Create", "Create", "Nomination", new { programid = program.id }, null)
+                    </li>
+                </ul>
+            </td>
         </tr>
     }
     </tbody>
 </table>
 }
+
 @section Scripts {
     <script>
         $(function () {
-            $(".data-table").dataTable();
-
+            $(".data-table").dataTable({
+                "sScrollX": "100%",
+                "aaSorting": [[0, "asc"]],
+                "bPaginate": false,
+                "bInfo": false,
+                "bFilter": true,
+                "oLanguage": {
+                    "sSearch": "",
+                    "sInfo": "_TOTAL_ entries",
+                    "sEmptyTable": "No matching record found"
+                }
+            });
 
             $(".program-details-link").click( function (e) {
                 e.preventDefault();
-                showDialog($(this).prop("href"), "#error-dialog", "#dialog1");
+                showDialog($(this).prop("href"), "#error-dialog", "#program-details-dialog");
             });
         });
     </script>

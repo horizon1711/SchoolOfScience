@@ -35,7 +35,6 @@ namespace SchoolOfScience.Models
         public DbSet<AppointmentConcern> AppointmentConcerns { get; set; }
         public DbSet<AppointmentHost> AppointmentHosts { get; set; }
         public DbSet<AppointmentStatus> AppointmentStatus { get; set; }
-        public DbSet<AppointmentVenue> AppointmentVenues { get; set; }
         public DbSet<ExchangeOption> ExchangeOptions { get; set; }
         public DbSet<Interview> Interviews { get; set; }
         public DbSet<InterviewStatus> InterviewStatus { get; set; }
@@ -76,5 +75,8 @@ namespace SchoolOfScience.Models
         public DbSet<StudentMajorChoice> StudentMajorChoices { get; set; }
         public DbSet<StudentActivity> StudentActivities { get; set; }
         public DbSet<InterviewComment> InterviewComments { get; set; }
+        public DbSet<NominationApplication> NominationApplications { get; set; }
+        public DbSet<NominationLevel> NominationLevels { get; set; }
+        public DbSet<Nominator> Nominators { get; set; }
     }
 }

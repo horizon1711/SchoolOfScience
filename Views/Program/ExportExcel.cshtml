@@ -83,7 +83,7 @@
         <td>
             @if(application.StudentProfile.StudentAdmission != null)
             {
-                @application.StudentProfile.StudentAdmission.Admit_Type
+                @application.StudentProfile.StudentAdmission.Admit_Type_Description
             }
         </td>
         <td>@application.StudentProfile.email</td>
@@ -191,7 +191,7 @@
                 {
                     <td>@String.Format("{0:yyyy-MM-dd (ddd)}", appointment.start_time)</td>
                     <td>@String.Format("{0:HH:mm}", appointment.start_time) to @String.Format("{0:HH:mm}", appointment.end_time)</td>
-                    <td>@appointment.AppointmentVenue.name</td>
+                    <td>@appointment.venue</td>
                 }
             }
             else

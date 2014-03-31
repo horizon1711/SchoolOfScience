@@ -26,8 +26,9 @@ namespace SchoolOfScience.Models
         public int host_id { get; set; }
 
         [Required(ErrorMessage = "*Required Field.")]
+        [StringLength(50, ErrorMessage = "*Maximum length exceeded.")]
         [Display(Name = "Venue")]
-        public int venue_id { get; set; }
+        public string venue { get; set; }
 
         [Required(ErrorMessage = "*Required Field.")]
         [Display(Name = "Status")]

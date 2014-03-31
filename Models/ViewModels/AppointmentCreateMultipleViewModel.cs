@@ -21,7 +21,7 @@ namespace SchoolOfScience.Models.ViewModels
 
         [Required(ErrorMessage = "*Required Field.")]
         [Display(Name = "Duration")]
-        [Range(1, 180, ErrorMessage = "Duration must be between 1 and 180.")]
+        [Range(1, 180, ErrorMessage = "Out of Range. Must be 1 to 180.")]
         public int duration { get; set; }
         public int[] concerns { get; set; }
     }

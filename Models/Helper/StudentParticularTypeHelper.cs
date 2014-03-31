@@ -16,7 +16,7 @@ namespace SchoolOfScience.Models
         public string name { get; set; }
 
         [Required(ErrorMessage = "*Required Field.")]
-        [Range(0, 1000, ErrorMessage = "Duration must be between 0 and 1000.")]
+        [Range(0, 1000, ErrorMessage = "Out of Range. Must be 0 to 1000.")]
         [Display(Name = "Priority")]
         public int priority { get; set; }
 

@@ -136,6 +136,8 @@ namespace SchoolOfScience.Controllers
         {
             if (ModelState.IsValid)
             {
+                notification.modified = DateTime.Now;
+                notification.modified_by = User.Identity.Name;
                 db.Entry(notification).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");

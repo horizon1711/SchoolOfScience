@@ -69,7 +69,7 @@ namespace SchoolOfScience.Controllers
         public ActionResult Edit(int id = 0)
         {
             AppointmentHost appointmenthost = db.AppointmentHosts.Find(id);
-            ViewBag.userList = new SelectList(db.SystemUsers.Where(u => !u.UserRoles.Any(r => r.RoleName.StartsWith("Student"))), "UserId", "UserName");
+            ViewBag.userList = new MultiSelectList(db.SystemUsers.Where(u => !u.UserRoles.Any(r => r.RoleName.StartsWith("Student"))), "UserId", "UserName", appointmenthost.SystemUsers.Select(u => u.UserId.ToString()));
             if (appointmenthost == null)
             {
                 Session["FlashMessage"] = "Appointment Host not found.";
@@ -77,7 +77,6 @@ namespace SchoolOfScience.Controllers
             }
             AppointmentHostViewModel ViewModel = new AppointmentHostViewModel();
             ViewModel.host = appointmenthost;
-            ViewModel.users = appointmenthost.SystemUsers.ToList();
             return View(ViewModel);
         }
 
@@ -93,26 +92,19 @@ namespace SchoolOfScience.Controllers
                 AppointmentHost appointmenthost = db.AppointmentHosts.Find(ViewModel.host.id);
                 db.Entry(appointmenthost).CurrentValues.SetValues(ViewModel.host);
                 appointmenthost.SystemUsers.Clear();
-                if (ViewModel.users != null)
+                if (ViewModel.userids != null)
                 {
-                    foreach (var user in ViewModel.users)
+                    var users = db.SystemUsers.Where(u => ViewModel.userids.Contains(u.UserId));
+                    foreach (var user in users)
                     {
-                        appointmenthost.SystemUsers.Add(db.SystemUsers.Find(user.UserId));
+                        appointmenthost.SystemUsers.Add(user);
                     }
                 }
+
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
             return View(ViewModel);
-        }
-
-        [Ajax(true)]
-        public ActionResult AssignUserDropdown(int index = 0)
-        {
-            AppointmentHostViewModel ViewModel = new AppointmentHostViewModel();
-            ViewBag.index = index;
-            ViewBag.userList = new SelectList(db.SystemUsers.Where(u => !u.UserRoles.Any(r => r.RoleName.StartsWith("Student"))), "UserId", "UserName");
-            return PartialView(ViewModel);
         }
 
         //

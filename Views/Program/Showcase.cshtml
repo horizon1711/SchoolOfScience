@@ -139,12 +139,12 @@
 
             $(".details-link").click( function (e) {
                 e.preventDefault();
-                showDialog($(this).prop("href"), "#error-dialog", "#dialog1");
+                showDialog($(this).prop("href"), "#error-dialog", "#program-details-dialog");
             });
 
             @if (program_id != null)
             {
-                <text> showDialog("@Url.Action("Details", "Program", new { id = program_id })", "#error-dialog", "#dialog1"); </text>
+                <text> showDialog("@Url.Action("Details", "Program", new { id = program_id })", "#error-dialog", "#program-details-dialog"); </text>
             }
         });
 

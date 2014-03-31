@@ -16,15 +16,8 @@ namespace SchoolOfScience.Models
         public int program_id { get; set; }
 
         [Required(ErrorMessage = "*Required Field.")]
-        [Display(Name = "Nominator")]
-        public int nominator_id { get; set; }
-
-        [Required(ErrorMessage = "*Required Field.")]
         [Display(Name = "Nomination Status")]
         public int status_id { get; set; }
-
-        [Display(Name = "Quota")]
-        public Nullable<int> quota { get; set; }
 
         [Required(ErrorMessage = "*Required Field.")]
         [Display(Name = "Start Date")]
@@ -35,5 +28,9 @@ namespace SchoolOfScience.Models
         [Display(Name = "End Date")]
         [DataType(DataType.Date)]
         public System.DateTime end_date { get; set; }
+
+        [Display(Name = "Remarks")]
+        [StringLength(200, ErrorMessage = "*Maximum length exceeded.")]
+        public string remarks { get; set; }
     }
 }

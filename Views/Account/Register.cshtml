@@ -15,8 +15,8 @@
         <legend>Registration Form</legend>
         <ol>
             <li>
-                @Html.LabelFor(m => m.Role)
-                @Html.DropDownListFor(m => m.Role, (SelectList)ViewBag.Role, String.Empty)
+                @Html.LabelFor(m => m.roleids)
+                @Html.ListBoxFor(m => m.roleids, ViewBag.roleList as MultiSelectList, new { @class = "chosen" })
             </li>
             <li>
                 <br />

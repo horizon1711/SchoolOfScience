@@ -1,6 +1,6 @@
 ﻿@model SchoolOfScience.Models.ViewModels.ApplicationViewModel
 
-<h1>My Application - @Model.student.name (ID: @Model.student.id)</h1>
+<h1>My Application - @Model.student.name (ID: @Html.ActionLink(Model.application.StudentProfile.id, "Details", "StudentProfile", new { id = Model.application.StudentProfile.id }, new { @class = "student-link" }))</h1>
 
 <div class="program-details-title">
 <h2>@Html.DisplayFor(model => model.program.name)</h2>
@@ -179,7 +179,7 @@ else
                     {
                         <div>Date: @String.Format("{0:yyyy-MM-dd (ddd)}", appointment.start_time)</div>
                         <div>Time: @String.Format("{0:HH:mm}", appointment.start_time) - @String.Format("{0:HH:mm}", appointment.end_time)</div>
-                        <div>Venue: @appointment.AppointmentVenue.name</div>
+                        <div>Venue: @appointment.venue</div>
                     }
                 }
                 else
@@ -222,6 +222,37 @@ else
         
 }
     </fieldset>
+
+@if (Model.nominated_application != null && User.IsInRole("Nominator"))
+{
+    using (Html.BeginForm("NominateApplication", "Nomination", FormMethod.Post))
+    {
+        @Html.HiddenFor(model => model.nominated_application.id)
+        @Html.HiddenFor(model => model.nominated_application.nomination_level_id)
+        @Html.HiddenFor(model => model.nominated_application.nominator_id)
+        @Html.HiddenFor(model => model.nominated_application.application_id)
+        @Html.ValidationMessageFor(model => model.nominated_application.id)
+        @Html.ValidationMessageFor(model => model.nominated_application.nomination_level_id)
+        @Html.ValidationMessageFor(model => model.nominated_application.nominator_id)
+        @Html.ValidationMessageFor(model => model.nominated_application.application_id)
+        <fieldset>
+            <legend>Nomination</legend>
+            
+            <div class="editor-label">
+                Nomination Comment
+            </div>
+            <div class="editor-field">
+                @Html.TextAreaFor(model => model.nominated_application.remarks, new { @class = "expanding" })
+            </div>
+
+            <p>
+                <input type="submit" value="Nominate this application" />
+            </p>
+
+        </fieldset>
+    }
+}
+
 @Scripts.Render("~/bundles/collapse")
 <script>
     $(function () {
@@ -231,7 +262,12 @@ else
 
         $(".comments-link").click(function (e) {
             e.preventDefault();
-            showDialog($(this).prop("href"), "#error-dialog", "#dialog3");
+            showDialog($(this).prop("href"), "#error-dialog", "#interview-comment-dialog");
+        });
+
+        $(".student-link").click(function (e) {
+            e.preventDefault();
+            showDialog($(this).prop("href"), "#error-dialog", "#student-profile-dialog");
         });
     });
 </script>

@@ -8,7 +8,7 @@
 
 @using (Html.BeginForm())
 {
-    <fieldset class="startCollapse">
+    <fieldset class="collapse">
         <legend>Search by Filter (Click to expand)</legend>
         <div class="filter">
             <div class="filter-field">
@@ -120,9 +120,9 @@
                 "iDisplayLength": 100
             });
 
-            $(".student-link").click( function (e) {
+            $(".data-table").on("click", ".student-link", function (e) {
                 e.preventDefault();
-                showDialog($(this).prop("href"), "#error-dialog", "#dialog1");
+                showDialog($(this).prop("href"), "#error-dialog", "#student-profile-dialog");
             });
 
             $("input[type=reset]").click(function (e) {

@@ -21,5 +21,6 @@ namespace SchoolOfScience.Models.ViewModels
         public IList<ApplicationAttachment> attachments { get; set; }
         public int? interview_id { get; set; }
         public int no_of_exchange_options { get; set; }
+        public NominationApplication nominated_application { get; set; }
     }
 }

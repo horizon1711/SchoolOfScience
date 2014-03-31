@@ -14,15 +14,20 @@ namespace SchoolOfScience.Models
     
     public partial class Nomination
     {
+        public Nomination()
+        {
+            this.NominationLevels = new HashSet<NominationLevel>();
+        }
+    
         public int id { get; set; }
         public int program_id { get; set; }
-        public int nominator_id { get; set; }
         public int status_id { get; set; }
-        public Nullable<int> quota { get; set; }
         public System.DateTime start_date { get; set; }
         public System.DateTime end_date { get; set; }
+        public string remarks { get; set; }
     
         public virtual NominationStatus NominationStatus { get; set; }
         public virtual Program Program { get; set; }
+        public virtual ICollection<NominationLevel> NominationLevels { get; set; }
     }
 }

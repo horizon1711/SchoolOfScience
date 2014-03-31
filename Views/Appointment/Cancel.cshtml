@@ -18,7 +18,7 @@
     Host: @Model.AppointmentHost.name<br />
     Date: @String.Format("{0:yyyy-MM-dd (ddd)}", Model.start_time)<br />
     Time: @String.Format("{0:HH:mm}", Model.start_time) to @String.Format("{0:HH:mm}", Model.end_time)<br />
-    Venue: @Model.AppointmentVenue.name<br />
+    Venue: @Model.venue<br />
     Concerns: @String.Join(", ", Model.AppointmentConcerns.Select(c => c.name).ToArray())<br />
     @if (@Model.student_id != null)
     {

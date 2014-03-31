@@ -191,21 +191,9 @@
 
 
 <script>
-@*    $(".apply-btn").click(function (e) {
-        e.preventDefault();
-        var url = "@Url.Action("Create", "Application", new { id = Model.id }, null)";
-        showDialog(url, "#error-dialog", "#dialog2", "850", "550");
-    });
-
-    $(".details-btn").click(function (e) {
-        e.preventDefault();
-        var url = "@Url.Action("Details", "Application", new { id = ViewBag.application_id }, null)";
-        showDialog(url, "#error-dialog", "#dialog2", "850", "550");
-    });*@
-
     $(".action-link").click(function (e) {
         e.preventDefault();
-        showDialog($(this).prop("href"), "#error-dialog", "#dialog1");
+        showDialog($(this).prop("href"), "#error-dialog", "#application-dialog");
     });
 
     $(".button").button();

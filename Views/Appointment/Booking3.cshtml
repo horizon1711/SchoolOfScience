@@ -10,7 +10,7 @@
     Host: @Model.host.name<br />
     Date: @String.Format("{0:yyyy-MM-dd (ddd)}", Model.appointment.start_time)<br />
     Time: @String.Format("{0:HH:mm}", Model.appointment.start_time) to @String.Format("{0:HH:mm}", Model.appointment.end_time)<br />
-    Venue: @Model.appointment.AppointmentVenue.name
+    Venue: @Model.appointment.venue
 </p>
 <p>
    Please specify your area of concern: 
@@ -69,7 +69,7 @@
                         }).html(error);
                     },
                     success: function (result) {
-                        $("#dialog1").html(result);
+                        $("#appointment-booking-dialog").html(result);
                     }
                 });
             } else {
@@ -107,7 +107,7 @@
                     }).html(error);
                 },
                 success: function (result) {
-                    $("#dialog1").html(result);
+                    $("#appointment-booking-dialog").html(result);
                 }
             });
         });

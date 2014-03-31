@@ -8,11 +8,8 @@ namespace SchoolOfScience.Models.ViewModels
 {
     public class NominationViewModel
     {
-        public NominationViewModel()
-        {
-        }
-
         public Nomination nomination { get; set; }
-        public IList<Application> applications { get; set; }
+        public Program program { get; set; }
+        public string applicationids { get; set; }
     }
 }

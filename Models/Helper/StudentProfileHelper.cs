@@ -149,19 +149,19 @@ namespace SchoolOfScience.Models
         [Display(Name = "Home Phone Country Code")]
         public string home_phone_country_code;
 
-        [Display(Name = "Home Phone Number")]
+        [Display(Name = "Home")]
         public string home_phone_number;
 
         [Display(Name = "Contact Phone Country Code")]
         public string contact_phone_country_code;
 
-        [Display(Name = "Contact Phone Number")]
+        [Display(Name = "Contact Number")]
         public string contact_phone_number;
 
         [Display(Name = "Mobile Phone Country Code")]
         public string mobile_phone_country_code;
 
-        [Display(Name = "Mobile Phone Number")]
+        [Display(Name = "Mobile")]
         public string mobile_phone_number;
 
         [Display(Name = "Barcode")]

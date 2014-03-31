@@ -70,7 +70,16 @@
                 Program
             </th>
             <th>
-                Applicant
+                Student Name
+            </th>
+            <th>
+                Academic Organization
+            </th>
+            <th>
+                Academic Plan
+            </th>
+            <th>
+                Academic Level
             </th>
             <th>
                 Status
@@ -78,10 +87,12 @@
             <th>
                 @Html.DisplayNameFor(model => model.modified)
             </th>
+            @*<th>
+                Interview/Consultation
+            </th>*@
             <th>
-                Assigned Interview
+                Action
             </th>
-            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -119,7 +130,16 @@
                 </div>
             </td>
             <td>
-                <strong>@Html.DisplayFor(modelItem => item.StudentProfile.name) @Html.ActionLink(item.StudentProfile.id.ToString(), "Details", "StudentProfile", new { id = item.StudentProfile.id }, new { @class = "student-link" })</strong>[@Html.DisplayFor(modelItem => item.StudentProfile.academic_organization)]
+                <strong>@Html.DisplayFor(modelItem => item.StudentProfile.name) @Html.ActionLink(item.StudentProfile.id.ToString(), "Details", "StudentProfile", new { id = item.StudentProfile.id }, new { @class = "student-link" })</strong>
+            </td>
+            <td>
+                @item.StudentProfile.academic_organization
+            </td>
+            <td>
+                @item.StudentProfile.academic_plan_description
+            </td>
+            <td>
+                @item.StudentProfile.academic_level
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.ApplicationStatus.name)
@@ -128,20 +148,32 @@
                 @String.Format("{0:yyyy-MM-dd HH:mm:ss}", item.modified)<br />
                 [@Html.DisplayFor(modelItem => item.modified_by)]
             </td>
-            <td>
-                @foreach (var interview in item.Interviews)
+            @*<td>
+                @foreach (var interview in item.Interviews.Where(i => i.InterviewStatus.display_to_student))
                 {
-                    @Html.ActionLink(String.Format("{0:yyyy-MM-dd (HH:mm}", interview.start_time) + "-" + String.Format("{0:HH:mm}", interview.end_time) + ")", "Details", "Interview", new { id = interview.id }, null )<br />
+                    <div>@(String.Format("{0:yyyy-MM-dd (ddd) HH:mm}", interview.start_time) + "-" + String.Format("{0:HH:mm}", interview.end_time))</div>
                 }
-            </td>
+                
+                @foreach (var appointment in item.StudentProfile.Appointments.Where(o => o.AppointmentConcerns.Any(c => c.program_id == item.program_id)))
+                {
+                    <div>@(String.Format("{0:yyyy-MM-dd (ddd) HH:mm}", appointment.start_time) + "-" + String.Format("{0:HH:mm}", appointment.end_time))</div>
+                }
+            </td>*@
             <td>
-                @Html.ActionLink("View", "Details", new { id = item.id }, new { @class = "view-link" }) |
-                @Html.ActionLink("Change Status", "Review", new { id = item.id }, new { @class = "review-link" }) 
+                <ul class="action-list">
+                    <li>
+                        @Html.ActionLink("View", "Details", new { id = item.id }, new { @class = "view-link" })
+                    </li>
+                    <li>
+                        @Html.ActionLink("Change Status", "Review", new { id = item.id }, new { @class = "review-link" }) 
+                    </li>
                 @if (item.ApplicationStatus.name != "Saved")
                 {
-                    <text> | </text>
-                    @Html.ActionLink("Edit", "Edit", new { id = item.id }, new { @class = "edit-link" })
+                    <li>
+                        @Html.ActionLink("Edit", "Edit", new { id = item.id }, new { @class = "edit-link" })
+                    </li>
                 }
+                </ul>
             </td>
         </tr>
     }
@@ -159,7 +191,8 @@
     <script>
         $(function () {
             $(".data-table").dataTable({
-                "aaSorting": [[5, "desc"]],
+                "sScrollX": "100%",
+                "aaSorting": [[8, "desc"]],
                 "bPaginate": false,
                 "aoColumnDefs": [
                     { 'bSortable': false, 'aTargets': [0] }]
@@ -167,29 +200,27 @@
 
             $(".edit-link").click(function (e) {
                 e.preventDefault();
-                showDialog($(this).prop("href"), "#error-dialog", "#dialog1");
+                showDialog($(this).prop("href"), "#error-dialog", "#application-dialog");
             });
 
             $(".view-link").click(function (e) {
                 e.preventDefault();
-                showDialog($(this).prop("href"), "#error-dialog", "#dialog1");
+                showDialog($(this).prop("href"), "#error-dialog", "#application-dialog");
             });
 
             $(".review-link").click( function (e) {
                 e.preventDefault();
-                showDialog($(this).prop("href"), "#error-dialog", "#dialog1");
+                showDialog($(this).prop("href"), "#error-dialog", "#application-dialog");
             });
-
 
             $(".program-details-link").click( function (e) {
                 e.preventDefault();
-                showDialog($(this).prop("href"), "#error-dialog", "#dialog1");
+                showDialog($(this).prop("href"), "#error-dialog", "#program-details-dialog");
             });
-
 
             $(".student-link").click( function (e) {
                 e.preventDefault();
-                showDialog($(this).prop("href"), "#error-dialog", "#dialog1");
+                showDialog($(this).prop("href"), "#error-dialog", "#student-profile-dialog");
             });
 
             $("#checkAll").click(function () {
@@ -201,7 +232,7 @@
                 var items = $(".checkItem:checked").map(function () { return $(this).val() }).get();
                 var url = "@Html.Raw(Url.Action("BatchUpdate", "Application", new { items = "replaceItems" }))";
                 url = url.replace("replaceItems", items.join('_'));
-                showDialog(url, "#error-dialog", "#dialog3");
+                showDialog(url, "#error-dialog", "#batch-action-dialog");
             });
 
             $("input[type=reset]").click(function (e) {

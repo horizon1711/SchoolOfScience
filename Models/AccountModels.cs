@@ -124,8 +124,8 @@ namespace SchoolOfScience.Models
         public string ConfirmPassword { get; set; }
 
         [Required(ErrorMessage = "*Required Field.")]
-        [Display(Name = "Role")]
-        public string Role { get; set; }
+        [Display(Name = "Roles")]
+        public IList<int> roleids { get; set; }
     }
 
     public class ExternalLogin

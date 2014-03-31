@@ -13,6 +13,6 @@ namespace SchoolOfScience.Models.ViewModels
         }
 
         public AppointmentHost host { get; set; }
-        public IList<SystemUser> users { get; set; }
+        public IList<int> userids { get; set; }
     }
 }

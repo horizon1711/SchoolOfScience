@@ -16,6 +16,12 @@
     <div class="display-field">
         @Html.DisplayFor(model => model.name)
     </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.shortlisted)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.nominated)
+    </div
 </fieldset>
 @using (Html.BeginForm()) {
     @Html.AntiForgeryToken()

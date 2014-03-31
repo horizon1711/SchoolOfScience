@@ -57,7 +57,7 @@
                 <input type="checkbox" id="checkAll"/>
             </th>
             <th>
-                Id
+                ID
             </th>
             <th>
                 Type
@@ -79,6 +79,9 @@
             </th>
             <th>
                 Vacancies
+            </th>
+            <th>
+                View Count
             </th>
             <th>
                 Action
@@ -155,7 +158,10 @@
                 }
             </td>
             <td>
-                <ul class="program-action-list">
+                @item.student_view_count
+            </td>
+            <td>
+                <ul class="action-list">
                     <li>@Html.ActionLink("Edit", "Edit", new { id = item.id })</li>
                     <li>@Html.ActionLink("Delete", "Delete", new { id = item.id })</li>
                 @if (item.status_id == ViewBag.draftStatusId)
@@ -170,7 +176,7 @@
                 </ul>
             </td>
             <td>
-                <ul class="program-action-list">
+                <ul class="action-list">
                 @if (item.status_id != ViewBag.draftStatusId)
                 {
                     <li>@Html.ActionLink("Announce", "MakeNotification", "Program", new { id = item.id }, new { target = "_blank" })</li>
@@ -201,6 +207,7 @@
     <script>
         $(function () {
             $(".data-table").dataTable({
+                "sScrollX": "100%",
                 "aaSorting": [[7, "desc"]],
                 "bPaginate": false,
                 "aoColumnDefs": [
@@ -209,7 +216,7 @@
 
             $(".program-details-link").click( function (e) {
                 e.preventDefault();
-                showDialog($(this).prop("href"), "#error-dialog", "#dialog1");
+                showDialog($(this).prop("href"), "#error-dialog", "#program-details-dialog");
             });
 
             $("#checkAll").click(function () {
@@ -221,7 +228,7 @@
                 var items = $(".checkItem:checked").map(function () { return $(this).val() }).get();
                 var url = "@Html.Raw(Url.Action("BatchUpdate", "Program", new { items = "replaceItems" }))";
                 url = url.replace("replaceItems", items.join('_'));
-                showDialog(url, "#error-dialog", "#dialog3");
+                showDialog(url, "#error-dialog", "#batch-action-dialog");
             });
 
             $("input[type=reset]").click(function (e) {

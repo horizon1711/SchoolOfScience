@@ -32,7 +32,7 @@ namespace SchoolOfScience.Models
         public Nullable<int> no_of_interviewee { get; set; }
 
         [Required(ErrorMessage = "*Required Field.")]
-        [Range(1, 180, ErrorMessage = "Duration must be between 1 and 180.")]
+        [Range(1, 180, ErrorMessage = "Out of Range. Must be 1 to 180.")]
         [Display(Name = "Duration (Min)")]
         public int duration { get; set; }
 

@@ -23,6 +23,22 @@
             @Html.ValidationMessageFor(model => model.name)
         </div>
 
+        <div class="editor-label">
+            @Html.LabelFor(model => model.shortlisted)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.shortlisted)
+            @Html.ValidationMessageFor(model => model.shortlisted)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.nominated)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.nominated)
+            @Html.ValidationMessageFor(model => model.nominated)
+        </div>
+
         <p>
             <input type="submit" value="Save" />
         </p>

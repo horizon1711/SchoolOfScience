@@ -10,6 +10,7 @@ using SchoolOfScience.Models.ViewModels;
 
 namespace SchoolOfScience.Controllers
 {
+    [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
     public class UserProfileController : Controller
     {
         private UsersContext db = new UsersContext();
@@ -70,15 +71,12 @@ namespace SchoolOfScience.Controllers
 
             if (userprofile == null)
             {
-                return HttpNotFound("User Profile not found.");
+                Session["FlashMessage"] = "User Profile not found.";
+                return RedirectToAction("Index");
             }
 
             ViewModel.profile = userprofile;
-            if (userprofile.UserRoles.Count == 1)
-            {
-                ViewModel.role_id = userprofile.UserRoles.SingleOrDefault().RoleId;
-            }
-            ViewBag.roleList = new SelectList(db.UserRoles, "RoleId", "RoleName");
+            ViewBag.roleList = new MultiSelectList(db.UserRoles, "RoleId", "RoleName", userprofile.UserRoles.Select(r => r.RoleId.ToString()));
             return View(ViewModel);
         }
 
@@ -92,9 +90,17 @@ namespace SchoolOfScience.Controllers
             if (ModelState.IsValid)
             {
                 UserProfile userprofile = db.UserProfiles.Find(ViewModel.profile.UserId);
-                userprofile.UserRoles.Clear();
-                userprofile.UserRoles.Add(db.UserRoles.Find(ViewModel.role_id));
                 db.Entry(userprofile).CurrentValues.SetValues(ViewModel.profile);
+                userprofile.UserRoles.Clear();
+                if (ViewModel.roleids != null)
+                {
+                    var roles = db.UserRoles.Where(r => ViewModel.roleids.Contains(r.RoleId));
+                    foreach (var role in roles)
+                    {
+                        userprofile.UserRoles.Add(role);
+                    }
+                }
+
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }

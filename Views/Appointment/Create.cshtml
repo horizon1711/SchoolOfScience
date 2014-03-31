@@ -41,16 +41,16 @@
             @Html.LabelFor(model => model.appointment.host_id, "Host")
         </div>
         <div class="editor-field">
-            @Html.DropDownListFor(model => model.appointment.host_id, ViewBag.hostList as SelectList)
+            @Html.DropDownListFor(model => model.appointment.host_id, ViewBag.hostList as SelectList, String.Empty)
             @Html.ValidationMessageFor(model => model.appointment.host_id)
         </div>
         
         <div class="editor-label">
-            @Html.LabelFor(model => model.appointment.venue_id, "Venue")
+            @Html.LabelFor(model => model.appointment.venue, "Venue")
         </div>
         <div class="editor-field">
-            @Html.DropDownListFor(model => model.appointment.venue_id, ViewBag.venueList as SelectList, String.Empty)
-            @Html.ValidationMessageFor(model => model.appointment.venue_id)
+            @Html.EditorFor(model => model.appointment.venue)
+            @Html.ValidationMessageFor(model => model.appointment.venue)
         </div>
 
         <div class="editor-label">
@@ -89,4 +89,41 @@
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        $(function () {
+            $("#appointment_host_id").change(function () {
+                $.ajax({
+                    url: "@Url.Action("GetDefaultVenue", "Appointment")/" + $(this).val(),
+                    cache: false,
+                    error: function (jqXHR, status, error) {
+                        $("#error-dialog").html(error).dialog({
+                            width: 200,
+                            height: 100,
+                            overflow: "auto",
+                            modal: true,
+                            resizable: false,
+                            draggable: false,
+                            open: function () {
+                                $(this).scrollTop(0);
+                                $('.ui-widget-overlay').hide().fadeIn().bind('click', function () {
+                                    $('#error-dialog').dialog('close');
+                                });
+                            },
+                            show: {
+                                effect: 'fade',
+                                duration: 200
+                            },
+                            hide: {
+                                effect: 'fade',
+                                duration: 100
+                            }
+                        });
+                    },
+                    success: function (result) {
+                        $("#appointment_venue").val(result);
+                    }
+                });
+            });
+        });
+    </script>
 }

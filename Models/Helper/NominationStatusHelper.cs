@@ -14,5 +14,13 @@ namespace SchoolOfScience.Models
         [Required(ErrorMessage = "*Required Field.")]
         [Display(Name = "Nomination Status")]
         public string name { get; set; }
+
+        [Required(ErrorMessage = "*Required Field.")]
+        [Display(Name = "Shortlisted")]
+        public bool shortlisted { get; set; }
+
+        [Required(ErrorMessage = "*Required Field.")]
+        [Display(Name = "Open for Nomination")]
+        public bool nominated { get; set; }
     }
 }

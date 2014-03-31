@@ -335,7 +335,7 @@ namespace SchoolOfScience.Controllers
 
 
         // Create Role List for Registration
-        private SelectList getRoleSelectList()
+        private MultiSelectList getRoleSelectList()
         {
             List<SelectListItem> items = new List<SelectListItem>();
 
@@ -351,7 +351,7 @@ namespace SchoolOfScience.Controllers
             items.Add(new SelectListItem { Text = "Students (RPG,TPG)", Value = "StudentRPGTPG" });
             items.Add(new SelectListItem { Text = "Students (NUGD)", Value = "StudentNUGD" });
 
-            return new SelectList(items,"Value","Text");
+            return new MultiSelectList(items, "Value", "Text");
         }
 
         //
@@ -360,7 +360,7 @@ namespace SchoolOfScience.Controllers
         [Authorize(Roles="Admin,Advising,StudentDevelopment")]
         public ActionResult Register()
         {
-            ViewBag.Role = getRoleSelectList();
+            ViewBag.roleList = new MultiSelectList(db.SystemRoles, "RoleId", "RoleName");
 
             return View();
         }
@@ -379,31 +379,24 @@ namespace SchoolOfScience.Controllers
                 {
                     WebSecurity.CreateUserAndAccount(model.UserName, model.Password);
 
-                    if (String.IsNullOrEmpty(model.Role))
+                    if (model.roleids != null)
                     {
-                        var roles = Roles.GetRolesForUser(model.UserName);
+                        var roles = db.SystemRoles.Where(r => model.roleids.Contains(r.RoleId));
                         foreach (var role in roles)
                         {
-                            Roles.RemoveUserFromRole(model.UserName, role);
+                            Roles.AddUserToRole(model.UserName, role.RoleName);
                         }
                     }
-                    else
-                    {
-                        // Add Role to User
-                        if (!Roles.RoleExists(model.Role))
-                            Roles.CreateRole(model.Role);
-                        Roles.AddUserToRole(model.UserName, model.Role);
-                    }
 
-                    WebSecurity.Login(model.UserName, model.Password);
-                    return RedirectToAction("Index", "Home");
+                    //WebSecurity.Login(model.UserName, model.Password);
+                    return RedirectToAction("Index", "UserProfile");
                 }
                 catch (MembershipCreateUserException e)
                 {
                     ModelState.AddModelError("", ErrorCodeToString(e.StatusCode));
                 }
 
-            ViewBag.Role = getRoleSelectList();
+            ViewBag.roleList = new MultiSelectList(db.SystemRoles, "RoleId", "RoleName");
 
             // If we got this far, something failed, redisplay form
             return View(model);

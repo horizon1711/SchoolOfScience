@@ -41,8 +41,11 @@ namespace SchoolOfScience.Controllers
                 ViewBag.reserved = true;
                 ViewBag.hostList = new SelectList(db.AppointmentHosts.Where(h => h.SystemUsers.Any(u => u.UserName == User.Identity.Name)), "id", "name");
             }
+            if (advisor || mentor)
+            {
+                ViewBag.reserved = true;
+            }
             ViewBag.concernList = new SelectList(db.AppointmentConcerns.Where(c => c.program_id == null && !c.custom), "id", "name");
-            ViewBag.venueList = new SelectList(db.AppointmentVenues, "id", "name");
             ViewBag.statusList = new SelectList(db.AppointmentStatus, "id", "name");
             ViewBag.consultation = consultation;
             ViewBag.host = db.AppointmentHosts.FirstOrDefault(h => h.SystemUsers.Any(u => u.UserName == User.Identity.Name));
@@ -72,14 +75,14 @@ namespace SchoolOfScience.Controllers
                 ViewBag.hostList = new SelectList(db.AppointmentHosts.Where(h => h.SystemUsers.Any(u => u.UserName == User.Identity.Name)), "id", "name", Form["host"]);
             }
             ViewBag.concernList = new SelectList(db.AppointmentConcerns.Where(c => c.program_id == null && !c.custom), "id", "name", Form["concern"]);
-            ViewBag.venueList = new SelectList(db.AppointmentVenues, "id", "name", Form["venue"]);
             ViewBag.statusList = new SelectList(db.AppointmentStatus, "id", "name", Form["status"]);
             ViewBag.consultation = consultation;
+            ViewBag.startdate = Form["startdate"];
+            ViewBag.enddate = Form["enddate"];
             ViewBag.host = db.AppointmentHosts.FirstOrDefault(h => h.SystemUsers.Any(u => u.UserName == User.Identity.Name));
             return View(appointments.ToList().Where(a => (true)
                 && (String.IsNullOrEmpty(Form["concern"]) || a.AppointmentConcerns.Any(c => c.id.ToString() == Form["concern"]))
                 && (String.IsNullOrEmpty(Form["host"]) || a.host_id.ToString() == Form["host"])
-                && (String.IsNullOrEmpty(Form["venue"]) || a.venue_id.ToString() == Form["venue"])
                 && (String.IsNullOrEmpty(Form["status"]) || a.status_id.ToString() == Form["status"])
                 && (!reserved || a.student_id != null)
                 && (!available || a.student_id == null)
@@ -88,8 +91,8 @@ namespace SchoolOfScience.Controllers
                 && (!(advisor && mentor) || (a.student_id != null && a.StudentProfile.academic_plan_description.Contains("4Y")))
                 && (!(advisor && !mentor) || (a.student_id != null && a.StudentProfile.academic_plan_description.Contains("4Y") && a.StudentProfile.academic_plan_description.Contains("Undeclared")) && !a.AppointmentConcerns.Any(c => c.program_id != null))
                 && (!(!advisor && mentor) || (a.student_id != null && a.StudentProfile.academic_plan_description.Contains("4Y") && !a.StudentProfile.academic_plan_description.Contains("Undeclared")) && !a.AppointmentConcerns.Any(c => c.program_id != null))
-                //&& (!advisor || (a.student_id != null && a.StudentProfile.academic_plan_description.Contains("4Y") && a.StudentProfile.academic_plan_description.Contains("Undeclared")) && !a.AppointmentConcerns.Any(c => c.program_id != null))
-                //&& (!mentor || (a.student_id != null && a.StudentProfile.academic_plan_description.Contains("4Y") && !a.StudentProfile.academic_plan_description.Contains("Undeclared")) && !a.AppointmentConcerns.Any(c => c.program_id != null))
+                && (String.IsNullOrEmpty(Form["startdate"]) || a.start_time > Convert.ToDateTime(Form["startdate"]))
+                && (String.IsNullOrEmpty(Form["enddate"]) || a.start_time < Convert.ToDateTime(Form["enddate"]).AddDays(1))
                 ));
         }
 
@@ -168,7 +171,6 @@ namespace SchoolOfScience.Controllers
                 ViewBag.hostList = new SelectList(db.AppointmentHosts.Where(h => h.SystemUsers.Any(u => u.UserName == User.Identity.Name)), "id", "name");
             }
             ViewBag.concernList = new SelectList(db.AppointmentConcerns.Where(c => c.program_id == null && !c.custom), "id", "name");
-            ViewBag.venueList = new SelectList(db.AppointmentVenues, "id", "name");
             return View();
         }
 
@@ -196,7 +198,7 @@ namespace SchoolOfScience.Controllers
                 }
                 appointment.end_time = appointment.start_time.AddMinutes(ViewModel.duration);
 
-                foreach (var ex_session in db.Appointments.Where(a => a.venue_id == appointment.venue_id || a.host_id == appointment.host_id))
+                foreach (var ex_session in db.Appointments.Where(a => a.host_id == appointment.host_id))
                 {
                     DateTime ex_starttime = ex_session.start_time;
                     DateTime ex_endtime = ex_session.end_time;
@@ -235,7 +237,6 @@ namespace SchoolOfScience.Controllers
                 ViewBag.hostList = new SelectList(db.AppointmentHosts.Where(h => h.SystemUsers.Any(u => u.UserName == User.Identity.Name)), "id", "name");
             }
             ViewBag.concernList = new SelectList(db.AppointmentConcerns.Where(c => c.program_id == null && !c.custom), "id", "name");
-            ViewBag.venueList = new SelectList(db.AppointmentVenues, "id", "name");
             return View(appointment);
         }
 
@@ -282,7 +283,6 @@ namespace SchoolOfScience.Controllers
             {
                 ViewBag.hostList = new SelectList(db.AppointmentHosts.Where(h => h.SystemUsers.Any(u => u.UserName == User.Identity.Name)), "id", "name");
             }
-            ViewBag.venueList = new SelectList(db.AppointmentVenues, "id", "name");
             ViewBag.consultation = consultation;
             return View(ViewModel);
         }
@@ -370,7 +370,7 @@ namespace SchoolOfScience.Controllers
                                     }
                                 }
 
-                                foreach (var ex_session in db.Appointments.Where(a => a.venue_id == appointment.venue_id || a.host_id == appointment.host_id))
+                                foreach (var ex_session in db.Appointments.Where(a => a.host_id == appointment.host_id))
                                 {
                                     DateTime ex_starttime = ex_session.start_time;
                                     DateTime ex_endtime = ex_session.end_time;
@@ -419,7 +419,6 @@ namespace SchoolOfScience.Controllers
                 {
                     ViewBag.hostList = new SelectList(db.AppointmentHosts.Where(h => h.SystemUsers.Any(u => u.UserName == User.Identity.Name)), "id", "name");
                 }
-                ViewBag.venueList = new SelectList(db.AppointmentVenues, "id", "name");
                 ViewBag.consultation = consultation;
                 Session["FlashMessage"] = "Failed to create appointment timeslots." + e.Message;
                 return View(ViewModel);
@@ -453,7 +452,6 @@ namespace SchoolOfScience.Controllers
             {
                 ViewBag.hostList = new SelectList(db.AppointmentHosts.Where(h => h.SystemUsers.Any(u => u.UserName == User.Identity.Name)), "id", "name");
             }
-            ViewBag.venueList = new SelectList(db.AppointmentVenues, "id", "name");
             return View(ViewModel);
         }
 
@@ -470,7 +468,7 @@ namespace SchoolOfScience.Controllers
             {
                 ViewModel.appointment.end_time = ViewModel.appointment.start_time.AddMinutes(ViewModel.duration);
 
-                foreach (var ex_session in db.Appointments.Where(a => a.id != ViewModel.appointment.id && (a.venue_id == appointment.venue_id || a.host_id == appointment.host_id)))
+                foreach (var ex_session in db.Appointments.Where(a => a.id != ViewModel.appointment.id && (a.host_id == appointment.host_id)))
                 {
                     DateTime ex_starttime = ex_session.start_time;
                     DateTime ex_endtime = ex_session.end_time;
@@ -520,7 +518,6 @@ namespace SchoolOfScience.Controllers
             {
                 ViewBag.hostList = new SelectList(db.AppointmentHosts.Where(h => h.SystemUsers.Any(u => u.UserName == User.Identity.Name)), "id", "name");
             }
-            ViewBag.venueList = new SelectList(db.AppointmentVenues, "id", "name");
             return View(appointment);
         }
 
@@ -803,6 +800,7 @@ namespace SchoolOfScience.Controllers
                 return RedirectToAction("Index", "Appointment");
             }
             var appointments = db.Appointments.Where(o => o.student_id == User.Identity.Name 
+                && !o.AppointmentConcerns.Any(c => c.program_id != null)
                 && (viewall || o.start_time > DateTime.Now));
             return View(appointments.ToList());
         }
@@ -866,6 +864,17 @@ namespace SchoolOfScience.Controllers
             list.Add(config.friday);
             list.Add(config.saturday);
             return list;
+        }
+
+        [Ajax(true)]
+        public ActionResult GetDefaultVenue(int id = 0)
+        {
+            var host = db.AppointmentHosts.Find(id);
+            if (host != null)
+            {
+                return Content(host.default_venue);
+            }
+            return null;
         }
 
         protected override void Dispose(bool disposing)

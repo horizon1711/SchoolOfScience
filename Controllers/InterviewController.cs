@@ -23,7 +23,7 @@ namespace SchoolOfScience.Controllers
         [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
         public ActionResult Index()
         {
-            var interview = db.Interviews.Include(i => i.InterviewStatus).Include(i => i.Program).Include(i => i.Applications);
+            var interview = db.Interviews;
             ViewBag.programList = new SelectList(db.Programs.Where(p => p.Interviews.Count() > 0).OrderBy(p => p.name), "id", "name");
             ViewBag.programTypeList = new SelectList(db.ProgramTypes, "id", "name");
             ViewBag.programStatusList = new SelectList(db.ProgramStatus, "id", "name");
@@ -37,7 +37,7 @@ namespace SchoolOfScience.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
-        public ActionResult Index(FormCollection Form, bool available, bool assigned)
+        public ActionResult Index(FormCollection Form, bool available, bool assigned, bool upcoming = false)
         {
             var interview = db.Interviews.Include(i => i.InterviewStatus).Include(i => i.Program).Include(i => i.Applications);
             ViewBag.programList = new SelectList(db.Programs.Where(p => p.Interviews.Count() > 0).OrderBy(p => p.name), "id", "name", Form["program"]);
@@ -45,6 +45,8 @@ namespace SchoolOfScience.Controllers
             ViewBag.programStatusList = new SelectList(db.ProgramStatus, "id", "name", Form["program_status"]);
             ViewBag.interviewVenueList = new SelectList(db.InterviewVenues, "id", "name", Form["interview_venue"]);
             ViewBag.interviewStatusList = new SelectList(db.InterviewStatus, "id", "name", Form["interview_status"]);
+            ViewBag.startdate = Form["startdate"];
+            ViewBag.enddate = Form["enddate"];
             return View(interview.ToList().Where(i => (true)
                     && (String.IsNullOrEmpty(Form["program"]) || i.program_id.ToString() == Form["program"])
                     && (String.IsNullOrEmpty(Form["program_type"]) || i.Program.type_id.ToString() == Form["program_type"])
@@ -53,6 +55,9 @@ namespace SchoolOfScience.Controllers
                     && (String.IsNullOrEmpty(Form["interview_status"]) || i.status_id.ToString() == Form["interview_status"])
                     && (!available || i.Applications.Count() < i.no_of_interviewee)
                     && (!assigned || i.Applications.Count() > 0)
+                    && (!upcoming || i.start_time > DateTime.Now)
+                    && (String.IsNullOrEmpty(Form["startdate"]) || i.start_time > Convert.ToDateTime(Form["startdate"]))
+                    && (String.IsNullOrEmpty(Form["enddate"]) || i.start_time < Convert.ToDateTime(Form["enddate"]).AddDays(1))
                     ));
         }
 
@@ -320,9 +325,9 @@ namespace SchoolOfScience.Controllers
                 sender = "test@test.com",
                 interview_id = interview.id,
                 created = DateTime.Now,
-                created_by = WebSecurity.CurrentUserName,
+                created_by = User.Identity.Name,
                 modified = DateTime.Now,
-                modified_by = WebSecurity.CurrentUserName
+                modified_by = User.Identity.Name
             };
             return notification;
         }

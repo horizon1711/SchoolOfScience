@@ -24,13 +24,12 @@ namespace SchoolOfScience.Models
         public System.DateTime end_time { get; set; }
         public int host_id { get; set; }
         public int status_id { get; set; }
-        public int venue_id { get; set; }
         public string student_id { get; set; }
         public string remarks { get; set; }
+        public string venue { get; set; }
     
         public virtual AppointmentHost AppointmentHost { get; set; }
         public virtual AppointmentStatus AppointmentStatus { get; set; }
-        public virtual AppointmentVenue AppointmentVenue { get; set; }
         public virtual StudentProfile StudentProfile { get; set; }
         public virtual ICollection<AppointmentConcern> AppointmentConcerns { get; set; }
     }

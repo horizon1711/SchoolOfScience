@@ -24,11 +24,11 @@
         </div>
         
         <div class="editor-label">
-            @Html.LabelFor(model => model.role_id)
+            @Html.LabelFor(model => model.roleids)
         </div>
         <div class="editor-field">
-            @Html.DropDownListFor(model => model.role_id, ViewBag.roleList as SelectList, String.Empty)
-            @Html.ValidationMessageFor(model => model.role_id)
+            @Html.ListBoxFor(model => model.roleids, ViewBag.roleList as MultiSelectList, new { @class = "chosen" })
+            @Html.ValidationMessageFor(model => model.roleids)
         </div>
 
         <p>

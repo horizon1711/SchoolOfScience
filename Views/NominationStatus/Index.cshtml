@@ -15,6 +15,12 @@
             <th>
                 @Html.DisplayNameFor(model => model.name)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.shortlisted)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.nominated)
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -23,6 +29,12 @@
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.shortlisted)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.nominated)
             </td>
             <td>
                 @Html.ActionLink("Edit", "Edit", new { id=item.id }) |

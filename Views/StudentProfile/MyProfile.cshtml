@@ -326,18 +326,13 @@
 
             $(".action-link").click(function (e) {
                 e.preventDefault();
-                showDialog($(this).prop("href"), "#error-dialog", "#dialog1");
+                showDialog($(this).prop("href"), "#error-dialog", "#application-dialog");
             });
 
             $(".program-details-link").click(function (e) {
                 e.preventDefault();
-                showDialog($(this).prop("href"), "#error-dialog", "#dialog1");
+                showDialog($(this).prop("href"), "#error-dialog", "#program-details-dialog");
             });
-
-            //$(".add-link").click(function (e) {
-            //    e.preventDefault();
-            //    showDialog($(this).prop("href"), "#error-dialog", "#dialog1", 400, "auto");
-            //});
 
             $(".button").button();
         });

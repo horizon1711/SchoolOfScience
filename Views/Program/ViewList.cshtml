@@ -62,7 +62,7 @@
                 Deadline
             </th>
             <th>
-                Eligibility
+                Eligibility<sup>*</sup>
             </th>
         </tr>
     </thead>
@@ -108,9 +108,11 @@
                 @String.Format("{0:yyyy-MM-dd (ddd)}", item.application_end_time)
             </td>
             <td>
-                <pre>
-                    @item.eligibility
-                </pre>
+                <div>@Html.DisplayFor(modelItem => item.eligible_academic_career)</div>
+                <div>@Html.DisplayFor(modelItem => item.eligible_academic_organization)</div>
+                <div>@Html.DisplayFor(modelItem => item.eligible_academic_plan)</div>
+                <div>@Html.DisplayFor(modelItem => item.eligible_program_status)</div>
+                <div>@Html.DisplayFor(modelItem => item.eligible_academic_level)</div>
             </td>
         </tr>
     }
@@ -120,7 +122,43 @@
 
 <div class="clear-fix"></div>
 
+<div class="program-viewlist-remarks">
+    <span style="font-weight: bold"><sup>*</sup>Remarks</span>
+    <table>
+        <tr>
+            <td>
+                UGRD - Undergraduate Program
+            </td>
+            <td>
+                NUGD - Undergraduate Visiting/ Exchange/ Visit Internship Program
+            </td>
+        </tr>
+        <tr>
+            <td>
+                RPG - Research Postgraduate Program
+            </td>
+            <td>
+                TPG - Taught Postgraduate Program
+            </td>
+        </tr>
+        <tr>
+            <td>
+                SSCI - 4Y Undeclared Plan/ 4Y IRE Undeclared
+            </td>
+            <td>
 
+            </td>
+        </tr>
+        <tr>
+            <td>
+                AC - Active in Program
+            </td>
+            <td>
+                LA - On Leave
+            </td>
+        </tr>
+    </table>
+</div>
 
 @section Scripts {
     <script>
@@ -130,7 +168,7 @@
             <text>
                 $(".data-table").dataTable({
                     "aaSorting": [[3, "asc"]],
-                    "bPaginate": false,
+                    "bPaginate": true,
                     "oLanguage": {
                         "sSearch": "",
                         "sInfo": "_TOTAL_ entries",
@@ -144,7 +182,7 @@
             <text>
                 $(".data-table").dataTable({
                     "aaSorting": [[2, "asc"]],
-                    "bPaginate": false,
+                    "bPaginate": true,
                     "oLanguage": {
                         "sSearch": "",
                         "sInfo": "_TOTAL_ entries",
@@ -155,12 +193,12 @@
             }
             $(".action-link").click(function (e) {
                 e.preventDefault();
-                showDialog($(this).prop("href"), "#error-dialog", "#dialog1");
+                showDialog($(this).prop("href"), "#error-dialog", "#application-dialog");
             });
 
-            $(".details-link").click( function (e) {
+            $(".data-table").on("click", ".details-link", function (e) {
                 e.preventDefault();
-                showDialog($(this).prop("href"), "#error-dialog", "#dialog1");
+                showDialog($(this).prop("href"), "#error-dialog", "#program-details-dialog");
             });
 
             $("input[type=reset]").click(function (e) {

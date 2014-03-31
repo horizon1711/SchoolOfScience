@@ -60,7 +60,7 @@
 
         $(".edit-comment-btn").click(function (e) {
             e.preventDefault();
-            showDialog($(this).prop("href"), "#error-dialog", "#dialog3");
+            showDialog($(this).prop("href"), "#error-dialog", "#add-edit-dialog");
         });
 
         $(".delete-comment-btn").click(function (e) {
@@ -91,7 +91,7 @@
                     });
                 },
                 success: function (result) {
-                    $("#dialog3").html(result);
+                    $("#interview-comment-dialog").html(result);
                 }
             });
             return false;

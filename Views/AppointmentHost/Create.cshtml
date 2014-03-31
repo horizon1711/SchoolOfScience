@@ -22,6 +22,14 @@
         </div>
 
         <div class="editor-label">
+            @Html.LabelFor(model => model.default_venue)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.default_venue)
+            @Html.ValidationMessageFor(model => model.default_venue)
+        </div>
+
+        <div class="editor-label">
             @Html.LabelFor(model => model.booking)
         </div>
         <div class="editor-field">

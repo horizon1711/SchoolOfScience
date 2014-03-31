@@ -6,7 +6,8 @@
 
 <h2>Edit</h2>
 
-@using (Html.BeginForm()) {
+@using (Html.BeginForm())
+{
     @Html.AntiForgeryToken()
     @Html.ValidationSummary(true)
 
@@ -21,6 +22,14 @@
         <div class="editor-field">
             @Html.EditorFor(model => model.host.name)
             @Html.ValidationMessageFor(model => model.host.name)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.host.default_venue)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.host.default_venue)
+            @Html.ValidationMessageFor(model => model.host.default_venue)
         </div>
 
         <div class="editor-label">
@@ -43,20 +52,8 @@
             Assigned Users
         </div>
         <div class="editor-field">
-            <div class="users-wrapper">
-                <p>
-                    <button type="button" class="add-btn">Add</button>
-                    <button type="button" class="remove-btn">Remove</button>
-                </p>
-                @for (int i = 0; i < Model.users.Count(); i++)
-                {
-                    <div class="user-wrapper">
-                        User @(i+1)
-                        @Html.DropDownListFor(model => model.users[i].UserId, new SelectList(ViewBag.userList as SelectList, "Value", "Text", Model.users[i].UserId.ToString()))
-                        @Html.ValidationMessageFor(model => model.users[i].UserId)
-                    </div>
-                }
-            </div>
+            @Html.ListBoxFor(model => model.userids, ViewBag.userList as MultiSelectList, new { @class = "chosen" })
+            @Html.ValidationMessageFor(model => model.userids)
         </div>
         
         <p>
@@ -76,10 +73,9 @@
         $(function () {
             var i = $(".user-wrapper").length;
 
-            $(".remove-btn").click( function () {
-                $(".user-wrapper").last().remove();
-                if (i > 0)
-                    i--;
+            $(".remove-btn").click(function () {
+                $(this).siblings("select").val("0");
+                //$(this).parent().css("display", "none");
             });
 
             $(".add-btn").click( function () {
