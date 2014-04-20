@@ -5,17 +5,17 @@
 }
 
 
+<div class="showcase-title">
+    <img src="~/Images/Dashboard/advising.png" />
 @if (ViewBag.consultation)
 {
-<h2>Consultation Timeslots</h2>
+    <h2>Consultation Appointments</h2>
 }
 else
 {
-<div class="showcase-title">
-    <img src="~/Images/Dashboard/advising.png" />
     <h2>Advising Appointments</h2>
-</div>
 }
+</div>
 
 @if (ViewBag.host != null)
 {
@@ -57,15 +57,18 @@ else
                     @Html.CheckBox("reserved")
                     <label for="available">Open for Booking:</label>
                     @Html.CheckBox("available")
-                    <label for="past">Expired:</label>
+                    <label for="past">Include Expired:</label>
                     @Html.CheckBox("past")
             </div>
+            @if (User.IsInRole("FacultyAdvisor"))
+            {
             <div class="filter-field">
                 <label for="advisor">As Pre-major Faculty Advisor:</label>
                 @Html.CheckBox("advisor")
                 <label for="mentor">As Faculty Mentor:</label>
                 @Html.CheckBox("mentor")
             </div>
+            }
 
             <div class="filter-field">
                 <input type="submit" value="Search" />
@@ -183,12 +186,12 @@ else
             <td>
                 <ul class="action-list">
                     <li>
-                        @Html.ActionLink("Edit", "Edit", new { id = item.id }) 
+                        @Html.ActionLink("Edit", "Edit", new { id = item.id }, new { @class = "appointment-edit-link" }) 
                     </li>
                     @if (item.student_id == null)
                     {
                     <li>
-                        @Html.ActionLink("Delete", "Delete", new { id = item.id }) 
+                        @Html.ActionLink("Delete", "Delete", new { id = item.id }, new { @class = "appointment-delete-link" }) 
                     </li>
                     }
                     else
@@ -235,6 +238,13 @@ else
                 e.preventDefault();
                 showDialog($(this).prop("href"), "#error-dialog", "#calendar-dialog", 900, 600);
             });
+
+            $(".appointment-edit-link, .appointment-delete-link, .appointment-cancel-link").click(function (e) {
+                e.preventDefault();
+                showDialog($(this).prop("href"), "#error-dialog", "#appointment-manage-dialog", 900, 600);
+            });
+
+
 
             @if (ViewBag.host != null)
             {

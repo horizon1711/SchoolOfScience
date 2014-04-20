@@ -24,6 +24,7 @@ namespace SchoolOfScience.Models
         public bool locked { get; set; }
         public bool display_to_student { get; set; }
         public bool default_status { get; set; }
+        public bool notification { get; set; }
     
         public virtual ICollection<Interview> Interviews { get; set; }
     }

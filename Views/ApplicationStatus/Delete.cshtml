@@ -16,6 +16,37 @@
     <div class="display-field">
         @Html.DisplayFor(model => model.name)
     </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.editable)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.editable)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.submitted)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.submitted)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.rejected)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.rejected)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.default_status)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.default_status)
+    </div>
+
+
+
 </fieldset>
 @using (Html.BeginForm()) {
     @Html.AntiForgeryToken()

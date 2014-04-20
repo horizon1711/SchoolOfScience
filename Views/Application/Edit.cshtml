@@ -234,7 +234,7 @@
         
     </fieldset>
         <p>
-            <input type="submit" id="save" name="submit" value="Save" class="button cancel"/>
+            <input type="submit" id="save" name="submit" value="Save" class="button"/>
         </p>
         <p>
             <input type="submit" id="submit" name="submit" value="Submit Application Now" class="button"/>
@@ -252,7 +252,8 @@
             if (!r) {
                 e.preventDefault();
             } else {
-                $("#application_status_id").val(1);
+                $("#save").addClass("cancel");
+                $("#application_status_id").val(@ViewBag.savedStatus_id);
             }
         });
         $("#submit").click(function (e) {
@@ -260,7 +261,7 @@
             if (!r) {
                 e.preventDefault();
             } else {
-                $("#application_status_id").val(2);
+                $("#application_status_id").val(@ViewBag.submittedStatus_id);
             }
         });
 

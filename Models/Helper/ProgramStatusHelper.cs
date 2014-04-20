@@ -13,10 +13,18 @@ namespace SchoolOfScience.Models
     {
         [Required(ErrorMessage = "*Required Field.")]
         [Display(Name = "Program Status")]
+        [StringLength(50, ErrorMessage = "*Maximum length exceeded.")]
         public string name { get; set; }
 
-        [Required(ErrorMessage = "*Required Field.")]
-        [Display(Name = "Displayed to Student")]
+        [Display(Name = "Draft")]
+        public bool draft { get; set; }
+        [Display(Name = "Display to Others")]
         public bool shown_to_student { get; set; }
+        [Display(Name = "Lock")]
+        public bool locked { get; set; }
+        [Display(Name = "Open for Application")]
+        public bool open_for_application { get; set; }
+        [Display(Name = "Default")]
+        public bool default_status { get; set; }
     }
 }

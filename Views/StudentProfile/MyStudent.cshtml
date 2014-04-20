@@ -35,12 +35,15 @@
                 <label for="commentkeyword">Advising Comment Keyword:</label>
                 @Html.TextBox("commentkeyword", ViewBag.commentkeyword as String)
             </div>
+            @if (User.IsInRole("FacultyAdvisor"))
+            {
             <div class="filter-field">
                 <label for="advisor">As Pre-major Faculty Advisor:</label>
                 @Html.CheckBox("advisor")
                 <label for="mentor">As Faculty Mentor:</label>
                 @Html.CheckBox("mentor")
             </div>
+            }
 
             <div class="filter-field">
                 <input type="submit" value="Search" />
@@ -49,6 +52,17 @@
         </div>
     </fieldset>
 }
+
+@if (User.IsInRole("FacultyAdvisor"))
+{
+    <p>
+        View as: 
+        @Html.ActionLink("Pre-major Faculty Advisor", "MyStudent", new { advisor = true }, new { id = "advisor-link" }) | 
+        @Html.ActionLink("Faculty Mentor", "MyStudent", new { mentor = true }, new { id = "mentor-link" }) | 
+        @Html.ActionLink("All", "MyStudent", null, new { id = "all-link" })
+    </p>
+} 
+
 @if (ViewBag.showTable)
 {
 <table class="data-table">

@@ -14,10 +14,14 @@ namespace SchoolOfScience.Models
 
         [Required(ErrorMessage = "*Required Field.")]
         [Display(Name = "Status")]
+        [StringLength(50, ErrorMessage = "*Maximum length exceeded.")]
         public string name { get; set; }
 
-        [Required(ErrorMessage = "*Required Field.")]
-        [Display(Name = "Locked")]
-        public string locked { get; set; }
+        [Display(Name = "Default")]
+        public bool default_status { get; set; }
+        [Display(Name = "Sent")]
+        public bool sent { get; set; }
+        [Display(Name = "Sent with Error")]
+        public bool error { get; set; }
     }
 }

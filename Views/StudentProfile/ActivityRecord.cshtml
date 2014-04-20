@@ -6,7 +6,7 @@
 
 <fieldset class="collapse">
     <legend>Activities Records</legend>
-    @if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment") || User.IsInRole("EDP") || User.IsInRole("CommTutor"))
+    @if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment"))
     {
     <div class="add-btn-wrapper">
         @Html.ActionLink("Add", "Create", "StudentActivity", new { student_id = ViewBag.student_id, opener_id = ViewBag.opener_id }, new { @class = "add-activity-link add-activity-btn" })

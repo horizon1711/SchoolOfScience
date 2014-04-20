@@ -1,6 +1,17 @@
-﻿@model IEnumerable<SchoolOfScience.Models.NominationLevel>
+﻿@model IEnumerable<SchoolOfScience.Models.NominationList>
 
-<h2>Nominations</h2>
+<div class="showcase-title">
+    <img src="~/Images/Dashboard/nomination.png" />
+@if (ViewBag.history)
+{
+    <h2>Nominations History</h2>
+}
+else
+{
+    <h2>Pending Nominations</h2>
+}
+</div>
+
 
 <table class="data-table">
     <thead>
@@ -21,7 +32,10 @@
                 Quota
             </th>
             <th>
-                Shortlisted
+                Applications
+            </th>
+            <th>
+                Remarks
             </th>
             <th></th>
         </tr>
@@ -30,7 +44,7 @@
     @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.id)
+                @item.id
             </td>
             <td>
                 @String.Format("{0:yyyy-MM-dd}", item.start_date)
@@ -63,34 +77,33 @@
                 </div>
             </td>
             <td>
-                @if (item.Nominators.FirstOrDefault(n => n.nominator_username == User.Identity.Name) != null)
+                @if (item.quota == 0)
                 {
-                    if (item.Nominators.FirstOrDefault(n => n.nominator_username == User.Identity.Name).quota == 0)
-                    {
-                        <text>-</text>
-                    }
-                    else
-                    {
-                        @item.Nominators.FirstOrDefault(n => n.nominator_username == User.Identity.Name).quota
-                    }
+                    <text>-</text>
+                }
+                else
+                {
+                    @item.quota
                 }
             </td>
             <td>
-                @if (item.Nomination.NominationLevels.FirstOrDefault(l => l.nomination_level == item.nomination_level - 1) != null)
-                {
-                    @item.Nomination.NominationLevels.FirstOrDefault(l => l.nomination_level == item.nomination_level - 1).NominationApplications.Count()
-                }
+                @item.NominationApplications.Count()
+            </td>
+            <td>
+                <pre>
+                    @item.remarks
+                </pre>
             </td>
             <td>
                 <ul class="action-list">
                     <li>
-                        @if (DateTime.Now > item.start_date && DateTime.Now < item.end_date.AddDays(1) && item.Nomination.NominationStatus.nominated)
+                        @if (DateTime.Now > item.start_date && DateTime.Now < item.end_date.AddDays(1) && (item.Nomination.NominationStatus.nominated || item.Nomination.NominationStatus.shortlisted))
                         {
                             @Html.ActionLink("Nominate", "ApplicationList", new { id = item.id })
                         }
                         else
                         {
-                            @Html.ActionLink("View Details", "ApplicationList", new { id = item.id })
+                            @Html.ActionLink("View", "ApplicationList", new { id = item.id })
                         }
                     </li>
                 </ul>

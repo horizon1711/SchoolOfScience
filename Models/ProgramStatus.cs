@@ -23,6 +23,9 @@ namespace SchoolOfScience.Models
         public string name { get; set; }
         public bool shown_to_student { get; set; }
         public bool locked { get; set; }
+        public bool open_for_application { get; set; }
+        public bool default_status { get; set; }
+        public bool draft { get; set; }
     
         public virtual ICollection<Program> Programs { get; set; }
     }

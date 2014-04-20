@@ -1,12 +1,12 @@
 ﻿@model SchoolOfScience.Models.ViewModels.AppointmentCreateMultipleViewModel
 
 @{
-    ViewBag.Title = "Edit";
+    Layout = null;
 }
 
 <h2>Edit</h2>
 
-@using (Html.BeginForm())
+@using (Html.BeginForm("Edit", "Appointment", FormMethod.Post, new { id = "form" }))
 {
     @Html.AntiForgeryToken()
     @Html.ValidationSummary(true)
@@ -81,19 +81,17 @@
         </div>
 
         <p>
-            <input type="submit" value="Save" />
+            <input type="submit" id="save-btn" value="Save" />
         </p>
     </fieldset>
 }
 
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>
 
-@section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
     <script>
         $(function () {
+            $(".chosen").chosen();
+
             $("#appointment_host_id").change(function () {
                 $.ajax({
                     url: "@Url.Action("GetDefaultVenue", "Appointment")/" + $(this).val(),
@@ -127,6 +125,46 @@
                     }
                 });
             });
+
+            $("#save-btn").click(function (e) {
+                e.preventDefault();
+                if ($("#form").valid()) {
+                    $.ajax({
+                        cache: false,
+                        url: $("#form").prop("action"),
+                        type: "POST",
+                        data: $("#form").serializeArray(),
+                        error: function (jqXHR, status, error) {
+                            $("#appointment-manage-dialog").dialog("close");
+                            $("#error-dialog").dialog({
+                                width: 350,
+                                height: 100,
+                                overflow: "auto",
+                                modal: true,
+                                resizable: false,
+                                draggable: false,
+                                open: function () {
+                                    $(this).scrollTop(0);
+                                    $('.ui-widget-overlay').hide().fadeIn();
+                                },
+                                show: {
+                                    effect: 'fade',
+                                    duration: 200
+                                },
+                                hide: {
+                                    effect: 'fade',
+                                    duration: 100
+                                }
+                            }).html(error);
+                        },
+                        success: function (result) {
+                            $("#appointment-manage-dialog").dialog("close");
+                            $("#filter-form").submit();
+                        }
+                    })
+                } else {
+                    $(".input-validation-error").first().focus();
+                }
+            });
         });
     </script>
-}

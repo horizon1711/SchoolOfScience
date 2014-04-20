@@ -20,34 +20,48 @@ namespace SchoolOfScience.Controllers
         //
         // GET: /Interview/
 
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP")]
         public ActionResult Index()
         {
-            var interview = db.Interviews;
-            ViewBag.programList = new SelectList(db.Programs.Where(p => p.Interviews.Count() > 0).OrderBy(p => p.name), "id", "name");
+            var interviews = db.Interviews.Include(i => i.Program);
+            var programs = db.Programs.Include(p => p.ProgramStatus).Include(p => p.ProgramType);
+            if (User.IsInRole("EDP"))
+            {
+                var edpusers = db.SystemUsers.Where(u => u.UserRoles.Any(r => r.RoleName == "EDP")).Select(u => u.UserName).ToArray();
+                interviews = interviews.Where(i => edpusers.Contains(i.Program.created_by));
+                programs = programs.Where(p => edpusers.Contains(p.created_by));
+            }
+            ViewBag.programList = new SelectList(programs.Where(p => p.Interviews.Count() > 0).OrderBy(p => p.name), "id", "name");
             ViewBag.programTypeList = new SelectList(db.ProgramTypes, "id", "name");
             ViewBag.programStatusList = new SelectList(db.ProgramStatus, "id", "name");
             ViewBag.interviewVenueList = new SelectList(db.InterviewVenues, "id", "name");
             ViewBag.interviewStatusList = new SelectList(db.InterviewStatus, "id", "name");
-            return View(interview.ToList());
+            return View(interviews.ToList());
         }
 
         //
         // POST: /Interview/
 
         [HttpPost]
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP")]
         public ActionResult Index(FormCollection Form, bool available, bool assigned, bool upcoming = false)
         {
-            var interview = db.Interviews.Include(i => i.InterviewStatus).Include(i => i.Program).Include(i => i.Applications);
-            ViewBag.programList = new SelectList(db.Programs.Where(p => p.Interviews.Count() > 0).OrderBy(p => p.name), "id", "name", Form["program"]);
+            var interviews = db.Interviews.Include(i => i.Program);
+            var programs = db.Programs.Include(p => p.ProgramStatus).Include(p => p.ProgramType);
+            if (User.IsInRole("EDP"))
+            {
+                var edpusers = db.SystemUsers.Where(u => u.UserRoles.Any(r => r.RoleName == "EDP")).Select(u => u.UserName).ToArray();
+                interviews = interviews.Where(i => edpusers.Contains(i.Program.created_by));
+                programs = programs.Where(p => edpusers.Contains(p.created_by));
+            }
+            ViewBag.programList = new SelectList(programs.Where(p => p.Interviews.Count() > 0).OrderBy(p => p.name), "id", "name", Form["program"]);
             ViewBag.programTypeList = new SelectList(db.ProgramTypes, "id", "name", Form["program_type"]);
             ViewBag.programStatusList = new SelectList(db.ProgramStatus, "id", "name", Form["program_status"]);
             ViewBag.interviewVenueList = new SelectList(db.InterviewVenues, "id", "name", Form["interview_venue"]);
             ViewBag.interviewStatusList = new SelectList(db.InterviewStatus, "id", "name", Form["interview_status"]);
             ViewBag.startdate = Form["startdate"];
             ViewBag.enddate = Form["enddate"];
-            return View(interview.ToList().Where(i => (true)
+            return View(interviews.ToList().Where(i => (true)
                     && (String.IsNullOrEmpty(Form["program"]) || i.program_id.ToString() == Form["program"])
                     && (String.IsNullOrEmpty(Form["program_type"]) || i.Program.type_id.ToString() == Form["program_type"])
                     && (String.IsNullOrEmpty(Form["program_status"]) || i.Program.status_id.ToString() == Form["program_status"])
@@ -64,7 +78,7 @@ namespace SchoolOfScience.Controllers
         //
         // GET: /Interview/Details/5
 
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP")]
         public ActionResult Details(int id = 0)
         {
             Interview interview = db.Interviews.Find(id);
@@ -79,7 +93,7 @@ namespace SchoolOfScience.Controllers
         // GET: /Interview/CreateTimeslotSession
 
         [Ajax(true)]
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP")]
         public ActionResult CreateTimeslotSession(int index)
         {
             ViewBag.index = index;
@@ -90,7 +104,7 @@ namespace SchoolOfScience.Controllers
         // GET: /Interview/CreateTimeslotSkippedDate
 
         [Ajax(true)]
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP")]
         public ActionResult CreateTimeslotSkippedDate(int index)
         {
             ViewBag.index = index;
@@ -100,12 +114,18 @@ namespace SchoolOfScience.Controllers
         //
         // GET: /Interview/CreateMultiple
 
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP")]
         public ActionResult CreateMultiple()
         {
             InterviewCreateMultipleViewModel ViewModel = new InterviewCreateMultipleViewModel();
             ViewModel.interview = new Interview();
-            ViewBag.programList = new SelectList(db.Programs.Where(p => p.require_interview), "id", "name");
+            var programs = db.Programs.Where(p => p.require_interview);
+            if (User.IsInRole("EDP"))
+            {
+                var edpusers = db.SystemUsers.Where(u => u.UserRoles.Any(r => r.RoleName == "EDP")).Select(u => u.UserName).ToArray();
+                programs = programs.Where(p => edpusers.Contains(p.created_by));
+            }
+            ViewBag.programList = new SelectList(programs.Where(p => p.require_interview), "id", "name");
             ViewBag.venueList = new SelectList(db.InterviewVenues.Where(v => v.status), "id", "name");
             return View(ViewModel);
         }
@@ -114,7 +134,7 @@ namespace SchoolOfScience.Controllers
         // POST: /Interview/CreateMultiple
 
         [HttpPost]
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP")]
         [ValidateAntiForgeryToken]
         public ActionResult CreateMultiple(InterviewCreateMultipleViewModel ViewModel)
         {
@@ -206,7 +226,13 @@ namespace SchoolOfScience.Controllers
             }
             catch (Exception e)
             {
-                ViewBag.programList = new SelectList(db.Programs.Where(p => p.require_interview), "id", "name");
+                var programs = db.Programs.Where(p => p.require_interview);
+                if (User.IsInRole("EDP"))
+                {
+                    var edpusers = db.SystemUsers.Where(u => u.UserRoles.Any(r => r.RoleName == "EDP")).Select(u => u.UserName).ToArray();
+                    programs = programs.Where(p => edpusers.Contains(p.created_by));
+                }
+                ViewBag.programList = new SelectList(programs.Where(p => p.require_interview), "id", "name");
                 ViewBag.venueList = new SelectList(db.InterviewVenues.Where(v => v.status), "id", "name");
                 Session["FlashMessage"] = "Failed to create interview timeslots." + e.Message; 
                 return View(ViewModel);
@@ -216,7 +242,7 @@ namespace SchoolOfScience.Controllers
         //
         // GET: /Interview/AssignAvoidedSession
 
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP")]
         public ActionResult AssignAvoidedSession(int index)
         {
             InterviewAssignMultipleViewModel ViewModel = new InterviewAssignMultipleViewModel();
@@ -230,13 +256,19 @@ namespace SchoolOfScience.Controllers
         //
         // GET: /Interview/AssignMultiple
 
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP")]
         public ActionResult AssignMultiple()
         {
             InterviewAssignMultipleViewModel ViewModel = new InterviewAssignMultipleViewModel();
             ViewModel.sort_by_dept = true;
             ViewModel.continuous_assign = true;
-            ViewBag.programList = new SelectList(db.Programs.Where(p => p.require_interview && p.Applications.Count(a => a.ApplicationStatus.name == "Processed") > 0), "id", "name");
+            var programs = db.Programs.Where(p => p.require_interview);
+            if (User.IsInRole("EDP"))
+            {
+                var edpusers = db.SystemUsers.Where(u => u.UserRoles.Any(r => r.RoleName == "EDP")).Select(u => u.UserName).ToArray();
+                programs = programs.Where(p => edpusers.Contains(p.created_by));
+            }
+            ViewBag.programList = new SelectList(programs.Where(p => p.require_interview && p.Applications.Count(a => a.ApplicationStatus.submitted && !a.ApplicationStatus.rejected) > 0), "id", "name");
             ViewBag.academicOrganizationList = new SelectList(db.StudentProfiles.Select(s => new { value = s.academic_organization, text = s.academic_organization }).Distinct(), "value", "text");
             ViewBag.academicPlanList = new SelectList(db.StudentProfiles.Select(s => new { value = s.academic_plan_primary, text = s.academic_plan_description }).Distinct(), "value", "text");
             ViewBag.academicLevelList = new SelectList(db.StudentProfiles.Select(s => new { value = s.academic_level, text = s.academic_level }).Distinct(), "value", "text");
@@ -247,7 +279,7 @@ namespace SchoolOfScience.Controllers
         // POST: /Interview/AssignMultiple
 
         [HttpPost]
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP")]
         [ValidateAntiForgeryToken]
         public ActionResult AssignMultiple(InterviewAssignMultipleViewModel ViewModel)
         {
@@ -263,7 +295,7 @@ namespace SchoolOfScience.Controllers
                 foreach (var interview in program.Interviews.Where(i => i.Applications.Count() < i.no_of_interviewee))
                 {
                     string department = null;
-                    var applications = program.Applications.Where(a => a.Interviews.Count() == 0 && a.ApplicationStatus.name == "Processed");
+                    var applications = program.Applications.Where(a => a.Interviews.Count() == 0 && a.ApplicationStatus.submitted && !a.ApplicationStatus.rejected);
                     //sort applications by department is sort_by_dept is true, ,or continuous_assign is false
                     if (ViewModel.sort_by_dept || !ViewModel.continuous_assign)
                     {
@@ -290,7 +322,7 @@ namespace SchoolOfScience.Controllers
                 db.SaveChanges();
 
                 var available_interview_seat_count = program.Interviews.Sum(i => i.no_of_interviewee - i.Applications.Count());
-                int unassigned_application_count = program.Applications.Where(a => a.ApplicationStatus.name == "Processed" && a.Interviews.Count() == 0).Count();
+                int unassigned_application_count = program.Applications.Where(a => !a.ApplicationStatus.rejected && a.ApplicationStatus.submitted && a.Interviews.Count() == 0).Count();
 
                 Session["FlashMessage"] = "<b>Auto assign summary:</b><br/>"
                     + "Auto-assigned Applications : " + auto_assigned_count + "<br/>"
@@ -305,38 +337,11 @@ namespace SchoolOfScience.Controllers
             }
         }
 
-        protected Notification CreateNotification(Interview interview, Application application)
-        {
-            NotificationType type = db.NotificationTypes.Where(t => t.name == "InterviewAssigned").SingleOrDefault();
-            NotificationStatus status = db.NotificationStatus.Where(s => s.name == "Pending").SingleOrDefault();
-            string body = "";
-            string subject = "";
-            if (type.NotificationTemplate != null)
-            {
-                body = type.NotificationTemplate.body;
-                subject = type.NotificationTemplate.subject;
-            }
-            Notification notification = new Notification{
-                send_time = DateTime.Now.AddMinutes(30),
-                status_id = status.id,
-                type_id = type.id,
-                body = body,
-                subject = subject,
-                sender = "test@test.com",
-                interview_id = interview.id,
-                created = DateTime.Now,
-                created_by = User.Identity.Name,
-                modified = DateTime.Now,
-                modified_by = User.Identity.Name
-            };
-            return notification;
-        }
-
         [Ajax(true)]
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP")]
         public ActionResult AssignApplicationList(int id)
         {
-            IEnumerable<Application> applications = db.Applications.Where(a => a.program_id == id && a.ApplicationStatus.name == "Processed" && a.Interviews.Count() == 0);
+            IEnumerable<Application> applications = db.Applications.Where(a => a.program_id == id && !a.ApplicationStatus.rejected && a.ApplicationStatus.submitted && a.Interviews.Count() == 0);
             return PartialView(applications.ToList());
         }
 
@@ -369,7 +374,7 @@ namespace SchoolOfScience.Controllers
         //
         // GET: /Interview/Create
 
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP")]
         public ActionResult Create()
         {
             var openStatus = db.InterviewStatus.FirstOrDefault(s => s.default_status);
@@ -380,7 +385,13 @@ namespace SchoolOfScience.Controllers
             }
             int openedStatusId = openStatus.id;
             ViewBag.statusList = new SelectList(db.InterviewStatus, "id", "name", openedStatusId);
-            ViewBag.programList = new SelectList(db.Programs.Where(p => p.require_interview), "id", "name");
+            var programs = db.Programs.Where(p => p.require_interview);
+            if (User.IsInRole("EDP"))
+            {
+                var edpusers = db.SystemUsers.Where(u => u.UserRoles.Any(r => r.RoleName == "EDP")).Select(u => u.UserName).ToArray();
+                programs = programs.Where(p => edpusers.Contains(p.created_by));
+            }
+            ViewBag.programList = new SelectList(programs.Where(p => p.require_interview), "id", "name");
             ViewBag.venueList = new SelectList(db.InterviewVenues.Where(v => v.status), "id", "name");
             return View();
         }
@@ -389,7 +400,7 @@ namespace SchoolOfScience.Controllers
         // POST: /Interview/Create
 
         [HttpPost]
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP")]
         [ValidateAntiForgeryToken]
         public ActionResult Create(Interview interview)
         {
@@ -409,7 +420,13 @@ namespace SchoolOfScience.Controllers
             }
 
             ViewBag.statusList = new SelectList(db.InterviewStatus, "id", "name", interview.status_id);
-            ViewBag.programList = new SelectList(db.Programs.Where(p => p.require_interview), "id", "name");
+            var programs = db.Programs.Where(p => p.require_interview);
+            if (User.IsInRole("EDP"))
+            {
+                var edpusers = db.SystemUsers.Where(u => u.UserRoles.Any(r => r.RoleName == "EDP")).Select(u => u.UserName).ToArray();
+                programs = programs.Where(p => edpusers.Contains(p.created_by));
+            }
+            ViewBag.programList = new SelectList(programs.Where(p => p.require_interview), "id", "name");
             ViewBag.venueList = new SelectList(db.InterviewVenues.Where(v => v.status), "id", "name");
             return View(interview);
         }
@@ -417,7 +434,7 @@ namespace SchoolOfScience.Controllers
         //
         // GET: /Interview/Edit/5
 
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP")]
         public ActionResult Edit(int id = 0)
         {
             InterviewViewModel ViewModel = new InterviewViewModel();
@@ -427,11 +444,15 @@ namespace SchoolOfScience.Controllers
                 return HttpNotFound();
             }
             ViewModel.interview = interview;
-            ViewModel.applications = interview.Applications.ToList();
             ViewBag.statusList = new SelectList(db.InterviewStatus, "id", "name", interview.status_id);
-            ViewBag.programList = new SelectList(db.Programs.Where(p => p.require_interview), "id", "name");
-            var applicationIds = interview.Applications.Select(x => x.id);
-            ViewBag.applicationList = new SelectList(db.Applications.Where(a => a.program_id == interview.program_id && (a.Interviews.Count() == 0 || applicationIds.Contains(a.id))), "id", "StudentProfile.name");
+            var programs = db.Programs.Where(p => p.require_interview);
+            if (User.IsInRole("EDP"))
+            {
+                var edpusers = db.SystemUsers.Where(u => u.UserRoles.Any(r => r.RoleName == "EDP")).Select(u => u.UserName).ToArray();
+                programs = programs.Where(p => edpusers.Contains(p.created_by));
+            }
+            ViewBag.programList = new SelectList(programs.Where(p => p.require_interview), "id", "name");
+            ViewBag.applicationList = new MultiSelectList(db.Applications.Where(a => a.program_id == interview.program_id && (a.Interviews.Count() == 0 || a.Interviews.Any(i => i.id == id))).Select(a => new { text = a.StudentProfile.name + " " + a.student_id, id = a.id }), "id", "text", interview.Applications.Select(a => a.id.ToString()));
             ViewBag.venueList = new SelectList(db.InterviewVenues.Where(v => v.status), "id", "name");
             
             return View(ViewModel);
@@ -441,18 +462,19 @@ namespace SchoolOfScience.Controllers
         // POST: /Interview/Edit/5
 
         [HttpPost]
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP")]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(InterviewViewModel ViewModel)
         {
             Interview interview = db.Interviews.Find(ViewModel.interview.id);
             db.Entry(interview).CurrentValues.SetValues(ViewModel.interview);
             interview.Applications.Clear();
-            if (ViewModel.applications != null)
+            if (ViewModel.application_ids != null)
             {
-                foreach (var application in ViewModel.applications)
+                var applications = db.Applications.Where(a => ViewModel.application_ids.Contains(a.id));
+                foreach (var application in applications)
                 {
-                    interview.Applications.Add(db.Applications.Find(application.id));
+                    interview.Applications.Add(application);
                 }
             }
 
@@ -464,7 +486,15 @@ namespace SchoolOfScience.Controllers
             {
                 Session["FlashMessage"] = "Failed to edit interview timeslot." + e.Message;
                 ViewBag.statusList = new SelectList(db.InterviewStatus, "id", "name", interview.status_id);
-                ViewBag.programList = new SelectList(db.Programs.Where(p => p.require_interview), "id", "name");
+                var programs = db.Programs.Where(p => p.require_interview);
+                if (User.IsInRole("EDP"))
+                {
+                    var edpusers = db.SystemUsers.Where(u => u.UserRoles.Any(r => r.RoleName == "EDP")).Select(u => u.UserName).ToArray();
+                    programs = programs.Where(p => edpusers.Contains(p.created_by));
+                }
+                ViewBag.programList = new SelectList(programs.Where(p => p.require_interview), "id", "name");
+                var applicationIds = interview.Applications.Select(x => x.id);
+                ViewBag.applicationList = new SelectList(db.Applications.Where(a => a.program_id == interview.program_id && (a.Interviews.Count() == 0 || applicationIds.Contains(a.id))).Select(a => new { text = a.StudentProfile.name + " " + a.student_id, id = a.student_id }), "id", "text");
                 ViewBag.venueList = new SelectList(db.InterviewVenues.Where(v => v.status), "id", "name");
                 return View(ViewModel);
             }
@@ -477,15 +507,15 @@ namespace SchoolOfScience.Controllers
             Interview interview = db.Interviews.Find(id);
             ViewModel.interview = interview;
             ViewBag.index = index;
-            var applicationIds = interview.Applications.Where(a => a.ApplicationStatus.name == "Processed").Select(x => x.id);
-            ViewBag.applicationList = new SelectList(db.Applications.Where(a => a.program_id == interview.program_id && (a.Interviews.Count() == 0 || applicationIds.Contains(a.id))), "id", "StudentProfile.name");
+            var applicationIds = interview.Applications.Where(a => a.ApplicationStatus.submitted && !a.ApplicationStatus.rejected).Select(x => x.id);
+            ViewBag.applicationList = new SelectList(db.Applications.Where(a => a.program_id == interview.program_id && (a.Interviews.Count() == 0 || applicationIds.Contains(a.id))).Select(a => new { text = a.StudentProfile.name + " " + a.student_id, id = a.student_id }), "id", "text");
             return PartialView(ViewModel);
         }
 
         //
         // GET: /Interview/Delete/5
 
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP")]
         public ActionResult Delete(int id = 0)
         {
             Interview interview = db.Interviews.Find(id);
@@ -506,7 +536,7 @@ namespace SchoolOfScience.Controllers
         // POST: /Interview/Delete/5
 
         [HttpPost, ActionName("Delete")]
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
@@ -527,7 +557,7 @@ namespace SchoolOfScience.Controllers
         //
         // GET: /Interview/BatchDelete/
 
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP")]
         public ActionResult BatchDelete(string items)
         {
             var i = items.Split('_');
@@ -540,7 +570,7 @@ namespace SchoolOfScience.Controllers
         // POST: /Interview/BatchDelete/
 
         [HttpPost, ActionName("BatchDelete")]
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP")]
         public ActionResult BatchDeleteConfirmed(string items)
         {
             var i = items.Split('_');
@@ -563,7 +593,7 @@ namespace SchoolOfScience.Controllers
         //
         // GET: /Interview/BatchUpdate/
 
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP")]
         public ActionResult BatchUpdate(string items)
         {
             var i = items.Split('_');
@@ -577,7 +607,7 @@ namespace SchoolOfScience.Controllers
         // POST: /Interview/BatchUpdate/
 
         [HttpPost, ActionName("BatchUpdate")]
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP")]
         public ActionResult BatchUpdateConfirmed(string items, int status_id)
         {
             var i = items.Split('_');
@@ -586,7 +616,7 @@ namespace SchoolOfScience.Controllers
             foreach (var interview in interviews)
             {
                 interview.status_id = status_id;
-                if (status.name == "Notified")
+                if (status.notification)
                 {
                     foreach (var application in interview.Applications)
                     {
@@ -608,7 +638,7 @@ namespace SchoolOfScience.Controllers
         //
         // GET: /Interview/CommentTemplate/
 
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP")]
         public ActionResult CommentTemplate(string items)
         {
             var i = items.Split('_');

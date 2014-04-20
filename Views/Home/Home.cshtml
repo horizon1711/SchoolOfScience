@@ -1,0 +1,92 @@
+﻿<div class="dashboard-wrapper">
+
+    @if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment") || User.IsInRole("EDP") || User.IsInRole("CommTutor"))
+    {
+    <div class="dashboard-item">
+        <a href="@Url.Action("Index", "Program")">
+            <img src="@Url.Content("~/Images/Dashboard/program.png")" />
+            <p><strong>Enrichment Program</strong></p>
+        </a>
+    </div>
+    }
+    else if (User.IsInRole("StudentNUGD") || User.IsInRole("StudentRPGTPG") || User.IsInRole("StudentUGRD"))
+    {
+    <div class="dashboard-item">
+        <a href="@Url.Action("Showcase", "Program")">
+            <img src="@Url.Content("~/Images/Dashboard/program.png")" />
+            <p><strong>Enrichment Program</strong></p>
+        </a>
+    </div>
+    }
+    else
+    {
+    <div class="dashboard-item">
+        <a href="@Url.Action("ViewList", "Program")">
+            <img src="@Url.Content("~/Images/Dashboard/program.png")" />
+            <p><strong>Enrichment Program</strong></p>
+        </a>
+    </div>
+    }
+    
+
+    @if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment") || User.IsInRole("FacultyAdvisor") || User.IsInRole("ProgramAdmin"))
+    {
+    <div class="dashboard-item">
+        <a href="@Url.Action("Index", "Appointment")">
+            <img src="@Url.Content("~/Images/Dashboard/advising.png")" />
+            <p><strong>Advising Appointment</strong></p>
+        </a>
+    </div>
+    }
+    else if (User.IsInRole("StudentUGRD"))
+    {
+    <div class="dashboard-item">
+        <a href="@Url.Action("Booking", "Appointment")">
+            <img src="@Url.Content("~/Images/Dashboard/advising.png")" />
+            <p><strong>Advising Appointment</strong></p>
+        </a>
+    </div>
+    }
+
+    
+    @if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment"))
+    {
+    <div class="dashboard-item">
+        <a href="@Url.Action("Index", "StudentProfile")">
+            <img src="@Url.Content("~/Images/Dashboard/profile.png")" />
+            <p><strong>Student Profile</strong></p>
+        </a>
+    </div>
+    }
+    else if (User.IsInRole("StudentNUGD") || User.IsInRole("StudentRPGTPG") || User.IsInRole("StudentUGRD"))
+    {
+    <div class="dashboard-item">
+        <a href="@Url.Action("MyProfile", "StudentProfile")">
+            <img src="@Url.Content("~/Images/Dashboard/profile.png")" />
+            <p><strong>My Profile</strong></p>
+        </a>
+    </div>
+    }
+    else if (User.IsInRole("FacultyAdvisor"))
+    {
+    <div class="dashboard-item">
+        <a href="@Url.Action("MyStudent", "StudentProfile")">
+            <img src="@Url.Content("~/Images/Dashboard/profile.png")" />
+            <p><strong>Student Profile</strong></p>
+        </a>
+    </div>
+    }
+
+    @if (User.IsInRole("Nominator"))
+    {
+    <div class="dashboard-item">
+        <a href="@Url.Action("MyNomination", "Nomination")">
+            <img src="@Url.Content("~/Images/Dashboard/nomination.png")" />
+            <p><strong>Nomination</strong></p>
+        </a>
+    </div>
+    }
+
+
+    <div class="clear-fix"></div>
+</div>

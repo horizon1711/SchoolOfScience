@@ -12,13 +12,45 @@
 
     <fieldset>
         <legend>ApplicationStatus</legend>
-
+        
         <div class="editor-label">
             @Html.LabelFor(model => model.name)
         </div>
         <div class="editor-field">
             @Html.EditorFor(model => model.name)
             @Html.ValidationMessageFor(model => model.name)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.editable)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.editable)
+            @Html.ValidationMessageFor(model => model.name)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.submitted)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.submitted)
+            @Html.ValidationMessageFor(model => model.submitted)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.rejected)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.rejected)
+            @Html.ValidationMessageFor(model => model.rejected)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.default_status)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.default_status)
+            @Html.ValidationMessageFor(model => model.default_status)
         </div>
 
         <p>

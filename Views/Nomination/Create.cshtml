@@ -26,7 +26,7 @@
         @Html.LabelFor(model => model.status_id, "Status")
     </div>
     <div class="editor-field">
-        @Html.DropDownListFor(model => model.status_id, ViewBag.statusList as SelectList, String.Empty)
+        @Html.DropDownListFor(model => model.status_id, new SelectList(ViewBag.statusList, "id", "name"), String.Empty)
         @Html.ValidationMessageFor(model => model.status_id)
     </div>
 
@@ -53,74 +53,10 @@
         @Html.TextAreaFor(model => model.remarks, new { @class = "expanding" })
         @Html.ValidationMessageFor(model => model.remarks)
     </div>
-
-</fieldset>
-    
-<fieldset>
-    <legend>Tick the Checkbox to Shortlist Applications</legend>
-
-    <table class="data-table">
-        <thead>
-            <tr>
-                <th>
-                    <input type="checkbox" id="checkAll"/>
-                </th>
-                <th>
-                    ID
-                </th>
-                <th>
-                    Student Name
-                </th>
-                <th>
-                    Academic Organization
-                </th>
-                <th>
-                    Academic Plan
-                </th>
-                <th>
-                    Academic Level
-                </th>
-                <th>
-                    View Application
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            
-            @foreach (var application in Model.Program.Applications.Where(a => a.submitted != null))
-            {
-                //Status.name != "Saved"
-            <tr>
-                <td>
-                    <input type="checkbox" class="checkItem" value="@application.id"/>
-                </td>
-                <td>
-                    @application.id
-                </td>
-                <td>
-                    <strong>@Html.DisplayFor(modelItem => application.StudentProfile.name) @Html.ActionLink(application.StudentProfile.id.ToString(), "Details", "StudentProfile", new { id = application.StudentProfile.id }, new { @class = "student-link" })</strong>
-                </td>
-                <td>
-                    @application.StudentProfile.academic_organization
-                </td>
-                <td>
-                    @application.StudentProfile.academic_plan_description
-                </td>
-                <td>
-                    @application.StudentProfile.academic_level
-                </td>
-                <td>
-                    <a href="@Url.Action("Details", "Application", new { id = application.id })" class = "action-link" title = "View Application"><img src="@Url.Content("~/Images/Action/view.gif")" /></a>
-                </td>
-            </tr>
-            }
-        </tbody>
-    </table>
-
 </fieldset>
 
 <p>
-    <input type="submit" id="submit" value="Next" />
+    <input type="submit" id="submit" value="Create Nomination" />
 </p>
 }
 

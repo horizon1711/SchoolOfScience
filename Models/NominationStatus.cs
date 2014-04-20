@@ -23,6 +23,7 @@ namespace SchoolOfScience.Models
         public string name { get; set; }
         public bool shortlisted { get; set; }
         public bool nominated { get; set; }
+        public bool default_status { get; set; }
     
         public virtual ICollection<Nomination> Nominations { get; set; }
     }

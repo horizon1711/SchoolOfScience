@@ -4,7 +4,10 @@
     ViewBag.Title = "Details";
 }
 
-<h2>Nomination Details</h2>
+<h2>Nomination</h2>
+
+<fieldset>
+    <legend>Details</legend>
 
 <ul class="action-list">
     <li>
@@ -78,132 +81,62 @@
         </pre>
     </div>    
 </div>
-<div class="display-label clear-left">
-        Shortlisted Applications:
-</div>
-@if (Model.NominationLevels.FirstOrDefault(l => l.nomination_level == 0) != null)
-{
-<table class="nominated-application-table">
-    <thead>
-        <tr>
-            <th>
-                Application ID
-            </th>
-            <th>
-                Student Name
-            </th>
-            <th>
-                Academic Organization
-            </th>
-            <th>
-                Academic Plan
-            </th>
-            <th>
-                Academic Level
-            </th>
-            <th>
-                Shortlisted
-            </th>
-            <th>
-                Remarks
-            </th>
-            @foreach (var level in Model.NominationLevels.Where(l => l.nomination_level > 0))
-            {
-                <th>
-                    Level @level.nomination_level
-                </th>
-            }
-            <th>
-                View Application
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var nominated in Model.NominationLevels.FirstOrDefault(l => l.nomination_level == 0).NominationApplications)
-        {
-        <tr>
-            <td>
-                @nominated.Application.id
-            </td>
-            <td>
-                <strong>@Html.DisplayFor(modelItem => nominated.Application.StudentProfile.name) @Html.ActionLink(nominated.Application.StudentProfile.id.ToString(), "Details", "StudentProfile", new { id = nominated.Application.StudentProfile.id }, new { @class = "nominated-student-link" })</strong>
-            </td>
-            <td>
-                @nominated.Application.StudentProfile.academic_organization
-            </td>
-            <td>
-                @nominated.Application.StudentProfile.academic_plan_description
-            </td>
-            <td>
-                @nominated.Application.StudentProfile.academic_level
-            </td>
-            <td>
-                @String.Format("{0:yyyy-MM-dd HH:mm}", nominated.nominated_date)
-                [@nominated.Nominator.nominator_username]
-            </td>
-            <td>
-                <pre>
-                    @nominated.remarks
-                </pre>
-            </td>
-            @foreach (var level in Model.NominationLevels.Where(l => l.nomination_level > 0))
-            {
-                <th>
-                    @if (level.NominationApplications.Any(a => a.application_id == nominated.Application.id))
-                    {
-                        <input type="checkbox" disabled="disabled" checked="checked" />
-                    }
-                    else
-                    {
-                        <input type="checkbox" disabled="disabled" />
-                    }
-                </th>
-            }
-            <td>
-                <a href="@Url.Action("Details", "Application", new { id = nominated.Application.id })" class = "nominated-action-link action-link" title = "View Application"><img src="@Url.Content("~/Images/Action/view.gif")" /></a>
-            </td>
-        </tr>
-        }
-    </tbody>
-</table>
-}
-else
-{
-    <div class="display-field">
-        None
-    </div> 
-}
 
-@foreach (var level in Model.NominationLevels.Where(l => l.nomination_level > 0))
-{
-<h2>Level @level.nomination_level Nomination</h2>
+<div class="clear-fix"></div>
 
+</fieldset>
+
+<h2>Shortlists</h2>
+@foreach (var list in Model.NominationLists.OrderBy(l => l.nomination_level))
+{
+
+<fieldset>
+    <legend>Nomination List ID @list.id</legend>
+    
 <ul class="action-list">
     <li>
-        @Html.ActionLink("Edit", "EditLevel", new { id = level.id })
+        @Html.ActionLink("Edit", "EditList", new { id = list.id })
     </li>
     <li>
-        @Html.ActionLink("Cancel", "DeleteLevel", new { id = level.id }, new { @class = "level-cancel-link" })
+        @Html.ActionLink("Notification", "Notify", new { id = list.id }, new { @class = "list-notify-link" })
+    </li>
+    <li>
+        @Html.ActionLink("Cancel", "DeleteList", new { id = list.id }, new { @class = "list-cancel-link" })
     </li>
 </ul>
-
+    
 <div class="field-wrapper">
     <div class="display-label">
-            Nominators
+        Nominator
     </div>
     <div class="display-field">
-        @if (level.Nominators.Count() > 0)
-        {
-            @String.Join(", ", level.Nominators.Select(n => n.nominator_username))
-        }
+        @list.UserProfile.UserName
+    </div>    
+</div>
+    
+<div class="field-wrapper">
+    <div class="display-label">
+        Level
     </div>
+    <div class="display-field">
+        @list.nomination_level
+    </div>    
+</div>
+    
+<div class="field-wrapper">
+    <div class="display-label">
+        Display Name
+    </div>
+    <div class="display-field">
+        @list.name
+    </div>    
 </div>
 <div class="field-wrapper">
     <div class="display-label">
         Start Date
     </div>
     <div class="display-field">
-        @String.Format("{0:yyyy-MM-dd (ddd)}", level.start_date)
+        @String.Format("{0:yyyy-MM-dd (ddd)}", list.start_date)
     </div>    
 </div>
 <div class="field-wrapper">
@@ -211,7 +144,7 @@ else
         End Date
     </div>
     <div class="display-field">
-        @String.Format("{0:yyyy-MM-dd (ddd)}", level.end_date)
+        @String.Format("{0:yyyy-MM-dd (ddd)}", list.end_date)
     </div>    
 </div>
 <div class="field-wrapper">
@@ -219,13 +152,13 @@ else
             Quota
     </div>
     <div class="display-field">
-        @if (level.quota == 0)
+        @if (list.quota == 0)
         {
             @("-")
         }
         else
         {
-            @level.quota
+            @list.quota
         }
     </div>
 </div>
@@ -235,18 +168,13 @@ else
     </div>
     <div class="display-field">
         <pre>
-            @level.remarks
+            @list.remarks
         </pre>
         
     </div>
 </div>
-        
-<div class="display-label clear-left">
-        Nominated Applications:
-</div>
-        
-<div class="display-field">
-    @if (level.NominationApplications.Count() > 0)
+
+    @if (list.NominationApplications.Count() > 0)
     {
     <table class="nominated-application-table">
         <thead>
@@ -256,9 +184,6 @@ else
                 </th>
                 <th>
                     Student Name
-                </th>
-                <th>
-                    Academic Organization
                 </th>
                 <th>
                     Academic Plan
@@ -278,7 +203,7 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach (var nominated in level.NominationApplications)
+            @foreach (var nominated in list.NominationApplications)
             {
             <tr>
                 <td>
@@ -288,17 +213,14 @@ else
                     <strong>@Html.DisplayFor(modelItem => nominated.Application.StudentProfile.name) @Html.ActionLink(nominated.Application.StudentProfile.id.ToString(), "Details", "StudentProfile", new { id = nominated.Application.StudentProfile.id }, new { @class = "nominated-student-link" })</strong>
                 </td>
                 <td>
-                    @nominated.Application.StudentProfile.academic_organization
-                </td>
-                <td>
                     @nominated.Application.StudentProfile.academic_plan_description
                 </td>
                 <td>
                     @nominated.Application.StudentProfile.academic_level
                 </td>
-                <td>
-                    @String.Format("{0:yyyy-MM-dd HH:mm}", nominated.nominated_date)
-                    [@nominated.Nominator.nominator_username]
+                <td style="white-space:nowrap">
+                    @Html.DisplayFor(modelItem => nominated.nominated)
+                    @String.Format("{0:yyyy-MM-dd HH:mm}", nominated.nominate_date)
                 </td>
                 <td>
                     <pre>
@@ -315,12 +237,22 @@ else
     }
     else
     {
-        <text>None</text>
+        <text>No shortlisted application.</text>
     }
+
+<div class="field-wrapper">
+    <div class="display-label">
+            Direct Link for Nominator
     </div>
+    <div class="display-field">
+        @Html.ActionLink("https://sdb.science.ust.hk/mySCI/Nomination/ApplicationList/" + list.id.ToString(), "ApplicationList", "Nomination", new { id = list.id }, new { target = "_blank" })
+    </div>
+</div>
+</fieldset>
 }
 
-<p>@Html.ActionLink("Add Nomintation Level", "AddLevel", new { id = Model.id })</p>
+
+<p>@Html.ActionLink("Add Nomintation List", "CreateList", new { nomination_id = Model.id })</p>
 
 <p>
     @Html.ActionLink("Back to List", "Index")
@@ -331,7 +263,7 @@ else
         $(function () {
             $(".nominated-application-table").dataTable({
                 "sScrollX": "100%",
-                "aaSorting": [[0, "asc"]],
+                "aaSorting": [[5, "desc"]],
                 "bPaginate": false,
                 "bInfo": false,
                 "bFilter": true,
@@ -358,14 +290,21 @@ else
             });
 
             $("#nomination-cancel-link").click(function (e) {
-                var r = confirm("Are you sure to cancel the whole nomination process? \n\n***Related nomination levels, shortlisted applications and nominated applications will also be cancelled.");
+                var r = confirm("Are you sure to cancel the whole nomination process? \n\n***Related nomination shortlists and nominated applications will also be cancelled.");
                 if (!r) {
                     e.preventDefault();
                 }
             });
 
-            $(".level-cancel-link").click(function (e) {
-                var r = confirm("Are you sure to cancel this nomination level? \n\n***Related nominated applications and upper-level nominations will also be cancelled.");
+            $(".list-notify-link").click(function (e) {
+                var r = confirm("Are you sure to send notification to the nominator of this nomination shortlist?");
+                if (!r) {
+                    e.preventDefault();
+                }
+            });
+
+            $(".list-cancel-link").click(function (e) {
+                var r = confirm("Are you sure to cancel this nomination shortlist? \n\n***Related nominated applications will also be cancelled.");
                 if (!r) {
                     e.preventDefault();
                 }

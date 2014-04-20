@@ -18,20 +18,25 @@ namespace SchoolOfScience.Models
 
         [Required(ErrorMessage = "*Required Field.")]
         [Display(Name = "Template Name")]
+        [StringLength(200, ErrorMessage = "*Maximum length exceeded.")]
         public string name { get; set; }
 
         [Required(ErrorMessage = "*Required Field.")]
         [Display(Name = "Sender")]
+        [StringLength(100, ErrorMessage = "*Maximum length exceeded.")]
         public string sender { get; set; }
 
         [Display(Name = "CC")]
+        [StringLength(4000, ErrorMessage = "*Maximum length exceeded.")]
         public string cc { get; set; }
 
         [Display(Name = "BCC(TO for MassMail)")]
+        [StringLength(4000, ErrorMessage = "*Maximum length exceeded.")]
         public string bcc { get; set; }
 
         [Required(ErrorMessage = "*Required Field.")]
         [Display(Name = "Subject")]
+        [StringLength(100, ErrorMessage = "*Maximum length exceeded.")]
         public string subject { get; set; }
 
         [Required(ErrorMessage = "*Required Field.")]

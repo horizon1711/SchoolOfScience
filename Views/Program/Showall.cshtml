@@ -150,13 +150,19 @@
                     else
                     {
                         <div class="action-wrapper">
-                            <label>Apply Now</label>
                             @if (item.program.apply_action == "default")
                             {
+                            <label>Apply Now</label>
                                 <text><a href="@Url.Action("Create", "Application", new { id = item.program.id })" class = "action-link" title="Apply Now"><img src="@Url.Content("~/Images/Action/apply.gif")" /></a></text>
+                            }
+                            else if (item.program.apply_action == "noaction")
+                            {
+                            <label>View Details</label>
+                                <text><a href="@Url.Action("Details", "Program", new { id = item.program.id })" class = "action-link" title="No application is required"><img src="@Url.Content("~/Images/Action/apply.gif")" /></a></text>
                             }
                             else
                             {
+                            <label>Apply Now</label>
                                 <text><a href="@Url.Action("Details", "Program", new { id = item.program.id })" class = "action-link" title="Apply Now"><img src="@Url.Content("~/Images/Action/apply.gif")" /></a></text>
                             } 
                         </div>
@@ -187,7 +193,7 @@
             }
             else
             {
-                <div class="action-wrapper"><label>Not Eligible</label></div>
+                <div class="action-wrapper"><label>Not Eligible/Applicable</label></div>
             }
             </td>
         </tr>

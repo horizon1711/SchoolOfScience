@@ -18,10 +18,12 @@ namespace SchoolOfScience.Models
 
         [Required(ErrorMessage = "*Required Field.")]
         [Display(Name = "Sender")]
+        [StringLength(200, ErrorMessage = "*Maximum length exceeded.")]
         public string sender { get; set; }
 
         [Required(ErrorMessage = "*Required Field.")]
         [Display(Name = "Subject")]
+        [StringLength(100, ErrorMessage = "*Maximum length exceeded.")]
         public string subject { get; set; }
 
         [Required(ErrorMessage = "*Required Field.")]

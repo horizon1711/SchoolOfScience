@@ -1,12 +1,13 @@
 ﻿@model SchoolOfScience.Models.ViewModels.InterviewViewModel
 
 @{
-    ViewBag.Title = "Edit";
+    Layout = null;
 }
 
 <h2>Edit Interview Timeslot</h2>
 
-@using (Html.BeginForm()) {
+@using (Html.BeginForm("Edit", "Interview", FormMethod.Post, new { id = "form" }))
+{
     @Html.AntiForgeryToken()
     @Html.ValidationSummary(true)
 
@@ -85,7 +86,9 @@
             Assigned Applications
         </div>
         <div class="editor-field">
-            <div class="applications-wrapper">
+            @Html.ListBox("application_ids", ViewBag.applicationList as MultiSelectList, new { @class = "chosen" })
+
+@*            <div class="applications-wrapper">
                 <p>
                     <button type="button" class="add-btn">Add</button>
                     <button type="button" class="remove-btn">Remove</button>
@@ -98,22 +101,16 @@
                         @Html.ValidationMessageFor(model => model.applications[i].id)
                     </div>
                 }
-            </div>
+            </div>*@
         </div>
 
         <p>
-            <input type="submit" value="Save" />
+            <input type="submit" value="Save" id="save-btn" />
         </p>
     </fieldset>
 }
 
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>
-
-
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
+@Scripts.Render("~/bundles/jqueryval")
 
 <script>
     $(function () {
@@ -134,8 +131,58 @@
 
         $("#interview_end_time").rules('add', { greaterThan: "#interview_start_time" });
 
+        $(".chosen").chosen({
+            max_selected_options: '@Model.interview.no_of_interviewee'
+        });
 
-        var i = $(".application-wrapper").length;
+        $(".chosen").on("chosen:maxselected", function () {
+            alert("Maximum interviewee exceeded.");
+        });
+
+        
+        $("#save-btn").click(function (e) {
+            e.preventDefault();
+            if ($("#form").valid()) {
+                $.ajax({
+                    cache: false,
+                    url: $("#form").prop("action"),
+                    type: "POST",
+                    data: $("#form").serializeArray(),
+                    error: function (jqXHR, status, error) {
+                        $("#interview-manage-dialog").dialog("close");
+                        $("#error-dialog").dialog({
+                            width: 350,
+                            height: 100,
+                            overflow: "auto",
+                            modal: true,
+                            resizable: false,
+                            draggable: false,
+                            open: function () {
+                                $(this).scrollTop(0);
+                                $('.ui-widget-overlay').hide().fadeIn();
+                            },
+                            show: {
+                                effect: 'fade',
+                                duration: 200
+                            },
+                            hide: {
+                                effect: 'fade',
+                                duration: 100
+                            }
+                        }).html(error);
+                    },
+                    success: function (result) {
+                        $("#interview-manage-dialog").dialog("close");
+                        $("#filter-form").submit();
+                    }
+                })
+            } else {
+                $(".input-validation-error").first().focus();
+            }
+        });
+
+
+        @*        var i = $(".application-wrapper").length;
 
         $(".remove-btn").click( function () {
             $(".application-wrapper").last().remove();
@@ -182,8 +229,9 @@
             } else {
                 alert("Exceeded maximum number of interviewees");
             }
-        });
+        });*@
+
+
     });
 </script>
 
-}

@@ -1,0 +1,386 @@
+﻿@model SchoolOfScience.Models.NominationLevel
+
+@{
+}
+
+
+@if (DateTime.Now > Model.start_date && DateTime.Now < Model.end_date.AddDays(1) && Model.Nomination.NominationStatus.nominated)
+{
+    <h2>Nomination - Applications</h2>
+}
+else
+{
+    <h2>Nomination - Applications (View Only)</h2>
+}
+
+<div class="field-wrapper">
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.Nomination.Program)
+    </div>
+    <div class="display-field">
+        @Html.ActionLink(Model.Nomination.Program.name, "Details", "Program", new { id = Model.Nomination.Program.id }, new { @class = "program-details-link" })
+        <div class="program-note">
+            <div>
+            @if (!String.IsNullOrEmpty(Model.Nomination.Program.job_position))
+            {
+                @(Model.Nomination.Program.job_position)
+            }
+            </div>
+            <div>
+            @if (!String.IsNullOrEmpty(Model.Nomination.Program.host_name))
+            {
+                if (!String.IsNullOrEmpty(Model.Nomination.Program.website))
+                {
+                    <a href="@(Model.Nomination.Program.website)" target="_blank" title="@(Model.Nomination.Program.website)">@(Model.Nomination.Program.host_name)</a>
+                }
+                else
+                {
+                    @(Model.Nomination.Program.host_name)
+                }
+            }
+            </div>
+        </div>
+    </div>
+</div>
+<div class="field-wrapper">
+    <div class="display-label">
+        Start Date
+    </div>
+    <div class="display-field">
+        @String.Format("{0:yyyy-MM-dd (ddd)}", Model.start_date)
+    </div>
+</div>
+<div class="field-wrapper">
+    <div class="display-label">
+        End Date
+    </div>
+    <div class="display-field">
+        @String.Format("{0:yyyy-MM-dd (ddd)}", Model.end_date)
+    </div>
+</div>
+<div class="field-wrapper">
+    <div class="display-label">
+        Quota
+    </div>
+    <div class="display-field">
+        @if (Model.quota == 0)
+        {
+            <text> - </text>
+        }
+        else
+        {
+            @Model.quota
+        }
+    </div>
+</div>
+<div class="field-wrapper clear-left">
+    <div class="display-label">
+        Remarks
+    </div>
+    <div class="display-field">
+        <pre>
+            @Model.remarks
+        </pre>
+    </div>
+</div>
+        
+<div class="display-label clear-left">
+    Nominated Applications:
+</div>
+    
+<div class="display-field">
+@if (Model.NominationApplications.Count() > 0)
+{
+    <table class="nominated-application-table">
+        <thead>
+            <tr>
+                <th>
+                    ID
+                </th>
+                <th>
+                    Student Name
+                </th>
+                <th>
+                    Academic Organization
+                </th>
+                <th>
+                    Academic Plan
+                </th>
+                <th>
+                    Academic Level
+                </th>
+                <th>
+                    Remarks
+                </th>
+                <th>
+                        
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var nominated in Model.NominationApplications)
+            {
+            <tr>
+                <td>
+                    @nominated.Application.id
+                </td>
+                <td>
+                    <strong>@Html.DisplayFor(modelItem => nominated.Application.StudentProfile.name) @Html.ActionLink(nominated.Application.StudentProfile.id.ToString(), "Details", "StudentProfile", new { id = nominated.Application.StudentProfile.id }, new { @class = "nominated-student-link" })</strong>
+                </td>
+                <td>
+                    @nominated.Application.StudentProfile.academic_organization
+                </td>
+                <td>
+                    @nominated.Application.StudentProfile.academic_plan_description
+                </td>
+                <td>
+                    @nominated.Application.StudentProfile.academic_level
+                </td>
+                <td>
+                    <pre>
+                        @nominated.remarks
+                    </pre>
+                </td>
+                <td>
+                    <a href="@Url.Action("Details", "Application", new { id = nominated.Application.id })" class = "nominated-action-link action-link" title = "View Application"><img src="@Url.Content("~/Images/Action/view.gif")" /></a>
+                    @if (Model.NominationApplications.Any(a => a.Application.id == nominated.Application.id) && DateTime.Now > Model.start_date && DateTime.Now < Model.end_date.AddDays(1) && Model.Nomination.NominationStatus.nominated)
+                    {
+                        <a href="@Url.Action("CancelNominateApplication", "Nomination", new { id = nominated.id, fulldetails = true })" class = "nominated-cancel-link action-link" title = "Cancel Nomination"><img src="@Url.Content("~/Images/Action/delete.gif")" /></a>
+                    }
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <text>None</text>
+}
+</div>
+        
+<div class="display-label clear-left">
+    Shortlisted Applications:
+</div>
+    
+<div class="display-field">
+@if (Model.Nomination.NominationLevels.FirstOrDefault(l => l.nomination_level == Model.nomination_level - 1) != null
+    && Model.Nomination.NominationLevels.FirstOrDefault(l => l.nomination_level == Model.nomination_level - 1).NominationApplications.Count() > 0)
+{
+    foreach (var nominated in Model.Nomination.NominationLevels.FirstOrDefault(l => l.nomination_level == Model.nomination_level - 1).NominationApplications)
+    {
+    <fieldset>
+        <legend>Application - @nominated.Application.StudentProfile.name (ID: @Html.ActionLink(nominated.Application.StudentProfile.id, "Details", "StudentProfile", new { id = nominated.Application.StudentProfile.id }, new { @class = "nominated-student-link" })) - @nominated.Application.StudentProfile.academic_plan_description</legend>
+        
+@if (nominated.Application.ApplicationOptionValues.Count() == 0 && nominated.Application.ApplicationAttachments.Count() == 0 && !nominated.Application.Program.require_exchange_option && !nominated.Application.Program.require_appointment && !nominated.Application.Program.require_interview)
+{
+    <p>No additional information for this application.</p>
+}
+else
+{      
+            <div class="field-wrapper">
+        @foreach (var option in nominated.Application.ApplicationOptionValues)
+        {
+                <div class="display-label">
+                    @Html.DisplayFor(model => option.ProgramOptionValue.name)
+                </div>
+                <div class="editor-field">
+                    <pre>
+                    @Html.DisplayFor(model => option.value)
+                    </pre>
+                </div>
+        }
+            </div>
+        
+        <div class="clear-fix"></div>
+        if (nominated.Application.ApplicationAttachments.Count() > 0)
+        {
+        <hr />
+        }
+        
+            <div class="field-wrapper">
+        @foreach (var attachment in nominated.Application.ApplicationAttachments)
+        {
+                <div class="display-label">
+                    @Html.DisplayFor(model => attachment.ProgramApplicationAttachment.name)
+                    @if (attachment.ProgramApplicationAttachment.required)
+                    {
+                        <span class="required-text">(required)</span>
+                    }
+                    <label>
+                        <a href="@Url.Action("Download", "FileHandler", new { filename = attachment.filename, folder = attachment.filepath })" target="_blank">@Html.DisplayFor(model => attachment.filename)</a>
+                    </label>
+                </div>
+        }
+            </div>
+        
+        <div class="clear-fix"></div>
+        
+        if (nominated.Application.ApplicationExchangeOptions.Count() > 0)
+        {
+        <hr />
+        }
+        
+        <div class="field-wrapper" style="width: 50%">
+        @foreach (var exchange_option in nominated.Application.ApplicationExchangeOptions.Select((x, i) => new { data = x, index = i }))
+        {
+                <div class="display-label">
+                    @{
+            switch (exchange_option.index + 1)
+            {
+                case 1:
+                                <text>@(exchange_option.index + 1)st Choice</text>
+                    break;
+                case 2:
+                                <text>@(exchange_option.index + 1)nd Choice</text>
+                    break;
+                case 3:
+                                <text>@(exchange_option.index + 1)rd Choice</text>
+                    break;
+                default:
+                                <text>@(exchange_option.index + 1)th Choice</text>
+                    break;
+            }
+                    }
+                </div>
+                <div class="editor-field">
+                    @Html.DisplayFor(model => exchange_option.data.ExchangeOption.name)
+                </div>
+        }
+        </div>
+
+        <div class="clear-fix"></div>
+        
+        if (nominated.Application.Program.require_appointment)
+        {
+        <hr />
+        }
+        
+        <div class="field-wrapper">
+        @if (nominated.Application.Program.require_appointment)
+        {
+            <div class="display-label">
+                Consultation Session Reserved
+            </div>
+            <div class="editor-field">
+                @{var appointments = nominated.Application.StudentProfile.Appointments.Where(o => o.AppointmentConcerns.Any(c => c.program_id == nominated.Application.Program.id));}
+                @if (appointments != null && appointments.Count() > 0)
+                {
+                    foreach (var appointment in appointments)
+                    {
+                        <div>Date: @String.Format("{0:yyyy-MM-dd (ddd)}", appointment.start_time)</div>
+                        <div>Time: @String.Format("{0:HH:mm}", appointment.start_time) - @String.Format("{0:HH:mm}", appointment.end_time)</div>
+                        <div>Venue: @appointment.venue</div>
+                    }
+                }
+                else
+                {
+                    <text>None</text>
+                }
+            </div>
+        }
+        </div>
+        
+        <div class="field-wrapper">
+        @if (nominated.Application.Program.require_interview)
+        {
+            <div class="display-label">
+                Interview Session Assigned
+            </div>
+            <div class="editor-field">
+                @if (nominated.Application.Interviews != null && nominated.Application.Interviews.Where(i => i.InterviewStatus.display_to_student).Count() > 0)
+                {
+                    foreach (var interview in nominated.Application.Interviews.Where(i => i.InterviewStatus.display_to_student))
+                    {
+                        <div>Date: @String.Format("{0:yyyy-MM-dd (ddd)}", interview.start_time)</div>
+                        <div>Time: @String.Format("{0:HH:mm}", interview.start_time) - @String.Format("{0:HH:mm}", interview.end_time)</div>
+                        <div>Venue: @interview.InterviewVenue.name</div>
+                    }
+                }
+                else
+                {
+                    <text>None</text>
+                }
+            </div>
+        }
+        </div>
+        
+        <div class="clear-fix"></div>
+    
+        <div class="float-right">
+        @if (Model.NominationApplications.Any(a => a.Application.id == nominated.Application.id))
+        {
+            <text>Nominated</text>
+        }
+        else
+        {
+            if (DateTime.Now > Model.start_date && DateTime.Now < Model.end_date.AddDays(1) && Model.Nomination.NominationStatus.nominated)
+            {
+                <a href="@Url.Action("Details", "Application", new { id = nominated.Application.id, levelid = Model.id, fulldetails = true })" class = "nominated-action-link action-link" title = "View/Nominate Application"><img src="@Url.Content("~/Images/Action/view.gif")" /></a>
+            }
+            else
+            {
+                <a href="@Url.Action("Details", "Application", new { id = nominated.Application.id })" class = "nominated-action-link action-link" title = "View Application"><img src="@Url.Content("~/Images/Action/view.gif")" /></a>
+            }
+        }
+        </div>
+}
+    </fieldset>
+    }
+}
+else
+{
+    <text>None</text>
+}
+</div>
+    
+<div class="clear-fix"></div>
+
+<p>
+    @Html.ActionLink("View in Table", "ApplicationList", new { id = Model.id })
+</p>
+
+<div>
+    @Html.ActionLink("Back to List", "MyNomination")
+</div>
+
+@section Scripts {
+    <script>
+        $(function () {
+            $(".nominated-application-table").dataTable({
+                "sScrollX": "100%",
+                "aaSorting": [[0, "asc"]],
+                "bPaginate": false,
+                "bInfo": false,
+                "bFilter": true,
+                "oLanguage": {
+                    "sSearch": "",
+                    "sInfo": "_TOTAL_ entries",
+                    "sEmptyTable": "No matching record found"
+                }
+            });
+
+            $(".program-details-link").click(function (e) {
+                e.preventDefault();
+                showDialog($(this).prop("href"), "#error-dialog", "#program-details-dialog");
+            });
+
+            $(".nominated-student-link").click(function (e) {
+                e.preventDefault();
+                showDialog($(this).prop("href"), "#error-dialog", "#student-profile-dialog");
+            });
+
+            $(".nominated-action-link").click(function (e) {
+                e.preventDefault();
+                showDialog($(this).prop("href"), "#error-dialog", "#application-dialog");
+            });
+
+            $(".nominated-cancel-link").click(function (e) {
+                var r = confirm("Are you sure to cancel this nomination? \n\n***Related nomination comment will be removed.");
+                if (!r) {
+                    e.preventDefault();
+                }
+            });
+        });
+    </script>
+}

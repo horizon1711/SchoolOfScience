@@ -13,6 +13,6 @@ namespace SchoolOfScience.Models.ViewModels
         }
 
         public Interview interview { get; set; }
-        public IList<Application> applications { get; set; }
+        public int[] application_ids { get; set; }
     }
 }

@@ -131,17 +131,19 @@
                     else
                     {
                         <div class="details-action-wrapper display-field">
-                            <label>Apply Now</label>
                             @if (Model.program.apply_action == "default")
                             {
+                            <label>Apply Now</label>
                                 <text><a href="@Url.Action("Create", "Application", new { id = Model.program.id })" class = "action-link"><img src="@Url.Content("~/Images/Action/apply.gif")" /></a></text>
                             }
                             @if (Model.program.apply_action == "link")
                             {
+                            <label>Apply via External Link</label>
                                 <text><a href="@Model.program.apply_link" target="_blank" title="You will be redirected to an external link."><img src="@Url.Content("~/Images/Action/apply.gif")" /></a></text>
                             }
                             @if (Model.program.apply_action == "email")
                             {
+                            <label>Apply via Email</label>
                                 <text><a href="mailto:@(Model.program.apply_link)" target="_blank" title="Click to open your default email client."><img src="@Url.Content("~/Images/Action/apply.gif")" /></a></text>
                             }   
                             @if (Model.program.apply_action == "noaction")
@@ -176,7 +178,7 @@
             }
             else
             {
-                <div class="display-field"><label>Not Eligible</label></div>
+                <div class="display-field"><label>Not Eligible/Applicable</label></div>
             }
     </div>
 <div class="program-details-footer">

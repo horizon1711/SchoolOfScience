@@ -12,9 +12,6 @@ namespace SchoolOfScience.Models
     public class TimeslotConfigHelper
     {
 
-        [Display(Name = "Timeslot Name")]
-        public string name { get; set; }
-
         [Required(ErrorMessage = "*Required Field.")]
         [Display(Name = "Start Date")]
         [DataType(DataType.Date)]

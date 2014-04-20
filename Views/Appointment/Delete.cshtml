@@ -1,7 +1,7 @@
 ﻿@model SchoolOfScience.Models.Appointment
 
 @{
-    ViewBag.Title = "Delete";
+    Layout = null;
 }
 
 <h2>Delete</h2>
@@ -52,10 +52,55 @@
         @Html.DisplayFor(model => model.remarks)
     </div>
 </fieldset>
-@using (Html.BeginForm()) {
+@using (Html.BeginForm("Delete", "Appointment", FormMethod.Post, new { id = "form" }))
+{
     @Html.AntiForgeryToken()
     <p>
-        <input type="submit" value="Delete" /> |
-        @Html.ActionLink("Back to List", "Index")
+        <input type="submit" id="delete-btn" value="Delete" />
     </p>
 }
+
+@Scripts.Render("~/bundles/jqueryval")
+
+<script>
+    $("#delete-btn").click(function (e) {
+        e.preventDefault();
+        if ($("#form").valid()) {
+            $.ajax({
+                cache: false,
+                url: $("#form").prop("action"),
+                type: "POST",
+                data: $("#form").serializeArray(),
+                error: function (jqXHR, status, error) {
+                    $("#appointment-manage-dialog").dialog("close");
+                    $("#error-dialog").dialog({
+                        width: 350,
+                        height: 100,
+                        overflow: "auto",
+                        modal: true,
+                        resizable: false,
+                        draggable: false,
+                        open: function () {
+                            $(this).scrollTop(0);
+                            $('.ui-widget-overlay').hide().fadeIn();
+                        },
+                        show: {
+                            effect: 'fade',
+                            duration: 200
+                        },
+                        hide: {
+                            effect: 'fade',
+                            duration: 100
+                        }
+                    }).html(error);
+                },
+                success: function (result) {
+                    $("#appointment-manage-dialog").dialog("close");
+                    $("#filter-form").submit();
+                }
+            })
+        } else {
+            $(".input-validation-error").first().focus();
+        }
+    });
+</script>

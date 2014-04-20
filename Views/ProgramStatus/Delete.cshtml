@@ -16,6 +16,35 @@
     <div class="display-field">
         @Html.DisplayFor(model => model.name)
     </div>
+    
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.draft)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.draft)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.shown_to_student)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.shown_to_student)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.open_for_application)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.open_for_application)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.default_status)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.default_status)
+    </div>
+
 </fieldset>
 @using (Html.BeginForm()) {
     @Html.AntiForgeryToken()

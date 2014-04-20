@@ -21,6 +21,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.nominated)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.default_status)
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -37,6 +40,9 @@
                 @Html.DisplayFor(modelItem => item.nominated)
             </td>
             <td>
+                @Html.DisplayFor(modelItem => item.default_status)
+            </td>
+            <td>
                 @Html.ActionLink("Edit", "Edit", new { id=item.id }) |
                 @Html.ActionLink("Details", "Details", new { id=item.id }) |
                 @Html.ActionLink("Delete", "Delete", new { id=item.id })
@@ -51,7 +57,6 @@
     <script>
         $(function () {
             $(".data-table").dataTable({
-                "aaSorting": [[6, "desc"]]
             });
         });
     </script>

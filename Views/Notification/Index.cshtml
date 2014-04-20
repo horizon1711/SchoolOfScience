@@ -104,7 +104,7 @@
                     <li>
                         @Html.ActionLink("Delete", "Delete", new { id=item.id }) 
                     </li>
-                    @if (item.NotificationStatus.name == "Pending") {
+                    @if (!item.NotificationStatus.sent) {
                     <li>
                         @Html.ActionLink("Send", "Send", new { id = item.id })
                     </li>

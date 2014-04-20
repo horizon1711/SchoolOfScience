@@ -18,10 +18,24 @@
     </div>
 
     <div class="display-label">
-         @Html.DisplayNameFor(model => model.locked)
+         @Html.DisplayNameFor(model => model.sent)
     </div>
     <div class="display-field">
-        @Html.DisplayFor(model => model.locked)
+        @Html.DisplayFor(model => model.sent)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.error)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.error)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.default_status)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.default_status)
     </div>
 </fieldset>
 @using (Html.BeginForm()) {

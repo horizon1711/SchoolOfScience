@@ -22,21 +22,22 @@ namespace SchoolOfScience.Controllers
         //
         // GET: /Program/
 
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP,CommTutor")]
         public ActionResult Index()
         {
 
             var programs = db.Programs.Include(p => p.ProgramStatus).Include(p => p.ProgramType);
-            try
+            if (User.IsInRole("EDP"))
             {
-                ProgramStatus draft = db.ProgramStatus.Where(m => m.name == "Drafted").FirstOrDefault();
-                ViewBag.draftStatusId = draft.id;
+                var edpusers = db.SystemUsers.Where(u => u.UserRoles.Any(r => r.RoleName == "EDP")).Select(u => u.UserName).ToArray();
+                programs = programs.Where(p => edpusers.Contains(p.created_by));
             }
-            catch (Exception e)
+            if (User.IsInRole("CommTutor"))
             {
-                Session["FlashMessage"] = "Drafted Status not found." + e.Message;
+                var commtutorusers = db.SystemUsers.Where(u => u.UserRoles.Any(r => r.RoleName == "CommTutor")).Select(u => u.UserName).ToArray();
+                programs = programs.Where(p => commtutorusers.Contains(p.created_by));
             }
-            ViewBag.programList = new SelectList(db.Programs.OrderBy(p => p.name), "id", "name");
+            ViewBag.programList = new SelectList(programs.OrderBy(p => p.name), "id", "name");
             ViewBag.programTypeList = new SelectList(db.ProgramTypes, "id", "name");
             ViewBag.programStatusList = new SelectList(db.ProgramStatus, "id", "name");
             return View(programs.ToList());
@@ -45,20 +46,21 @@ namespace SchoolOfScience.Controllers
         //
         // POST: /Program/
         [HttpPost]
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP,CommTutor")]
         public ActionResult Index(FormCollection Form, bool interview, bool appointment, bool exchange, bool nomination)
         {
             var programs = db.Programs.Include(p => p.ProgramStatus).Include(p => p.ProgramType);
-            try
+            if (User.IsInRole("EDP"))
             {
-                ProgramStatus draft = db.ProgramStatus.Where(m => m.name == "Drafted").FirstOrDefault();
-                ViewBag.draftStatusId = draft.id;
+                var edpusers = db.SystemUsers.Where(u => u.UserRoles.Any(r => r.RoleName == "EDP")).Select(u => u.UserName).ToArray();
+                programs = programs.Where(p => edpusers.Contains(p.created_by));
             }
-            catch (Exception e)
+            if (User.IsInRole("CommTutor"))
             {
-                Session["FlashMessage"] = "Drafted Status not found." + e.Message;
+                var commtutorusers = db.SystemUsers.Where(u => u.UserRoles.Any(r => r.RoleName == "CommTutor")).Select(u => u.UserName).ToArray();
+                programs = programs.Where(p => commtutorusers.Contains(p.created_by));
             }
-            ViewBag.programList = new SelectList(db.Programs.OrderBy(p => p.name), "id", "name", Form["program"]);
+            ViewBag.programList = new SelectList(programs.OrderBy(p => p.name), "id", "name", Form["program"]);
             ViewBag.programTypeList = new SelectList(db.ProgramTypes, "id", "name", Form["program_type"]);
             ViewBag.programStatusList = new SelectList(db.ProgramStatus, "id", "name", Form["program_status"]);
             return View(programs.ToList().Where(p => (true)
@@ -74,12 +76,12 @@ namespace SchoolOfScience.Controllers
 
         //
         // GET: /Program/Showcase/
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP,StudentUGRD,StudentRPGTPG,StudentNUGD")]
+        [Authorize]
         public ActionResult Showcase(int id = 0)
         {
             StudentProfile student = db.StudentProfiles.Find(User.Identity.Name);
             //get program list with status open and not expired. program application start time not reach also shown
-            var programs = db.Programs.Where(p => (p.ProgramStatus.name == "Opened") && (DateTime.Now < p.application_end_time));
+            var programs = db.Programs.Where(p => (p.ProgramStatus.open_for_application) && (DateTime.Now < p.application_end_time) && p.ProgramStatus.shown_to_student);
             List<Program> programList = new List<Program>();
             foreach (var program in programs)
             {
@@ -110,7 +112,7 @@ namespace SchoolOfScience.Controllers
         //
         // GET: /Program/ViewList/5
 
-        [Authorize(Roles = "FacultyAdvisor,Nominator")]
+        [Authorize]
         public ActionResult ViewList(int id = 0)
         {
             ViewBag.typeid = id;
@@ -127,7 +129,7 @@ namespace SchoolOfScience.Controllers
         // POST: /Program/ViewList/5
 
         [HttpPost]
-        [Authorize(Roles = "FacultyAdvisor,Nominator")]
+        [Authorize]
         public ActionResult ViewList(FormCollection Form, int id = 0)
         {
             ViewBag.typeid = id;
@@ -192,14 +194,14 @@ namespace SchoolOfScience.Controllers
                         //check existing application id
                         programaction.application = student.Applications.Where(a => a.program_id == program.id).SingleOrDefault();
                         //check application status
-                        programaction.saved = programaction.application.ApplicationStatus.name == "Saved";
+                        programaction.saved = programaction.application.ApplicationStatus.editable;
                     }
                     else
                     {
                         programaction.saved = false;
                     }
                     //check program status
-                    programaction.open = program.ProgramStatus.name == "Opened";
+                    programaction.open = program.ProgramStatus.open_for_application;
                     programactions.Add(programaction);
                 }
                 return View(programactions.ToList().Where(p => p.eligible && p.inperiod && p.open));
@@ -254,14 +256,14 @@ namespace SchoolOfScience.Controllers
                         //check existing application id
                         programaction.application = student.Applications.Where(a => a.program_id == program.id).SingleOrDefault();
                         //check application status
-                        programaction.saved = programaction.application.ApplicationStatus.name == "Saved";
+                        programaction.saved = programaction.application.ApplicationStatus.editable;
                     }
                     else
                     {
                         programaction.saved = false;
                     }
                     //check program status
-                    programaction.open = program.ProgramStatus.name == "Opened";
+                    programaction.open = program.ProgramStatus.open_for_application;
                     programactions.Add(programaction);
                 }
                 var selectedtype = Form["program_type"]!=null?Form["program_type"].Split(','):null;
@@ -276,8 +278,8 @@ namespace SchoolOfScience.Controllers
                     && ((!eligible && !saved && !submitted)
                     ||
                         (eligible && p.eligible && p.inperiod && p.open)
-                        || (saved && (p.application != null && p.application.ApplicationStatus.name == "Saved"))
-                        || (submitted && (p.application != null && p.application.ApplicationStatus.name != "Saved"))
+                        || (saved && (p.application != null && p.application.ApplicationStatus.editable))
+                        || (submitted && (p.application != null && p.application.ApplicationStatus.submitted))
                     )
                     ));
             }
@@ -291,7 +293,7 @@ namespace SchoolOfScience.Controllers
         //
         // GET: /Program/Details/5
         [Ajax(true)]
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment,FacultyAdvisor,EDP,Nominator,StudentUGRD,StudentRPGTPG,StudentNUGD")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,FacultyAdvisor,EDP,Nominator,ProgramAdmin,ProgramViewer,StudentUGRD,StudentRPGTPG,StudentNUGD")]
         public ActionResult Details(int id = 0)
         {
             //get program
@@ -322,14 +324,14 @@ namespace SchoolOfScience.Controllers
                     //check existing application id
                     programaction.application = student.Applications.Where(a => a.program_id == program.id).SingleOrDefault();
                     //check application status
-                    programaction.saved = programaction.application.ApplicationStatus.name == "Saved";
+                    programaction.saved = programaction.application.ApplicationStatus.editable;
                 }
                 else
                 {
                     programaction.saved = false;
                 }
                 //check program status
-                programaction.open = program.ProgramStatus.name == "Opened";
+                programaction.open = program.ProgramStatus.open_for_application;
 
                 //add view counter
                 try
@@ -349,7 +351,7 @@ namespace SchoolOfScience.Controllers
                 programaction.beforestart = (DateTime.Now < program.application_start_time);
                 programaction.existed = false;
                 programaction.saved = false;
-                programaction.open = program.ProgramStatus.name == "Opened";
+                programaction.open = program.ProgramStatus.open_for_application;
 
             }
             return PartialView(programaction);
@@ -357,7 +359,7 @@ namespace SchoolOfScience.Controllers
 
         //
         // GET: /Program/Create
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP,CommTutor")]
         public ActionResult Create()
         {
             ProgramViewModel ViewModel = new ProgramViewModel();
@@ -370,16 +372,15 @@ namespace SchoolOfScience.Controllers
             program.eligible_academic_organization = "CHEM,LIFS,MATH,PHYS,SSCI";
             program.eligible_program_status = "AC,LA";
             GetEligibleLists(program);
-            int draftedStatusId = 0;
-            try
+
+            var status = db.ProgramStatus.SingleOrDefault(s => s.default_status);
+            if (status == null)
             {
-                draftedStatusId = db.ProgramStatus.Where(m => m.name == "Drafted").FirstOrDefault().id;
+                Session["FlashMessage"] = "Default program status has zero or more than one records. Please go to Configuration->Program->Edit Status to edit.";
+                return RedirectToAction("Index");
             }
-            catch (Exception e)
-            {
-                Session["FlashMessage"] = "Drafted Status not found." + e.Message;
-            }
-            ViewBag.StatusList = new SelectList(db.ProgramStatus, "id", "name", draftedStatusId);
+
+            ViewBag.StatusList = new SelectList(db.ProgramStatus, "id", "name", status.id.ToString());
             ViewBag.TypeList = new SelectList(db.ProgramTypes, "id", "name");
             ViewBag.ActionList = GetActionList(program);
 
@@ -397,7 +398,7 @@ namespace SchoolOfScience.Controllers
         // POST: /Program/Create
 
         [HttpPost]
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP,CommTutor")]
         [ValidateAntiForgeryToken]
         [ValidateInput(false)]
         public ActionResult Create(ProgramViewModel ViewModel)
@@ -411,12 +412,22 @@ namespace SchoolOfScience.Controllers
             //check appointment required, session exist when published
             try
             {
-                ProgramStatus PublishedStatus = db.ProgramStatus.Where(m => m.name == "Opened").FirstOrDefault();
+                ProgramStatus PublishedStatus = db.ProgramStatus.FirstOrDefault(s => s.open_for_application);
+                if (PublishedStatus == null)
+                {
+                    Session["FlashMessage"] = "Open for application program status not found. Please go to Configuration->Program->Edit Status to edit.";
+                    return View(ViewModel);
+                }
                 if (program.status_id == PublishedStatus.id)
                 {
                     if (program.require_appointment)
                     {
-                        ProgramStatus DraftedStatus = db.ProgramStatus.Where(m => m.name == "Drafted").FirstOrDefault();
+                        ProgramStatus DraftedStatus = db.ProgramStatus.FirstOrDefault(s => s.draft);
+                        if (DraftedStatus == null)
+                        {
+                            Session["FlashMessage"] = "Draft program status not found. Please go to Configuration->Program->Edit Status to edit.";
+                            return View(ViewModel);
+                        }
                         program.status_id = DraftedStatus.id;
                         Session["FlashMessage"] = "Appointment timeslot(s) must be created before publishing. Program Status is saved as 'Drafted'.";
                     }
@@ -525,7 +536,7 @@ namespace SchoolOfScience.Controllers
         //
         // POST: /Program/Copy
 
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP,CommTutor")]
         public ActionResult Copy(int id = 0, string name = null)
         {
             Program program = db.Programs.Find(id);
@@ -535,8 +546,15 @@ namespace SchoolOfScience.Controllers
                 return RedirectToAction("Edit", new { id = program.id });
             }
             program.name = String.IsNullOrEmpty(name) ? program.name + " - Copy" : name;
-            ProgramStatus status_draft = db.ProgramStatus.Where(m => m.name == "Drafted").FirstOrDefault();
-            program.status_id = status_draft.id;
+            
+            var status = db.ProgramStatus.SingleOrDefault(s => s.default_status);
+            if (status == null)
+            {
+                Session["FlashMessage"] = "Default program status has zero or more than one records. Please go to Configuration->Program->Edit Status to edit.";
+                return RedirectToAction("Index");
+            }
+
+            program.status_id = status.id;
             program.created = DateTime.Now;
             program.modified = DateTime.Now;
             program.created_by = User.Identity.Name;
@@ -554,7 +572,7 @@ namespace SchoolOfScience.Controllers
             return RedirectToAction("Edit", new { id = program.id });
         }
 
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP,CommTutor")]
         public ActionResult Publish(int id = 0)
         {
             Program program = db.Programs.Find(id);
@@ -575,7 +593,12 @@ namespace SchoolOfScience.Controllers
 
             try
             {
-                ProgramStatus PublishedStatus = db.ProgramStatus.Where(m => m.name == "Opened").FirstOrDefault();
+                ProgramStatus PublishedStatus = db.ProgramStatus.FirstOrDefault(s => s.open_for_application);
+                if (PublishedStatus == null)
+                {
+                    Session["FlashMessage"] = "Open for application program status not found. Program not modified.";
+                    return RedirectToAction("Index");
+                }
                 program.status_id = PublishedStatus.id;
                 program.published = DateTime.Now;
                 program.published_by = User.Identity.Name;
@@ -597,7 +620,7 @@ namespace SchoolOfScience.Controllers
         //
         // GET: /Program/Edit/5
 
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP,CommTutor")]
         public ActionResult Edit(int id = 0)
         {
             ProgramViewModel ViewModel = new ProgramViewModel();
@@ -640,7 +663,7 @@ namespace SchoolOfScience.Controllers
         // POST: /Program/Edit/5
 
         [HttpPost]
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP,CommTutor")]
         [ValidateAntiForgeryToken]
         [ValidateInput(false)]
         public ActionResult Edit(ProgramViewModel ViewModel)
@@ -654,16 +677,27 @@ namespace SchoolOfScience.Controllers
             //check appointment required, session exist when published
             try
             {
-                ProgramStatus PublishedStatus = db.ProgramStatus.Where(m => m.name == "Opened").FirstOrDefault();
+                ProgramStatus PublishedStatus = db.ProgramStatus.FirstOrDefault(s => s.open_for_application);
+                if (PublishedStatus == null)
+                {
+                    Session["FlashMessage"] = "Open for application program status not found. Please go to Configuration->Program->Edit Status to edit.";
+                    return View(ViewModel);
+                }
                 if (program.status_id == PublishedStatus.id)
                 {
                     if (program.require_appointment)
                     {
                         if (!db.Appointments.Any(o => o.AppointmentConcerns.Any(c => c.program_id == program.id)))
                         {
-                            ProgramStatus DraftedStatus = db.ProgramStatus.Where(m => m.name == "Drafted").FirstOrDefault();
+                            var DraftedStatus = db.ProgramStatus.FirstOrDefault(s => s.draft);
+                            if (DraftedStatus == null)
+                            {
+                                Session["FlashMessage"] = "Draft program status not found. Please go to Configuration->Program->Edit Status to edit.";
+                                return View(ViewModel);
+                            }
+
                             program.status_id = DraftedStatus.id;
-                            Session["FlashMessage"] = "Appointment timeslot(s) must be created before publishing. Program Status is saved as 'Drafted'.";
+                            Session["FlashMessage"] = "Appointment timeslot(s) must be created before publishing. Program Status is not published.";
                         }
                     }
                     else
@@ -876,12 +910,12 @@ namespace SchoolOfScience.Controllers
         //
         // GET: /Program/BatchUpdate
 
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP,CommTutor")]
         public ActionResult BatchUpdate(string items)
         {
             var i = items.Split('_');
             var programs = db.Programs.Where(p => i.Contains(SqlFunctions.StringConvert((double)p.id).Trim()));
-            ViewBag.StatusList = new SelectList(db.ProgramStatus, "id", "name");
+            ViewBag.StatusList = new SelectList(db.ProgramStatus.Where(s => !s.open_for_application), "id", "name");
             ViewBag.items = items;
             return PartialView(programs.ToList());
         }
@@ -889,22 +923,21 @@ namespace SchoolOfScience.Controllers
         //
         // POST: /Program/BatchUpdate
         [HttpPost]
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP,CommTutor")]
         public ActionResult BatchUpdate(string items, int status_id)
         {
             var i = items.Split('_');
             var programs = db.Programs.Where(p => i.Contains(SqlFunctions.StringConvert((double)p.id).Trim()));
-            ViewBag.StatusList = new SelectList(db.ProgramStatus, "id", "name");
+            ViewBag.StatusList = new SelectList(db.ProgramStatus.Where(s => !s.open_for_application), "id", "name");
             ViewBag.items = items;
             foreach (var program in programs)
             {
-                program.status_id = status_id;
-                ProgramStatus status_publish = db.ProgramStatus.Where(m => m.name == "Opened").FirstOrDefault();
-                if (program.status_id == status_publish.id)
+                if (db.ProgramStatus.Any(s => s.id == status_id && s.open_for_application))
                 {
-                    program.published = DateTime.Now;
-                    program.published_by = User.Identity.Name;
+                    Session["FlashMessage"] = "Open for application program status is not allowed in batch update.";
+                    return RedirectToAction("Index");
                 }
+                program.status_id = status_id;
             }
             try
             {
@@ -922,42 +955,62 @@ namespace SchoolOfScience.Controllers
         //
         // GET: /Program/Delete/5
 
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP,CommTutor")]
         public ActionResult Delete(int id = 0)
         {
             Program program = db.Programs.Find(id);
             if (program == null)
             {
-                return HttpNotFound();
+                Session["FlashMessage"] = "Program not found.";
             }
-            return View(program);
+            var programname = program.name;
+            db.ProgramAttachments.Where(a => a.program_id == program.id).ToList().ForEach(x => db.ProgramAttachments.Remove(x));
+            db.ProgramOptionValues.Where(o => o.program_id == program.id).ToList().ForEach(x => db.ProgramOptionValues.Remove(x));
+            db.ProgramApplicationAttachments.Where(aa => aa.program_id == program.id).ToList().ForEach(x => db.ProgramApplicationAttachments.Remove(x));
+            db.Programs.Remove(program);
+
+            try
+            {
+                db.SaveChanges();
+                Session["FlashMessage"] = "Program [" + programname + "] deleted.";
+            }
+            catch (Exception e)
+            {
+                Session["FlashMessage"] = "Failed to delete program.<br/>" + e.Message;
+            }
+            return RedirectToAction("Index");
         }
 
         //
         // POST: /Program/Delete/5
 
-        [HttpPost, ActionName("Delete")]
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
-        {
-            Program program = db.Programs.Find(id);
-            //db.ProgramAttachments.Where(a => a.program_id == program.id).ToList().ForEach(x => db.ProgramAttachments.Remove(x));
-            //db.ProgramOptionValues.Where(o => o.program_id == program.id).ToList().ForEach(x => db.ProgramOptionValues.Remove(x));
-            //db.ProgramApplicationAttachments.Where(aa => aa.program_id == program.id).ToList().ForEach(x => db.ProgramApplicationAttachments.Remove(x));
-            //db.Programs.Remove(program);
-            int cancelledStatusId = db.ProgramStatus.FirstOrDefault(s => s.name == "Cancelled").id;
-            program.status_id = cancelledStatusId;
-            try
-            {
-                db.SaveChanges();
-            }
-            catch (Exception e)
-            {
-                Session["FlashMessage"] = "Failed to change program to delete status." + e.Message;
-            }
-            return RedirectToAction("Index");
-        }
+        //[HttpPost, ActionName("Delete")]
+        //[Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP,CommTutor")]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult DeleteConfirmed(int id)
+        //{
+        //    Program program = db.Programs.Find(id);
+        //    //db.ProgramAttachments.Where(a => a.program_id == program.id).ToList().ForEach(x => db.ProgramAttachments.Remove(x));
+        //    //db.ProgramOptionValues.Where(o => o.program_id == program.id).ToList().ForEach(x => db.ProgramOptionValues.Remove(x));
+        //    //db.ProgramApplicationAttachments.Where(aa => aa.program_id == program.id).ToList().ForEach(x => db.ProgramApplicationAttachments.Remove(x));
+        //    //db.Programs.Remove(program);
+        //    var status = db.ProgramStatus.FirstOrDefault(s => !s.open_for_application && !s.shown_to_student && !s.draft);
+        //    if (status == null)
+        //    {
+        //        Session["FlashMessage"] = "Cancelled program status is not found.";
+        //        return RedirectToAction("Index");
+        //    }
+        //    program.status_id = status.id;
+        //    try
+        //    {
+        //        db.SaveChanges();
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        Session["FlashMessage"] = "Failed to change program to delete status." + e.Message;
+        //    }
+        //    return RedirectToAction("Index");
+        //}
 
         public void GetEligibleLists(Program program)
         {
@@ -1199,7 +1252,7 @@ namespace SchoolOfScience.Controllers
                 Session["FlashMessage"] = "Program not found.";
                 return RedirectToAction("Index");
             }
-            foreach (var application in program.Applications.Where(a => a.ApplicationStatus.name == "Saved"))
+            foreach (var application in program.Applications.Where(a => a.ApplicationStatus.editable))
             {
                 SendNotification(CreateNotification("ApplicationSavedReminder", application));
             }

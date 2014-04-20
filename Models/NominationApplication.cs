@@ -15,14 +15,15 @@ namespace SchoolOfScience.Models
     public partial class NominationApplication
     {
         public int id { get; set; }
-        public int nomination_level_id { get; set; }
-        public int nominator_id { get; set; }
+        public int nomination_id { get; set; }
+        public int nomination_list_id { get; set; }
         public int application_id { get; set; }
-        public System.DateTime nominated_date { get; set; }
+        public bool nominated { get; set; }
+        public Nullable<System.DateTime> nominate_date { get; set; }
         public string remarks { get; set; }
     
         public virtual Application Application { get; set; }
-        public virtual NominationLevel NominationLevel { get; set; }
-        public virtual Nominator Nominator { get; set; }
+        public virtual Nomination Nomination { get; set; }
+        public virtual NominationList NominationList { get; set; }
     }
 }

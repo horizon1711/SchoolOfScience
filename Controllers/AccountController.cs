@@ -326,8 +326,8 @@ namespace SchoolOfScience.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult LogOff()
         {
-            //Session.Abandon();
-            //Session.Clear();
+            Session.Abandon();
+            Session.Clear();
             WebSecurity.Logout();
 
             return RedirectToAction("Login", new { returnUrl = Url.Action("Index", "Home") });
@@ -347,6 +347,7 @@ namespace SchoolOfScience.Controllers
             items.Add(new SelectListItem { Text = "Comm Tutor", Value = "CommTutor" });
             items.Add(new SelectListItem { Text = "Program Admin", Value = "ProgramAdmin" });
             items.Add(new SelectListItem { Text = "Nominator", Value = "Nominator" });
+            items.Add(new SelectListItem { Text = "Program Viewer", Value = "Viewer" });
             items.Add(new SelectListItem { Text = "Students (UGRD)", Value = "StudentUGRD" });
             items.Add(new SelectListItem { Text = "Students (RPG,TPG)", Value = "StudentRPGTPG" });
             items.Add(new SelectListItem { Text = "Students (NUGD)", Value = "StudentNUGD" });
@@ -378,7 +379,7 @@ namespace SchoolOfScience.Controllers
                 try
                 {
                     WebSecurity.CreateUserAndAccount(model.UserName, model.Password);
-
+                    
                     if (model.roleids != null)
                     {
                         var roles = db.SystemRoles.Where(r => model.roleids.Contains(r.RoleId));

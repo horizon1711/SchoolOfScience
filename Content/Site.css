@@ -339,11 +339,11 @@ select:focus, input[type="text"]:focus {
     clear: right;
 }
 
-float-left {
+.float-left {
     float: left;
 }
 
-float-right {
+.float-right {
     float: right;
 }
 
@@ -766,6 +766,7 @@ div.remove-btn  {
 
 img.delete-btn, img.upload-btn, img.edit-btn, img.comment-btn {
     height: 22px;
+    min-width: 22px;
     cursor: pointer;
     border: none;
     top: 6px;
@@ -794,7 +795,7 @@ img.edit-remarks-btn {
     float: right;
 }
 
-.action-link img {
+.action-link img, .application-delete-link img {
     width: 25px;
     position: relative;
     border: none;
@@ -827,7 +828,7 @@ tr.highlight {
     background-color: yellow !important;
 }
 
-.action-list {
+.action-list, .template-type-list {
     list-style: disc;
     padding-left: 20px;
     margin: 2px 0px;

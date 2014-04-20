@@ -12,7 +12,9 @@ namespace SchoolOfScience.Models
     public class ProgramOptionValueHelper
     {
         [Display(Name = "Option Value")]
+        [StringLength(200, ErrorMessage = "*Maximum length exceeded.")]
         public string name { get; set; }
+
         [Display(Name = "Required")]
         public bool required { get; set; }
     }

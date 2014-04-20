@@ -292,7 +292,8 @@
     <Compile Include="Models\Helper\AppointmentStatusHelper.cs" />
     <Compile Include="Models\Helper\AppointmentConcernHelper.cs" />
     <Compile Include="Models\Helper\ApplicationOptionValueHelper.cs" />
-    <Compile Include="Models\Helper\NominationLevelHelper.cs" />
+    <Compile Include="Models\Helper\NominationApplicationHelper.cs" />
+    <Compile Include="Models\Helper\NominationListHelper.cs" />
     <Compile Include="Models\Helper\InterviewCommentHelper.cs" />
     <Compile Include="Models\Helper\StudentActivityHelper.cs" />
     <Compile Include="Models\Helper\StudentAdvisingRemarkHelper.cs" />
@@ -340,13 +341,10 @@
     <Compile Include="Models\NominationApplication.cs">
       <DependentUpon>SchoolOfScienceModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\NominationLevel.cs">
+    <Compile Include="Models\NominationList.cs">
       <DependentUpon>SchoolOfScienceModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\NominationStatus.cs">
-      <DependentUpon>SchoolOfScienceModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Nominator.cs">
       <DependentUpon>SchoolOfScienceModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Notification.cs">
@@ -469,7 +467,6 @@
     <Compile Include="Models\ViewModels\EmailViewModel.cs" />
     <Compile Include="Models\ViewModels\InterviewViewModel.cs" />
     <Compile Include="Models\ViewModels\InterviewAssignMultipleViewModel.cs" />
-    <Compile Include="Models\ViewModels\NominationViewModel.cs" />
     <Compile Include="Models\ViewModels\InterviewCreateMultipleViewModel.cs" />
     <Compile Include="Models\ViewModels\ProgramViewModel.cs" />
     <Compile Include="Models\webpages_Membership.cs">
@@ -1228,7 +1225,6 @@
     <Content Include="Views\InterviewVenue\Delete.cshtml" />
     <Content Include="Views\Home\EmailTest.cshtml" />
     <Content Include="Views\Home\Menu.cshtml" />
-    <Content Include="Views\Home\MenuStudent.cshtml" />
     <Content Include="Views\UserProfile\Index.cshtml" />
     <Content Include="Views\UserProfile\Details.cshtml" />
     <Content Include="Views\UserProfile\Create.cshtml" />
@@ -1277,7 +1273,6 @@
     <Content Include="Views\NotificationTemplate\Create.cshtml" />
     <Content Include="Views\NotificationTemplate\Edit.cshtml" />
     <Content Include="Views\NotificationTemplate\Delete.cshtml" />
-    <Content Include="Views\Home\HomeStudent.cshtml" />
     <Content Include="Views\Home\ComingSoon.cshtml" />
     <Content Include="Views\StudentProfile\MyProfile.cshtml" />
     <Content Include="Views\StudentParticularType\Index.cshtml" />
@@ -1302,12 +1297,6 @@
     <Content Include="Views\StudentExperience\Create.cshtml" />
     <Content Include="Views\StudentExperience\Edit.cshtml" />
     <Content Include="Views\StudentExperience\Delete.cshtml" />
-    <Content Include="Views\Home\MenuStudentDevelopment.cshtml" />
-    <Content Include="Views\Home\MenuEDP.cshtml" />
-    <Content Include="Views\Home\MenuFacultyAdvisor.cshtml" />
-    <Content Include="Views\Home\MenuCommTutor.cshtml" />
-    <Content Include="Views\Home\MenuProgramAdmin.cshtml" />
-    <Content Include="Views\Home\MenuNominator.cshtml" />
     <Content Include="Views\Account\CASLoginFail.cshtml" />
     <Content Include="Views\Appointment\BatchDelete.cshtml">
       <SubType>Code</SubType>
@@ -1334,12 +1323,7 @@
     <Content Include="Views\Appointment\MyAppointment.cshtml">
       <SubType>Code</SubType>
     </Content>
-    <Content Include="Views\Home\HomeAdmin.cshtml" />
-    <Content Include="Views\Home\HomeEDP.cshtml" />
-    <Content Include="Views\Home\HomeFaculty.cshtml">
-      <SubType>Code</SubType>
-    </Content>
-    <Content Include="Views\Home\MenuAdmin.cshtml" />
+    <Content Include="Views\Home\Home.cshtml" />
     <Content Include="Views\Interview\BatchDelete.cshtml" />
     <Content Include="Views\Interview\BatchUpdate.cshtml" />
     <Content Include="Views\Interview\CommentTemplate.cshtml" />
@@ -1382,11 +1366,15 @@
     <Content Include="Views\StudentQualification\Index.cshtml" />
     <Content Include="Views\Appointment\HostCalendar.cshtml" />
     <Content Include="Views\Appointment\HostCalendarDetails.cshtml" />
-    <Content Include="Views\Nomination\AddLevel.cshtml" />
-    <Content Include="Views\Home\HomeNominator.cshtml" />
     <Content Include="Views\Nomination\MyNomination.cshtml" />
     <Content Include="Views\Nomination\NominateApplication.cshtml" />
-    <Content Include="Views\Nomination\EditLevel.cshtml" />
+    <Content Include="Views\Nomination\EditList.cshtml" />
+    <Content Include="Views\Home\MenuEmpty.cshtml" />
+    <Content Include="Views\Nomination\History.cshtml" />
+    <Content Include="Views\Nomination\ApplicationFullDetails.cshtml" />
+    <Content Include="Views\Nomination\CreateList.cshtml" />
+    <Content Include="Views\Appointment\ProgramAdmin.cshtml" />
+    <Content Include="Views\Appointment\EditProgramAdmin.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

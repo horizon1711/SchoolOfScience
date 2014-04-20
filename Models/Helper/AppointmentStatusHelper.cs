@@ -17,8 +17,9 @@ namespace SchoolOfScience.Models
         [Display(Name = "Status")]
         public string name { get; set; }
 
-        [Required(ErrorMessage = "*Required Field.")]
-        [Display(Name = "Locked")]
-        public string locked { get; set; }
+        [Display(Name = "Lock")]
+        public bool locked { get; set; }
+        [Display(Name = "Default")]
+        public bool default_status { get; set; }
     }
 }

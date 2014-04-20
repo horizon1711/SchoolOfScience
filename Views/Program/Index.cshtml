@@ -163,8 +163,8 @@
             <td>
                 <ul class="action-list">
                     <li>@Html.ActionLink("Edit", "Edit", new { id = item.id })</li>
-                    <li>@Html.ActionLink("Delete", "Delete", new { id = item.id })</li>
-                @if (item.status_id == ViewBag.draftStatusId)
+                    <li>@Html.ActionLink("Delete", "Delete", new { id = item.id }, new { @class = "program-delete-link" })</li>
+                @if (item.ProgramStatus.draft)
                 {
                     <li>@Html.ActionLink("Publish", "Publish", new { id = item.id })</li>
                 }
@@ -176,20 +176,17 @@
                 </ul>
             </td>
             <td>
+            @if (DateTime.Now < item.application_end_time && !item.ProgramStatus.draft)
+            {
                 <ul class="action-list">
-                @if (item.status_id != ViewBag.draftStatusId)
+                    <li>@Html.ActionLink("Announce", "MakeNotification", "Program", new { id = item.id }, new { @class = "announce-link", target = "_blank" })</li>
+                    <li>@Html.ActionLink("Reminder*", "MakeReminder", "Program", new { id = item.id }, new { @class = "reminder-link", target = "_blank" })</li>
+                @if (item.Applications.Where(a => a.ApplicationStatus.editable).Count() > 0)
                 {
-                    <li>@Html.ActionLink("Announce", "MakeNotification", "Program", new { id = item.id }, new { target = "_blank" })</li>
-                }
-                @if (DateTime.Now >= item.deadline_reminder_date)
-                {
-                    <li>@Html.ActionLink("Reminder*", "MakeReminder", "Program", new { id = item.id }, new { target = "_blank" })</li>
-                }
-                @if (item.Applications.Where(a => a.ApplicationStatus.name == "Saved").Count() > 0)
-                {
-                    <li>@Html.ActionLink("Submission*", "MakeSubmissionReminder", "Program", new { id = item.id }, new { target = "_blank" })</li>
+                    <li>@Html.ActionLink("Submission*", "MakeSubmissionReminder", "Program", new { id = item.id }, new { @class = "submission-link", target = "_blank" })</li>
                 }
                 </ul>
+            } 
             </td>
         </tr>
     }
@@ -236,6 +233,27 @@
                 $(".filter select").val('');
                 $(".filter input[type=text]").val('');
                 $(".filter input[type=checkbox]").attr("checked", false);
+            });
+
+            $(".reminder-link").click(function (e) {
+                var r = confirm("Would you like to send deadline reminder now");
+                if (!r) {
+                    e.preventDefault();
+                }
+            });
+
+            $(".submission-link").click(function (e) {
+                var r = confirm("Would you like to send submission reminder now");
+                if (!r) {
+                    e.preventDefault();
+                }
+            });
+
+            $(".program-delete-link").click(function (e) {
+                var r = confirm("Are you sure to remove this enrichment program?");
+                if (!r) {
+                    e.preventDefault();
+                }
             });
         });
     </script>

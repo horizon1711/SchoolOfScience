@@ -1,6 +1,6 @@
 ﻿@model SchoolOfScience.Models.ViewModels.ApplicationViewModel
 
-<h1>My Application - @Model.student.name (ID: @Html.ActionLink(Model.application.StudentProfile.id, "Details", "StudentProfile", new { id = Model.application.StudentProfile.id }, new { @class = "student-link" }))</h1>
+<h1>Application - @Model.student.name (ID: @Html.ActionLink(Model.application.StudentProfile.id, "Details", "StudentProfile", new { id = Model.application.StudentProfile.id }, new { @class = "student-link", title = "View Student Profile" }))</h1>
 
 <div class="program-details-title">
 <h2>@Html.DisplayFor(model => model.program.name)</h2>
@@ -225,28 +225,70 @@ else
 
 @if (Model.nominated_application != null && User.IsInRole("Nominator"))
 {
-    using (Html.BeginForm("NominateApplication", "Nomination", FormMethod.Post))
+    using (Html.BeginForm("Nominate", "Nomination", FormMethod.Post))
     {
         @Html.HiddenFor(model => model.nominated_application.id)
-        @Html.HiddenFor(model => model.nominated_application.nomination_level_id)
-        @Html.HiddenFor(model => model.nominated_application.nominator_id)
+        @Html.HiddenFor(model => model.nominated_application.nomination_list_id)
+        @Html.HiddenFor(model => model.nominated_application.nomination_id)
         @Html.HiddenFor(model => model.nominated_application.application_id)
+        @Html.Hidden("fulldetails")
         @Html.ValidationMessageFor(model => model.nominated_application.id)
-        @Html.ValidationMessageFor(model => model.nominated_application.nomination_level_id)
-        @Html.ValidationMessageFor(model => model.nominated_application.nominator_id)
+        @Html.ValidationMessageFor(model => model.nominated_application.nomination_list_id)
+        @Html.ValidationMessageFor(model => model.nominated_application.nomination_id)
         @Html.ValidationMessageFor(model => model.nominated_application.application_id)
         <fieldset>
             <legend>Nomination</legend>
             
-            <div class="editor-label">
-                Nomination Comment
+            <div class="field-wrapper">
+                <div class="display-label">
+                    Start Date
+                </div>
+                <div class="display-field">
+                    @String.Format("{0:yyyy-MM-dd (ddd)}", Model.nominated_application.Nomination.start_date)
+                </div>
+            </div>
+            
+            <div class="field-wrapper">
+                <div class="display-label">
+                    End Date
+                </div>
+                <div class="display-field">
+                    @String.Format("{0:yyyy-MM-dd (ddd)}", Model.nominated_application.Nomination.end_date)
+                </div>
+            </div>
+
+            <div class="field-wrapper">
+                <div class="display-label">
+                    Quota Left
+                </div>
+                @if (Model.nominated_application.NominationList.quota > 0)
+                {
+                <div class="display-field">
+                    @(Model.nominated_application.NominationList.quota - Model.nominated_application.NominationList.NominationApplications.Count(a => a.nominated))
+                </div>
+                } 
+                else
+                {
+                <div class="display-field">
+                    unlimited
+                </div>
+                }
+            </div>
+
+            <div class="clear-fix"></div>
+
+            <div class="display-label">
+                Nomination Comment (if any)
             </div>
             <div class="editor-field">
                 @Html.TextAreaFor(model => model.nominated_application.remarks, new { @class = "expanding" })
             </div>
 
             <p>
-                <input type="submit" value="Nominate this application" />
+                @Html.Hidden("action", "save")
+                <input type="submit" id="submit" value="Nominate this application" />
+                <input type="submit" id="save" value="Save and Close" />
+                @*<input type="button" id="close" value="Close" />*@
             </p>
 
         </fieldset>
@@ -268,6 +310,15 @@ else
         $(".student-link").click(function (e) {
             e.preventDefault();
             showDialog($(this).prop("href"), "#error-dialog", "#student-profile-dialog");
+        });
+
+        $("#submit").click(function (e) {
+            $("#action").val("submit");
+        });
+
+        $("#close").click(function (e) {
+            e.preventDefault();
+            $("#application-dialog").dialog("close");
         });
     });
 </script>

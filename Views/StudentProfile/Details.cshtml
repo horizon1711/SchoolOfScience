@@ -127,11 +127,17 @@
 
 <ul id="tabs">
     <li><a href="#" class="tab1">mySCI Applications</a></li>
+    @if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment") || User.IsInRole("FacultyAdvisor") || User.IsInRole("Nominator") || User.IsInRole("CommTutor") || User.IsInRole("ProgramAdmin"))
+    {
     <li><a href="#" class="tab2">Academic Records</a></li>
+    }
     <li><a href="#" class="tab3">Particulars</a></li>
     <li><a href="#" class="tab4">Experiences</a></li>
     <li><a href="#" class="tab5">Qualifications</a></li>
+    @if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment") || User.IsInRole("FacultyAdvisor") || User.IsInRole("CommTutor"))
+    {
     <li><a href="#" class="tab6">Advising Records</a></li>
+    }
     <li><a href="#" class="tab7">Other Activities</a></li>
 </ul>
 
@@ -192,6 +198,9 @@
 
         <div class="clear-fix"></div>
     </div>
+    
+    @if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment") || User.IsInRole("FacultyAdvisor") || User.IsInRole("Nominator") || User.IsInRole("CommTutor") || User.IsInRole("ProgramAdmin"))
+    {
     <div id="tab2">
         <fieldset>
             <legend>Registration Record</legend>
@@ -312,7 +321,7 @@
 
         <div class="clear-fix"></div>
     </div>
-    
+    }
     <div id="tab3">
         <div class="particulars-wrapper">
         @foreach (var type in Model.particulartypes.OrderBy(t => t.priority))
@@ -412,9 +421,13 @@
             }
         </fieldset>
     </div>
+    
+    @if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment") || User.IsInRole("FacultyAdvisor") || User.IsInRole("CommTutor"))
+    {
     <div id="tab6">
         @Html.Action("AdvisingRemark", new { student_id = Model.student.id, opener_id = "tab6" })
     </div>
+    }
     <div id="tab7">
         @Html.Action("ActivityRecord", new { student_id = Model.student.id, opener_id = "tab7" })
     </div>

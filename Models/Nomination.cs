@@ -16,7 +16,8 @@ namespace SchoolOfScience.Models
     {
         public Nomination()
         {
-            this.NominationLevels = new HashSet<NominationLevel>();
+            this.NominationLists = new HashSet<NominationList>();
+            this.NominationApplications = new HashSet<NominationApplication>();
         }
     
         public int id { get; set; }
@@ -28,6 +29,7 @@ namespace SchoolOfScience.Models
     
         public virtual NominationStatus NominationStatus { get; set; }
         public virtual Program Program { get; set; }
-        public virtual ICollection<NominationLevel> NominationLevels { get; set; }
+        public virtual ICollection<NominationList> NominationLists { get; set; }
+        public virtual ICollection<NominationApplication> NominationApplications { get; set; }
     }
 }

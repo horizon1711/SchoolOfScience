@@ -13,14 +13,14 @@ namespace SchoolOfScience.Models
     {
         [Required(ErrorMessage = "*Required Field.")]
         [Display(Name = "Nomination Status")]
+        [StringLength(50, ErrorMessage = "*Maximum length exceeded.")]
         public string name { get; set; }
-
-        [Required(ErrorMessage = "*Required Field.")]
+        
+        [Display(Name = "Norminated")]
+        public bool nominated { get; set; }
         [Display(Name = "Shortlisted")]
         public bool shortlisted { get; set; }
-
-        [Required(ErrorMessage = "*Required Field.")]
-        [Display(Name = "Open for Nomination")]
-        public bool nominated { get; set; }
+        [Display(Name = "Default")]
+        public bool default_status { get; set; }
     }
 }

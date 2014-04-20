@@ -26,10 +26,7 @@
                 @Html.DisplayNameFor(model => model.NominationStatus.name)
             </th>
             <th>
-                Nominators (Level)
-            </th>
-            <th>
-                Quota
+                Nomination List
             </th>
             <th></th>
         </tr>
@@ -75,30 +72,25 @@
                 @Html.DisplayFor(modelItem => item.NominationStatus.name)
             </td>
             <td>
-                @foreach (var level in item.NominationLevels.Where(l => l.nomination_level > 0))
+                @foreach (var list in item.NominationLists)
                 {
-                    <div>Level @level.nomination_level: @String.Join(", ", level.Nominators.Select(n => n.nominator_username))</div>
-                }
-            </td>
-            <td>
-                @foreach (var level in item.NominationLevels.Where(l => l.nomination_level > 0))
-                {
-                    <div>Level @level.nomination_level: 
-                        @if (level.quota == 0)
+                    <div>@list.UserProfile.UserName (Level: @list.nomination_level, Quota: 
+                        @if (list.quota == 0)
                         {
                             @("-")
                         }
                         else
                         {
-                            @level.quota
+                            @list.quota
                         }
+                        )
                     </div>
                 }
             </td>
             <td>
                 <ul class="action-list">
                     <li>
-                        @Html.ActionLink("Details", "Details", new { id = item.id })
+                        @Html.ActionLink("Manage", "Details", new { id = item.id })
                     </li>
                 </ul>
             </td>
@@ -166,7 +158,7 @@
                 <div>@Html.DisplayFor(modelItem => program.eligible_program_status)</div>
                 <div>@Html.DisplayFor(modelItem => program.eligible_academic_level)</div>
             </td>
-            <td>@program.Applications.Where(a => a.ApplicationStatus.name != "Saved").Count()</td>
+            <td>@program.Applications.Where(a => a.ApplicationStatus.submitted && !a.ApplicationStatus.rejected).Count()</td>
             <td>@program.ProgramStatus.name</td>
             <td>
                 <ul class="action-list">

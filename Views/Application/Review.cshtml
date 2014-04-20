@@ -64,7 +64,7 @@ else
 <hr />
 
 
-@using (Html.BeginForm())
+@using (Html.BeginForm("Review", "Application", FormMethod.Post, new { id = "form" }))
 {
     @Html.AntiForgeryToken()
     @Html.ValidationSummary(true)
@@ -190,10 +190,14 @@ else
                 Interview Session Assigned
             </div>
             <div class="editor-field">
-                @if (Model.application.Interviews != null && Model.application.Interviews.Where(i => i.InterviewStatus.display_to_student).Count() > 0)
+                @if (Model.application.Interviews != null && Model.application.Interviews.Count() > 0)
                 {
-                    foreach (var interview in Model.application.Interviews.Where(i => i.InterviewStatus.display_to_student))
+                    foreach (var interview in Model.application.Interviews)
                     {
+                        if (!interview.InterviewStatus.display_to_student)
+                        {
+                            <div>[Hidden from student]</div>
+                        }
                         <div>Date: @String.Format("{0:yyyy-MM-dd (ddd)}", interview.start_time)</div>
                         <div>Time: @String.Format("{0:HH:mm}", interview.start_time) - @String.Format("{0:HH:mm}", interview.end_time)</div>
                         <div>Venue: @interview.InterviewVenue.name</div>
@@ -207,6 +211,9 @@ else
                 {
                     <text>None</text>
                 }
+                <div>
+                    @Html.DropDownList("interview_id", ViewBag.interviewList as SelectList, String.Empty)
+                </div>
             </div>
         }
         </div>
@@ -238,5 +245,51 @@ else
 @Scripts.Render("~/bundles/jqueryval")
 <script>
     $(function () {
+
+        $(".comments-link").click(function (e) {
+            e.preventDefault();
+            showDialog($(this).prop("href"), "#error-dialog", "#interview-comment-dialog");
+        });
+
+        $("#submit").click(function (e) {
+            e.preventDefault();
+            if ($("#form").valid()) {
+                $.ajax({
+                    cache: false,
+                    url: $("#form").prop("action"),
+                    type: "POST",
+                    data: $("#form").serializeArray(),
+                    error: function (jqXHR, status, error) {
+                        $("#application-dialog").dialog("close");
+                        $("#error-dialog").dialog({
+                            width: 350,
+                            height: 100,
+                            overflow: "auto",
+                            modal: true,
+                            resizable: false,
+                            draggable: false,
+                            open: function () {
+                                $(this).scrollTop(0);
+                                $('.ui-widget-overlay').hide().fadeIn();
+                            },
+                            show: {
+                                effect: 'fade',
+                                duration: 200
+                            },
+                            hide: {
+                                effect: 'fade',
+                                duration: 100
+                            }
+                        }).html(error);
+                    },
+                    success: function (result) {
+                        $("#application-dialog-dialog").dialog("close");
+                        $("#filter-form").submit();
+                    }
+                })
+            } else {
+                $(".input-validation-error").first().focus();
+            }
+        });
     });
 </script>

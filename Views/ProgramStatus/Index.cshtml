@@ -13,10 +13,19 @@
     <thead>
     <tr>
         <th>
-            Program Status
+            @Html.DisplayNameFor(model => model.name)
         </th>
         <th>
-            Displayed to Student
+            @Html.DisplayNameFor(model => model.draft)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.shown_to_student)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.open_for_application)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.default_status)
         </th>
         <th></th>
     </tr>
@@ -28,18 +37,20 @@
             @Html.DisplayFor(modelItem => item.name)
         </td>
         <td>
+            @Html.DisplayFor(modelItem => item.draft)
+        </td>
+        <td>
             @Html.DisplayFor(modelItem => item.shown_to_student)
         </td>
         <td>
-            @if (!item.locked)
-            {
-                @Html.ActionLink("Edit", "Edit", new { id=item.id }) <text>|</text>
-                @Html.ActionLink("Delete", "Delete", new { id=item.id })
-            } else 
-            {
-                @Html.ActionLink("Edit", "Edit", new { id=item.id }) <text>|</text>
-                <text>System properties cannot be deleted.</text>
-            }
+            @Html.DisplayFor(modelItem => item.open_for_application)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.default_status)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.id }) | 
+            @Html.ActionLink("Delete", "Delete", new { id=item.id })
         </td>
     </tr>
 }

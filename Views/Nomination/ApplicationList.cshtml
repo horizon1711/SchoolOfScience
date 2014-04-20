@@ -1,17 +1,22 @@
-﻿@model SchoolOfScience.Models.NominationLevel
+﻿@model SchoolOfScience.Models.NominationList
 
 @{
+    string bgcolor = "";
 }
 
 
-@if (DateTime.Now > Model.start_date && DateTime.Now < Model.end_date.AddDays(1) && Model.Nomination.NominationStatus.nominated)
+<div class="showcase-title">
+    <img src="~/Images/Dashboard/nomination.png" />
+@if (DateTime.Now > Model.start_date && DateTime.Now < Model.end_date.AddDays(1) && (Model.Nomination.NominationStatus.nominated || Model.Nomination.NominationStatus.shortlisted))
 {
-    <h2>Nomination - Applications</h2>
+    <h2>Nomination - Application List</h2>
 }
 else
 {
-    <h2>Nomination - Applications (View Only)</h2>
+    <h2>Nomination - Application List (View Only)</h2>
 }
+</div>
+
 
 <div class="field-wrapper">
     <div class="display-label">
@@ -85,11 +90,11 @@ else
 </div>
         
 <div class="display-label clear-left">
-    Nominated Applications:
+    My nominated applications:
 </div>
     
 <div class="display-field">
-@if (Model.NominationApplications.Count() > 0)
+@if (Model.NominationApplications.Where(a => a.nominated).Count() > 0)
 {
     <table class="nominated-application-table">
         <thead>
@@ -101,24 +106,27 @@ else
                     Student Name
                 </th>
                 <th>
-                    Academic Organization
-                </th>
-                <th>
                     Academic Plan
                 </th>
                 <th>
                     Academic Level
                 </th>
                 <th>
+                    CGA
+                </th>
+                <th>
+                    Attachment
+                </th>
+                <th>
                     Remarks
                 </th>
                 <th>
-                        
+                    Action
                 </th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var nominated in Model.NominationApplications)
+            @foreach (var nominated in Model.NominationApplications.Where(a => a.nominated))
             {
             <tr>
                 <td>
@@ -128,13 +136,24 @@ else
                     <strong>@Html.DisplayFor(modelItem => nominated.Application.StudentProfile.name) @Html.ActionLink(nominated.Application.StudentProfile.id.ToString(), "Details", "StudentProfile", new { id = nominated.Application.StudentProfile.id }, new { @class = "nominated-student-link" })</strong>
                 </td>
                 <td>
-                    @nominated.Application.StudentProfile.academic_organization
-                </td>
-                <td>
                     @nominated.Application.StudentProfile.academic_plan_description
                 </td>
                 <td>
                     @nominated.Application.StudentProfile.academic_level
+                </td>
+                <td>
+                    @if (nominated.Application.StudentProfile.StudentAdmission != null)
+                    {
+                        @nominated.Application.StudentProfile.StudentAdmission.Cumulative_GPA
+                    }
+                </td>
+                <td>
+                    @foreach (var attachment in nominated.Application.ApplicationAttachments)
+                    {
+                        <div>
+                            <a href="@Url.Action("Download", "FileHandler", new { filename = attachment.filename, folder = attachment.filepath })" target="_blank">@attachment.ProgramApplicationAttachment.name</a>
+                        </div>
+                    }
                 </td>
                 <td>
                     <pre>
@@ -143,9 +162,9 @@ else
                 </td>
                 <td>
                     <a href="@Url.Action("Details", "Application", new { id = nominated.Application.id })" class = "nominated-action-link action-link" title = "View Application"><img src="@Url.Content("~/Images/Action/view.gif")" /></a>
-                    @if (Model.NominationApplications.Any(a => a.Application.id == nominated.Application.id) && DateTime.Now > Model.start_date && DateTime.Now < Model.end_date.AddDays(1) && Model.Nomination.NominationStatus.nominated)
+                    @if (DateTime.Now > Model.start_date && DateTime.Now < Model.end_date.AddDays(1) && (Model.Nomination.NominationStatus.nominated || Model.Nomination.NominationStatus.shortlisted))
                     {
-                        <a href="@Url.Action("CancelNominateApplication", "Nomination", new { id = nominated.id })" class = "nominated-cancel-link action-link" title = "Cancel Nomination"><img src="@Url.Content("~/Images/Action/delete.gif")" /></a>
+                        <a href="@Url.Action("CancelNominateApplication", "Nomination", new { id = nominated.id, fulldetails = ViewBag.fulldetails })" class = "nominated-cancel-link action-link" title = "Cancel Nomination"><img src="@Url.Content("~/Images/Action/delete.gif")" /></a>
                     }
                 </td>
             </tr>
@@ -158,15 +177,137 @@ else
     <text>None</text>
 }
 </div>
+
+@if (Model.Nomination.NominationLists.Any(l => l.nomination_level < Model.nomination_level))
+{
+<div class="display-label clear-left">
+    Nominated by previous level:
+</div>
+
+    if (Model.Nomination.NominationLists.Any(l => l.nomination_level < Model.nomination_level && l.NominationApplications.Count(a => a.nominated) > 0))
+    {
+    <div class="display-field">   
+        <table class="nominated-application-table">
+            <thead>
+                <tr>
+                    <th>
+                        ID
+                    </th>
+                    <th>
+                        Student Name
+                    </th>
+                    <th>
+                        Academic Plan
+                    </th>
+                    <th>
+                        Academic Level
+                    </th>
+                    <th>
+                        CGA
+                    </th>
+                    <th>
+                        Attachment
+                    </th>
+                    <th>
+                        Action
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var nominated in Model.NominationApplications.Where(na => na.Nomination.NominationLists.Any(l => l.nomination_level < Model.nomination_level && l.NominationApplications.Any(la => la.application_id == na.application_id && la.nominated))))
+                {
+                    if (nominated.nominated)
+                    {
+                        bgcolor = "background-color: #F9DCC4";
+                    }
+                    else
+                    {
+                        bgcolor = "";
+                    }
+                <tr style="@bgcolor">
+                    <td>
+                        @nominated.Application.id
+                    </td>
+                    <td>
+                        <strong>@Html.DisplayFor(modelItem => nominated.Application.StudentProfile.name) @Html.ActionLink(nominated.Application.StudentProfile.id.ToString(), "Details", "StudentProfile", new { id = nominated.Application.StudentProfile.id }, new { @class = "nominated-student-link" })</strong>
+                    </td>
+                    <td>
+                        @nominated.Application.StudentProfile.academic_plan_description
+                    </td>
+                    <td>
+                        @nominated.Application.StudentProfile.academic_level
+                    </td>
+                    <td>
+                        @if (nominated.Application.StudentProfile.StudentAdmission != null)
+                        {
+                            @nominated.Application.StudentProfile.StudentAdmission.Cumulative_GPA
+                        }
+                    </td>
+                    <td>
+                        @foreach (var attachment in nominated.Application.ApplicationAttachments)
+                        {
+                            <div>
+                                <a href="@Url.Action("Download", "FileHandler", new { filename = attachment.filename, folder = attachment.filepath })" target="_blank">@attachment.ProgramApplicationAttachment.name</a>
+                            </div>
+                        }
+                    </td>
+                    <td>
+                        <div>
+                            Nominated by:
+                        </div>
+                        @foreach(var list in Model.Nomination.NominationLists.Where(l => l.nomination_level < Model.nomination_level && l.NominationApplications.Any(a => a.application_id == nominated.application_id && a.nominated)))
+                        {
+                            <div>@list.name [@list.UserProfile.UserName]</div>
+                        }
+                        @if (nominated.nominated)
+                        {
+                            <div><i>You have nominated this application</i></div>
+                            <div>
+                                <a href="@Url.Action("Details", "Application", new { id = nominated.Application.id, fulldetails = ViewBag.fulldetails })" class = "nominated-action-link action-link" title = "View Application"><img src="@Url.Content("~/Images/Action/view.gif")" /></a>
+                        
+                                @if (DateTime.Now > Model.start_date && DateTime.Now < Model.end_date.AddDays(1) && (Model.Nomination.NominationStatus.nominated || Model.Nomination.NominationStatus.shortlisted))
+                                {
+                                    <a href="@Url.Action("CancelNominateApplication", "Nomination", new { id = nominated.id, fulldetails = ViewBag.fulldetails })" class = "nominated-cancel-link action-link" title = "Cancel Nomination"><img src="@Url.Content("~/Images/Action/delete.gif")" /></a>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <div>
+                                @if (DateTime.Now > Model.start_date && DateTime.Now < Model.end_date.AddDays(1) && (Model.Nomination.NominationStatus.nominated || Model.Nomination.NominationStatus.shortlisted))
+                                {
+                                    <a href="@Url.Action("Details", "Application", new { id = nominated.Application.id, listid = Model.id, fulldetails = ViewBag.fulldetails })" class = "nominated-action-link action-link" title = "View/Nominate Application"><img src="@Url.Content("~/Images/Action/view.gif")" /></a>
+                                }
+                                else
+                                {
+                                    <a href="@Url.Action("Details", "Application", new { id = nominated.Application.id, fulldetails = ViewBag.fulldetails })" class = "nominated-action-link action-link" title = "View Application"><img src="@Url.Content("~/Images/Action/view.gif")" /></a>
+                                }
+                            </div>
+                        }
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    }
+    else
+    {
+    <div class="display-field">
+        None
+    </div>
+    }
+}
+
+
         
 <div class="display-label clear-left">
-    Shortlisted Applications:
+    Applications pending for nomination:
 </div>
-    
-<div class="display-field">
-@if (Model.Nomination.NominationLevels.FirstOrDefault(l => l.nomination_level == Model.nomination_level - 1) != null
-    && Model.Nomination.NominationLevels.FirstOrDefault(l => l.nomination_level == Model.nomination_level - 1).NominationApplications.Count() > 0)
+
+@if (Model.NominationApplications.Count() > 0)
 {
+<div class="display-field">   
     <table class="nominated-application-table">
         <thead>
             <tr>
@@ -177,34 +318,40 @@ else
                     Student Name
                 </th>
                 <th>
-                    Academic Organization
-                </th>
-                <th>
                     Academic Plan
                 </th>
                 <th>
                     Academic Level
                 </th>
                 <th>
-                    Remarks
+                    CGA
                 </th>
                 <th>
-                        
+                    Attachment
+                </th>
+                <th>
+                    Action
                 </th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var nominated in Model.Nomination.NominationLevels.FirstOrDefault(l => l.nomination_level == Model.nomination_level - 1).NominationApplications)
+            @foreach (var nominated in Model.NominationApplications)
             {
-            <tr>
+
+                if (nominated.nominated)
+                {
+                    bgcolor = "background-color: #F9DCC4";
+                }
+                else
+                {
+                    bgcolor = "";
+                }
+            <tr style="@bgcolor">
                 <td>
                     @nominated.Application.id
                 </td>
                 <td>
                     <strong>@Html.DisplayFor(modelItem => nominated.Application.StudentProfile.name) @Html.ActionLink(nominated.Application.StudentProfile.id.ToString(), "Details", "StudentProfile", new { id = nominated.Application.StudentProfile.id }, new { @class = "nominated-student-link" })</strong>
-                </td>
-                <td>
-                    @nominated.Application.StudentProfile.academic_organization
                 </td>
                 <td>
                     @nominated.Application.StudentProfile.academic_plan_description
@@ -213,39 +360,64 @@ else
                     @nominated.Application.StudentProfile.academic_level
                 </td>
                 <td>
-                    <pre>
-                        @nominated.remarks
-                    </pre>
+                    @if (nominated.Application.StudentProfile.StudentAdmission != null)
+                    {
+                        @nominated.Application.StudentProfile.StudentAdmission.Cumulative_GPA
+                    }
                 </td>
                 <td>
-                    @if (Model.NominationApplications.Any(a => a.Application.id == nominated.Application.id))
+                    @foreach (var attachment in nominated.Application.ApplicationAttachments)
                     {
-                        <text>Nominated</text>
+                        <div>
+                            <a href="@Url.Action("Download", "FileHandler", new { filename = attachment.filename, folder = attachment.filepath })" target="_blank">@attachment.ProgramApplicationAttachment.name</a>
+                        </div>
+                    }
+                </td>
+                <td>
+                    @if (nominated.nominated)
+                    {
+                        <div><i>You have nominated this application</i></div>
+                        <div>
+                            <a href="@Url.Action("Details", "Application", new { id = nominated.Application.id, fulldetails = ViewBag.fulldetails })" class = "nominated-action-link action-link" title = "View Application"><img src="@Url.Content("~/Images/Action/view.gif")" /></a>
+                        
+                            @if (DateTime.Now > Model.start_date && DateTime.Now < Model.end_date.AddDays(1) && (Model.Nomination.NominationStatus.nominated || Model.Nomination.NominationStatus.shortlisted))
+                            {
+                                <a href="@Url.Action("CancelNominateApplication", "Nomination", new { id = nominated.id, fulldetails = ViewBag.fulldetails })" class = "nominated-cancel-link action-link" title = "Cancel Nomination"><img src="@Url.Content("~/Images/Action/delete.gif")" /></a>
+                            }
+                        </div>
                     }
                     else
                     {
-                        if (DateTime.Now > Model.start_date && DateTime.Now < Model.end_date.AddDays(1) && Model.Nomination.NominationStatus.nominated)
-                        {
-                            <a href="@Url.Action("Details", "Application", new { id = nominated.Application.id, levelid = Model.id })" class = "nominated-action-link action-link" title = "View/Nominate Application"><img src="@Url.Content("~/Images/Action/view.gif")" /></a>
-                        }
-                        else
-                        {
-                            <a href="@Url.Action("Details", "Application", new { id = nominated.Application.id })" class = "nominated-action-link action-link" title = "View Application"><img src="@Url.Content("~/Images/Action/view.gif")" /></a>
-                        }
+                        <div>
+                            @if (DateTime.Now > Model.start_date && DateTime.Now < Model.end_date.AddDays(1) && (Model.Nomination.NominationStatus.nominated || Model.Nomination.NominationStatus.shortlisted))
+                            {
+                                <a href="@Url.Action("Details", "Application", new { id = nominated.Application.id, listid = Model.id, fulldetails = ViewBag.fulldetails })" class = "nominated-action-link action-link" title = "View/Nominate Application"><img src="@Url.Content("~/Images/Action/view.gif")" /></a>
+                            }
+                            else
+                            {
+                                <a href="@Url.Action("Details", "Application", new { id = nominated.Application.id, fulldetails = ViewBag.fulldetails })" class = "nominated-action-link action-link" title = "View Application"><img src="@Url.Content("~/Images/Action/view.gif")" /></a>
+                            }
+                        </div>
                     }
                 </td>
             </tr>
             }
         </tbody>
     </table>
+</div>
 }
 else
 {
-    <text>None</text>
-}
+<div class="display-field">
+    None
 </div>
+}
     
 <div class="clear-fix"></div>
+
+@*<p>
+    @Html.ActionLink("View in Full Details", "ApplicationList", new { id = Model.id, fulldetails = true })
+</p>*@
 
 <div>
     @Html.ActionLink("Back to List", "MyNomination")
@@ -283,7 +455,7 @@ else
             });
 
             $(".nominated-cancel-link").click(function (e) {
-                var r = confirm("Are you sure to cancel this nomination? \n\n***Related nomination comment will be removed.");
+                var r = confirm("Are you sure to cancel this nomination?");
                 if (!r) {
                     e.preventDefault();
                 }

@@ -140,13 +140,13 @@
             <td>
                 <ul class="action-list">
                     <li>
-                        @Html.ActionLink("Manage", "Edit", new { id=item.id })
+                        @Html.ActionLink("Manage", "Edit", new { id = item.id }, new { @class = "manage-link" })
                     </li>
                     <li>
                         @Html.ActionLink("Comments", "Index", "InterviewComment", new { interview_id = item.id }, new { @class = "comments-link" })
                     </li>
                     <li>
-                        @Html.ActionLink("Delete", "Delete", new { id=item.id })
+                        @Html.ActionLink("Delete", "Delete", new { id=item.id }, new { @class = "manage-link" })
                     </li>
                 </ul>
             </td>
@@ -182,6 +182,11 @@
             $(".add-comment-link").click(function (e) {
                 e.preventDefault();
                 showDialog($(this).prop("href"), "#error-dialog", "#add-edit-dialog");
+            });
+
+            $(".manage-link").click(function (e) {
+                e.preventDefault();
+                showDialog($(this).prop("href"), "#error-dialog", "#interview-manage-dialog");
             });
 
             $(".comments-link").click(function (e) {

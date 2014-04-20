@@ -32,6 +32,14 @@
         </div>
 
         <div class="editor-label">
+            @Html.LabelFor(model => model.notification)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.notification)
+            @Html.ValidationMessageFor(model => model.notification)
+        </div>
+
+        <div class="editor-label">
             @Html.LabelFor(model => model.default_status)
         </div>
         <div class="editor-field">

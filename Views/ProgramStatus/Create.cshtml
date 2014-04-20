@@ -22,11 +22,35 @@
         </div>
 
         <div class="editor-label">
+            @Html.LabelFor(model => model.draft)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.draft)
+            @Html.ValidationMessageFor(model => model.draft)
+        </div>
+
+        <div class="editor-label">
             @Html.LabelFor(model => model.shown_to_student)
         </div>
         <div class="editor-field">
             @Html.EditorFor(model => model.shown_to_student)
             @Html.ValidationMessageFor(model => model.shown_to_student)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.open_for_application)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.open_for_application)
+            @Html.ValidationMessageFor(model => model.open_for_application)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.default_status)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.default_status)
+            @Html.ValidationMessageFor(model => model.default_status)
         </div>
 
         <p>

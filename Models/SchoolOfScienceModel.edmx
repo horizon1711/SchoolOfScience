@@ -25,9 +25,8 @@
           <EntitySet Name="InterviewVenue" EntityType="SchoolOfScienceModel.Store.InterviewVenue" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="Nomination" EntityType="SchoolOfScienceModel.Store.Nomination" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="NominationApplication" EntityType="SchoolOfScienceModel.Store.NominationApplication" store:Type="Tables" Schema="dbo" />
-          <EntitySet Name="NominationLevel" EntityType="SchoolOfScienceModel.Store.NominationLevel" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="NominationList" EntityType="SchoolOfScienceModel.Store.NominationList" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="NominationStatus" EntityType="SchoolOfScienceModel.Store.NominationStatus" store:Type="Tables" Schema="dbo" />
-          <EntitySet Name="Nominator" EntityType="SchoolOfScienceModel.Store.Nominator" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="Notification" EntityType="SchoolOfScienceModel.Store.Notification" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="NotificationRecipient" EntityType="SchoolOfScienceModel.Store.NotificationRecipient" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="NotificationStatus" EntityType="SchoolOfScienceModel.Store.NotificationStatus" store:Type="Tables" Schema="dbo" />
@@ -58,6 +57,7 @@
           <EntitySet Name="TimeslotConfig" EntityType="SchoolOfScienceModel.Store.TimeslotConfig" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="TimeslotConfigSession" EntityType="SchoolOfScienceModel.Store.TimeslotConfigSession" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="UserProfile" EntityType="SchoolOfScienceModel.Store.UserProfile" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="UserProfileAppointmentHost" EntityType="SchoolOfScienceModel.Store.UserProfileAppointmentHost" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="webpages_Membership" EntityType="SchoolOfScienceModel.Store.webpages_Membership" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="webpages_OAuthMembership" EntityType="SchoolOfScienceModel.Store.webpages_OAuthMembership" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="webpages_Roles" EntityType="SchoolOfScienceModel.Store.webpages_Roles" store:Type="Tables" Schema="dbo" />
@@ -162,21 +162,21 @@
             <End Role="Application" EntitySet="Application" />
             <End Role="NominationApplication" EntitySet="NominationApplication" />
           </AssociationSet>
-          <AssociationSet Name="FK_NominationApplication_NominationLevel" Association="SchoolOfScienceModel.Store.FK_NominationApplication_NominationLevel">
-            <End Role="NominationLevel" EntitySet="NominationLevel" />
-            <End Role="NominationApplication" EntitySet="NominationApplication" />
-          </AssociationSet>
-          <AssociationSet Name="FK_NominationApplication_NominationNominator" Association="SchoolOfScienceModel.Store.FK_NominationApplication_NominationNominator">
-            <End Role="Nominator" EntitySet="Nominator" />
-            <End Role="NominationApplication" EntitySet="NominationApplication" />
-          </AssociationSet>
-          <AssociationSet Name="FK_NominationLevel_Nomination" Association="SchoolOfScienceModel.Store.FK_NominationLevel_Nomination">
+          <AssociationSet Name="FK_NominationApplication_Nomination" Association="SchoolOfScienceModel.Store.FK_NominationApplication_Nomination">
             <End Role="Nomination" EntitySet="Nomination" />
-            <End Role="NominationLevel" EntitySet="NominationLevel" />
+            <End Role="NominationApplication" EntitySet="NominationApplication" />
           </AssociationSet>
-          <AssociationSet Name="FK_Nominator_NominationLevel" Association="SchoolOfScienceModel.Store.FK_Nominator_NominationLevel">
-            <End Role="NominationLevel" EntitySet="NominationLevel" />
-            <End Role="Nominator" EntitySet="Nominator" />
+          <AssociationSet Name="FK_NominationApplication_NominationList" Association="SchoolOfScienceModel.Store.FK_NominationApplication_NominationList">
+            <End Role="NominationList" EntitySet="NominationList" />
+            <End Role="NominationApplication" EntitySet="NominationApplication" />
+          </AssociationSet>
+          <AssociationSet Name="FK_NominationList_Nomination" Association="SchoolOfScienceModel.Store.FK_NominationList_Nomination">
+            <End Role="Nomination" EntitySet="Nomination" />
+            <End Role="NominationList" EntitySet="NominationList" />
+          </AssociationSet>
+          <AssociationSet Name="FK_NominationList_UserProfile" Association="SchoolOfScienceModel.Store.FK_NominationList_UserProfile">
+            <End Role="UserProfile" EntitySet="UserProfile" />
+            <End Role="NominationList" EntitySet="NominationList" />
           </AssociationSet>
           <AssociationSet Name="FK_Notification_NotificationStatus" Association="SchoolOfScienceModel.Store.FK_Notification_NotificationStatus">
             <End Role="NotificationStatus" EntitySet="NotificationStatus" />
@@ -302,6 +302,14 @@
             <End Role="AppointmentHost" EntitySet="AppointmentHost" />
             <End Role="UserProfile" EntitySet="UserProfile" />
           </AssociationSet>
+          <AssociationSet Name="FK_UserProfileAppointmentHost_AppointmentHost" Association="SchoolOfScienceModel.Store.FK_UserProfileAppointmentHost_AppointmentHost">
+            <End Role="AppointmentHost" EntitySet="AppointmentHost" />
+            <End Role="UserProfileAppointmentHost" EntitySet="UserProfileAppointmentHost" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserProfileAppointmentHost_UserProfile" Association="SchoolOfScienceModel.Store.FK_UserProfileAppointmentHost_UserProfile">
+            <End Role="UserProfile" EntitySet="UserProfile" />
+            <End Role="UserProfileAppointmentHost" EntitySet="UserProfileAppointmentHost" />
+          </AssociationSet>
           <AssociationSet Name="FK_webpages_Membership_UserProfile" Association="SchoolOfScienceModel.Store.FK_webpages_Membership_UserProfile">
             <End Role="UserProfile" EntitySet="UserProfile" />
             <End Role="webpages_Membership" EntitySet="webpages_Membership" />
@@ -367,6 +375,10 @@
           <Property Name="id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
           <Property Name="name" Type="nvarchar" Nullable="false" MaxLength="50" />
           <Property Name="locked" Type="bit" Nullable="false" />
+          <Property Name="default_status" Type="bit" Nullable="false" />
+          <Property Name="editable" Type="bit" Nullable="false" />
+          <Property Name="submitted" Type="bit" Nullable="false" />
+          <Property Name="rejected" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="Appointment">
           <Key>
@@ -415,6 +427,7 @@
           <Property Name="id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
           <Property Name="name" Type="nvarchar" Nullable="false" MaxLength="50" />
           <Property Name="locked" Type="bit" Nullable="false" />
+          <Property Name="default_status" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="ExchangeOption">
           <Key>
@@ -472,6 +485,7 @@
           <Property Name="locked" Type="bit" Nullable="false" />
           <Property Name="display_to_student" Type="bit" Nullable="false" />
           <Property Name="default_status" Type="bit" Nullable="false" />
+          <Property Name="notification" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="InterviewVenue">
           <Key>
@@ -497,23 +511,26 @@
             <PropertyRef Name="id" />
           </Key>
           <Property Name="id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
-          <Property Name="nomination_level_id" Type="int" Nullable="false" />
-          <Property Name="nominator_id" Type="int" Nullable="false" />
+          <Property Name="nomination_id" Type="int" Nullable="false" />
+          <Property Name="nomination_list_id" Type="int" Nullable="false" />
           <Property Name="application_id" Type="int" Nullable="false" />
-          <Property Name="nominated_date" Type="datetime" Nullable="false" />
+          <Property Name="nominated" Type="bit" Nullable="false" />
+          <Property Name="nominate_date" Type="datetime" />
           <Property Name="remarks" Type="nvarchar(max)" />
         </EntityType>
-        <EntityType Name="NominationLevel">
+        <EntityType Name="NominationList">
           <Key>
             <PropertyRef Name="id" />
           </Key>
           <Property Name="id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="nvarchar" MaxLength="200" />
           <Property Name="nomination_id" Type="int" Nullable="false" />
+          <Property Name="nominator_userid" Type="int" Nullable="false" />
           <Property Name="nomination_level" Type="int" Nullable="false" />
-          <Property Name="quota" Type="int" Nullable="false" />
           <Property Name="start_date" Type="datetime" Nullable="false" />
           <Property Name="end_date" Type="datetime" Nullable="false" />
-          <Property Name="remarks" Type="nvarchar(max)" />
+          <Property Name="quota" Type="int" Nullable="false" />
+          <Property Name="remarks" Type="nvarchar" />
         </EntityType>
         <EntityType Name="NominationStatus">
           <Key>
@@ -523,15 +540,7 @@
           <Property Name="name" Type="nvarchar" Nullable="false" MaxLength="50" />
           <Property Name="shortlisted" Type="bit" Nullable="false" />
           <Property Name="nominated" Type="bit" Nullable="false" />
-        </EntityType>
-        <EntityType Name="Nominator">
-          <Key>
-            <PropertyRef Name="id" />
-          </Key>
-          <Property Name="id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
-          <Property Name="nomination_level_id" Type="int" Nullable="false" />
-          <Property Name="nominator_username" Type="nvarchar" Nullable="false" MaxLength="50" />
-          <Property Name="quota" Type="int" Nullable="false" />
+          <Property Name="default_status" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="Notification">
           <Key>
@@ -572,6 +581,9 @@
           <Property Name="id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
           <Property Name="name" Type="nvarchar" Nullable="false" MaxLength="50" />
           <Property Name="locked" Type="bit" Nullable="false" />
+          <Property Name="default_status" Type="bit" Nullable="false" />
+          <Property Name="sent" Type="bit" Nullable="false" />
+          <Property Name="error" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="NotificationTemplate">
           <Key>
@@ -670,8 +682,11 @@
           </Key>
           <Property Name="id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
           <Property Name="name" Type="nvarchar" Nullable="false" MaxLength="50" />
-          <Property Name="shown_to_student" Type="bit" Nullable="false" />
           <Property Name="locked" Type="bit" Nullable="false" />
+          <Property Name="draft" Type="bit" Nullable="false" />
+          <Property Name="shown_to_student" Type="bit" Nullable="false" />
+          <Property Name="open_for_application" Type="bit" Nullable="false" />
+          <Property Name="default_status" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="ProgramType">
           <Key>
@@ -1032,6 +1047,14 @@
           <Property Name="UserName" Type="nvarchar" Nullable="false" MaxLength="56" />
           <Property Name="appointment_host_id" Type="int" />
         </EntityType>
+        <EntityType Name="UserProfileAppointmentHost">
+          <Key>
+            <PropertyRef Name="user_id" />
+            <PropertyRef Name="host_id" />
+          </Key>
+          <Property Name="user_id" Type="int" Nullable="false" />
+          <Property Name="host_id" Type="int" Nullable="false" />
+        </EntityType>
         <EntityType Name="webpages_Membership">
           <Key>
             <PropertyRef Name="UserId" />
@@ -1372,51 +1395,51 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_NominationApplication_NominationLevel">
-          <End Role="NominationLevel" Type="SchoolOfScienceModel.Store.NominationLevel" Multiplicity="1" />
-          <End Role="NominationApplication" Type="SchoolOfScienceModel.Store.NominationApplication" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="NominationLevel">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="NominationApplication">
-              <PropertyRef Name="nomination_level_id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_NominationApplication_NominationNominator">
-          <End Role="Nominator" Type="SchoolOfScienceModel.Store.Nominator" Multiplicity="1" />
-          <End Role="NominationApplication" Type="SchoolOfScienceModel.Store.NominationApplication" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Nominator">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="NominationApplication">
-              <PropertyRef Name="nominator_id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_NominationLevel_Nomination">
+        <Association Name="FK_NominationApplication_Nomination">
           <End Role="Nomination" Type="SchoolOfScienceModel.Store.Nomination" Multiplicity="1" />
-          <End Role="NominationLevel" Type="SchoolOfScienceModel.Store.NominationLevel" Multiplicity="*" />
+          <End Role="NominationApplication" Type="SchoolOfScienceModel.Store.NominationApplication" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Nomination">
               <PropertyRef Name="id" />
             </Principal>
-            <Dependent Role="NominationLevel">
+            <Dependent Role="NominationApplication">
               <PropertyRef Name="nomination_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Nominator_NominationLevel">
-          <End Role="NominationLevel" Type="SchoolOfScienceModel.Store.NominationLevel" Multiplicity="1" />
-          <End Role="Nominator" Type="SchoolOfScienceModel.Store.Nominator" Multiplicity="*" />
+        <Association Name="FK_NominationApplication_NominationList">
+          <End Role="NominationList" Type="SchoolOfScienceModel.Store.NominationList" Multiplicity="1" />
+          <End Role="NominationApplication" Type="SchoolOfScienceModel.Store.NominationApplication" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="NominationLevel">
+            <Principal Role="NominationList">
               <PropertyRef Name="id" />
             </Principal>
-            <Dependent Role="Nominator">
-              <PropertyRef Name="nomination_level_id" />
+            <Dependent Role="NominationApplication">
+              <PropertyRef Name="nomination_list_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_NominationList_Nomination">
+          <End Role="Nomination" Type="SchoolOfScienceModel.Store.Nomination" Multiplicity="1" />
+          <End Role="NominationList" Type="SchoolOfScienceModel.Store.NominationList" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Nomination">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="NominationList">
+              <PropertyRef Name="nomination_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_NominationList_UserProfile">
+          <End Role="UserProfile" Type="SchoolOfScienceModel.Store.UserProfile" Multiplicity="1" />
+          <End Role="NominationList" Type="SchoolOfScienceModel.Store.NominationList" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserProfile">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="NominationList">
+              <PropertyRef Name="nominator_userid" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1792,6 +1815,30 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_UserProfileAppointmentHost_AppointmentHost">
+          <End Role="AppointmentHost" Type="SchoolOfScienceModel.Store.AppointmentHost" Multiplicity="1" />
+          <End Role="UserProfileAppointmentHost" Type="SchoolOfScienceModel.Store.UserProfileAppointmentHost" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AppointmentHost">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="UserProfileAppointmentHost">
+              <PropertyRef Name="host_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserProfileAppointmentHost_UserProfile">
+          <End Role="UserProfile" Type="SchoolOfScienceModel.Store.UserProfile" Multiplicity="1" />
+          <End Role="UserProfileAppointmentHost" Type="SchoolOfScienceModel.Store.UserProfileAppointmentHost" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserProfile">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="UserProfileAppointmentHost">
+              <PropertyRef Name="user_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_webpages_Membership_UserProfile">
           <End Role="UserProfile" Type="SchoolOfScienceModel.Store.UserProfile" Multiplicity="1" />
           <End Role="webpages_Membership" Type="SchoolOfScienceModel.Store.webpages_Membership" Multiplicity="0..1" />
@@ -2071,28 +2118,31 @@
             <End Role="Interview" EntitySet="Interviews" />
             <End Role="InterviewComment" EntitySet="InterviewComments" />
           </AssociationSet>
+          <EntitySet Name="NominationLists" EntityType="SchoolOfScienceModel.NominationList" />
+          <AssociationSet Name="FK_NominationList_Nomination" Association="SchoolOfScienceModel.FK_NominationList_Nomination">
+            <End Role="Nomination" EntitySet="Nominations" />
+            <End Role="NominationList" EntitySet="NominationLists" />
+          </AssociationSet>
+          <AssociationSet Name="FK_NominationList_UserProfile" Association="SchoolOfScienceModel.FK_NominationList_UserProfile">
+            <End Role="SystemUser" EntitySet="SystemUsers" />
+            <End Role="NominationList" EntitySet="NominationLists" />
+          </AssociationSet>
           <EntitySet Name="NominationApplications" EntityType="SchoolOfScienceModel.NominationApplication" />
-          <EntitySet Name="NominationLevels" EntityType="SchoolOfScienceModel.NominationLevel" />
           <AssociationSet Name="FK_NominationApplication_Application" Association="SchoolOfScienceModel.FK_NominationApplication_Application">
             <End Role="Application" EntitySet="Applications" />
             <End Role="NominationApplication" EntitySet="NominationApplications" />
           </AssociationSet>
-          <AssociationSet Name="FK_NominationLevel_Nomination" Association="SchoolOfScienceModel.FK_NominationLevel_Nomination">
+          <AssociationSet Name="FK_NominationApplication_Nomination" Association="SchoolOfScienceModel.FK_NominationApplication_Nomination">
             <End Role="Nomination" EntitySet="Nominations" />
-            <End Role="NominationLevel" EntitySet="NominationLevels" />
-          </AssociationSet>
-          <AssociationSet Name="FK_NominationApplication_NominationLevel" Association="SchoolOfScienceModel.FK_NominationApplication_NominationLevel">
-            <End Role="NominationLevel" EntitySet="NominationLevels" />
             <End Role="NominationApplication" EntitySet="NominationApplications" />
           </AssociationSet>
-          <EntitySet Name="Nominators" EntityType="SchoolOfScienceModel.Nominator" />
-          <AssociationSet Name="FK_NominationApplication_NominationNominator" Association="SchoolOfScienceModel.FK_NominationApplication_NominationNominator">
-            <End Role="Nominator" EntitySet="Nominators" />
+          <AssociationSet Name="FK_NominationApplication_NominationList" Association="SchoolOfScienceModel.FK_NominationApplication_NominationList">
+            <End Role="NominationList" EntitySet="NominationLists" />
             <End Role="NominationApplication" EntitySet="NominationApplications" />
           </AssociationSet>
-          <AssociationSet Name="FK_Nominator_NominationLevel" Association="SchoolOfScienceModel.FK_Nominator_NominationLevel">
-            <End Role="NominationLevel" EntitySet="NominationLevels" />
-            <End Role="Nominator" EntitySet="Nominators" />
+          <AssociationSet Name="UserProfileAppointmentHost" Association="SchoolOfScienceModel.UserProfileAppointmentHost">
+            <End Role="AppointmentHost" EntitySet="AppointmentHosts" />
+            <End Role="SystemUser" EntitySet="SystemUsers" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="C__MigrationHistory">
@@ -2171,6 +2221,10 @@
           <Property Name="name" Type="String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false" />
           <Property Name="locked" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="Applications" Relationship="SchoolOfScienceModel.FK_Application_ApplicationStatus" FromRole="ApplicationStatus" ToRole="Application" />
+          <Property Type="Boolean" Name="editable" Nullable="false" />
+          <Property Type="Boolean" Name="submitted" Nullable="false" />
+          <Property Type="Boolean" Name="default_status" Nullable="false" />
+          <Property Type="Boolean" Name="rejected" Nullable="false" />
         </EntityType>
         <EntityType Name="Appointment">
           <Key>
@@ -2211,6 +2265,7 @@
           <Property Type="Boolean" Name="booking" Nullable="false" />
           <Property Type="Boolean" Name="advisor" Nullable="false" />
           <Property Type="String" Name="default_venue" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="UserProfiles1" Relationship="SchoolOfScienceModel.UserProfileAppointmentHost" FromRole="AppointmentHost" ToRole="SystemUser" />
         </EntityType>
         <EntityType Name="AppointmentStatus">
           <Key>
@@ -2220,6 +2275,7 @@
           <Property Name="name" Type="String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false" />
           <Property Name="locked" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="Appointments" Relationship="SchoolOfScienceModel.FK_Appointment_AppointmentStatus" FromRole="AppointmentStatus" ToRole="Appointment" />
+          <Property Type="Boolean" Name="default_status" Nullable="false" />
         </EntityType>
         <EntityType Name="ExchangeOption">
           <Key>
@@ -2263,6 +2319,7 @@
           <NavigationProperty Name="Interviews" Relationship="SchoolOfScienceModel.FK_Interview_InterviewStatus" FromRole="InterviewStatu" ToRole="Interview" />
           <Property Type="Boolean" Name="display_to_student" Nullable="false" />
           <Property Type="Boolean" Name="default_status" Nullable="false" />
+          <Property Type="Boolean" Name="notification" Nullable="false" />
         </EntityType>
         <EntityType Name="InterviewVenue">
           <Key>
@@ -2284,8 +2341,9 @@
           <Property Name="end_date" Type="DateTime" Nullable="false" Precision="3" />
           <NavigationProperty Name="NominationStatus" Relationship="SchoolOfScienceModel.FK_Nomination_NominationStatus" FromRole="Nomination" ToRole="NominationStatus" />
           <NavigationProperty Name="Program" Relationship="SchoolOfScienceModel.FK_Nomination_Program" FromRole="Nomination" ToRole="Program" />
-          <NavigationProperty Name="NominationLevels" Relationship="SchoolOfScienceModel.FK_NominationLevel_Nomination" FromRole="Nomination" ToRole="NominationLevel" />
           <Property Type="String" Name="remarks" MaxLength="200" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="NominationLists" Relationship="SchoolOfScienceModel.FK_NominationList_Nomination" FromRole="Nomination" ToRole="NominationList" />
+          <NavigationProperty Name="NominationApplications" Relationship="SchoolOfScienceModel.FK_NominationApplication_Nomination" FromRole="Nomination" ToRole="NominationApplication" />
         </EntityType>
         <EntityType Name="NominationStatus">
           <Key>
@@ -2296,6 +2354,7 @@
           <NavigationProperty Name="Nominations" Relationship="SchoolOfScienceModel.FK_Nomination_NominationStatus" FromRole="NominationStatus" ToRole="Nomination" />
           <Property Type="Boolean" Name="shortlisted" Nullable="false" />
           <Property Type="Boolean" Name="nominated" Nullable="false" />
+          <Property Type="Boolean" Name="default_status" Nullable="false" />
         </EntityType>
         <EntityType Name="Notification">
           <Key>
@@ -2343,6 +2402,9 @@
           <Property Name="name" Type="String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false" />
           <Property Name="locked" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="Notifications" Relationship="SchoolOfScienceModel.FK_Notification_NotificationStatus" FromRole="NotificationStatus" ToRole="Notification" />
+          <Property Type="Boolean" Name="default_status" Nullable="false" />
+          <Property Type="Boolean" Name="sent" Nullable="false" />
+          <Property Type="Boolean" Name="error" Nullable="false" />
         </EntityType>
         <EntityType Name="NotificationTemplate">
           <Key>
@@ -2464,6 +2526,9 @@
           <Property Name="shown_to_student" Type="Boolean" Nullable="false" />
           <Property Name="locked" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="Programs" Relationship="SchoolOfScienceModel.FK_Program_ProgramStatus" FromRole="ProgramStatus" ToRole="Program" />
+          <Property Type="Boolean" Name="open_for_application" Nullable="false" />
+          <Property Type="Boolean" Name="default_status" Nullable="false" />
+          <Property Type="Boolean" Name="draft" Nullable="false" />
         </EntityType>
         <EntityType Name="ProgramType">
           <Key>
@@ -2704,6 +2769,8 @@
           <NavigationProperty Name="AppointmentHost" Relationship="SchoolOfScienceModel.FK_UserProfile_AppointmentHost" FromRole="UserProfile" ToRole="AppointmentHost" />
           <NavigationProperty Name="UserRoles" Relationship="SchoolOfScienceModel.webpages_UsersInRoles" FromRole="UserProfile" ToRole="webpages_Roles" />
           <NavigationProperty Name="webpages_Membership" Relationship="SchoolOfScienceModel.FK_webpages_Membership_UserProfile" FromRole="UserProfile" ToRole="webpages_Membership" />
+          <NavigationProperty Name="NominationLists" Relationship="SchoolOfScienceModel.FK_NominationList_UserProfile" FromRole="SystemUser" ToRole="NominationList" />
+          <NavigationProperty Name="AppointmentHosts" Relationship="SchoolOfScienceModel.UserProfileAppointmentHost" FromRole="SystemUser" ToRole="AppointmentHost" />
         </EntityType>
         <EntityType Name="webpages_Membership">
           <Key>
@@ -3524,34 +3591,61 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="NominationApplication">
-          <Key>
-            <PropertyRef Name="id" />
-          </Key>
-          <Property Type="Int32" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Type="Int32" Name="nomination_level_id" Nullable="false" />
-          <Property Type="Int32" Name="nominator_id" Nullable="false" />
-          <Property Type="Int32" Name="application_id" Nullable="false" />
-          <Property Type="DateTime" Name="nominated_date" Nullable="false" Precision="3" />
-          <Property Type="String" Name="remarks" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Application" Relationship="SchoolOfScienceModel.FK_NominationApplication_Application" FromRole="NominationApplication" ToRole="Application" />
-          <NavigationProperty Name="NominationLevel" Relationship="SchoolOfScienceModel.FK_NominationApplication_NominationLevel" FromRole="NominationApplication" ToRole="NominationLevel" />
-          <NavigationProperty Name="Nominator" Relationship="SchoolOfScienceModel.FK_NominationApplication_NominationNominator" FromRole="NominationApplication" ToRole="Nominator" />
-        </EntityType>
-        <EntityType Name="NominationLevel">
+        <EntityType Name="NominationList">
           <Key>
             <PropertyRef Name="id" />
           </Key>
           <Property Type="Int32" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Type="Int32" Name="nomination_id" Nullable="false" />
+          <Property Type="Int32" Name="nominator_userid" Nullable="false" />
           <Property Type="Int32" Name="nomination_level" Nullable="false" />
-          <Property Type="Int32" Name="quota" Nullable="false" />
           <Property Type="DateTime" Name="start_date" Nullable="false" Precision="3" />
           <Property Type="DateTime" Name="end_date" Nullable="false" Precision="3" />
-          <NavigationProperty Name="Nomination" Relationship="SchoolOfScienceModel.FK_NominationLevel_Nomination" FromRole="NominationLevel" ToRole="Nomination" />
-          <NavigationProperty Name="NominationApplications" Relationship="SchoolOfScienceModel.FK_NominationApplication_NominationLevel" FromRole="NominationLevel" ToRole="NominationApplication" />
-          <NavigationProperty Name="Nominators" Relationship="SchoolOfScienceModel.FK_Nominator_NominationLevel" FromRole="NominationLevel" ToRole="Nominator" />
+          <Property Type="Int32" Name="quota" Nullable="false" />
+          <Property Type="String" Name="remarks" MaxLength="4000" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Nomination" Relationship="SchoolOfScienceModel.FK_NominationList_Nomination" FromRole="NominationList" ToRole="Nomination" />
+          <NavigationProperty Name="UserProfile" Relationship="SchoolOfScienceModel.FK_NominationList_UserProfile" FromRole="NominationList" ToRole="SystemUser" />
+          <NavigationProperty Name="NominationApplications" Relationship="SchoolOfScienceModel.FK_NominationApplication_NominationList" FromRole="NominationList" ToRole="NominationApplication" />
+          <Property Type="String" Name="name" MaxLength="200" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <Association Name="FK_NominationList_Nomination">
+          <End Type="SchoolOfScienceModel.Nomination" Role="Nomination" Multiplicity="1" />
+          <End Type="SchoolOfScienceModel.NominationList" Role="NominationList" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Nomination">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="NominationList">
+              <PropertyRef Name="nomination_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_NominationList_UserProfile">
+          <End Type="SchoolOfScienceModel.SystemUser" Role="SystemUser" Multiplicity="1" />
+          <End Type="SchoolOfScienceModel.NominationList" Role="NominationList" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SystemUser">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="NominationList">
+              <PropertyRef Name="nominator_userid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="NominationApplication">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Type="Int32" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Int32" Name="nomination_id" Nullable="false" />
+          <Property Type="Int32" Name="nomination_list_id" Nullable="false" />
+          <Property Type="Int32" Name="application_id" Nullable="false" />
+          <Property Type="Boolean" Name="nominated" Nullable="false" />
+          <Property Type="DateTime" Name="nominate_date" Precision="3" />
           <Property Type="String" Name="remarks" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Application" Relationship="SchoolOfScienceModel.FK_NominationApplication_Application" FromRole="NominationApplication" ToRole="Application" />
+          <NavigationProperty Name="Nomination" Relationship="SchoolOfScienceModel.FK_NominationApplication_Nomination" FromRole="NominationApplication" ToRole="Nomination" />
+          <NavigationProperty Name="NominationList" Relationship="SchoolOfScienceModel.FK_NominationApplication_NominationList" FromRole="NominationApplication" ToRole="NominationList" />
         </EntityType>
         <Association Name="FK_NominationApplication_Application">
           <End Type="SchoolOfScienceModel.Application" Role="Application" Multiplicity="1" />
@@ -3565,64 +3659,33 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_NominationLevel_Nomination">
+        <Association Name="FK_NominationApplication_Nomination">
           <End Type="SchoolOfScienceModel.Nomination" Role="Nomination" Multiplicity="1" />
-          <End Type="SchoolOfScienceModel.NominationLevel" Role="NominationLevel" Multiplicity="*" />
+          <End Type="SchoolOfScienceModel.NominationApplication" Role="NominationApplication" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Nomination">
               <PropertyRef Name="id" />
             </Principal>
-            <Dependent Role="NominationLevel">
+            <Dependent Role="NominationApplication">
               <PropertyRef Name="nomination_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_NominationApplication_NominationLevel">
-          <End Type="SchoolOfScienceModel.NominationLevel" Role="NominationLevel" Multiplicity="1" />
+        <Association Name="FK_NominationApplication_NominationList">
+          <End Type="SchoolOfScienceModel.NominationList" Role="NominationList" Multiplicity="1" />
           <End Type="SchoolOfScienceModel.NominationApplication" Role="NominationApplication" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="NominationLevel">
+            <Principal Role="NominationList">
               <PropertyRef Name="id" />
             </Principal>
             <Dependent Role="NominationApplication">
-              <PropertyRef Name="nomination_level_id" />
+              <PropertyRef Name="nomination_list_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="Nominator">
-          <Key>
-            <PropertyRef Name="id" />
-          </Key>
-          <Property Type="Int32" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Type="Int32" Name="nomination_level_id" Nullable="false" />
-          <Property Type="String" Name="nominator_username" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="Int32" Name="quota" Nullable="false" />
-          <NavigationProperty Name="NominationApplications" Relationship="SchoolOfScienceModel.FK_NominationApplication_NominationNominator" FromRole="Nominator" ToRole="NominationApplication" />
-          <NavigationProperty Name="NominationLevel" Relationship="SchoolOfScienceModel.FK_Nominator_NominationLevel" FromRole="Nominator" ToRole="NominationLevel" />
-        </EntityType>
-        <Association Name="FK_NominationApplication_NominationNominator">
-          <End Type="SchoolOfScienceModel.Nominator" Role="Nominator" Multiplicity="1" />
-          <End Type="SchoolOfScienceModel.NominationApplication" Role="NominationApplication" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Nominator">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="NominationApplication">
-              <PropertyRef Name="nominator_id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Nominator_NominationLevel">
-          <End Type="SchoolOfScienceModel.NominationLevel" Role="NominationLevel" Multiplicity="1" />
-          <End Type="SchoolOfScienceModel.Nominator" Role="Nominator" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="NominationLevel">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="Nominator">
-              <PropertyRef Name="nomination_level_id" />
-            </Dependent>
-          </ReferentialConstraint>
+        <Association Name="UserProfileAppointmentHost">
+          <End Type="SchoolOfScienceModel.AppointmentHost" Role="AppointmentHost" Multiplicity="*" />
+          <End Type="SchoolOfScienceModel.SystemUser" Role="SystemUser" Multiplicity="*" />
         </Association>
         </Schema>
     </edmx:ConceptualModels>
@@ -3691,6 +3754,10 @@
           <EntitySetMapping Name="ApplicationStatus">
             <EntityTypeMapping TypeName="SchoolOfScienceModel.ApplicationStatus">
               <MappingFragment StoreEntitySet="ApplicationStatus">
+                <ScalarProperty Name="rejected" ColumnName="rejected" />
+                <ScalarProperty Name="default_status" ColumnName="default_status" />
+                <ScalarProperty Name="submitted" ColumnName="submitted" />
+                <ScalarProperty Name="editable" ColumnName="editable" />
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="name" ColumnName="name" />
                 <ScalarProperty Name="locked" ColumnName="locked" />
@@ -3735,6 +3802,7 @@
           <EntitySetMapping Name="AppointmentStatus">
             <EntityTypeMapping TypeName="SchoolOfScienceModel.AppointmentStatus">
               <MappingFragment StoreEntitySet="AppointmentStatus">
+                <ScalarProperty Name="default_status" ColumnName="default_status" />
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="name" ColumnName="name" />
                 <ScalarProperty Name="locked" ColumnName="locked" />
@@ -3772,6 +3840,7 @@
           <EntitySetMapping Name="InterviewStatus">
             <EntityTypeMapping TypeName="SchoolOfScienceModel.InterviewStatus">
               <MappingFragment StoreEntitySet="InterviewStatus">
+                <ScalarProperty Name="notification" ColumnName="notification" />
                 <ScalarProperty Name="default_status" ColumnName="default_status" />
                 <ScalarProperty Name="display_to_student" ColumnName="display_to_student" />
                 <ScalarProperty Name="id" ColumnName="id" />
@@ -3804,6 +3873,7 @@
           <EntitySetMapping Name="NominationStatus">
             <EntityTypeMapping TypeName="SchoolOfScienceModel.NominationStatus">
               <MappingFragment StoreEntitySet="NominationStatus">
+                <ScalarProperty Name="default_status" ColumnName="default_status" />
                 <ScalarProperty Name="nominated" ColumnName="nominated" />
                 <ScalarProperty Name="shortlisted" ColumnName="shortlisted" />
                 <ScalarProperty Name="id" ColumnName="id" />
@@ -3848,6 +3918,9 @@
           <EntitySetMapping Name="NotificationStatus">
             <EntityTypeMapping TypeName="SchoolOfScienceModel.NotificationStatus">
               <MappingFragment StoreEntitySet="NotificationStatus">
+                <ScalarProperty Name="error" ColumnName="error" />
+                <ScalarProperty Name="sent" ColumnName="sent" />
+                <ScalarProperty Name="default_status" ColumnName="default_status" />
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="name" ColumnName="name" />
                 <ScalarProperty Name="locked" ColumnName="locked" />
@@ -3954,6 +4027,9 @@
           <EntitySetMapping Name="ProgramStatus">
             <EntityTypeMapping TypeName="SchoolOfScienceModel.ProgramStatus">
               <MappingFragment StoreEntitySet="ProgramStatus">
+                <ScalarProperty Name="draft" ColumnName="draft" />
+                <ScalarProperty Name="default_status" ColumnName="default_status" />
+                <ScalarProperty Name="open_for_application" ColumnName="open_for_application" />
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="name" ColumnName="name" />
                 <ScalarProperty Name="shown_to_student" ColumnName="shown_to_student" />
@@ -4412,41 +4488,42 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="NominationApplications">
-            <EntityTypeMapping TypeName="SchoolOfScienceModel.NominationApplication">
-              <MappingFragment StoreEntitySet="NominationApplication">
+          <EntitySetMapping Name="NominationLists">
+            <EntityTypeMapping TypeName="SchoolOfScienceModel.NominationList">
+              <MappingFragment StoreEntitySet="NominationList">
+                <ScalarProperty Name="name" ColumnName="name" />
                 <ScalarProperty Name="remarks" ColumnName="remarks" />
-                <ScalarProperty Name="nominated_date" ColumnName="nominated_date" />
-                <ScalarProperty Name="application_id" ColumnName="application_id" />
-                <ScalarProperty Name="nominator_id" ColumnName="nominator_id" />
-                <ScalarProperty Name="nomination_level_id" ColumnName="nomination_level_id" />
-                <ScalarProperty Name="id" ColumnName="id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="NominationLevels">
-            <EntityTypeMapping TypeName="SchoolOfScienceModel.NominationLevel">
-              <MappingFragment StoreEntitySet="NominationLevel">
-                <ScalarProperty Name="remarks" ColumnName="remarks" />
+                <ScalarProperty Name="quota" ColumnName="quota" />
                 <ScalarProperty Name="end_date" ColumnName="end_date" />
                 <ScalarProperty Name="start_date" ColumnName="start_date" />
-                <ScalarProperty Name="quota" ColumnName="quota" />
                 <ScalarProperty Name="nomination_level" ColumnName="nomination_level" />
+                <ScalarProperty Name="nominator_userid" ColumnName="nominator_userid" />
                 <ScalarProperty Name="nomination_id" ColumnName="nomination_id" />
                 <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Nominators">
-            <EntityTypeMapping TypeName="SchoolOfScienceModel.Nominator">
-              <MappingFragment StoreEntitySet="Nominator">
-                <ScalarProperty Name="quota" ColumnName="quota" />
-                <ScalarProperty Name="nominator_username" ColumnName="nominator_username" />
-                <ScalarProperty Name="nomination_level_id" ColumnName="nomination_level_id" />
+          <EntitySetMapping Name="NominationApplications">
+            <EntityTypeMapping TypeName="SchoolOfScienceModel.NominationApplication">
+              <MappingFragment StoreEntitySet="NominationApplication">
+                <ScalarProperty Name="remarks" ColumnName="remarks" />
+                <ScalarProperty Name="nominate_date" ColumnName="nominate_date" />
+                <ScalarProperty Name="nominated" ColumnName="nominated" />
+                <ScalarProperty Name="application_id" ColumnName="application_id" />
+                <ScalarProperty Name="nomination_list_id" ColumnName="nomination_list_id" />
+                <ScalarProperty Name="nomination_id" ColumnName="nomination_id" />
                 <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <AssociationSetMapping Name="UserProfileAppointmentHost" TypeName="SchoolOfScienceModel.UserProfileAppointmentHost" StoreEntitySet="UserProfileAppointmentHost">
+            <EndProperty Name="SystemUser">
+              <ScalarProperty Name="UserId" ColumnName="user_id" />
+            </EndProperty>
+            <EndProperty Name="AppointmentHost">
+              <ScalarProperty Name="id" ColumnName="host_id" />
+            </EndProperty>
+          </AssociationSetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

@@ -18,6 +18,7 @@ namespace SchoolOfScience.Models
 
         [Required(ErrorMessage = "*Required Field.")]
         [Display(Name = "Email Address")]
+        [StringLength(100, ErrorMessage = "*Maximum length exceeded.")]
         public string email { get; set; }
     }
 }

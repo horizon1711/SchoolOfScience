@@ -13,6 +13,7 @@ namespace SchoolOfScience.Models
     {
         [Required(ErrorMessage = "*Required Field.")]
         [Display(Name = "Student Experience Type")]
+        [StringLength(50, ErrorMessage = "*Maximum length exceeded.")]
         public string name { get; set; }
 
     }

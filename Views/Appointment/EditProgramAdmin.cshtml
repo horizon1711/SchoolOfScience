@@ -1,0 +1,35 @@
+﻿@model SchoolOfScience.Models.SystemUser
+
+@{
+    ViewBag.Title = "CreateProgramAdmin";
+}
+
+<h2>Program Admin</h2>
+
+<fieldset>
+    <legend>Edit Hosts Managed</legend>
+
+</fieldset>
+@using (Html.BeginForm()) {
+
+    <div class="display-label">
+        User
+    </div>
+    <div class="editor-field">
+        @Model.UserName
+    </div>
+
+    <div class="display-label">
+        Hosts Managed
+    </div>
+    <div class="editor-field">
+        @Html.ListBox("host_ids", new MultiSelectList(ViewBag.hostList, "id", "name", ViewBag.selectedHosts), new { @class = "chosen" })
+    </div>
+    
+    <p>
+        <input type="submit" value="Submit" />
+    </p>
+    <p>
+        @Html.ActionLink("Back", "ProgramAdmin")
+    </p>
+}

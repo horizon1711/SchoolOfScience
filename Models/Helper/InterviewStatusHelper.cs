@@ -16,12 +16,14 @@ namespace SchoolOfScience.Models
         [Display(Name = "Interview Status")]
         public string name { get; set; }
 
-        [Required(ErrorMessage = "*Required Field.")]
+
+        [Display(Name = "Lock")]
+        public bool locked { get; set; }
         [Display(Name = "Display to Student")]
         public bool display_to_student { get; set; }
-
-        [Required(ErrorMessage = "*Required Field.")]
         [Display(Name = "Default Status")]
         public bool default_status { get; set; }
+        [Display(Name = "Send Notification")]
+        public bool notification { get; set; }
     }
 }

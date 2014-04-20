@@ -22,6 +22,9 @@ namespace SchoolOfScience.Models
         public int id { get; set; }
         public string name { get; set; }
         public bool locked { get; set; }
+        public bool default_status { get; set; }
+        public bool sent { get; set; }
+        public bool error { get; set; }
     
         public virtual ICollection<Notification> Notifications { get; set; }
     }

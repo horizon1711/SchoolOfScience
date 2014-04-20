@@ -167,10 +167,13 @@
                     <li>
                         @Html.ActionLink("Change Status", "Review", new { id = item.id }, new { @class = "review-link" }) 
                     </li>
-                @if (item.ApplicationStatus.name != "Saved")
+                @if (!item.ApplicationStatus.editable)
                 {
                     <li>
                         @Html.ActionLink("Edit", "Edit", new { id = item.id }, new { @class = "edit-link" })
+                    </li>
+                    <li>
+                        @Html.ActionLink("Delete", "Delete", new { id = item.id }, new { @class = "application-delete-link" })
                     </li>
                 }
                 </ul>
@@ -224,7 +227,7 @@
             });
 
             $("#checkAll").click(function () {
-                $(".checkItem").attr("checked", $(this).is(":checked"));
+                $(".checkItem").prop("checked", $(this).is(":checked"));
             });
 
             $("#batch-btn").click( function (e) {
@@ -240,6 +243,13 @@
                 $(".filter select").val('');
                 $(".filter input[type=text]").val('');
                 $(".filter input[type=checkbox]").attr("checked", false);
+            });
+
+            $(".application-delete-link").click(function (e) {
+                var r = confirm("Are you sure to remove this application? \n\n**Related attachments will also be removed.");
+                if (!r) {
+                    e.preventDefault();
+                }
             });
         });
     </script>

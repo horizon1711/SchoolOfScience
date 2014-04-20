@@ -39,7 +39,12 @@ namespace SchoolOfScience.Controllers
         public Notification CreateNotification(String type, Application application)
         {
             NotificationType notificationtype = db.NotificationTypes.Where(t => t.name == type).SingleOrDefault();
-            NotificationStatus notificationstatus = db.NotificationStatus.Where(s => s.name == "Pending").SingleOrDefault();
+            NotificationStatus notificationstatus = db.NotificationStatus.SingleOrDefault(s => s.default_status);
+            if (notificationtype == null || notificationstatus == null)
+            {
+                Session["FlashMessage"] += "<br/>Notification type or status not found.<br/>";
+                return null;
+            }
 
             if (type == "ApplicationSubmitted")
             {
@@ -47,12 +52,16 @@ namespace SchoolOfScience.Controllers
                 {
                     string body = "";
                     string subject = "";
+                    string directlink = "https://sdb.science.ust.hk/mySCI/Program/Showcase/" + application.Program.id.ToString();
                     body = notificationtype.NotificationTemplate.body;
                     body = body.Replace("[student id]", application.student_id);
                     body = body.Replace("[student name]", application.StudentProfile.name);
                     body = body.Replace("[application id]", application.id.ToString());
                     body = body.Replace("[program id]", application.program_id.ToString());
                     body = body.Replace("[program name]", application.Program.name);
+                    body = body.Replace("[program period]", application.Program.start_time);
+                    body = body.Replace("[program deadline]", String.Format("{0:yyyy-MM-dd HH:mm}", application.Program.application_end_time));
+                    body = body.Replace("[program directlink]", "<a href='" + directlink + "' target='_blank'>" + directlink + "</a>");
                     body = body.Replace("[submit date]", String.Format("{0:yyyy-MM-dd HH:mm:ss}", application.submitted));
 
                     subject = notificationtype.NotificationTemplate.subject;
@@ -61,6 +70,9 @@ namespace SchoolOfScience.Controllers
                     subject = subject.Replace("[application id]", application.id.ToString());
                     subject = subject.Replace("[program id]", application.program_id.ToString());
                     subject = subject.Replace("[program name]", application.Program.name);
+                    subject = subject.Replace("[program period]", application.Program.start_time);
+                    subject = subject.Replace("[program deadline]", String.Format("{0:yyyy-MM-dd HH:mm}", application.Program.application_end_time));
+                    subject = subject.Replace("[program directlink]", "<a href='" + directlink + "' target='_blank'>" + directlink + "</a>");
                     subject = subject.Replace("[submit date]", String.Format("{0:yyyy-MM-dd HH:mm:ss}", application.submitted));
 
                     Notification notification = new Notification
@@ -110,12 +122,12 @@ namespace SchoolOfScience.Controllers
                     }
                     catch (Exception e)
                     {
-                        Session["FlashMessage"] += "<br/><br/>Failed to create notification record. <br/><br/>" + e.Message;
+                        Session["FlashMessage"] += "<br/>Failed to create notification record. <br/>" + e.Message;
                     }
                 }
                 else
                 {
-                    Session["FlashMessage"] += "<br/><br/>Notification Template is not correctly configured";
+                    Session["FlashMessage"] += "<br/>Notification Template is not correctly configured<br/>";
                 }
             }
 
@@ -125,13 +137,16 @@ namespace SchoolOfScience.Controllers
                 {
                     string body = "";
                     string subject = "";
+                    string directlink = "https://sdb.science.ust.hk/mySCI/Program/Showcase/" + application.Program.id.ToString();
                     body = notificationtype.NotificationTemplate.body;
                     body = body.Replace("[student id]", application.student_id);
                     body = body.Replace("[student name]", application.StudentProfile.name);
                     body = body.Replace("[application id]", application.id.ToString());
                     body = body.Replace("[program id]", application.program_id.ToString());
                     body = body.Replace("[program name]", application.Program.name);
+                    body = body.Replace("[program period]", application.Program.start_time);
                     body = body.Replace("[program deadline]", String.Format("{0:yyyy-MM-dd HH:mm}", application.Program.application_end_time));
+                    body = body.Replace("[program directlink]", "<a href='" + directlink + "' target='_blank'>" + directlink + "</a>");
                     body = body.Replace("[submit date]", String.Format("{0:yyyy-MM-dd HH:mm:ss}", application.submitted));
 
                     subject = notificationtype.NotificationTemplate.subject;
@@ -140,7 +155,9 @@ namespace SchoolOfScience.Controllers
                     subject = subject.Replace("[application id]", application.id.ToString());
                     subject = subject.Replace("[program id]", application.program_id.ToString());
                     subject = subject.Replace("[program name]", application.Program.name);
+                    subject = subject.Replace("[program period]", application.Program.start_time);
                     subject = subject.Replace("[program deadline]", String.Format("{0:yyyy-MM-dd HH:mm}", application.Program.application_end_time));
+                    subject = subject.Replace("[program directlink]", "<a href='" + directlink + "' target='_blank'>" + directlink + "</a>");
                     subject = subject.Replace("[submit date]", String.Format("{0:yyyy-MM-dd HH:mm:ss}", application.submitted));
 
                     Notification notification = new Notification
@@ -190,12 +207,12 @@ namespace SchoolOfScience.Controllers
                     }
                     catch (Exception e)
                     {
-                        Session["FlashMessage"] += "<br/><br/>Failed to create notification record. <br/><br/>" + e.Message;
+                        Session["FlashMessage"] += "<br/>Failed to create notification record. <br/>" + e.Message;
                     }
                 }
                 else
                 {
-                    Session["FlashMessage"] += "<br/><br/>Notification Template is not correctly configured";
+                    Session["FlashMessage"] += "<br/>Notification Template is not correctly configured<br/>";
                 }
             }
             return null;
@@ -204,7 +221,12 @@ namespace SchoolOfScience.Controllers
         public Notification CreateNotification(String type, Program program)
         {
             NotificationType notificationtype = db.NotificationTypes.Where(t => t.name == type).SingleOrDefault();
-            NotificationStatus notificationstatus = db.NotificationStatus.Where(s => s.name == "Pending").SingleOrDefault();
+            NotificationStatus notificationstatus = db.NotificationStatus.SingleOrDefault(s => s.default_status);
+            if (notificationtype == null || notificationstatus == null)
+            {
+                Session["FlashMessage"] += "<br/>Notification type or status not found.<br/>";
+                return null;
+            }
             if (type == "ProgramPublished")
             {
                 if (notificationtype.NotificationTemplate != null)
@@ -279,12 +301,12 @@ namespace SchoolOfScience.Controllers
                     }
                     catch (Exception e)
                     {
-                        Session["FlashMessage"] += "<br/><br/>Failed to create notification record. <br/><br/>" + e.Message;
+                        Session["FlashMessage"] += "<br/>Failed to create notification record. <br/>" + e.Message;
                     }
                 }
                 else
                 {
-                    Session["FlashMessage"] += "<br/><br/>Notification Template is not correctly configured";
+                    Session["FlashMessage"] += "<br/>Notification Template is not correctly configured<br/>";
                 }
             }
             if (type == "ProgramDeadlindReminder")
@@ -360,12 +382,12 @@ namespace SchoolOfScience.Controllers
                     }
                     catch (Exception e)
                     {
-                        Session["FlashMessage"] += "<br/><br/>Failed to create notification record. <br/><br/>" + e.Message;
+                        Session["FlashMessage"] += "<br/>Failed to create notification record. <br/>" + e.Message;
                     }
                 }
                 else
                 {
-                    Session["FlashMessage"] += "<br/><br/>Notification Template is not correctly configured";
+                    Session["FlashMessage"] += "<br/>Notification Template is not correctly configured<br/>";
                 }
             }
             return null;
@@ -374,19 +396,28 @@ namespace SchoolOfScience.Controllers
         public Notification CreateNotification(String type, Interview interview, Application application)
         {
             NotificationType notificationtype = db.NotificationTypes.Where(t => t.name == type).SingleOrDefault();
-            NotificationStatus notificationstatus = db.NotificationStatus.Where(s => s.name == "Pending").SingleOrDefault();
+            NotificationStatus notificationstatus = db.NotificationStatus.SingleOrDefault(s => s.default_status);
+            if (notificationtype == null || notificationstatus == null)
+            {
+                Session["FlashMessage"] += "<br/>Notification type or status not found.<br/>";
+                return null;
+            }
             if (type == "InterviewAssigned")
             {
                 if (notificationtype.NotificationTemplate != null)
                 {
                     string body = "";
                     string subject = "";
+                    string directlink = "https://sdb.science.ust.hk/mySCI/Program/Showcase/" + application.Program.id.ToString();
                     body = notificationtype.NotificationTemplate.body;
                     body = body.Replace("[student id]", application.student_id);
                     body = body.Replace("[student name]", application.StudentProfile.name);
                     body = body.Replace("[application id]", application.id.ToString());
                     body = body.Replace("[program id]", application.program_id.ToString());
                     body = body.Replace("[program name]", application.Program.name);
+                    body = body.Replace("[program period]", application.Program.start_time);
+                    body = body.Replace("[program deadline]", String.Format("{0:yyyy-MM-dd HH:mm}", application.Program.application_end_time));
+                    body = body.Replace("[program directlink]", "<a href='" + directlink + "' target='_blank'>" + directlink + "</a>");
                     body = body.Replace("[submit date]", String.Format("{0:yyyy-MM-dd HH:mm:ss}", application.submitted));
                     body = body.Replace("[interview date]", String.Format("{0:yyyy-MM-dd (ddd)}", interview.start_time));
                     body = body.Replace("[interview time]", String.Format("{0:HH:mm}", interview.start_time) + " to " + String.Format("{0:HH:mm}", interview.end_time));
@@ -398,11 +429,14 @@ namespace SchoolOfScience.Controllers
                     subject = subject.Replace("[application id]", application.id.ToString());
                     subject = subject.Replace("[program id]", application.program_id.ToString());
                     subject = subject.Replace("[program name]", application.Program.name);
+                    subject = subject.Replace("[program period]", application.Program.start_time);
+                    subject = subject.Replace("[program deadline]", String.Format("{0:yyyy-MM-dd HH:mm}", application.Program.application_end_time));
+                    subject = subject.Replace("[program directlink]", "<a href='" + directlink + "' target='_blank'>" + directlink + "</a>");
                     subject = subject.Replace("[submit date]", String.Format("{0:yyyy-MM-dd HH:mm:ss}", application.submitted));
                     subject = subject.Replace("[interview date]", String.Format("{0:yyyy-MM-dd (ddd)}", interview.start_time));
                     subject = subject.Replace("[interview time]", String.Format("{0:HH:mm}", interview.start_time) + " to " + String.Format("{0:HH:mm}", interview.end_time));
                     subject = subject.Replace("[interview venue]", interview.InterviewVenue.name);
-
+                    
                     Notification notification = new Notification
                     {
                         send_time = DateTime.Now,
@@ -450,12 +484,12 @@ namespace SchoolOfScience.Controllers
                     }
                     catch (Exception e)
                     {
-                        Session["FlashMessage"] += "<br/><br/>Failed to create notification record. <br/><br/>" + e.Message;
+                        Session["FlashMessage"] += "<br/>Failed to create notification record. <br/>" + e.Message;
                     }
                 }
                 else
                 {
-                    Session["FlashMessage"] += "<br/><br/>Notification Template is not correctly configured";
+                    Session["FlashMessage"] += "<br/>Notification Template is not correctly configured<br/>";
                 }
             }
             return null;
@@ -464,7 +498,12 @@ namespace SchoolOfScience.Controllers
         public Notification CreateNotification(String type, Appointment appointment)
         {
             NotificationType notificationtype = db.NotificationTypes.Where(t => t.name == type).SingleOrDefault();
-            NotificationStatus notificationstatus = db.NotificationStatus.Where(s => s.name == "Pending").SingleOrDefault();
+            NotificationStatus notificationstatus = db.NotificationStatus.SingleOrDefault(s => s.default_status);
+            if (notificationtype == null || notificationstatus == null)
+            {
+                Session["FlashMessage"] += "<br/>Notification type or status not found.<br/>";
+                return null;
+            }
             if (type == "AppointmentReserved")
             {
                 if (notificationtype.NotificationTemplate != null)
@@ -552,12 +591,12 @@ namespace SchoolOfScience.Controllers
                     }
                     catch (Exception e)
                     {
-                        Session["FlashMessage"] += "<br/><br/>Failed to create notification record. <br/><br/>" + e.Message;
+                        Session["FlashMessage"] += "<br/>Failed to create notification record. <br/>" + e.Message;
                     }
                 }
                 else
                 {
-                    Session["FlashMessage"] += "<br/><br/>Notification Template is not correctly configured";
+                    Session["FlashMessage"] += "<br/>Notification Template is not correctly configured<br/>";
                 }
             }
             if (type == "AppointmentReservedAdvisor")
@@ -649,12 +688,202 @@ namespace SchoolOfScience.Controllers
                     }
                     catch (Exception e)
                     {
-                        Session["FlashMessage"] += "<br/><br/>Failed to create notification record. <br/><br/>" + e.Message;
+                        Session["FlashMessage"] += "<br/>Failed to create notification record. <br/>" + e.Message;
                     }
                 }
                 else
                 {
-                    Session["FlashMessage"] += "<br/><br/>Notification Template is not correctly configured";
+                    Session["FlashMessage"] += "<br/>Notification Template is not correctly configured<br/>";
+                }
+            }
+            return null;
+        }
+
+        public Notification CreateNotification(String type, NominationList list)
+        {
+            NotificationType notificationtype = db.NotificationTypes.Where(t => t.name == type).SingleOrDefault();
+            NotificationStatus notificationstatus = db.NotificationStatus.SingleOrDefault(s => s.default_status);
+            if (notificationtype == null || notificationstatus == null)
+            {
+                Session["FlashMessage"] += "<br/>Notification type or status not found.<br/>";
+                return null;
+            }
+            if (type == "ApplicationNominated")
+            {
+                if (notificationtype.NotificationTemplate != null)
+                {
+                    string body = "";
+                    string subject = "";
+                    string directlink = "https://sdb.science.ust.hk/mySCI/Nomination/ApplicationList/" + list.id.ToString();
+                    body = notificationtype.NotificationTemplate.body;
+                    body = body.Replace("[program id]", list.Nomination.program_id.ToString());
+                    body = body.Replace("[program name]", list.Nomination.Program.name);
+                    body = body.Replace("[program period]", list.Nomination.Program.start_time);
+                    body = body.Replace("[program deadline]", String.Format("{0:yyyy-MM-dd HH:mm}", list.Nomination.Program.application_end_time));
+                    body = body.Replace("[program directlink]", "<a href='" + directlink + "' target='_blank'>" + directlink + "</a>");
+                    body = body.Replace("[nominator]", list.UserProfile.UserName);
+                    body = body.Replace("[nomination listname]", list.name);
+                    body = body.Replace("[nomination start date]", String.Format("{0:yyyy-MM-dd}", list.start_date));
+                    body = body.Replace("[nomination end date]", String.Format("{0:yyyy-MM-dd}", list.start_date));
+                    body = body.Replace("[nomination quota]", list.quota.ToString());
+                    body = body.Replace("[nomination remarks]", list.remarks);
+                    body = body.Replace("[nomination directlink]", "<a href='" + directlink + "' target='_blank'>" + directlink + "</a>");
+
+                    subject = notificationtype.NotificationTemplate.subject;
+                    subject = subject.Replace("[program id]", list.Nomination.program_id.ToString());
+                    subject = subject.Replace("[program name]", list.Nomination.Program.name);
+                    subject = subject.Replace("[program period]", list.Nomination.Program.start_time);
+                    subject = subject.Replace("[program deadline]", String.Format("{0:yyyy-MM-dd HH:mm}", list.Nomination.Program.application_end_time));
+                    subject = subject.Replace("[program directlink]", "<a href='" + directlink + "' target='_blank'>" + directlink + "</a>");
+                    subject = subject.Replace("[nominator]", list.UserProfile.UserName);
+                    subject = subject.Replace("[nomination listname]", list.name);
+                    subject = subject.Replace("[nomination start date]", String.Format("{0:yyyy-MM-dd}", list.start_date));
+                    subject = subject.Replace("[nomination end date]", String.Format("{0:yyyy-MM-dd}", list.start_date));
+                    subject = subject.Replace("[nomination quota]", list.quota.ToString());
+                    subject = subject.Replace("[nomination remarks]", list.remarks);
+                    subject = subject.Replace("[nomination directlink]", "<a href='" + directlink + "' target='_blank'>" + directlink + "</a>");
+
+                    Notification notification = new Notification
+                    {
+                        send_time = DateTime.Now,
+                        sender = notificationtype.NotificationTemplate.sender,
+                        subject = subject,
+                        body = body,
+                        status_id = notificationstatus.id,
+                        type_id = notificationtype.id,
+                        template_id = notificationtype.NotificationTemplate.id,
+                        nomination_id = list.nomination_id,
+                        created = DateTime.Now,
+                        created_by = User.Identity.Name,
+                        modified = DateTime.Now,
+                        modified_by = User.Identity.Name
+                    };
+                    //db.Notifications.Add(notification);
+                    //db.SaveChanges();
+
+                    notification.NotificationRecipients.Add(new NotificationRecipient
+                    {
+                        email = list.Nomination.Program.created_by.Trim() + "@ust.hk",
+                        recipient_type = "to"
+                    });
+
+                    if (!String.IsNullOrEmpty(notificationtype.NotificationTemplate.cc))
+                    {
+                        List<NotificationRecipient> ccList = new List<NotificationRecipient>();
+                        notificationtype.NotificationTemplate.cc.Split(',').ToList().ForEach(s => ccList.Add(new NotificationRecipient { email = s.Trim(), recipient_type = "cc" }));
+                        notification.NotificationRecipients = notification.NotificationRecipients.Concat(ccList).ToList();
+                    }
+
+                    if (!String.IsNullOrEmpty(notificationtype.NotificationTemplate.bcc))
+                    {
+                        List<NotificationRecipient> bccList = new List<NotificationRecipient>();
+                        notificationtype.NotificationTemplate.bcc.Split(',').ToList().ForEach(s => bccList.Add(new NotificationRecipient { email = s.Trim(), recipient_type = "bcc" }));
+                        notification.NotificationRecipients = notification.NotificationRecipients.Concat(bccList).ToList();
+                    }
+
+                    db.Notifications.Add(notification);
+                    try
+                    {
+                        db.SaveChanges();
+                        return notification;
+                    }
+                    catch (Exception e)
+                    {
+                        Session["FlashMessage"] += "<br/>Failed to create notification record. <br/>" + e.Message;
+                    }
+                }
+                else
+                {
+                    Session["FlashMessage"] += "<br/>Notification Template is not correctly configured<br/>";
+                }
+            }
+            if (type == "NominationShortlisted")
+            {
+                if (notificationtype.NotificationTemplate != null)
+                {
+                    string body = "";
+                    string subject = "";
+                    string directlink = "https://sdb.science.ust.hk/mySCI/Nomination/ApplicationList/" + list.id.ToString();
+                    body = notificationtype.NotificationTemplate.body;
+                    body = body.Replace("[program id]", list.Nomination.program_id.ToString());
+                    body = body.Replace("[program name]", list.Nomination.Program.name);
+                    body = body.Replace("[program period]", list.Nomination.Program.start_time);
+                    body = body.Replace("[program deadline]", String.Format("{0:yyyy-MM-dd HH:mm}", list.Nomination.Program.application_end_time));
+                    body = body.Replace("[program directlink]", "<a href='" + directlink + "' target='_blank'>" + directlink + "</a>");
+                    body = body.Replace("[nominator]", list.UserProfile.UserName);
+                    body = body.Replace("[nomination listname]", list.name);
+                    body = body.Replace("[nomination start date]", String.Format("{0:yyyy-MM-dd}", list.start_date));
+                    body = body.Replace("[nomination end date]", String.Format("{0:yyyy-MM-dd}", list.start_date));
+                    body = body.Replace("[nomination quota]", list.quota.ToString());
+                    body = body.Replace("[nomination remarks]", list.remarks);
+                    body = body.Replace("[nomination directlink]", "<a href='" + directlink + "' target='_blank'>" + directlink + "</a>");
+
+                    subject = notificationtype.NotificationTemplate.subject;
+                    subject = subject.Replace("[program id]", list.Nomination.program_id.ToString());
+                    subject = subject.Replace("[program name]", list.Nomination.Program.name);
+                    subject = subject.Replace("[program period]", list.Nomination.Program.start_time);
+                    subject = subject.Replace("[program deadline]", String.Format("{0:yyyy-MM-dd HH:mm}", list.Nomination.Program.application_end_time));
+                    subject = subject.Replace("[program directlink]", "<a href='" + directlink + "' target='_blank'>" + directlink + "</a>");
+                    subject = subject.Replace("[nominator]", list.UserProfile.UserName);
+                    subject = subject.Replace("[nomination listname]", list.name);
+                    subject = subject.Replace("[nomination start date]", String.Format("{0:yyyy-MM-dd}", list.start_date));
+                    subject = subject.Replace("[nomination end date]", String.Format("{0:yyyy-MM-dd}", list.start_date));
+                    subject = subject.Replace("[nomination quota]", list.quota.ToString());
+                    subject = subject.Replace("[nomination remarks]", list.remarks);
+                    subject = subject.Replace("[nomination directlink]", "<a href='" + directlink + "' target='_blank'>" + directlink + "</a>");
+
+                    Notification notification = new Notification
+                    {
+                        send_time = DateTime.Now,
+                        sender = notificationtype.NotificationTemplate.sender,
+                        subject = subject,
+                        body = body,
+                        status_id = notificationstatus.id,
+                        type_id = notificationtype.id,
+                        template_id = notificationtype.NotificationTemplate.id,
+                        nomination_id = list.nomination_id,
+                        created = DateTime.Now,
+                        created_by = User.Identity.Name,
+                        modified = DateTime.Now,
+                        modified_by = User.Identity.Name
+                    };
+                    //db.Notifications.Add(notification);
+                    //db.SaveChanges();
+
+                    notification.NotificationRecipients.Add(new NotificationRecipient
+                    {
+                        email = list.UserProfile.UserName.Trim() + "@ust.hk",
+                        recipient_type = "to"
+                    });
+
+                    if (!String.IsNullOrEmpty(notificationtype.NotificationTemplate.cc))
+                    {
+                        List<NotificationRecipient> ccList = new List<NotificationRecipient>();
+                        notificationtype.NotificationTemplate.cc.Split(',').ToList().ForEach(s => ccList.Add(new NotificationRecipient { email = s.Trim(), recipient_type = "cc" }));
+                        notification.NotificationRecipients = notification.NotificationRecipients.Concat(ccList).ToList();
+                    }
+
+                    if (!String.IsNullOrEmpty(notificationtype.NotificationTemplate.bcc))
+                    {
+                        List<NotificationRecipient> bccList = new List<NotificationRecipient>();
+                        notificationtype.NotificationTemplate.bcc.Split(',').ToList().ForEach(s => bccList.Add(new NotificationRecipient { email = s.Trim(), recipient_type = "bcc" }));
+                        notification.NotificationRecipients = notification.NotificationRecipients.Concat(bccList).ToList();
+                    }
+
+                    db.Notifications.Add(notification);
+                    try
+                    {
+                        db.SaveChanges();
+                        return notification;
+                    }
+                    catch (Exception e)
+                    {
+                        Session["FlashMessage"] += "<br/>Failed to create notification record. <br/>" + e.Message;
+                    }
+                }
+                else
+                {
+                    Session["FlashMessage"] += "<br/>Notification Template is not correctly configured<br/>";
                 }
             }
             return null;
@@ -662,7 +891,18 @@ namespace SchoolOfScience.Controllers
 
         public Notification SendNotification(Notification notification)
         {
-            bool emailsent = false;
+            bool error = false;
+            int batch = 0;
+            int count = 0;
+
+            var SentStatus = db.NotificationStatus.FirstOrDefault(s => s.sent && !s.error);
+            var SentErrorStatus = db.NotificationStatus.FirstOrDefault(s => s.sent && s.error);
+            if (SentStatus == null || SentErrorStatus == null)
+            {
+                Session["FlashMessage"] += "<br/>Sent or Sent with Error status not found. <br/>";
+                return null;
+            }
+
             if (notification != null)
             {
                 try
@@ -695,22 +935,22 @@ namespace SchoolOfScience.Controllers
                     notification.NotificationRecipients.Where(r => r.recipient_type == "to").ToList().ForEach(r => mail.To.Add(r.email));
                     notification.NotificationRecipients.Where(r => r.recipient_type == "cc").ToList().ForEach(r => mail.CC.Add(r.email));
 
+
                     if (notification.NotificationRecipients.Count() < 150)
                     {
                         notification.NotificationRecipients.Where(r => r.recipient_type == "bcc").ToList().ForEach(r => mail.Bcc.Add(r.email));
-                        smtp.Send(mail);
+                        error = Send(smtp, mail);
                     }
                     else
                     {
-                        int count = 0;
                         foreach (var recipient in notification.NotificationRecipients.Where(r => r.recipient_type == "bcc"))
                         {
                             mail.Bcc.Add(recipient.email);
                             count++;
                             if (count % 150 == 0)
                             {
-                                smtp.Send(mail);
-                                emailsent = true;
+                                batch++;
+                                error = Send(smtp, mail, batch);
                                 //reset Bcc List
                                 mail.Bcc.Clear();
                             }
@@ -718,13 +958,19 @@ namespace SchoolOfScience.Controllers
 
                         if (mail.Bcc.Count() > 0)
                         {
-                            smtp.Send(mail);
+                            batch++;
+                            error = Send(smtp, mail, batch);
                         }
                     }
-                    emailsent = true;
 
-                    NotificationStatus status = db.NotificationStatus.Where(s => s.name == "Sent").SingleOrDefault();
-                    notification.status_id = status.id;
+                    if (error)
+                    {
+                        notification.status_id = SentErrorStatus.id;
+                    }
+                    else
+                    {
+                        notification.status_id = SentStatus.id;
+                    }
                     notification.send_time = DateTime.Now;
                     notification.modified = DateTime.Now;
                     notification.modified_by = User.Identity.Name;
@@ -733,23 +979,32 @@ namespace SchoolOfScience.Controllers
                 }
                 catch (Exception e)
                 {
-                    if (emailsent)
-                    {
-                        Session["FlashMessage"] += "<br/><br/>Notifications sent with error. <br/><br/>" + e.Message;
-                        NotificationStatus status = db.NotificationStatus.Where(s => s.name == "Error").SingleOrDefault();
-                        notification.status_id = status.id;
-                        notification.send_time = DateTime.Now;
-                        notification.modified = DateTime.Now;
-                        notification.modified_by = User.Identity.Name;
-                        return notification;
-                    }
-                    else
-                    {
-                        Session["FlashMessage"] += "<br/><br/>Failed to send notifications. <br/><br/>" + e.Message;
-                    }
+                    Session["FlashMessage"] += "<br/>Failed to send notifications. <br/>" + e.Message;
                 }
             }
             return notification;
+        }
+
+        public bool Send(SmtpClient smtp, MailMessage mail, int batch = 0)
+        {
+            try
+            {
+                smtp.Send(mail);
+                if (batch > 0)
+                {
+                    Session["FlashMessage"] += "<br/>Batch " + batch + " notifications sent. <br/>";
+                }
+                else
+                {
+                    Session["FlashMessage"] += "<br/>Notifications sent. <br/>";
+                }
+            }
+            catch (Exception e)
+            {
+                Session["FlashMessage"] += "<br/>Batch " + batch + " notifications sent with error. <br/>" + e.Message;
+                return false;
+            }
+            return true;
         }
 
         //convert a razor view to string, for excel export

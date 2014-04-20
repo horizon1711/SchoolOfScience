@@ -18,6 +18,7 @@ namespace SchoolOfScience.Models
         {
             this.Appointments = new HashSet<Appointment>();
             this.SystemUsers = new HashSet<SystemUser>();
+            this.UserProfiles1 = new HashSet<SystemUser>();
         }
     
         public int id { get; set; }
@@ -28,5 +29,6 @@ namespace SchoolOfScience.Models
     
         public virtual ICollection<Appointment> Appointments { get; set; }
         public virtual ICollection<SystemUser> SystemUsers { get; set; }
+        public virtual ICollection<SystemUser> UserProfiles1 { get; set; }
     }
 }

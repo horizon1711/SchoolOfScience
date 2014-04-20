@@ -24,11 +24,27 @@
         </div>
 
         <div class="editor-label">
-            @Html.LabelFor(model => model.locked)
+            @Html.LabelFor(model => model.sent)
         </div>
         <div class="editor-field">
-            @Html.EditorFor(model => model.locked)
-            @Html.ValidationMessageFor(model => model.locked)
+            @Html.EditorFor(model => model.sent)
+            @Html.ValidationMessageFor(model => model.sent)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.error)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.error)
+            @Html.ValidationMessageFor(model => model.error)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.default_status)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.default_status)
+            @Html.ValidationMessageFor(model => model.default_status)
         </div>
 
         <p>

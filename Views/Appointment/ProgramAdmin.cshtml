@@ -1,0 +1,57 @@
+﻿@model IEnumerable<SchoolOfScience.Models.SystemUser>
+
+@{
+    ViewBag.Title = "ProgramAdminList";
+}
+
+<h2>ProgramAdmin Management</h2>
+
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>
+                UserId
+            </th>
+            <th>
+                UserName
+            </th>
+            <th>
+                Hosts Managed
+            </th>
+            <th>
+                
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>
+                    @user.UserId
+                </td>
+                <td>
+                    @user.UserName
+                </td>
+                <td>
+                    @foreach (var host in user.AppointmentHosts)
+                    {
+                        <div>@host.name</div>
+                    }
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "EditProgramAdmin", new { userid = user.UserId })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+@section Scripts {
+    <script>
+        $(function () {
+            $(".data-table").dataTable();
+        });
+    </script>
+}

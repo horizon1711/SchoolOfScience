@@ -18,7 +18,7 @@ namespace SchoolOfScience.Controllers
         //
         // GET: /StudentProfile/
 
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP,CommTutor,ProgramAdmin,Nominator")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP,CommTutor,Nominator")]
         public ActionResult Index()
         {
             ViewBag.careerList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_career }).Distinct().OrderBy(t => t.text), "text", "text");
@@ -55,8 +55,8 @@ namespace SchoolOfScience.Controllers
                 && (String.IsNullOrEmpty(Form["academic_plan_description"]) || s.academic_plan_description == Form["academic_plan_description"])
                 && (String.IsNullOrEmpty(Form["academic_level"]) || s.academic_level == Form["academic_level"])
                 && (String.IsNullOrEmpty(Form["studentid"]) || s.id == Form["studentid"])
-                && (String.IsNullOrEmpty(Form["firstname"]) || (s.name.IndexOf(Form["firstname"], StringComparison.OrdinalIgnoreCase) >= 0 && s.name.IndexOf(Form["firstname"], StringComparison.OrdinalIgnoreCase) < s.name.IndexOf(",")))
-                && (String.IsNullOrEmpty(Form["lastname"]) || (s.name.IndexOf(Form["lastname"], StringComparison.OrdinalIgnoreCase) >= 0 && s.name.IndexOf(Form["lastname"], StringComparison.OrdinalIgnoreCase) > s.name.IndexOf(",")))
+                && (String.IsNullOrEmpty(Form["firstname"]) || (s.name.IndexOf(Form["firstname"], StringComparison.OrdinalIgnoreCase) >= 0 && s.name.IndexOf(Form["firstname"], StringComparison.OrdinalIgnoreCase) > s.name.IndexOf(",")))
+                && (String.IsNullOrEmpty(Form["lastname"]) || (s.name.IndexOf(Form["lastname"], StringComparison.OrdinalIgnoreCase) >= 0 && s.name.IndexOf(Form["lastname"], StringComparison.OrdinalIgnoreCase) < s.name.IndexOf(",")))
                 && (String.IsNullOrEmpty(Form["commentkeyword"]) || s.StudentAdvisingRemarks.Any(r => 
                     r.text.IndexOf(Form["commentkeyword"], StringComparison.OrdinalIgnoreCase) >= 0
                     && (!r.@private || r.created_by == User.Identity.Name)))
@@ -154,9 +154,9 @@ namespace SchoolOfScience.Controllers
                 //check existing application
                 programaction.existed = true;
                 //check application status
-                programaction.saved = programaction.application.ApplicationStatus.name == "Saved";
+                programaction.saved = programaction.application.ApplicationStatus.editable;
                 //check program status
-                programaction.open = application.Program.ProgramStatus.name == "Opened";
+                programaction.open = application.Program.ProgramStatus.open_for_application;
                 programactions.Add(programaction);
             }
             ViewModel.programactions = programactions;
@@ -201,9 +201,9 @@ namespace SchoolOfScience.Controllers
                 //check existing application
                 programaction.existed = true;
                 //check application status
-                programaction.saved = programaction.application.ApplicationStatus.name == "Saved";
+                programaction.saved = programaction.application.ApplicationStatus.editable;
                 //check program status
-                programaction.open = application.Program.ProgramStatus.name == "Opened";
+                programaction.open = application.Program.ProgramStatus.open_for_application;
                 programactions.Add(programaction);
             }
             ViewModel.programactions = programactions;
@@ -253,7 +253,7 @@ namespace SchoolOfScience.Controllers
         //
         // GET: /StudentProfile/AdvisingRemark/
 
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment,FacultyAdvisor,CommTutor,Nominator")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,FacultyAdvisor,CommTutor")]
         public ActionResult AdvisingRemark(string student_id = null, string opener_id = null)
         {
             ViewBag.student_id = student_id;
@@ -270,7 +270,7 @@ namespace SchoolOfScience.Controllers
         //
         // GET: /StudentProfile/ActivityRecord/
 
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment,FacultyAdvisor,CommTutor,Nominator")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,FacultyAdvisor,EDP,CommTutor,Nominator,ProgramAdmin")]
         public ActionResult ActivityRecord(string student_id = null, string opener_id = null)
         {
             ViewBag.student_id = student_id;

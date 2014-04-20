@@ -94,7 +94,7 @@ namespace SchoolOfScience.Models
         [Display(Name = "Nomination Required")]
         public bool require_nomination;
 
-        [Display(Name = "Appointment Required")]
+        [Display(Name = "Consultation Required")]
         public bool require_appointment;
 
         [Display(Name = "Desired Exchange Destinations Required")]

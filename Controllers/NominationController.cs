@@ -13,7 +13,7 @@ using SchoolOfScience.Attributes;
 
 namespace SchoolOfScience.Controllers
 {
-    public class NominationController : Controller
+    public class NominationController : ControllerBase
     {
         private SchoolOfScienceEntities db = new SchoolOfScienceEntities();
 
@@ -32,25 +32,41 @@ namespace SchoolOfScience.Controllers
         // GET: /Nomination/MyNomination
 
         [Authorize(Roles = "Nominator")]
-        public ActionResult MyNomination()
+        public ActionResult MyNomination(bool history = false)
         {
-            var nominationlevel = db.NominationLevels.Where(l => l.Nominators.Any( n => n.nominator_username == User.Identity.Name));
-            return View(nominationlevel.ToList());
+            ViewBag.history = history;
+            var nominationlist = db.NominationLists.ToList().Where(l => l.UserProfile.UserName == User.Identity.Name
+                && l.Nomination.NominationStatus.shortlisted
+                && (history || l.end_date.AddDays(1) > DateTime.Now)
+                && (!history || l.end_date.AddDays(1) <= DateTime.Now)
+                );
+            return View(nominationlist);
         }
 
         //
-        // GET: /Nomination/Nominate/5
+        // GET: /Nomination/History
 
         [Authorize(Roles = "Nominator")]
-        public ActionResult ApplicationList(int id = 0)
+        public ActionResult History()
         {
-            var level = db.NominationLevels.Find(id);
-            if (level == null || !level.Nominators.Any(n => n.nominator_username == User.Identity.Name))
+            var nominated_applications = db.NominationApplications.Where(a => a.nominated && a.NominationList.UserProfile.UserName == User.Identity.Name);
+            return View(nominated_applications.ToList());
+        }
+
+        //
+        // GET: /Nomination/ApplicationList/5
+
+        [Authorize(Roles = "Nominator")]
+        public ActionResult ApplicationList(int id = 0, bool fulldetails = false)
+        {
+            ViewBag.fulldetails = fulldetails;
+            var list = db.NominationLists.Find(id);
+            if (list == null || list.UserProfile.UserName != User.Identity.Name)
             {
                 Session["FlashMessage"] = "Program Nomination not found.";
                 return RedirectToAction("MyNomination");
             }
-            return View(level);
+            return View(list);
         }
 
         //
@@ -58,104 +74,117 @@ namespace SchoolOfScience.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Nominator")]
-        public ActionResult NominateApplication(NominationApplication nominated_application)
+        public ActionResult Nominate(NominationApplication nominated_application, string action = "save", bool fulldetails = false)
         {
-            var level = db.NominationLevels.Find(nominated_application.nomination_level_id);
-            var nominator = level.Nominators.FirstOrDefault(n => n.nominator_username == User.Identity.Name);
-            if (level == null)
+            ViewBag.fulldetails = fulldetails;
+
+            db.Entry(nominated_application).State = EntityState.Modified;
+
+            var list = db.NominationLists.Find(nominated_application.nomination_list_id);
+            var nominator = list.UserProfile.UserName;
+            if (list == null)
             {
                 Session["FlashMessage"] = "Program Nomination not found.";
                 return RedirectToAction("MyNomination");
             }
-            if (nominator == null)
+            if (nominator != User.Identity.Name)
             {
                 Session["FlashMessage"] = "Nominator not found.";
                 return RedirectToAction("MyNomination");
             }
-            if (DateTime.Now < level.start_date || DateTime.Now > level.end_date.AddDays(1))
+            if (DateTime.Now < list.start_date || DateTime.Now > list.end_date.AddDays(1))
             {
                 Session["FlashMessage"] = "Current date not in nomination period.";
-                return RedirectToAction("ApplicationList", new { id = nominated_application.nomination_level_id });
+                return RedirectToAction("MyNomination");
             }
-            if (!level.Nomination.NominationStatus.nominated)
+            if (!list.Nomination.NominationStatus.nominated && !list.Nomination.NominationStatus.shortlisted)
             {
                 Session["FlashMessage"] = "Program not in nomination status";
-                return RedirectToAction("ApplicationList", new { id = nominated_application.nomination_level_id });
+                return RedirectToAction("MyNomination");
             }
-
+             
             if (ModelState.IsValid)
             {
-                nominated_application.nominated_date = DateTime.Now;
-                if (nominated_application.id == 0)
+                if (action == "submit")
                 {
-                    if ((level.quota != 0 && level.NominationApplications.Count() >= level.quota)
-                        || (nominator.quota != 0 && nominator.NominationApplications.Count() >= nominator.quota)
-                    )
+                    if (list.quota != 0 && list.NominationApplications.Count(a => a.nominated) >= list.quota)
                     {
                         Session["FlashMessage"] = "Nomination quota exceeded.";
-                        return RedirectToAction("ApplicationList", new { id = nominated_application.nomination_level_id });
+                        return RedirectToAction("ApplicationList", new { id = nominated_application.nomination_list_id, fulldetails = fulldetails });
                     }
-                    db.NominationApplications.Add(nominated_application);
-                }
-                else
-                {
-                    db.Entry(nominated_application).State = EntityState.Modified;
-                }
 
-                var status = db.NominationStatus.FirstOrDefault(s => s.nominated && !s.shortlisted);
-                if (status != null)
-                {
-                    level.Nomination.NominationStatus = status;
+                    nominated_application.nominate_date = DateTime.Now;
+                    nominated_application.nominated = true;
+
+                    var status = db.NominationStatus.FirstOrDefault(s => s.nominated && s.shortlisted);
+                    if (status != null)
+                    {
+                        list.Nomination.NominationStatus = status;
+                    }
                 }
 
                 try
                 {
                     db.SaveChanges();
+                    if (list.quota != 0 && list.NominationApplications.Count(a => a.nominated) == list.quota)
+                    {
+                        nominated_application.Application = db.Applications.Find(nominated_application.application_id);
+                        SendNotification(CreateNotification("ApplicationNominated", list));
+                        Session["FlashMessage"] = "Nomination successful. Quota has been reached.";
+                    }
+                    else
+                    {
+                        Session["FlashMessage"] = "Nomination successful.";
+                    }
                 }
                 catch (Exception e)
                 {
                     Session["FlashMessage"] = "Failed to nominate the application.<br/><br/>" + e.Message;
                 }
             }
-            return RedirectToAction("ApplicationList", new { id = nominated_application.nomination_level_id });
+            
+            return RedirectToAction("ApplicationList", new { id = nominated_application.nomination_list_id, fulldetails = fulldetails });
         }
 
         //
         // GET: /Nomination/CancelNominateApplication/5
 
         [Authorize(Roles = "Nominator")]
-        public ActionResult CancelNominateApplication(int id = 0)
+        public ActionResult CancelNominateApplication(int id = 0, bool fulldetails = false)
         {
+            ViewBag.fulldetails = fulldetails;
             var nominated_application = db.NominationApplications.Find(id);
-            var level = nominated_application.NominationLevel;
-            var nominator = level.Nominators.FirstOrDefault(n => n.nominator_username == User.Identity.Name);
+            var list = nominated_application.NominationList;
+            var nominator = list.UserProfile.UserName;
+
             if (nominated_application == null)
             {
                 Session["FlashMessage"] = "Nominated application not found.";
                 return RedirectToAction("MyNomination");
             }
-            if (level == null)
+            if (list == null)
             {
                 Session["FlashMessage"] = "Program Nomination not found.";
                 return RedirectToAction("MyNomination");
             }
-            if (nominator == null)
+            if (nominator != User.Identity.Name)
             {
                 Session["FlashMessage"] = "Nominator not found.";
                 return RedirectToAction("MyNomination");
             }
-            if (DateTime.Now < level.start_date || DateTime.Now > level.end_date.AddDays(1))
+            if (DateTime.Now < list.start_date || DateTime.Now > list.end_date.AddDays(1))
             {
                 Session["FlashMessage"] = "Current date not in nomination period.";
-                return RedirectToAction("ApplicationList", new { id = nominated_application.nomination_level_id });
+                return RedirectToAction("MyNomination");
             }
-            if (!level.Nomination.NominationStatus.nominated)
+            if (!list.Nomination.NominationStatus.nominated && !list.Nomination.NominationStatus.shortlisted)
             {
                 Session["FlashMessage"] = "Program not in nomination status";
-                return RedirectToAction("ApplicationList", new { id = nominated_application.nomination_level_id });
+                return RedirectToAction("MyNomination");
             }
 
-            db.NominationApplications.Remove(nominated_application);
+            nominated_application.nominated = false;
+            nominated_application.nominate_date = null;
 
             try
             {
@@ -165,7 +194,9 @@ namespace SchoolOfScience.Controllers
             {
                 Session["FlashMessage"] = "Failed to cancel the nomination.<br/><br/>" + e.Message;
             }
-            return RedirectToAction("ApplicationList", new { id = nominated_application.nomination_level_id });
+
+            return RedirectToAction("ApplicationList", new { id = nominated_application.nomination_list_id, fulldetails = fulldetails });
+            
         }
 
         //
@@ -189,6 +220,8 @@ namespace SchoolOfScience.Controllers
         [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
         public ActionResult Create(int programid = 0)
         {
+            ViewBag.statusList = db.NominationStatus;
+
             var program = db.Programs.Find(programid);
             if (program == null || !program.require_nomination)
             {
@@ -196,10 +229,10 @@ namespace SchoolOfScience.Controllers
                 return RedirectToAction("Index");
             }
 
-            var status = db.NominationStatus.FirstOrDefault(x => x.shortlisted);
+            var status = db.NominationStatus.SingleOrDefault(x => x.default_status);
             if (status == null)
             {
-                Session["FlashMessage"] = "Shortlisted status not found";
+                Session["FlashMessage"] = "Default status not single or not found. Please go to Configuration->Nomination->Edit Status to configure.";
                 return RedirectToAction("Index");
             }
 
@@ -213,7 +246,6 @@ namespace SchoolOfScience.Controllers
                 end_date = DateTime.Now.Date.AddMonths(1)
             };
 
-            ViewBag.statusList = new SelectList(db.NominationStatus, "id", "name");
             return View(nomination);
         }
 
@@ -225,9 +257,10 @@ namespace SchoolOfScience.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(Nomination nomination, string applicationids = null)
         {
+            ViewBag.statusList = db.NominationStatus;
+
             if (ModelState.IsValid)
             {
-                ViewBag.statusList = new SelectList(db.NominationStatus, "id", "name");
                 var program = db.Programs.Find(nomination.program_id);
                 if (program == null || !program.require_nomination)
                 {
@@ -240,47 +273,6 @@ namespace SchoolOfScience.Controllers
                 {
                     Session["FlashMessage"] = "End date must be equal to or greater than start date.";
                     return View(nomination);
-                }
-                NominationLevel level = new NominationLevel
-                {
-                    nomination_level = 0,//level 0 represents shortlisted by mySCI admin staff
-                    start_date = nomination.start_date,
-                    end_date = nomination.end_date,
-                    quota = 0//default no limit for shortlisted applications
-                };
-                nomination.NominationLevels.Add(level);
-
-                var nominator_user = db.SystemUsers.FirstOrDefault(u => u.UserName == User.Identity.Name);
-                if (nominator_user == null)
-                {
-                    Session["FlashMessage"] = "User not found";
-                    return RedirectToAction("Index");
-                }
-                Nominator nominator = new Nominator
-                {
-                    NominationLevel = level,
-                    nominator_username = nominator_user.UserName,
-                    quota = 0//default no limit for shortlisted applications
-                };
-                level.Nominators.Add(nominator);
-
-                if (!String.IsNullOrEmpty(applicationids))
-                {
-                    var i = applicationids.Split('_');
-                    var shortlisted_applications = db.Applications.Where(p => i.Contains(SqlFunctions.StringConvert((double)p.id).Trim()));
-                    if (shortlisted_applications != null)
-                    {
-                        foreach (Application application in shortlisted_applications)
-                        {
-                            level.NominationApplications.Add(new NominationApplication
-                            {
-                                Application = application,
-                                Nominator = nominator,
-                                NominationLevel = level,
-                                nominated_date = DateTime.Now,
-                            });
-                        }
-                    }
                 }
 
                 db.Nominations.Add(nomination);
@@ -296,92 +288,94 @@ namespace SchoolOfScience.Controllers
                     return View(nomination);
                 }
             }
-            return RedirectToAction("AddLevel", new { id = nomination.id });
+            return RedirectToAction("CreateList", new { nomination_id = nomination.id });
         }
 
         //
-        // GET: /Nomination/AddLevel/5
+        // GET: /Nomination/CreateList/5
 
         [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
-        public ActionResult AddLevel(int id = 0)
+        public ActionResult CreateList(int nomination_id = 0)
         {
-            NominationLevel level = new NominationLevel();
-            var nomination = db.Nominations.Find(id);
-            if (nomination == null || !nomination.NominationLevels.Any(l => l.nomination_level == 0))
+            var nomination = db.Nominations.Find(nomination_id);
+            if (nomination == null)
             {
                 Session["FlashMessage"] = "Nomination not found";
                 return RedirectToAction("Index");
             }
-            level.nomination_id = nomination.id;
-            level.Nomination = nomination;
-            level.start_date = nomination.start_date;
-            level.end_date = nomination.end_date;
-            level.quota = 0;
-            level.nomination_level = nomination.NominationLevels.Max(l => l.nomination_level) + 1;
+
+            NominationList list = new NominationList
+            {
+                nomination_id = nomination.id,
+                Nomination = nomination,
+                start_date = nomination.start_date,
+                end_date = nomination.end_date,
+                nomination_level = 1,
+                remarks = nomination.Program.special_criteria
+            };
 
             ViewBag.nominatorList = db.SystemUsers.Where(u => u.UserRoles.Any(r => r.RoleName == "Nominator"));
 
-            return View(level);
+            return View(list);
         }
 
         //
-        // POST: /Nomination/AddLevel
+        // POST: /Nomination/CreateList
 
         [HttpPost]
         [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
         [ValidateAntiForgeryToken]
-        public ActionResult AddLevel(NominationLevel level, int[] nominatorids)
+        public ActionResult CreateList(NominationList list, string applicationids)
         {
             ViewBag.nominatorList = db.SystemUsers.Where(u => u.UserRoles.Any(r => r.RoleName == "Nominator"));
-            var nomination = db.Nominations.Find(level.nomination_id);
+
+            var nomination = db.Nominations.Find(list.nomination_id);
             if (nomination == null)
             {
                 Session["FlashMessage"] = "Nomination not found.";
                 return RedirectToAction("Index");
             }
-            level.Nomination = nomination;
+            list.Nomination = nomination;
 
-            if (nominatorids != null)
+            if (list.start_date < nomination.start_date
+                || list.start_date > nomination.end_date
+                || list.end_date < nomination.start_date
+                || list.end_date > nomination.end_date)
             {
-                var nominator_users = db.SystemUsers.Where(u => nominatorids.Contains(u.UserId));
-                foreach (var nominator_user in nominator_users)
+                Session["FlashMessage"] = "Nomination list period out of range. Must be between " + String.Format("{0:yyyy-MM-dd}", nomination.start_date) + " and " + String.Format("{0:yyyy-MM-dd}", nomination.end_date) + ".";
+                return View(list);
+            }
+            if (list.start_date > list.end_date)
+            {
+                Session["FlashMessage"] = "End date must be equal to or greater than start date.";
+                return View(list);
+            }
+
+            if (applicationids != null)
+            {
+                var ids = applicationids.Split('_');
+                var shortlisted_applications = db.Applications.Where(p => ids.Contains(SqlFunctions.StringConvert((double)p.id).Trim()));
+                foreach (Application application in shortlisted_applications)
                 {
-                    level.Nominators.Add(new Nominator
+                    list.NominationApplications.Add(new NominationApplication
                     {
-                        NominationLevel = level,
-                        nominator_username = nominator_user.UserName,
-                        quota = level.quota
+                        Nomination = list.Nomination,
+                        Application = application,
+                        nominate_date = null
                     });
                 }
             }
-            else
-            {
-                Session["FlashMessage"] = "Nominators must not be empty.";
-                return View(level);
-            }
-            if (level.start_date < nomination.start_date
-                || level.start_date > nomination.end_date
-                || level.end_date < nomination.start_date
-                || level.end_date > nomination.end_date)
-            {
-                Session["FlashMessage"] = "Nomination level period out of range. Must be between " + String.Format("{0:yyyy-MM-dd}", nomination.start_date) + " and " + String.Format("{0:yyyy-MM-dd}", nomination.end_date) + ".";
-                return View(level);
-            }
-            if (level.start_date > level.end_date)
-            {
-                Session["FlashMessage"] = "End date must be equal to or greater than start date.";
-                return View(level);
-            }
+
             if (ModelState.IsValid)
             {
-                db.NominationLevels.Add(level);
+                db.NominationLists.Add(list);
                 try
                 {
                     db.SaveChanges();
                 }
                 catch (Exception e)
                 {
-                    Session["FlashMessage"] = "Failed to add nomination level.<br/><br/>" + e.Message;
+                    Session["FlashMessage"] = "Failed to add nomination list.<br/><br/>" + e.Message;
                 }
             }
             return RedirectToAction("Details", new { id = nomination.id });
@@ -393,13 +387,13 @@ namespace SchoolOfScience.Controllers
         //[Authorize(Roles = "Admin,Advising,StudentDevelopment")]
         public ActionResult Edit(int id = 0)
         {
+            ViewBag.statusList = db.NominationStatus;
             Nomination nomination = db.Nominations.Find(id);
             if (nomination == null)
             {
                 Session["FlashMessage"] = "Nomination not found";
                 return RedirectToAction("Index");
             }
-            ViewBag.statusList = new SelectList(db.NominationStatus, "id", "name");
             return View(nomination);
         }
 
@@ -411,7 +405,8 @@ namespace SchoolOfScience.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(Nomination nomination, string applicationids = null)
         {
-            ViewBag.statusList = new SelectList(db.NominationStatus, "id", "name");
+            ViewBag.statusList = db.NominationStatus;
+
             var program = db.Programs.Find(nomination.program_id);
             if (program == null || !program.require_nomination)
             {
@@ -428,77 +423,17 @@ namespace SchoolOfScience.Controllers
             if (ModelState.IsValid)
             {
                 db.Entry(nomination).State = EntityState.Modified;
-
-                var level = db.NominationLevels.FirstOrDefault(l => l.nomination_id == nomination.id && l.nomination_level == 0);
-                if (level == null)
+                
+                var lists = db.NominationLists.Where(l => l.nomination_id == nomination.id);
+                foreach (var list in lists)
                 {
-                    level = new NominationLevel
+                    if (list.start_date < nomination.start_date
+                        || list.start_date > nomination.end_date
+                        || list.end_date < nomination.start_date
+                        || list.end_date > nomination.end_date)
                     {
-                        nomination_level = 0,//level 0 represents shortlisted by mySCI admin staff
-                        start_date = nomination.start_date,
-                        end_date = nomination.end_date
-                    };
-                    nomination.NominationLevels.Add(level);
-                }
-                else
-                {
-                    level.start_date = nomination.start_date;
-                    level.end_date = nomination.end_date;
-                }
-
-
-                var otherlevels = db.NominationLevels.Where(l => l.nomination_id == nomination.id && l.nomination_level > 0);
-                foreach (var otherlevel in otherlevels)
-                {
-                    if (otherlevel.start_date < nomination.start_date
-                        || otherlevel.start_date > nomination.end_date
-                        || otherlevel.end_date < nomination.start_date
-                        || otherlevel.end_date > nomination.end_date)
-                    {
-                        Session["FlashMessage"] = "Nomination period out of range. Related nomination levels period must be between nomination period. (Error: Nomination Level " + otherlevel.nomination_level.ToString() + " " + String.Format("{0:yyyy-MM-dd}", otherlevel.start_date) + " to " + String.Format("{0:yyyy-MM-dd}", otherlevel.end_date) + ")";
-                        nomination.NominationLevels.Add(level);
+                        Session["FlashMessage"] = "Nomination period out of range. Nomination lists period must be within nomination period.";
                         return View(nomination);
-                    }
-                }
-
-                var nominator = level.Nominators.FirstOrDefault(n => n.nominator_username == User.Identity.Name);
-                if (nominator == null)
-                {
-                    var nominator_user = db.SystemUsers.FirstOrDefault(u => u.UserName == User.Identity.Name);
-                    if (nominator_user == null)
-                    {
-                        Session["FlashMessage"] = "User not found";
-                        return RedirectToAction("Index");
-                    }
-                    nominator = new Nominator
-                    {
-                        NominationLevel = level,
-                        nominator_username = nominator_user.UserName,
-                    };
-                    level.Nominators.Add(nominator);
-                }
-
-                var nominated_applications = db.NominationApplications.Where(a => a.nomination_level_id == level.id);
-                foreach (var nominated_application in nominated_applications)
-                {
-                    db.NominationApplications.Remove(nominated_application);
-                }
-                if (!String.IsNullOrEmpty(applicationids))
-                {
-                    var i = applicationids.Split('_');
-                    var shortlisted_applications = db.Applications.Where(p => i.Contains(SqlFunctions.StringConvert((double)p.id).Trim()));
-                    if (shortlisted_applications != null)
-                    {
-                        foreach (Application application in shortlisted_applications)
-                        {
-                            level.NominationApplications.Add(new NominationApplication
-                            {
-                                Application = application,
-                                Nominator = nominator,
-                                NominationLevel = level,
-                                nominated_date = DateTime.Now,
-                            });
-                        }
                     }
                 }
 
@@ -516,100 +451,133 @@ namespace SchoolOfScience.Controllers
         }
 
         //
-        // GET: /Nomination/EditLevel/5
+        // GET: /Nomination/EditList/5
 
         [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
-        public ActionResult EditLevel(int id = 0)
+        public ActionResult EditList(int id = 0)
         {
-            NominationLevel level = db.NominationLevels.Find(id);
-            if (level == null)
+            NominationList list = db.NominationLists.Find(id);
+            if (list == null)
             {
-                Session["FlashMessage"] = "Nomination level not found";
+                Session["FlashMessage"] = "Nomination list not found";
                 return RedirectToAction("Index");
             }
             ViewBag.nominatorList = db.SystemUsers.Where(u => u.UserRoles.Any(r => r.RoleName == "Nominator"));
-            ViewBag.selectedNominators = db.SystemUsers.ToList().Where(u => level.Nominators.Any(n => n.nominator_username == u.UserName)).Select(n => n.UserId);
-            return View(level);
+            return View(list);
         }
 
         //
-        // POST: /Nomination/EditLevel
+        // POST: /Nomination/EditList
 
         [HttpPost]
         [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
-        public ActionResult EditLevel(NominationLevel level, int[] nominatorids)
+        public ActionResult EditList(NominationList model, string applicationids)
         {
             ViewBag.nominatorList = db.SystemUsers.Where(u => u.UserRoles.Any(r => r.RoleName == "Nominator"));
+
+            var list = db.NominationLists.Find(model.id);
+
             if (ModelState.IsValid)
             {
-                db.Entry(level).State = EntityState.Modified;
+                db.Entry(list).CurrentValues.SetValues(model);
 
-                if (nominatorids != null)
+                if (list.start_date < list.Nomination.start_date
+                    || list.start_date > list.Nomination.end_date
+                    || list.end_date < list.Nomination.start_date
+                    || list.end_date > list.Nomination.end_date)
                 {
-                    var nominator_users = db.SystemUsers.Where(u => nominatorids.Contains(u.UserId));
-                    var nominators = db.Nominators.Where(n => n.nomination_level_id == level.id);
+                    Session["FlashMessage"] = "Nomination list period out of range. Must be between " + String.Format("{0:yyyy-MM-dd}", list.Nomination.start_date) + " and " + String.Format("{0:yyyy-MM-dd}", list.Nomination.end_date) + ".";
+                    return View(list);
+                }
+                if (list.start_date > list.end_date)
+                {
+                    Session["FlashMessage"] = "End date must be equal to or greater than start date.";
+                    return View(list);
+                }
 
-                    foreach (var nominator in nominators)
+                if (applicationids != null)
+                {
+                    var ids = applicationids.Split('_');
+                    foreach (var application in list.Nomination.Program.Applications.Where(a => a.ApplicationStatus.submitted && !a.ApplicationStatus.rejected))
                     {
-                        nominator.quota = level.quota;
-                    }
-
-                    foreach (var nominator in nominators.Where(n => n.NominationApplications.Count() == 0 && !nominator_users.Any(u => u.UserName == n.nominator_username)))
-                    {
-                        db.Nominators.Remove(nominator);
-                    }
-
-                    foreach (var nominator_user in nominator_users)
-                    {
-                        if (!nominators.Any(n => n.nominator_username == nominator_user.UserName))
+                        if (list.NominationApplications.Any(a => a.application_id == application.id) != ids.Contains(application.id.ToString()))
                         {
-                            level.Nominators.Add(new Nominator
+                            if (ids.Contains(application.id.ToString()))
                             {
-                                NominationLevel = level,
-                                nominator_username = nominator_user.UserName,
-                                quota = level.quota
-                            });
+                                list.NominationApplications.Add(new NominationApplication
+                                {
+                                    Nomination = list.Nomination,
+                                    Application = application,
+                                    nominate_date = null
+                                });
+                            }
+                            else
+                            {
+                                db.NominationApplications.Remove(list.NominationApplications.FirstOrDefault(a => a.application_id == application.id));
+                            }
                         }
                     }
                 }
                 else
                 {
-                    Session["FlashMessage"] = "Nominators must not be empty.";
-                    return View(level);
+                    List<NominationApplication> applications = list.NominationApplications.ToList();
+                    foreach (var item in applications)
+                    {
+                        db.NominationApplications.Remove(item);
+                    }
                 }
 
-                var nomination = db.Nominations.Find(level.nomination_id);
-                if (nomination == null)
-                {
-                    Session["FlashMessage"] = "Nomination not found.";
-                    return RedirectToAction("Index");
-                }
-                if (level.start_date < nomination.start_date
-                    || level.start_date > nomination.end_date
-                    || level.end_date < nomination.start_date
-                    || level.end_date > nomination.end_date)
-                {
-                    Session["FlashMessage"] = "Nomination level period out of range. Must be between " + String.Format("{0:yyyy-MM-dd}", nomination.start_date) + " and " + String.Format("{0:yyyy-MM-dd}", nomination.end_date) + ".";
-                    return View(level);
-                }
-                if (level.start_date > level.end_date)
-                {
-                    Session["FlashMessage"] = "End date must be equal to or greater than start date.";
-                    return View(level);
-                }
+
+
+
+                //List<NominationApplication> applications =  list.NominationApplications.ToList();
+                //foreach (var item in applications)
+                //{
+                //    db.NominationApplications.Remove(item);
+                //}
+                //if (applicationids != null)
+                //{
+                //    var ids = applicationids.Split('_');
+                //    var shortlisted_applications = db.Applications.Where(p => ids.Contains(SqlFunctions.StringConvert((double)p.id).Trim()));
+                //    foreach (Application application in shortlisted_applications)
+                //    {
+                //        list.NominationApplications.Add(new NominationApplication
+                //        {
+                //            Nomination = list.Nomination,
+                //            Application = application,
+                //            nominate_date = null
+                //        });
+                //    }
+                //}
 
                 try
                 {
                     db.SaveChanges();
-                    return RedirectToAction("Details", new { id = nomination.id });
+                    return RedirectToAction("Details", new { id = list.Nomination.id });
                 }
                 catch (Exception e)
                 {
-                    Session["FlashMessage"] = "Failed to edit nomination level.<br/><br/>" + e.Message;
+                    Session["FlashMessage"] = "Failed to edit nomination list.<br/><br/>" + e.Message;
                 }
             }
 
-            return View(level);
+            return View(list);
+        }
+        
+        //
+        // GET: /Nomination/Notify/5
+
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
+        public ActionResult Notify(int id = 0)
+        {
+            var list = db.NominationLists.Find(id);
+            if (list == null)
+            {
+                Session["FlashMessage"] = "Nomination list not found";
+                return RedirectToAction("Details", new { id = list.Nomination.id });
+            }
+            SendNotification(CreateNotification("NominationShortlisted", list));
+            return RedirectToAction("Details", new { id = list.Nomination.id });
         }
 
         //
@@ -625,20 +593,15 @@ namespace SchoolOfScience.Controllers
                 return RedirectToAction("Index");
             }
 
-            List<NominationLevel> levels = nomination.NominationLevels.ToList();
-            foreach (var level in levels)
+            List<NominationList> lists = nomination.NominationLists.ToList();
+            foreach (var list in lists)
             {
-                List<NominationApplication> applications = level.NominationApplications.ToList();
+                List<NominationApplication> applications = list.NominationApplications.ToList();
                 foreach (var item in applications)
                 {
                     db.NominationApplications.Remove(item);
                 }
-                List<Nominator> nominators = level.Nominators.ToList();
-                foreach (var item in nominators)
-                {
-                    db.Nominators.Remove(item);
-                }
-                db.NominationLevels.Remove(level);
+                db.NominationLists.Remove(list);
             }
 
             db.Nominations.Remove(nomination);
@@ -656,34 +619,28 @@ namespace SchoolOfScience.Controllers
         }
 
         //
-        // GET: /Nomination/DeleteLevel/5
+        // GET: /Nomination/DeleteList/5
 
         [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
-        public ActionResult DeleteLevel(int id = 0)
+        public ActionResult DeleteList(int id = 0)
         {
-            NominationLevel level = db.NominationLevels.Find(id);
-            if (level == null)
+            NominationList list = db.NominationLists.Find(id);
+            if (list == null)
             {
-                Session["FlashMessage"] = "Nomination level not found";
+                Session["FlashMessage"] = "Nomination list not found";
                 return RedirectToAction("Index");
             }
 
-            var nominationid = level.Nomination.id;
+            var nominationid = list.Nomination.id;
 
-            foreach (var deletelevel in db.NominationLevels.Where(l => l.nomination_level >= level.nomination_level))
+            List<NominationApplication> applications = list.NominationApplications.ToList();
+            foreach (var item in applications)
             {
-                List<NominationApplication> applications = deletelevel.NominationApplications.ToList();
-                foreach (var item in applications)
-                {
-                    db.NominationApplications.Remove(item);
-                }
-                List<Nominator> nominators = deletelevel.Nominators.ToList();
-                foreach (var item in nominators)
-                {
-                    db.Nominators.Remove(item);
-                }
-                db.NominationLevels.Remove(deletelevel);
+                db.NominationApplications.Remove(item);
             }
+
+            db.NominationLists.Remove(list);
+            
 
             try
             {
@@ -691,7 +648,7 @@ namespace SchoolOfScience.Controllers
             }
             catch (Exception e)
             {
-                Session["FlashMessage"] = "Failed to cancel nomination level.<br/><br/>" + e.Message;
+                Session["FlashMessage"] = "Failed to cancel nomination list.<br/><br/>" + e.Message;
             }
 
             return RedirectToAction("Details", new { id = nominationid });

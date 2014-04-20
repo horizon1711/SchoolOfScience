@@ -183,8 +183,12 @@ namespace SchoolOfScience.Controllers
                                  select c;
                 foreach (var activity in activities)
                 {
-                    db.StudentActivities.Add(activity);
-                    count++;
+                    var student = db.StudentProfiles.Find(activity.student_id);
+                    if (student != null)
+                    {
+                        db.StudentActivities.Add(activity);
+                        count++;
+                    }
                 }
                 db.SaveChanges();
                 Session["FlashMessage"] = count + " record(s) successfully imported.";
