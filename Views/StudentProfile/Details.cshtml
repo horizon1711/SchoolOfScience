@@ -433,6 +433,15 @@
     </div>
 </div>
 
+<div class="clear-fix"></div>
+
+@if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment"))
+{
+<p>
+    @Html.ActionLink("Generate CV as MS-WORD Document", "ExportWord", new { id = Model.student.id })
+</p>
+}
+
 @Scripts.Render("~/bundles/gridalicious")
 <script>
     $(function () {

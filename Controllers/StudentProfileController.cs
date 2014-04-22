@@ -287,6 +287,7 @@ namespace SchoolOfScience.Controllers
         //
         // GET: /StudentProfile/ExportWord/5
 
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,StudentUGRD,StudentRPGTPG,StudentNUGD")]
         public ActionResult ExportWord(string id)
         {
             if (String.IsNullOrEmpty(id))

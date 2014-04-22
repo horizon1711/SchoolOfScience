@@ -78,7 +78,7 @@
             <tr>
                 <td style="text-align: left;"><b>CANDIDATE FOR @Model.academic_plan_description </b></td>
                 <td style="text-align: right; vertical-align: top;">
-                    @if (!String.IsNullOrEmpty(@Model.StudentAdmission.Cohort_Term_Description))
+                    @if (Model.StudentAdmission != null)
                     {
                         <b>@Model.StudentAdmission.Cohort_Term_Description.Substring(0, 4) to Present</b>
                     }
@@ -88,10 +88,13 @@
                 <td>The Hong Kong University of Science and Technology</td>
                 <td></td>
             </tr>
+            @if (Model.StudentAdmission != null)
+            {
             <tr>
                 <td>Cumulative Grade Average (CGA): @Model.StudentAdmission.Cumulative_GPA as of @Model.StudentAdmission.As_of_Term_Description</td>
                 <td></td>
             </tr>
+            }
         </table>
         <p>
             <b>COURSES COMPLETED</b>
