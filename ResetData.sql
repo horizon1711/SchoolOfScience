@@ -70,4 +70,5 @@ GO
 --import StudentCourseHistory (co_demo.csv)
 --import StudentAcademicPlan (sm_demo.csv)
 --import StudentAdvisor (fs_demo.csv)
+--import StudentAdmission (sm_demo.csv)
 --import ExchangeOption (exchange option excel)

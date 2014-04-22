@@ -1163,7 +1163,7 @@ namespace SchoolOfScience.Controllers
         }
 
         //
-        // POST: /Application/ExportToExcel/5
+        // GET: /Application/ExportToExcel/5
 
         public ActionResult ExportExcel(int id = 0)
         {
@@ -1173,10 +1173,10 @@ namespace SchoolOfScience.Controllers
             ViewModel.experiencetypes = db.StudentExperienceTypes.ToList();
 
             string strHtml = RenderRazorViewToString("ExportExcel", ViewModel);
-            strHtml = HttpUtility.HtmlDecode(strHtml);//Html解碼
-            byte[] b = System.Text.Encoding.UTF8.GetBytes(strHtml);//字串轉byte陣列
+            strHtml = HttpUtility.HtmlDecode(strHtml);//Html decoding
+            byte[] b = System.Text.Encoding.UTF8.GetBytes(strHtml);//convert string to byte array
             Response.Write("<meta http-equiv=Content-Type content=text/html;charset=utf-8>");
-            return File(b, "application/vnd.ms-excel", ViewModel.program.name + " Applications Export " + String.Format("{0:yyyyMMddHHmm}", DateTime.Now) + ".xls");//輸出檔案給Client端
+            return File(b, "application/vnd.ms-excel", ViewModel.program.name + " Applications Export " + String.Format("{0:yyyyMMddHHmm}", DateTime.Now) + ".xls");
 
             //Response.ClearContent();
             //Response.Write("<meta http-equiv=Content-Type content=text/html;charset=utf-8>");

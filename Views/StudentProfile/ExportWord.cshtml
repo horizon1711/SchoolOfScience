@@ -1,0 +1,177 @@
+﻿@model SchoolOfScience.Models.StudentProfile
+
+@{
+    Layout = null;
+}
+
+<html>
+    <head>
+        <title>
+            Profile Export
+        </title>
+        <style>
+            body, pre {
+                text-align: left;
+                font-size: 0.9em;
+                font-family: Calibri;
+            }
+
+            h1, h2, h3, h4 {
+                text-align: center;
+            }
+
+            ul, li, ul li {
+                text-align: left;
+                margin-bottom: 0px;
+                margin-top: 0px;
+            }
+
+        </style>
+    </head>
+    <body>
+        <h2>@Model.name</h2>
+        <p style="text-align: center;">
+            @{
+                string address = Model.home_address1;   
+            }
+            @if (!String.IsNullOrEmpty(Model.home_address2))
+            {
+                address += ", " + Model.home_address2;
+            }
+            @if (!String.IsNullOrEmpty(Model.home_address3))
+            {
+                address += ", " + Model.home_address3;
+            }
+            @if (!String.IsNullOrEmpty(Model.home_address4))
+            {
+                address += ", " + Model.home_address4;
+            }
+            @address
+            <br />
+            @{
+                string phone = Model.mobile_phone_number;   
+            }
+            @if (!String.IsNullOrEmpty(Model.mobile_phone_country_code))
+            {
+                phone = "+" + Model.mobile_phone_country_code + "-" + phone;
+            }
+            @phone<br />
+            @Model.email
+        </p>
+        <hr />
+        
+        <p style="text-align: center;">
+            [Brief Personal Summary]
+        </p>
+        <hr />
+
+        <h3>SUMMARY OF QUALIFICATIONS</h3>
+        <ul>
+            <li>[Please highlight some of your qualifications related to the job requirements]</li>
+            <li></li>
+            <li></li>
+        </ul>
+        <hr />
+
+        <h3>EDUCATION AND TRAINING</h3>
+        <table style="width: 100%; border: none; text-align: left;">
+            <tr>
+                <td style="text-align: left;"><b>CANDIDATE FOR @Model.academic_plan_description </b></td>
+                <td style="text-align: right; vertical-align: top;">
+                    @if (!String.IsNullOrEmpty(@Model.StudentAdmission.Cohort_Term_Description))
+                    {
+                        <b>@Model.StudentAdmission.Cohort_Term_Description.Substring(0, 4) to Present</b>
+                    }
+                </td>
+            </tr>
+            <tr>
+                <td>The Hong Kong University of Science and Technology</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Cumulative Grade Average (CGA): @Model.StudentAdmission.Cumulative_GPA as of @Model.StudentAdmission.As_of_Term_Description</td>
+                <td></td>
+            </tr>
+        </table>
+        <p>
+            <b>COURSES COMPLETED</b>
+        </p>
+        <ul>
+            <li>[Please highlight some of your courses completed related to the job requirements]</li>
+        </ul>
+        <p>
+            <b>FINAL YEAR PROJECT</b>
+        </p>
+        <ul>
+            <li>[Please highlight your final year project (if any) related to the job requirements]</li>
+        </ul>
+        <hr />
+
+        @foreach (var type in Model.StudentExperiences.ToList().Select(e => e.StudentExperienceType).Distinct())
+        {
+            <h3>@type.name.ToUpper()</h3>
+            <table style="width: 100%; border: none; text-align: left;">
+                @foreach (var experience in Model.StudentExperiences.Where(e => e.type_id == type.id))
+                {
+                <tr>
+                    <td style="text-align: left;">
+                        <b>@experience.position</b><br />
+                        @experience.organization
+                        <ul>
+                            <li><pre>@experience.duty_description&nbsp;</pre></li>
+                        </ul>
+                    </td>
+                    <td style="text-align: right; vertical-align: top;">
+                        @experience.start_year-@experience.start_month.ToString("00") to 
+                        @if (experience.end_year < 0)
+                        {
+                            <text>Present</text>
+                        }
+                        else
+                        {
+                            @(experience.end_year.ToString() + "-" + experience.end_month.ToString("00"))
+                        }
+                    </td>
+                </tr>
+                }
+            </table>
+            <hr />
+        }
+
+        <h3>AWARDS AND QUALIFICATIONS</h3>
+        <table style="width: 100%; border: none; text-align: left;">
+            @foreach (var qualification in Model.StudentQualifications)
+            {
+                <tr>
+                    <td style="text-align: left;">
+                        <ul>
+                            <li>@qualification.organization - @qualification.name</li>
+                        </ul>
+                    </td>
+                    <td style="text-align: right; vertical-align: top;">
+                        @String.Format("{0:yyyy-MM-dd}", qualification.award_date)
+                    </td>
+                </tr>
+            }
+        </table>
+        <hr />
+
+        <h3>LANGUAGE AND SKILLS</h3>
+        <table style="width: 100%; border: none; text-align: left;">
+            @foreach (var type in Model.StudentParticulars.ToList().Select(e => e.StudentParticularType).Distinct())
+            {
+                <tr>
+                    <td style="text-align: left;">
+                        <ul>
+                            <li>
+                                @type.name: @String.Join(",", Model.StudentParticulars.Where(p => p.type_id == type.id).Select(p => p.name).ToArray())
+                            </li>
+                        </ul>
+                    </td>
+                    <td style="text-align: right; vertical-align: top;">
+                    </td>
+                </tr>
+            }
+        </table>
+    </body>
+</html>

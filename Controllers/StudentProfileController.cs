@@ -11,7 +11,7 @@ using SchoolOfScience.Models.ViewModels;
 
 namespace SchoolOfScience.Controllers
 {
-    public class StudentProfileController : Controller
+    public class StudentProfileController : ControllerBase
     {
         private SchoolOfScienceEntities db = new SchoolOfScienceEntities();
 
@@ -285,58 +285,99 @@ namespace SchoolOfScience.Controllers
         }
 
         //
-        // GET: /StudentProfile/Create
+        // GET: /StudentProfile/ExportWord/5
 
-        public ActionResult Create()
+        public ActionResult ExportWord(string id)
         {
-            return View();
-        }
-
-        //
-        // POST: /StudentProfile/Create
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(StudentProfile studentprofile)
-        {
-            if (ModelState.IsValid)
+            if (String.IsNullOrEmpty(id))
             {
-                db.StudentProfiles.Add(studentprofile);
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                id = User.Identity.Name;
             }
-
-            return View(studentprofile);
-        }
-
-        //
-        // GET: /StudentProfile/Edit/5
-
-        public ActionResult Edit(int id = 0)
-        {
-            StudentProfile studentprofile = db.StudentProfiles.Find(id);
+            var studentprofile = db.StudentProfiles.Find(id);
             if (studentprofile == null)
             {
-                return HttpNotFound();
+                Session["FlashMessage"] = "Student Profile not found";
+                return RedirectToAction("Index", "Home");
             }
-            return View(studentprofile);
+
+            string strHtml = RenderRazorViewToString("ExportWord", studentprofile);
+            strHtml = HttpUtility.HtmlDecode(strHtml);//Html decoding
+            byte[] b = System.Text.Encoding.UTF8.GetBytes(strHtml);//convert string to byte array
+            Response.Write("<meta http-equiv=Content-Type content=text/html;charset=utf-8>");
+            return File(b, "application/ms-word", studentprofile.name + " Profile Export " + String.Format("{0:yyyyMMddHHmm}", DateTime.Now) + ".doc");
+
+            //Response.ClearContent();
+            //Response.Write("<meta http-equiv=Content-Type content=text/html;charset=utf-8>");
+            //Response.Buffer = true;
+            //Response.AddHeader("content-disposition", "attachment; filename=MyExcelFile.xls");
+            //Response.ContentType = "application/ms-excel";
+
+            //Response.Charset = "";
+            //StringWriter sw = new StringWriter();
+            //HtmlTextWriter htw = new HtmlTextWriter(sw);
+
+            //grid.RenderControl(htw);
+
+            //Response.Output.Write(sw.ToString());
+            //Response.Flush();
+            //Response.End();
+
+            //return View("MyView");
         }
 
-        //
-        // POST: /StudentProfile/Edit/5
+        ////
+        //// GET: /StudentProfile/Create
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(StudentProfile studentprofile)
-        {
-            if (ModelState.IsValid)
-            {
-                db.Entry(studentprofile).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            return View(studentprofile);
-        }
+        //public ActionResult Create()
+        //{
+        //    return View();
+        //}
+
+        ////
+        //// POST: /StudentProfile/Create
+
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult Create(StudentProfile studentprofile)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        db.StudentProfiles.Add(studentprofile);
+        //        db.SaveChanges();
+        //        return RedirectToAction("Index");
+        //    }
+
+        //    return View(studentprofile);
+        //}
+
+        ////
+        //// GET: /StudentProfile/Edit/5
+
+        //public ActionResult Edit(int id = 0)
+        //{
+        //    StudentProfile studentprofile = db.StudentProfiles.Find(id);
+        //    if (studentprofile == null)
+        //    {
+        //        return HttpNotFound();
+        //    }
+        //    return View(studentprofile);
+        //}
+
+        ////
+        //// POST: /StudentProfile/Edit/5
+
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult Edit(StudentProfile studentprofile)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        db.Entry(studentprofile).State = EntityState.Modified;
+        //        db.SaveChanges();
+        //        return RedirectToAction("Index");
+        //    }
+        //    return View(studentprofile);
+        //}
 
         //
         // GET: /StudentProfile/EditRemarks/5
@@ -368,31 +409,31 @@ namespace SchoolOfScience.Controllers
             return Content(student.remarks);
         }
 
-        //
-        // GET: /StudentProfile/Delete/5
+        ////
+        //// GET: /StudentProfile/Delete/5
 
-        public ActionResult Delete(int id = 0)
-        {
-            StudentProfile studentprofile = db.StudentProfiles.Find(id);
-            if (studentprofile == null)
-            {
-                return HttpNotFound();
-            }
-            return View(studentprofile);
-        }
+        //public ActionResult Delete(int id = 0)
+        //{
+        //    StudentProfile studentprofile = db.StudentProfiles.Find(id);
+        //    if (studentprofile == null)
+        //    {
+        //        return HttpNotFound();
+        //    }
+        //    return View(studentprofile);
+        //}
 
-        //
-        // POST: /StudentProfile/Delete/5
+        ////
+        //// POST: /StudentProfile/Delete/5
 
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
-        {
-            StudentProfile studentprofile = db.StudentProfiles.Find(id);
-            db.StudentProfiles.Remove(studentprofile);
-            db.SaveChanges();
-            return RedirectToAction("Index");
-        }
+        //[HttpPost, ActionName("Delete")]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult DeleteConfirmed(int id)
+        //{
+        //    StudentProfile studentprofile = db.StudentProfiles.Find(id);
+        //    db.StudentProfiles.Remove(studentprofile);
+        //    db.SaveChanges();
+        //    return RedirectToAction("Index");
+        //}
 
         protected override void Dispose(bool disposing)
         {

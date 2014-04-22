@@ -1375,6 +1375,7 @@
     <Content Include="Views\Nomination\CreateList.cshtml" />
     <Content Include="Views\Appointment\ProgramAdmin.cshtml" />
     <Content Include="Views\Appointment\EditProgramAdmin.cshtml" />
+    <Content Include="Views\StudentProfile\ExportWord.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
