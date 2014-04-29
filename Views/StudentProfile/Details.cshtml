@@ -28,6 +28,14 @@
         @Html.DisplayFor(model => model.student.academic_level)
     </div>
 </div>
+<div class="field-wrapper">
+    <div class="display-label">
+        Program Status
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.student.program_status_description)
+    </div>
+</div>
 @if (Model.student.academic_plan_description.Contains("4Y"))
 {
 <div class="field-wrapper">

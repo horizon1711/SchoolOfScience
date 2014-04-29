@@ -33,12 +33,11 @@ namespace SchoolOfScience.Controllers
             }
             else if (User.IsInRole("ProgramAdmin"))
             {
-                appointments = db.Appointments.Where(a => a.student_id != null
-                    && a.AppointmentHost.UserProfiles1.Any(u => u.UserName == User.Identity.Name)
-                    );
+                appointments = db.Appointments.Where(a => a.AppointmentHost.UserProfiles1.Any(u => u.UserName == User.Identity.Name));
                 ViewBag.hostList = new SelectList(db.AppointmentHosts.Where(h => h.UserProfiles1.Any(u => u.UserName == User.Identity.Name)), "id", "name");
                 consultation = false;
                 ViewBag.reserved = true;
+                ViewBag.available = true;
             }
             else
             {
@@ -47,12 +46,9 @@ namespace SchoolOfScience.Controllers
                     && (!(advisor && !mentor) || (a.StudentProfile.academic_plan_description.Contains("4Y") && a.StudentProfile.academic_plan_description.Contains("Undeclared")) && !a.AppointmentConcerns.Any(c => c.program_id != null))
                     && (!(!advisor && mentor) || (a.StudentProfile.academic_plan_description.Contains("4Y") && !a.StudentProfile.academic_plan_description.Contains("Undeclared")) && !a.AppointmentConcerns.Any(c => c.program_id != null))
                     );
-                ViewBag.reserved = false;
-                ViewBag.hostList = new SelectList(db.AppointmentHosts.Where(h => h.SystemUsers.Any(u => u.UserName == User.Identity.Name)), "id", "name");
-            }
-            if (advisor || mentor)
-            {
                 ViewBag.reserved = true;
+                ViewBag.available = true;
+                ViewBag.hostList = new SelectList(db.AppointmentHosts.Where(h => h.SystemUsers.Any(u => u.UserName == User.Identity.Name)), "id", "name");
             }
             ViewBag.concernList = new SelectList(db.AppointmentConcerns.Where(c => c.program_id == null && !c.custom), "id", "name");
             ViewBag.statusList = new SelectList(db.AppointmentStatus, "id", "name");
@@ -386,6 +382,8 @@ namespace SchoolOfScience.Controllers
                 skipped_dates = ViewModel.skipped_dates.ToList();
             }
 
+            int count = 0;
+
             try
             {
                 while (datecursor <= ViewModel.config.end_date.Date)
@@ -438,6 +436,7 @@ namespace SchoolOfScience.Controllers
                                     appointment.end_time = datecursor.Add(endtime);
                                     db.Appointments.Add(appointment);
                                     db.SaveChanges();
+                                    count++;
                                     starttime = endtime;
                                 }
                                 else
@@ -450,6 +449,7 @@ namespace SchoolOfScience.Controllers
                     }
                     datecursor = datecursor.AddDays(1);
                 }
+                Session["FlashMessage"] = count + " Appointment Timeslots were created successfully.";
                 return RedirectToAction("Index");
             }
             catch (Exception e)
@@ -924,16 +924,20 @@ namespace SchoolOfScience.Controllers
             var user = db.SystemUsers.Find(userid);
             ViewBag.hostList = db.AppointmentHosts.Where(h => h.advisor);
             ViewBag.selectedHosts = user.AppointmentHosts.Select(h => h.id).ToArray();
+            ViewBag.planList = db.StudentProfiles.Select(s => new { id = s.academic_plan_description, name = s.academic_plan_description }).Distinct().OrderBy(s => s.id);
+            ViewBag.selectedPlans = user.UserProfileAcademicPlans.Select(p => p.academic_plan).ToArray();
             return View(user);
         }
 
         [HttpPost]
         [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
-        public ActionResult EditProgramAdmin(int userid, int[] host_ids)
+        public ActionResult EditProgramAdmin(int userid, int[] host_ids, string[] plans)
         {
             var user = db.SystemUsers.Find(userid);
             ViewBag.hostList = db.AppointmentHosts.Where(h => h.advisor);
             ViewBag.selectedHosts = user.AppointmentHosts.Select(h => h.id).ToArray();
+            ViewBag.planList = db.StudentProfiles.Select(s => new { id = s.academic_plan_description, name = s.academic_plan_description }).Distinct().OrderBy(s => s.id);
+            ViewBag.selectedPlans = user.UserProfileAcademicPlans.Select(p => p.academic_plan).ToArray();
 
             user.AppointmentHosts.Clear();
             if (host_ids != null)
@@ -942,6 +946,15 @@ namespace SchoolOfScience.Controllers
                 foreach (var host in hosts)
                 {
                     user.AppointmentHosts.Add(host);
+                }
+            }
+
+            user.UserProfileAcademicPlans.Clear();
+            if (plans != null)
+            {
+                foreach (var plan in plans)
+                {
+                    user.UserProfileAcademicPlans.Add(new UserProfileAcademicPlan { user_id = userid, academic_plan = plan });
                 }
             }
             try

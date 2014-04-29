@@ -77,5 +77,7 @@ namespace SchoolOfScience.Models
         public DbSet<InterviewComment> InterviewComments { get; set; }
         public DbSet<NominationList> NominationLists { get; set; }
         public DbSet<NominationApplication> NominationApplications { get; set; }
+        public DbSet<AcademicPlan> AcademicPlans { get; set; }
+        public DbSet<UserProfileAcademicPlan> UserProfileAcademicPlans { get; set; }
     }
 }

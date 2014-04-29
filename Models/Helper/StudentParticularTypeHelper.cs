@@ -24,5 +24,9 @@ namespace SchoolOfScience.Models
         [Display(Name = "Input Example")]
         public string example { get; set; }
 
+        [Display(Name = "Export to Resume")]
+        public bool resume_export { get; set; }
+
+
     }
 }

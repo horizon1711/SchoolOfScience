@@ -118,10 +118,12 @@ namespace SchoolOfScience.Controllers
             ViewBag.typeid = id;
             ViewBag.programList = new SelectList(db.Programs.Where(p => p.ProgramStatus.shown_to_student).OrderBy(p => p.name), "id", "name");
             ViewBag.programTypeList = new SelectList(db.ProgramTypes, "id", "name", id);
+            ViewBag.openapplication = true;
             DateTime date_to_shown = new DateTime(DateTime.Now.Year - 2, 9, 1, 0, 0, 0);
             var programs = db.Programs.Where(p => p.ProgramStatus.shown_to_student
                     && ((id == 0) || (p.ProgramType.id == id))
-                    && (p.application_end_time >= date_to_shown));
+                    && (p.application_end_time >= date_to_shown)
+                    && (p.ProgramStatus.open_for_application && p.application_start_time < DateTime.Now && p.application_end_time > DateTime.Now));
             return View(programs.ToList());
         }
 
@@ -130,12 +132,13 @@ namespace SchoolOfScience.Controllers
 
         [HttpPost]
         [Authorize]
-        public ActionResult ViewList(FormCollection Form, int id = 0)
+        public ActionResult ViewList(FormCollection Form, int id = 0, bool openapplication = false)
         {
             ViewBag.typeid = id;
             var selectedtype = Form["program_type"] != null ? Form["program_type"].Split(',') : null;
             ViewBag.programList = new SelectList(db.Programs.Where(p => p.ProgramStatus.shown_to_student).OrderBy(p => p.name), "id", "name", Form["program"]);
             ViewBag.programTypeList = new MultiSelectList(db.ProgramTypes, "id", "name", selectedtype);
+            ViewBag.openapplication = openapplication;
             DateTime date_to_shown = new DateTime(DateTime.Now.Year - 2, 9, 1, 0, 0, 0);
             var programs = db.Programs.Where(p => p.ProgramStatus.shown_to_student
                     && ((id == 0) || (p.ProgramType.id == id))
@@ -143,6 +146,7 @@ namespace SchoolOfScience.Controllers
             return View(programs.ToList().Where(p => (true)
                 && (String.IsNullOrEmpty(Form["program"]) || p.id.ToString() == Form["program"])
                 && (String.IsNullOrEmpty(Form["program_type"]) || selectedtype.Contains(p.type_id.ToString()))
+                && (!openapplication || (p.ProgramStatus.open_for_application && p.application_start_time < DateTime.Now && p.application_end_time > DateTime.Now))
             ));
         }
 

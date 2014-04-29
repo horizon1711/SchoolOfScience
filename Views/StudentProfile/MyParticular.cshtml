@@ -23,7 +23,7 @@
 
     @foreach (var particular in Model.particulars.Where(p => p.type_id == type.id))
     {
-        <div class="editor-field">
+        <div class="particular-item">
             @particular.name
             @if (particular.name != "English" && particular.name != "Putonghua" && particular.name != "Cantonese" || true)//request changed, switch off hard-coded handling of Language
             {
@@ -47,20 +47,13 @@
 @Scripts.Render("~/bundles/gridalicious")
 <script>
     $(function () {
-        $.ajaxSetup({ cache: false });
+        $(".add-particular-btn").button();
 
-        $(".particulars-wrapper").gridalicious({
-            width: 450
-        });
 
-        $(".add-particular-link, .add-language-link").click(function (e) {
+        $(".add-particular-link").click(function (e) {
             e.preventDefault();
             showDialog($(this).prop("href"), "#error-dialog", "#add-edit-dialog", 400, 250);
         });
-        //$(".add-language-link").click(function (e) {
-        //    e.preventDefault();
-        //    showDialog($(this).prop("href"), "#error-dialog", "#add-edit-dialog", 400, 500);
-        //});
 
         $(".delete-particular-btn").click(function (e) {
             e.preventDefault();
@@ -95,7 +88,5 @@
             });
             return false;
         });
-
-        $(".add-particular-btn").button();
     });
 </script>

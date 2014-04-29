@@ -178,7 +178,7 @@ else
 }
 </div>
 
-@if (Model.Nomination.NominationLists.Any(l => l.nomination_level < Model.nomination_level))
+@*@if (Model.Nomination.NominationLists.Any(l => l.nomination_level < Model.nomination_level))
 {
 <div class="display-label clear-left">
     Nominated by previous level:
@@ -297,12 +297,15 @@ else
         None
     </div>
     }
-}
-
+}*@
 
         
 <div class="display-label clear-left">
-    Applications pending for nomination:
+    Applications pending for nomination: 
+    @if (Model.quota != 0)
+    {
+        <text>(@(Model.quota - Model.NominationApplications.Count(a => a.nominated)) out of @Model.quota)</text>
+    }
 </div>
 
 @if (Model.NominationApplications.Count() > 0)
@@ -329,6 +332,12 @@ else
                 <th>
                     Attachment
                 </th>
+                @if (Model.Nomination.NominationLists.Any(l => l.nomination_level < Model.nomination_level))
+                {
+                <th>
+                    Nominated by Previous Level
+                </th>
+                }
                 <th>
                     Action
                 </th>
@@ -341,6 +350,10 @@ else
                 if (nominated.nominated)
                 {
                     bgcolor = "background-color: #F9DCC4";
+                }
+                else if (Model.Nomination.NominationLists.Any(l => l.nomination_level < Model.nomination_level && l.NominationApplications.Any(a => a.application_id == nominated.application_id && a.nominated)))
+                {
+                    bgcolor = "background-color: #F4FAAE";
                 }
                 else
                 {
@@ -373,6 +386,16 @@ else
                         </div>
                     }
                 </td>
+                @if (Model.Nomination.NominationLists.Any(l => l.nomination_level < Model.nomination_level))
+                {
+                <td>
+                    @Html.Hidden("count", Model.Nomination.NominationLists.Count(l => l.nomination_level < Model.nomination_level && l.NominationApplications.Any(a => a.application_id == nominated.application_id && a.nominated)))
+                    @foreach (var n in Model.Nomination.NominationApplications.Where(a => a.application_id == nominated.application_id && a.nominated && a.NominationList.nomination_level < Model.nomination_level))
+                    {
+                        <div>@n.NominationList.name [@n.NominationList.UserProfile.UserName] @n.remarks</div>
+                    }
+                </td>
+                }
                 <td>
                     @if (nominated.nominated)
                     {
@@ -428,7 +451,7 @@ else
         $(function () {
             $(".nominated-application-table").dataTable({
                 "sScrollX": "100%",
-                "aaSorting": [[0, "asc"]],
+                "aaSorting": [[6, "desc"]],
                 "bPaginate": false,
                 "bInfo": false,
                 "bFilter": true,
@@ -455,7 +478,7 @@ else
             });
 
             $(".nominated-cancel-link").click(function (e) {
-                var r = confirm("Are you sure to cancel this nomination?");
+                var r = confirm("Would you like to cancel this nomination now?");
                 if (!r) {
                     e.preventDefault();
                 }

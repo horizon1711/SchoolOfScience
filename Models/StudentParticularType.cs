@@ -23,6 +23,7 @@ namespace SchoolOfScience.Models
         public string name { get; set; }
         public int priority { get; set; }
         public string example { get; set; }
+        public bool resume_export { get; set; }
     
         public virtual ICollection<StudentParticular> StudentParticulars { get; set; }
     }

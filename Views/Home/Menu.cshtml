@@ -105,8 +105,13 @@
 		    <ul>
                 @if (User.IsInRole("FacultyAdvisor"))
                 {
+                    <li>@Html.ActionLink("Manage My Appointments", "Index", "Appointment")</li>
                     <li>@Html.ActionLink("As Pre-major Faculty Advisor", "Index", "Appointment", new { advisor = true }, null)</li>
                     <li>@Html.ActionLink("As Faculty Mentor", "Index", "Appointment", new { mentor = true }, null)</li>
+                }
+                @if (User.IsInRole("ProgramAdmin"))
+                {
+                    <li>@Html.ActionLink("Manage Appointments", "Index", "Appointment")</li>
                 }
                 <li>@Html.ActionLink("Create Appointments", "CreateMultiple", "Appointment")</li>
 		    </ul>
@@ -132,7 +137,13 @@
             </ul>
 	    </li>
     }
-    else if (User.IsInRole("FacultyAdvisor") || User.IsInRole("UGCoordinator"))
+    @if (User.IsInRole("ProgramAdmin"))
+    {
+	    <li>
+		    @Html.ActionLink("Student Profile", "Index", "StudentProfile")
+	    </li>
+    }
+    else if (User.IsInRole("FacultyAdvisor") || User.IsInRole("ProgramAdmin"))
     {
 		<li>
 			@Html.ActionLink("Student Profile", "MyStudent", "StudentProfile")

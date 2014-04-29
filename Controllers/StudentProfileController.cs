@@ -18,13 +18,17 @@ namespace SchoolOfScience.Controllers
         //
         // GET: /StudentProfile/
 
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP,CommTutor,Nominator")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,ProgramAdmin")]
         public ActionResult Index()
         {
             ViewBag.careerList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_career }).Distinct().OrderBy(t => t.text), "text", "text");
             ViewBag.groupList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_group }).Distinct().OrderBy(t => t.text), "text", "text");
             ViewBag.departmentList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_organization }).Distinct().OrderBy(t => t.text), "text", "text");
             ViewBag.planList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_plan_description }).Distinct().OrderBy(t => t.text), "text", "text");
+            if (User.IsInRole("ProgramAdmin"))
+            {
+                ViewBag.planList = new SelectList(db.UserProfileAcademicPlans.Where(p => p.UserProfile.UserName == User.Identity.Name).Select(p => new { text = p.academic_plan }).Distinct().OrderBy(t => t.text), "text", "text");
+            }
             ViewBag.levelList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_level }).Distinct().OrderBy(t => t.text), "text", "text");
             ViewBag.showTable = false;
             return View(new List<StudentProfile>().ToList());
@@ -34,7 +38,7 @@ namespace SchoolOfScience.Controllers
         // POST: /StudentProfile/
 
         [HttpPost]
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP,CommTutor,ProgramAdmin,Nominator")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,ProgramAdmin")]
         public ActionResult Index(FormCollection Form, bool assigned, bool requiredinterview, bool withcomment)
         {
             var students = db.StudentProfiles;
@@ -45,6 +49,10 @@ namespace SchoolOfScience.Controllers
             ViewBag.groupList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_group }).Distinct().OrderBy(t => t.text), "text", "text", Form["academic_group"]);
             ViewBag.departmentList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_organization }).Distinct().OrderBy(t => t.text), "text", "text", Form["academic_organization"]);
             ViewBag.planList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_plan_description }).Distinct().OrderBy(t => t.text), "text", "text", Form["academic_plan_description"]);
+            if (User.IsInRole("ProgramAdmin"))
+            {
+                ViewBag.planList = new SelectList(db.UserProfileAcademicPlans.Where(p => p.UserProfile.UserName == User.Identity.Name).Select(p => new { text = p.academic_plan }).Distinct().OrderBy(t => t.text), "text", "text", Form["academic_plan_description"]);
+            }
             ViewBag.levelList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_level }).Distinct().OrderBy(t => t.text), "text", "text", Form["academic_level"]);
             ViewBag.commentkeyword = Form["commentkeyword"];
             ViewBag.showTable = true;
@@ -63,6 +71,7 @@ namespace SchoolOfScience.Controllers
                 && (!assigned || s.Applications.Any(a => a.Interviews.Count() > 0))
                 && (!requiredinterview || s.Applications.Any(a => a.Program.require_interview && a.Interviews.Count() == 0))
                 && (!withcomment || s.StudentAdvisingRemarks.Count() > 0)
+                && (!User.IsInRole("ProgramAdmin") || db.UserProfileAcademicPlans.Any(p => p.UserProfile.UserName == User.Identity.Name && p.academic_plan == s.academic_plan_description))
                 ));
         }
 
@@ -300,6 +309,13 @@ namespace SchoolOfScience.Controllers
                 Session["FlashMessage"] = "Student Profile not found";
                 return RedirectToAction("Index", "Home");
             }
+
+            var plan = db.AcademicPlans.Find(studentprofile.academic_plan_primary);
+            if (plan != null)
+            {
+                ViewBag.AcademicPlan = plan.full_description;
+            }
+
 
             string strHtml = RenderRazorViewToString("ExportWord", studentprofile);
             strHtml = HttpUtility.HtmlDecode(strHtml);//Html decoding

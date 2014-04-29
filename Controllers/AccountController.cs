@@ -37,6 +37,7 @@ namespace SchoolOfScience.Controllers
             if (Request.Url.Host == "sdb.science.ust.hk" || Request.Url.Host == "sfs-dev1.ust.hk")
             {
 
+
                 // Look for the "ticket=" after the "?" in the URL
                 string AuthorisationTicket = Request.QueryString["ticket"];
 
@@ -77,13 +78,24 @@ namespace SchoolOfScience.Controllers
                 }
                 else
                 {
-
                     // First time through there is no ticket=, so redirect to CAS login
                     if (AuthorisationTicket == null || AuthorisationTicket.Length == 0)
                     {
-                        string SignonUrl = CASHOST + "login?" + "service=" + UrlToAuthenticate;
+                        // Double check they are signed out
+                        string SignoutUrl = CASHOST + "logout";
+                        StreamReader SignoutHttpReader = new StreamReader(new WebClient().OpenRead(SignoutUrl));
+                        string SignOutResponse = SignoutHttpReader.ReadToEnd();
+
+                        // Sign the user out of the .NET site and Give them a message,
+                        // they'll never see it though...
+                        Session.Abandon();
+                        Session.Clear();
+                        FormsAuthentication.SignOut();
+
+                        string SignonUrl = CASHOST + "login?" + "service=" + UrlToAuthenticate + "&renew=true";
                         //Response.Redirect(SignonUrl);
                         //return;
+                        //return Redirect(SignonUrl);
                         return Redirect(SignonUrl);
                     }
 
@@ -120,7 +132,7 @@ namespace SchoolOfScience.Controllers
                     // If there was a problem, leave the message on the screen. Otherwise, return to original page.
                     if (SSOUsername == null)
                     {
-                        Session["FlashMessage"] = "Login failed. </br><br/>For science staff and students, please email us at <a href='mailto:advise@ust.hk'>advise@ust.hk</a> to resolve this issue.";
+                        Session["FlashMessage"] += "Login failed. </br><br/>For science staff and students, please email us at <a href='mailto:advise@ust.hk'>advise@ust.hk</a> to resolve this issue.";
                         return View("CASLoginFail");
                     }
                     else
@@ -237,6 +249,7 @@ namespace SchoolOfScience.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Login(LoginModel model, string returnUrl)
         {
+            model.UserName = model.UserName.Trim();
             model.Password = "100100";
             model.RememberMe = true;
             if (WebSecurity.Login(model.UserName, model.Password, persistCookie: model.RememberMe))
@@ -312,22 +325,20 @@ namespace SchoolOfScience.Controllers
         }
 
         //
-        // GET: /Account/LogOff
-
-        public ActionResult LogOff(int id = 0)
-        {
-            return RedirectToAction("Index", "Home");
-        }
-
-        //
         // POST: /Account/LogOff
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
         public ActionResult LogOff()
         {
+            // Double check they are signed out
+            string SignoutUrl = CASHOST + "logout";
+            StreamReader SignoutHttpReader = new StreamReader(new WebClient().OpenRead(SignoutUrl));
+            string SignOutResponse = SignoutHttpReader.ReadToEnd();
+
+            // Sign the user out of the .NET site and Give them a message,
+            // they'll never see it though...
             Session.Abandon();
             Session.Clear();
+            FormsAuthentication.SignOut();
             WebSecurity.Logout();
 
             return RedirectToAction("Login", new { returnUrl = Url.Action("Index", "Home") });

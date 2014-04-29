@@ -19,6 +19,7 @@ namespace SchoolOfScience.Models
             this.UserRoles = new HashSet<SystemRole>();
             this.NominationLists = new HashSet<NominationList>();
             this.AppointmentHosts = new HashSet<AppointmentHost>();
+            this.UserProfileAcademicPlans = new HashSet<UserProfileAcademicPlan>();
         }
     
         public int UserId { get; set; }
@@ -30,5 +31,6 @@ namespace SchoolOfScience.Models
         public virtual webpages_Membership webpages_Membership { get; set; }
         public virtual ICollection<NominationList> NominationLists { get; set; }
         public virtual ICollection<AppointmentHost> AppointmentHosts { get; set; }
+        public virtual ICollection<UserProfileAcademicPlan> UserProfileAcademicPlans { get; set; }
     }
 }

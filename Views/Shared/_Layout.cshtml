@@ -8,7 +8,7 @@
         @Styles.Render("~/Content/css")
         @Styles.Render("~/Content/themes/base/css")
         @Scripts.Render("~/bundles/modernizr")
-        @if (HttpContext.Current.User.IsInRole("Admin") || HttpContext.Current.User.IsInRole("Advising") || HttpContext.Current.User.IsInRole("StudentDevelopment"))
+        @if (HttpContext.Current.User.IsInRole("Admin") || HttpContext.Current.User.IsInRole("Advising") || HttpContext.Current.User.IsInRole("StudentDevelopment") || HttpContext.Current.User.IsInRole("Nominator"))
         {
         <style type="text/css">
             .content-wrapper {
@@ -16,6 +16,15 @@
             }     
         </style>
         }
+
+        @if (HttpContext.Current.User.IsInRole("Nominator"))
+        {
+        <style type="text/css">
+            .content-wrapper {
+                width: 70%;
+            }     
+        </style>
+        }        
     </head>
     <body>
         <div id="container">

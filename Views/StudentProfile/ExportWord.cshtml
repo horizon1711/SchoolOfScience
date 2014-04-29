@@ -61,13 +61,13 @@
         <hr />
         
         <p style="text-align: center;">
-            [Brief Personal Summary]
+            <span style="background-color: yellow;">[Brief Personal Summary]</span>
         </p>
         <hr />
 
         <h3>SUMMARY OF QUALIFICATIONS</h3>
         <ul>
-            <li>[Please highlight some of your qualifications related to the job requirements]</li>
+            <li><span style="background-color: yellow;">[Please highlight some of your qualifications related to the job requirements]</span></li>
             <li></li>
             <li></li>
         </ul>
@@ -76,7 +76,7 @@
         <h3>EDUCATION AND TRAINING</h3>
         <table style="width: 100%; border: none; text-align: left;">
             <tr>
-                <td style="text-align: left;"><b>CANDIDATE FOR @Model.academic_plan_description </b></td>
+                <td style="text-align: left;"><b>CANDIDATE FOR @ViewBag.AcademicPlan </b></td>
                 <td style="text-align: right; vertical-align: top;">
                     @if (Model.StudentAdmission != null)
                     {
@@ -100,13 +100,13 @@
             <b>COURSES COMPLETED</b>
         </p>
         <ul>
-            <li>[Please highlight some of your courses completed related to the job requirements]</li>
+            <li><span style="background-color: yellow;">[Please highlight some of your courses completed related to the job requirements]</span></li>
         </ul>
         <p>
             <b>FINAL YEAR PROJECT</b>
         </p>
         <ul>
-            <li>[Please highlight your final year project (if any) related to the job requirements]</li>
+            <li><span style="background-color: yellow;">[Please highlight your final year project (if any) related to the job requirements]</span></li>
         </ul>
         <hr />
 
@@ -161,7 +161,7 @@
 
         <h3>LANGUAGE AND SKILLS</h3>
         <table style="width: 100%; border: none; text-align: left;">
-            @foreach (var type in Model.StudentParticulars.ToList().Select(e => e.StudentParticularType).Distinct())
+            @foreach (var type in Model.StudentParticulars.Where(e => e.StudentParticularType.resume_export).Select(e => e.StudentParticularType).Distinct())
             {
                 <tr>
                     <td style="text-align: left;">

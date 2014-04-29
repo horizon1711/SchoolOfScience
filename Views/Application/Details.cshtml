@@ -78,7 +78,18 @@ else
 
     </fieldset>
 
-    <fieldset class="collapse">
+@{
+    string style;
+    if (Model.nominated_application != null && User.IsInRole("Nominator"))
+    {
+        style = "startCollapse";
+    }
+    else
+    {
+        style = "collapse";
+    }
+}
+    <fieldset class="@style">
         <legend>Application Details</legend>
   
 @if (Model.options.Count() == 0 && Model.attachments.Count() == 0 && !Model.program.require_exchange_option && !Model.program.require_appointment && !Model.program.require_interview)
@@ -266,7 +277,7 @@ else
                 <div class="display-field">
                     @(Model.nominated_application.NominationList.quota - Model.nominated_application.NominationList.NominationApplications.Count(a => a.nominated))
                 </div>
-                } 
+                }
                 else
                 {
                 <div class="display-field">
@@ -281,6 +292,10 @@ else
                 Nomination Comment (if any)
             </div>
             <div class="editor-field">
+                @foreach (var nominated in Model.nominated_application.Nomination.NominationApplications.Where(a => a.application_id == Model.nominated_application.application_id && a.nominated && !String.IsNullOrEmpty(a.remarks)))
+                {
+                    <div>@nominated.NominationList.name [@nominated.NominationList.UserProfile.UserName]: @nominated.remarks</div>
+                }
                 @Html.TextAreaFor(model => model.nominated_application.remarks, new { @class = "expanding" })
             </div>
 

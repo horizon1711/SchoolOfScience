@@ -57,6 +57,7 @@ pre {
 input, select, button {
     font-family: 'FreightSans', 'FreightSans_IE', sans-serif;
     font-size: 1em;
+    margin: 3px;
 }
 
 header {
@@ -853,6 +854,27 @@ ol.booking-notes {
 .program-viewlist-remarks td {
     padding-right: 20px;
 }
+
+.disclaimer {
+    text-align: justify;
+}
+
+.disclaimer b{
+    color: red;
+}
+
+img.cv-btn {
+    width: 200px;
+}
+
+.particular-item {
+    display: inline;
+}
+
+.cv-link-prompt {
+    list-style: disc;
+}
+
 
 
 

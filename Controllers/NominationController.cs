@@ -126,15 +126,22 @@ namespace SchoolOfScience.Controllers
                 try
                 {
                     db.SaveChanges();
-                    if (list.quota != 0 && list.NominationApplications.Count(a => a.nominated) == list.quota)
+                    if (action == "submit")
                     {
-                        nominated_application.Application = db.Applications.Find(nominated_application.application_id);
-                        SendNotification(CreateNotification("ApplicationNominated", list));
-                        Session["FlashMessage"] = "Nomination successful. Quota has been reached.";
-                    }
-                    else
-                    {
-                        Session["FlashMessage"] = "Nomination successful.";
+                        if (list.quota == 0)
+                        {
+                            Session["FlashMessage"] = "Nomination successful.";
+                        }
+                        else if (list.NominationApplications.Count(a => a.nominated) == list.quota)
+                        {
+                            nominated_application.Application = db.Applications.Find(nominated_application.application_id);
+                            SendNotification(CreateNotification("ApplicationNominated", list));
+                            Session["FlashMessage"] = "Nomination completed. <br/><br/>Quota remaining: 0";
+                        }
+                        else
+                        {
+                            Session["FlashMessage"] = "Nomination successful. <br/><br/>Quota remaining: " + (list.quota - list.NominationApplications.Count(a => a.nominated)).ToString();
+                        }
                     }
                 }
                 catch (Exception e)

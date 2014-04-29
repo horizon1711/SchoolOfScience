@@ -9,7 +9,6 @@
 <fieldset>
     <legend>Edit Hosts Managed</legend>
 
-</fieldset>
 @using (Html.BeginForm()) {
 
     <div class="display-label">
@@ -25,6 +24,13 @@
     <div class="editor-field">
         @Html.ListBox("host_ids", new MultiSelectList(ViewBag.hostList, "id", "name", ViewBag.selectedHosts), new { @class = "chosen" })
     </div>
+
+    <div class="display-label">
+        Student Academic Plans
+    </div>
+    <div class="editor-field">
+        @Html.ListBox("plans", new MultiSelectList(ViewBag.planList, "id", "name", ViewBag.selectedPlans), new { @class = "chosen" })
+    </div>
     
     <p>
         <input type="submit" value="Submit" />
@@ -33,3 +39,5 @@
         @Html.ActionLink("Back", "ProgramAdmin")
     </p>
 }
+
+</fieldset>

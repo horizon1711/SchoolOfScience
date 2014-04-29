@@ -21,6 +21,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.example)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.resume_export)
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -35,6 +38,9 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.example)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.resume_export)
             </td>
             <td>
                 @Html.ActionLink("Edit", "Edit", new { id=item.id }) |

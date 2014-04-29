@@ -12,7 +12,8 @@
                 @User.Identity.Name
             }
             @*as @String.Join(",", Roles.GetRolesForUser(User.Identity.Name))*@
-                <a href="javascript:document.getElementById('logoutForm').submit()"><img src="@Url.Content("~/Images/Logoff.png")" class="logoff"/>log off</a>
+                <a href="@Url.Action("LogOff", "Account")"><img src="@Url.Content("~/Images/Logoff.png")" class="logoff"/>log off</a>
+                @*<a href="javascript:document.getElementById('logoutForm').submit()"><img src="@Url.Content("~/Images/Logoff.png")" class="logoff"/>log off</a>*@
         </text>
     }
 } 

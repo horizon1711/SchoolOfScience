@@ -19,6 +19,9 @@
                 Hosts Managed
             </th>
             <th>
+                Student Academic Plans
+            </th>
+            <th>
                 
             </th>
         </tr>
@@ -37,6 +40,12 @@
                     @foreach (var host in user.AppointmentHosts)
                     {
                         <div>@host.name</div>
+                    }
+                </td>
+                <td>
+                    @foreach (var plan in user.UserProfileAcademicPlans)
+                    {
+                        <div>@plan.academic_plan</div>
                     }
                 </td>
                 <td>

@@ -21,10 +21,10 @@
             <label for="program_type">Program Type:</label>
             @Html.ListBox("program_type", ViewBag.programTypeList as MultiSelectList, new { @class = "chosen programtype", data_placeholder = "Click to select...", id = "typeselect" })
         </div>
-@*        <div class="filter-field">
-            <label for="program_status">Program Status:</label>
-            @Html.DropDownList("program_status", ViewBag.programStatusList as IEnumerable<SelectListItem>, "All", null)
-        </div>*@
+        <div class="filter-field">
+            <label for="openapplication">Open for Application:</label>
+            @Html.CheckBox("openapplication")
+        </div>
     </div>
     <div class="clear-fix"></div>
     <p>

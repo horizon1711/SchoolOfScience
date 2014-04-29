@@ -157,6 +157,8 @@ namespace SchoolOfScience.Controllers
                 skipped_dates = ViewModel.skipped_dates.ToList();
             }
 
+            int count = 0;
+
             try
             {
                 while (datecursor <= ViewModel.config.end_date.Date)
@@ -210,6 +212,7 @@ namespace SchoolOfScience.Controllers
                                     interview.status_id = openedStatusId;
                                     db.Interviews.Add(interview);
                                     db.SaveChanges();
+                                    count++;
                                     starttime = endtime;
                                 }
                                 else
@@ -222,6 +225,7 @@ namespace SchoolOfScience.Controllers
                     }
                     datecursor = datecursor.AddDays(1);
                 }
+                Session["FlashMessage"] = count + " Interview Timeslots were created successfully.";
                 return RedirectToAction("Index");
             }
             catch (Exception e)

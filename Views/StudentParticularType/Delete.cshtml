@@ -30,6 +30,13 @@
     <div class="display-field">
         @Html.DisplayFor(model => model.example)
     </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.resume_export)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.resume_export)
+    </div>
 </fieldset>
 @using (Html.BeginForm()) {
     @Html.AntiForgeryToken()

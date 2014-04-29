@@ -102,6 +102,10 @@
 </div>
 }
 
+<div class="field-wrapper float-right">
+    <a id="cv-link" href="@Url.Action("ExportWord")" target="_blank"><img src="@Url.Content("~/Images/Action/Create_myCV.png")" class="cv-btn" /></a>
+</div>
+
 <ul id="tabs">
     <li><a href="#" class="tab1">mySCI Applications</a></li>
     <li><a href="#" class="tab2">My Particulars</a></li>
@@ -289,9 +293,19 @@
 
 <div class="clear-fix"></div>
 
+<div id="cv-link-prompt" style="display:none">
 <p>
-    @Html.ActionLink("Generate CV as MS-WORD Document", "ExportWord")
+    This Resume generator aims to facilitate you to create your own resume based on the information available in mySCI. Please make sure that:
 </p>
+<ul class="cv-link-prompt">
+    <li>you have updated the information in ‘My Profile’ before creating your resume</li>
+    <li>you will edit or make changes to the resume created before using it as a customized job/program application</li>
+</ul>
+<p>
+    You are most welcome to approach us at advise@ust.hk if you need further advise on resume writing
+</p>
+</div>
+
 
 @section Scripts{
     <script>
@@ -344,6 +358,30 @@
             $(".program-details-link").click(function (e) {
                 e.preventDefault();
                 showDialog($(this).prop("href"), "#error-dialog", "#program-details-dialog");
+            });
+
+            $("#cv-link").click(function (e) {
+                $("#error-dialog").dialog(
+                    {
+                        width: 500,
+                        height: 300,
+                        overflow: "auto",
+                        modal: true,
+                        resizable: true,
+                        draggable: true,
+                        open: function () {
+                            $(this).scrollTop(0);
+                            $('.ui-widget-overlay').hide().fadeIn();
+                        },
+                        show: {
+                            effect: 'fade',
+                            duration: 200
+                        },
+                        hide: {
+                            effect: 'fade',
+                            duration: 100
+                        }
+                    }).html($("#cv-link-prompt").html());
             });
 
             $(".button").button();

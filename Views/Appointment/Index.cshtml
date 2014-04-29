@@ -26,7 +26,12 @@ else
 
 @using (Html.BeginForm("Index", "Appointment", FormMethod.Post, new { id = "filter-form" }))
 {
-    <fieldset class="startCollapse">
+    string style = "startCollapse";
+    if (User.IsInRole("ProgramAdmin"))
+    {
+        style = "collapse";
+    }
+    <fieldset class="@style">
         <legend>Search by Filter (Click to expand)</legend>
         <div class="filter">
             <div class="filter-field">

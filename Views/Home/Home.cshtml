@@ -49,7 +49,7 @@
     }
 
     
-    @if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment"))
+    @if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment") || User.IsInRole("ProgramAdmin"))
     {
     <div class="dashboard-item">
         <a href="@Url.Action("Index", "StudentProfile")">

@@ -7,6 +7,7 @@
     <Schema Namespace="SchoolOfScienceModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityContainer Name="SchoolOfScienceModelStoreContainer">
           <EntitySet Name="__MigrationHistory" EntityType="SchoolOfScienceModel.Store.__MigrationHistory" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="AcademicPlans" EntityType="SchoolOfScienceModel.Store.AcademicPlans" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="Application" EntityType="SchoolOfScienceModel.Store.Application" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="ApplicationAttachment" EntityType="SchoolOfScienceModel.Store.ApplicationAttachment" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="ApplicationExchangeOption" EntityType="SchoolOfScienceModel.Store.ApplicationExchangeOption" store:Type="Tables" Schema="dbo" />
@@ -57,6 +58,7 @@
           <EntitySet Name="TimeslotConfig" EntityType="SchoolOfScienceModel.Store.TimeslotConfig" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="TimeslotConfigSession" EntityType="SchoolOfScienceModel.Store.TimeslotConfigSession" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="UserProfile" EntityType="SchoolOfScienceModel.Store.UserProfile" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="UserProfileAcademicPlan" EntityType="SchoolOfScienceModel.Store.UserProfileAcademicPlan" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="UserProfileAppointmentHost" EntityType="SchoolOfScienceModel.Store.UserProfileAppointmentHost" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="webpages_Membership" EntityType="SchoolOfScienceModel.Store.webpages_Membership" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="webpages_OAuthMembership" EntityType="SchoolOfScienceModel.Store.webpages_OAuthMembership" store:Type="Tables" Schema="dbo" />
@@ -302,6 +304,10 @@
             <End Role="AppointmentHost" EntitySet="AppointmentHost" />
             <End Role="UserProfile" EntitySet="UserProfile" />
           </AssociationSet>
+          <AssociationSet Name="FK_UserProfileAcademicPlan_UserProfile" Association="SchoolOfScienceModel.Store.FK_UserProfileAcademicPlan_UserProfile">
+            <End Role="UserProfile" EntitySet="UserProfile" />
+            <End Role="UserProfileAcademicPlan" EntitySet="UserProfileAcademicPlan" />
+          </AssociationSet>
           <AssociationSet Name="FK_UserProfileAppointmentHost_AppointmentHost" Association="SchoolOfScienceModel.Store.FK_UserProfileAppointmentHost_AppointmentHost">
             <End Role="AppointmentHost" EntitySet="AppointmentHost" />
             <End Role="UserProfileAppointmentHost" EntitySet="UserProfileAppointmentHost" />
@@ -322,6 +328,14 @@
           <Property Name="MigrationId" Type="nvarchar" Nullable="false" MaxLength="255" />
           <Property Name="Model" Type="varbinary(max)" Nullable="false" />
           <Property Name="ProductVersion" Type="nvarchar" Nullable="false" MaxLength="32" />
+        </EntityType>
+        <EntityType Name="AcademicPlans">
+          <Key>
+            <PropertyRef Name="code" />
+          </Key>
+          <Property Name="code" Type="nvarchar" Nullable="false" MaxLength="10" />
+          <Property Name="description" Type="nvarchar" MaxLength="30" />
+          <Property Name="full_description" Type="nvarchar" MaxLength="200" />
         </EntityType>
         <EntityType Name="Application">
           <Key>
@@ -903,6 +917,7 @@
           <Property Name="name" Type="nvarchar" Nullable="false" MaxLength="50" />
           <Property Name="priority" Type="int" Nullable="false" />
           <Property Name="example" Type="nvarchar" MaxLength="200" />
+          <Property Name="resume_export" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="StudentProfile">
           <Key>
@@ -1046,6 +1061,14 @@
           <Property Name="UserId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
           <Property Name="UserName" Type="nvarchar" Nullable="false" MaxLength="56" />
           <Property Name="appointment_host_id" Type="int" />
+        </EntityType>
+        <EntityType Name="UserProfileAcademicPlan">
+          <Key>
+            <PropertyRef Name="user_id" />
+            <PropertyRef Name="academic_plan" />
+          </Key>
+          <Property Name="user_id" Type="int" Nullable="false" />
+          <Property Name="academic_plan" Type="nvarchar" Nullable="false" MaxLength="200" />
         </EntityType>
         <EntityType Name="UserProfileAppointmentHost">
           <Key>
@@ -1815,6 +1838,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_UserProfileAcademicPlan_UserProfile">
+          <End Role="UserProfile" Type="SchoolOfScienceModel.Store.UserProfile" Multiplicity="1" />
+          <End Role="UserProfileAcademicPlan" Type="SchoolOfScienceModel.Store.UserProfileAcademicPlan" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserProfile">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="UserProfileAcademicPlan">
+              <PropertyRef Name="user_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_UserProfileAppointmentHost_AppointmentHost">
           <End Role="AppointmentHost" Type="SchoolOfScienceModel.Store.AppointmentHost" Multiplicity="1" />
           <End Role="UserProfileAppointmentHost" Type="SchoolOfScienceModel.Store.UserProfileAppointmentHost" Multiplicity="*" />
@@ -2143,6 +2178,12 @@
           <AssociationSet Name="UserProfileAppointmentHost" Association="SchoolOfScienceModel.UserProfileAppointmentHost">
             <End Role="AppointmentHost" EntitySet="AppointmentHosts" />
             <End Role="SystemUser" EntitySet="SystemUsers" />
+          </AssociationSet>
+          <EntitySet Name="AcademicPlans" EntityType="SchoolOfScienceModel.AcademicPlan" />
+          <EntitySet Name="UserProfileAcademicPlans" EntityType="SchoolOfScienceModel.UserProfileAcademicPlan" />
+          <AssociationSet Name="FK_UserProfileAcademicPlan_UserProfile" Association="SchoolOfScienceModel.FK_UserProfileAcademicPlan_UserProfile">
+            <End Role="SystemUser" EntitySet="SystemUsers" />
+            <End Role="UserProfileAcademicPlan" EntitySet="UserProfileAcademicPlans" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="C__MigrationHistory">
@@ -2612,6 +2653,7 @@
           <NavigationProperty Name="StudentParticulars" Relationship="SchoolOfScienceModel.FK_StudentParticular_StudentParticularType" FromRole="StudentParticularType" ToRole="StudentParticular" />
           <Property Type="Int32" Name="priority" Nullable="false" />
           <Property Type="String" Name="example" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Type="Boolean" Name="resume_export" Nullable="false" />
         </EntityType>
         <EntityType Name="StudentProfile">
           <Key>
@@ -2771,6 +2813,7 @@
           <NavigationProperty Name="webpages_Membership" Relationship="SchoolOfScienceModel.FK_webpages_Membership_UserProfile" FromRole="UserProfile" ToRole="webpages_Membership" />
           <NavigationProperty Name="NominationLists" Relationship="SchoolOfScienceModel.FK_NominationList_UserProfile" FromRole="SystemUser" ToRole="NominationList" />
           <NavigationProperty Name="AppointmentHosts" Relationship="SchoolOfScienceModel.UserProfileAppointmentHost" FromRole="SystemUser" ToRole="AppointmentHost" />
+          <NavigationProperty Name="UserProfileAcademicPlans" Relationship="SchoolOfScienceModel.FK_UserProfileAcademicPlan_UserProfile" FromRole="SystemUser" ToRole="UserProfileAcademicPlan" />
         </EntityType>
         <EntityType Name="webpages_Membership">
           <Key>
@@ -3687,6 +3730,35 @@
           <End Type="SchoolOfScienceModel.AppointmentHost" Role="AppointmentHost" Multiplicity="*" />
           <End Type="SchoolOfScienceModel.SystemUser" Role="SystemUser" Multiplicity="*" />
         </Association>
+        <EntityType Name="AcademicPlan">
+          <Key>
+            <PropertyRef Name="code" />
+          </Key>
+          <Property Type="String" Name="code" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="description" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="full_description" MaxLength="200" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="UserProfileAcademicPlan">
+          <Key>
+            <PropertyRef Name="user_id" />
+            <PropertyRef Name="academic_plan" />
+          </Key>
+          <Property Type="Int32" Name="user_id" Nullable="false" />
+          <Property Type="String" Name="academic_plan" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="UserProfile" Relationship="SchoolOfScienceModel.FK_UserProfileAcademicPlan_UserProfile" FromRole="UserProfileAcademicPlan" ToRole="SystemUser" />
+        </EntityType>
+        <Association Name="FK_UserProfileAcademicPlan_UserProfile">
+          <End Type="SchoolOfScienceModel.SystemUser" Role="SystemUser" Multiplicity="1" />
+          <End Type="SchoolOfScienceModel.UserProfileAcademicPlan" Role="UserProfileAcademicPlan" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SystemUser">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="UserProfileAcademicPlan">
+              <PropertyRef Name="user_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -4111,6 +4183,7 @@
           <EntitySetMapping Name="StudentParticularTypes">
             <EntityTypeMapping TypeName="SchoolOfScienceModel.StudentParticularType">
               <MappingFragment StoreEntitySet="StudentParticularType">
+                <ScalarProperty Name="resume_export" ColumnName="resume_export" />
                 <ScalarProperty Name="example" ColumnName="example" />
                 <ScalarProperty Name="priority" ColumnName="priority" />
                 <ScalarProperty Name="id" ColumnName="id" />
@@ -4524,6 +4597,23 @@
               <ScalarProperty Name="id" ColumnName="host_id" />
             </EndProperty>
           </AssociationSetMapping>
+          <EntitySetMapping Name="AcademicPlans">
+            <EntityTypeMapping TypeName="SchoolOfScienceModel.AcademicPlan">
+              <MappingFragment StoreEntitySet="AcademicPlans">
+                <ScalarProperty Name="full_description" ColumnName="full_description" />
+                <ScalarProperty Name="description" ColumnName="description" />
+                <ScalarProperty Name="code" ColumnName="code" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserProfileAcademicPlans">
+            <EntityTypeMapping TypeName="SchoolOfScienceModel.UserProfileAcademicPlan">
+              <MappingFragment StoreEntitySet="UserProfileAcademicPlan">
+                <ScalarProperty Name="academic_plan" ColumnName="academic_plan" />
+                <ScalarProperty Name="user_id" ColumnName="user_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

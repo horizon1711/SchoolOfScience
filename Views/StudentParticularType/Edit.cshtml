@@ -39,6 +39,14 @@
             @Html.ValidationMessageFor(model => model.example)
         </div>
 
+        <div class="editor-label">
+            @Html.LabelFor(model => model.resume_export)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.resume_export)
+            @Html.ValidationMessageFor(model => model.resume_export)
+        </div>
+
         <p>
             <input type="submit" value="Save" />
         </p>

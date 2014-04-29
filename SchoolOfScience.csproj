@@ -251,6 +251,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\AcademicPlan.cs">
+      <DependentUpon>SchoolOfScienceModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\AccountModels.cs" />
     <Compile Include="Models\Application.cs">
       <DependentUpon>SchoolOfScienceModel.tt</DependentUpon>
@@ -453,6 +456,9 @@
       <DependentUpon>SchoolOfScienceModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\TimeslotConfigSession.cs">
+      <DependentUpon>SchoolOfScienceModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\UserProfileAcademicPlan.cs">
       <DependentUpon>SchoolOfScienceModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ViewModels\ApplicationExportViewModel.cs" />
