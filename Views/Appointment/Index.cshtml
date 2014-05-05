@@ -27,7 +27,7 @@ else
 @using (Html.BeginForm("Index", "Appointment", FormMethod.Post, new { id = "filter-form" }))
 {
     string style = "startCollapse";
-    if (User.IsInRole("ProgramAdmin"))
+    if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment") || User.IsInRole("ProgramAdmin"))
     {
         style = "collapse";
     }
@@ -45,6 +45,10 @@ else
             <div class="filter-field">
                 <label for="status">Status:</label>
                 @Html.DropDownList("status", ViewBag.statusList as IEnumerable<SelectListItem>, "All", null)
+            </div>
+            <div class="filter-field">
+                <label for="plan">Academic Plan:</label>
+                @Html.DropDownList("plan", ViewBag.academicPlanList as IEnumerable<SelectListItem>, "All", null)
             </div>
             <div class="filter-field">
                 <label for="startdate">Date from:</label>

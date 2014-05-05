@@ -54,6 +54,8 @@ namespace SchoolOfScience.Controllers
             ViewBag.statusList = new SelectList(db.AppointmentStatus, "id", "name");
             ViewBag.consultation = consultation;
             ViewBag.host = db.AppointmentHosts.FirstOrDefault(h => h.SystemUsers.Any(u => u.UserName == User.Identity.Name));
+            ViewBag.academicPlanList = new SelectList(db.StudentProfiles.Select(p => new { value = p.academic_plan_primary, text = p.academic_plan_description }).Distinct().OrderBy(p => p.text), "value", "text");
+
             return View(appointments.ToList().Where(a => (true)
                 && a.start_time > DateTime.Now
                 && (!consultation || a.AppointmentConcerns.Any(c => c.program_id != null))
@@ -91,6 +93,8 @@ namespace SchoolOfScience.Controllers
             ViewBag.startdate = Form["startdate"];
             ViewBag.enddate = Form["enddate"];
             ViewBag.host = db.AppointmentHosts.FirstOrDefault(h => h.SystemUsers.Any(u => u.UserName == User.Identity.Name));
+            ViewBag.academicPlanList = new SelectList(db.StudentProfiles.Select(p => new { value = p.academic_plan_primary, text = p.academic_plan_description }).Distinct().OrderBy(p => p.text), "value", "text", Form["plan"]);
+
             return View(appointments.ToList().Where(a => (true)
                 && (String.IsNullOrEmpty(Form["concern"]) || a.AppointmentConcerns.Any(c => c.id.ToString() == Form["concern"]))
                 && (String.IsNullOrEmpty(Form["host"]) || a.host_id.ToString() == Form["host"])
@@ -102,6 +106,7 @@ namespace SchoolOfScience.Controllers
                 && (!(advisor && mentor) || (a.student_id != null && a.StudentProfile.academic_plan_description.Contains("4Y")))
                 && (!(advisor && !mentor) || (a.student_id != null && a.StudentProfile.academic_plan_description.Contains("4Y") && a.StudentProfile.academic_plan_description.Contains("Undeclared")) && !a.AppointmentConcerns.Any(c => c.program_id != null))
                 && (!(!advisor && mentor) || (a.student_id != null && a.StudentProfile.academic_plan_description.Contains("4Y") && !a.StudentProfile.academic_plan_description.Contains("Undeclared")) && !a.AppointmentConcerns.Any(c => c.program_id != null))
+                && (String.IsNullOrEmpty(Form["plan"]) || (a.student_id != null && a.StudentProfile.academic_plan_primary == Form["plan"]))
                 && (String.IsNullOrEmpty(Form["startdate"]) || a.start_time > Convert.ToDateTime(Form["startdate"]))
                 && (String.IsNullOrEmpty(Form["enddate"]) || a.start_time < Convert.ToDateTime(Form["enddate"]).AddDays(1))
                 ));

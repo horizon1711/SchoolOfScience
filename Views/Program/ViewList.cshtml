@@ -9,7 +9,7 @@
 
 <h2>@ViewBag.title</h2>
 
-@using (Html.BeginForm("ViewList", "Program", new { id = 0 }))
+@using (Html.BeginForm("ViewList", "Program", FormMethod.Post, new { id = "filter-form" }))
 {
     
     <div class="filter">
@@ -32,6 +32,11 @@
         <input type="reset" class="button" value="Reset" />
     </p>
 }
+
+<p>
+    <a href="#" id="view-all">View All Programs</a>
+</p>
+
 
 <div class="showcase-note">Date Format: Year-Month-Day</div>
 
@@ -205,6 +210,13 @@
                 e.preventDefault();
                 $(".chosen").val('').trigger("chosen:updated");
                 $("input[type=checkbox]").attr("checked", false);
+            });
+
+            $("#view-all").click(function (e) {
+                e.preventDefault();
+                $(".chosen").val('').trigger("chosen:updated");
+                $("input[type=checkbox]").attr("checked", false);
+                $("#filter-form").submit();
             });
         });
     </script>
