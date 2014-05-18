@@ -59,6 +59,7 @@
         <th>Appointment Time</th>
         <th>Appointment Venue</th>
         }
+        <th>mySCI Application History</th>
         @foreach (var particulartype in Model.particulartypes)
         {
             <th>Particular - @particulartype.name</th>
@@ -201,6 +202,16 @@
                     <td>None</td>
             }
         }
+        <td>
+            @foreach (var mysci_applications in application.StudentProfile.Applications.OrderBy(a => a.Program.application_start_time).Select((x, i) => new { data = x, index = i }))
+            {
+                if (mysci_applications.index > 0)
+                {
+                    <text>;<br /></text>
+                }
+                @(mysci_applications.data.Program.name + "-" + mysci_applications.data.ApplicationStatus.name)
+            }
+        </td>
         @foreach (var particulartype in Model.particulartypes)
         {
             <td>

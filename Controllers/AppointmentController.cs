@@ -872,7 +872,7 @@ namespace SchoolOfScience.Controllers
         public ActionResult Cancel(int id = 0)
         {
             var appointment = db.Appointments.Where(o => o.student_id == User.Identity.Name && o.id == id).FirstOrDefault();
-            if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment") || User.IsInRole("FacultyAdvisor"))
+            if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment") || User.IsInRole("FacultyAdvisor") || User.IsInRole("ProgramAdmin"))
             {
                 appointment = db.Appointments.Find(id);
             }
@@ -898,7 +898,7 @@ namespace SchoolOfScience.Controllers
         public ActionResult CancelConfirmed(int id = 0)
         {
             var appointment = db.Appointments.Where(o => o.student_id == User.Identity.Name && o.id == id).FirstOrDefault();
-            if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment") || User.IsInRole("FacultyAdvisor"))
+            if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment") || User.IsInRole("FacultyAdvisor") || User.IsInRole("ProgramAdmin"))
             {
                 appointment = db.Appointments.Find(id);
             }
@@ -908,6 +908,7 @@ namespace SchoolOfScience.Controllers
                 return RedirectToAction("MyAppointment", "Appointment");
             }
             appointment.student_id = null;
+            appointment.AppointmentConcerns.Clear();
             db.SaveChanges();
             if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment") || User.IsInRole("FacultyAdvisor"))
             {
