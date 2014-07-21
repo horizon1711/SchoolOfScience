@@ -915,20 +915,20 @@ namespace SchoolOfScience.Controllers
                     mail.Body = Body;
                     mail.IsBodyHtml = true;
 
-                    //testing server mail setup
+                    //production and development server mail setup
                     SmtpClient smtp = new SmtpClient();
-                    smtp.Host = "smtp.gmail.com";
-                    smtp.Port = 587;
-                    smtp.Credentials = new System.Net.NetworkCredential("treephoning@gmail.com", "16121612");// Enter senders User name and password
+                    smtp.Host = "smtp.ust.hk";
+                    smtp.Port = 25;
+                    smtp.Credentials = null;
+                    smtp.UseDefaultCredentials = false;
                     smtp.EnableSsl = true;
 
-                    //production and development server mail setup
-                    if (Request.Url.Host == "sdb.science.ust.hk" || Request.Url.Host == "sfs-dev1.ust.hk")
+                    //not in ust server
+                    if (!Request.Url.Host.EndsWith("ust.hk"))
                     {
-                        smtp.Host = "smtp.ust.hk";
-                        smtp.Port = 25;
-                        smtp.Credentials = null;
-                        smtp.UseDefaultCredentials = false;
+                        notification.status_id = SentErrorStatus.id;
+                        Session["FlashMessage"] += "<br/>Failed to send notifications. Not in ust server.<br/>";
+                        return notification;
                     }
 
                     //add recipients to mail object

@@ -137,7 +137,7 @@
                         if (item.saved)
                         {
                             <div class="action-wrapper">
-                                <label>Application @Html.DisplayFor(modelItem => item.application.ApplicationStatus.name)</label>
+                                <label>@Html.DisplayFor(modelItem => item.application.ApplicationStatus.name)</label>
                                 <a href="@Url.Action("Edit", "Application", new { id = item.application.id })" class = "action-link" title = "Edit My Application"><img src="@Url.Content("~/Images/Action/edit.gif")" /></a>
                                 @*@Html.ActionLink("[ Edit My Application ]", "Edit", "Application", new { id = item.application.id }, new { @class = "action-link", title = "Warning: Your application is saved, but is NOT submitted yet!" })*@
                             </div>
@@ -145,7 +145,7 @@
                         else
                         {
                             <div class="action-wrapper">
-                                <label>Application @Html.DisplayFor(modelItem => item.application.ApplicationStatus.name)</label>
+                                <label>@Html.DisplayFor(modelItem => item.application.ApplicationStatus.name)</label>
                                 <a href="@Url.Action("Details", "Application", new { id = item.application.id })" class = "action-link" title = "View My Application"><img src="@Url.Content("~/Images/Action/view.gif")" /></a>
                                 @*@Html.ActionLink("[ View My Application ]", "Details", "Application", new { id = item.application.id }, new { @class = "action-link" })*@
                             </div>
@@ -183,14 +183,14 @@
                         if (item.existed && !item.saved)
                         {
                             <div class="action-wrapper">
-                                <label>Application @Html.DisplayFor(modelItem => item.application.ApplicationStatus.name)</label>
+                                <label>@Html.DisplayFor(modelItem => item.application.ApplicationStatus.name)</label>
                                 <a href="@Url.Action("Details", "Application", new { id = item.application.id })" class = "action-link" title = "View My Application"><img src="@Url.Content("~/Images/Action/view.gif")" /></a>
                                 @*@Html.ActionLink("[ View My Application ]", "Details", "Application", new { id = item.application.id }, new { @class = "action-link" })*@
                             </div>
                         }
                         else
                         {
-                            <div class="action-wrapper"><label>Application Closed</label></div>
+                            <div class="action-wrapper"><label>Closed</label></div>
                         }
                     }
                 }

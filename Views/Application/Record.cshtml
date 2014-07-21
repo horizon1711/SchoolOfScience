@@ -77,7 +77,7 @@
                 @String.Format("{0:yyyy-MM-dd (ddd)}", item.program.start_time)
             </td>
             <td>
-            @if (ViewBag.title == "My Appointments")
+            @if (ViewBag.title == "My Consultations")
             {
                 foreach (var appointment in item.application.StudentProfile.Appointments.Where(o => o.AppointmentConcerns.Any(c => c.program_id == item.program.id)))
                 {

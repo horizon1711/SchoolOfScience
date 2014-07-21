@@ -124,8 +124,11 @@ namespace SchoolOfScience.Controllers
                     }
                     try
                     {
-                        System.IO.File.Move(sourceFilepath, destFilepath);
-                        programtype.image_filepath = "~/Images/ProgramType/" + programtype.id.ToString();
+                        if (!System.IO.File.Exists(destFilepath))
+                        {
+                            System.IO.File.Move(sourceFilepath, destFilepath);
+                            programtype.image_filepath = "~/Images/ProgramType/" + programtype.id.ToString();
+                        }
                     }
                     catch (Exception e)
                     {

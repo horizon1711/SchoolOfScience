@@ -1410,7 +1410,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>57146</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost/SchoolOfScience</IISUrl>
+          <IISUrl>http://localhost:8082/SchoolOfScience</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>
