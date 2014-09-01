@@ -18,14 +18,14 @@ namespace SchoolOfScience.Controllers
         //
         // GET: /StudentProfile/
 
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment,ProgramAdmin")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,ProgramAdmin,UGCoordinator")]
         public ActionResult Index()
         {
             ViewBag.careerList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_career }).Distinct().OrderBy(t => t.text), "text", "text");
             ViewBag.groupList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_group }).Distinct().OrderBy(t => t.text), "text", "text");
             ViewBag.departmentList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_organization }).Distinct().OrderBy(t => t.text), "text", "text");
             ViewBag.planList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_plan_description }).Distinct().OrderBy(t => t.text), "text", "text");
-            if (User.IsInRole("ProgramAdmin"))
+            if (User.IsInRole("ProgramAdmin") || User.IsInRole("UGCoordinator"))
             {
                 ViewBag.planList = new SelectList(db.UserProfileAcademicPlans.Where(p => p.UserProfile.UserName == User.Identity.Name).Select(p => new { text = p.academic_plan }).Distinct().OrderBy(t => t.text), "text", "text");
             }
@@ -38,7 +38,7 @@ namespace SchoolOfScience.Controllers
         // POST: /StudentProfile/
 
         [HttpPost]
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment,ProgramAdmin")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,ProgramAdmin,UGCoordinator")]
         public ActionResult Index(FormCollection Form, bool assigned, bool requiredinterview, bool withcomment)
         {
             var students = db.StudentProfiles;
@@ -49,7 +49,7 @@ namespace SchoolOfScience.Controllers
             ViewBag.groupList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_group }).Distinct().OrderBy(t => t.text), "text", "text", Form["academic_group"]);
             ViewBag.departmentList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_organization }).Distinct().OrderBy(t => t.text), "text", "text", Form["academic_organization"]);
             ViewBag.planList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_plan_description }).Distinct().OrderBy(t => t.text), "text", "text", Form["academic_plan_description"]);
-            if (User.IsInRole("ProgramAdmin"))
+            if (User.IsInRole("ProgramAdmin") || User.IsInRole("UGCoordinator"))
             {
                 ViewBag.planList = new SelectList(db.UserProfileAcademicPlans.Where(p => p.UserProfile.UserName == User.Identity.Name).Select(p => new { text = p.academic_plan }).Distinct().OrderBy(t => t.text), "text", "text", Form["academic_plan_description"]);
             }
@@ -71,7 +71,7 @@ namespace SchoolOfScience.Controllers
                 && (!assigned || s.Applications.Any(a => a.Interviews.Count() > 0))
                 && (!requiredinterview || s.Applications.Any(a => a.Program.require_interview && a.Interviews.Count() == 0))
                 && (!withcomment || s.StudentAdvisingRemarks.Count() > 0)
-                && (!User.IsInRole("ProgramAdmin") || db.UserProfileAcademicPlans.Any(p => p.UserProfile.UserName == User.Identity.Name && p.academic_plan == s.academic_plan_description))
+                && (!(User.IsInRole("ProgramAdmin") || User.IsInRole("UGCoordinator")) || db.UserProfileAcademicPlans.Any(p => p.UserProfile.UserName == User.Identity.Name && p.academic_plan == s.academic_plan_description))
                 ));
         }
 
@@ -134,7 +134,7 @@ namespace SchoolOfScience.Controllers
         //
         // GET: /StudentProfile/Details/5
 
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment,StudentDevelopment,FacultyAdvisor,EDP,CommTutor,ProgramAdmin,Nominator")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,StudentDevelopment,FacultyAdvisor,EDP,CommTutor,ProgramAdmin,Nominator,UGCoordinator")]
         public ActionResult Details(string id = null)
         {
             StudentProfile studentprofile = db.StudentProfiles.Find(id);
@@ -262,7 +262,7 @@ namespace SchoolOfScience.Controllers
         //
         // GET: /StudentProfile/AdvisingRemark/
 
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment,FacultyAdvisor,CommTutor")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,FacultyAdvisor,CommTutor,UGCoordinator")]
         public ActionResult AdvisingRemark(string student_id = null, string opener_id = null)
         {
             ViewBag.student_id = student_id;
@@ -279,7 +279,7 @@ namespace SchoolOfScience.Controllers
         //
         // GET: /StudentProfile/ActivityRecord/
 
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment,FacultyAdvisor,EDP,CommTutor,Nominator,ProgramAdmin")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,FacultyAdvisor,EDP,CommTutor,Nominator,ProgramAdmin,UGCoordinator")]
         public ActionResult ActivityRecord(string student_id = null, string opener_id = null)
         {
             ViewBag.student_id = student_id;
@@ -296,7 +296,7 @@ namespace SchoolOfScience.Controllers
         //
         // GET: /StudentProfile/ExportWord/5
 
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment,StudentUGRD,StudentRPGTPG,StudentNUGD")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,UGCoordinator,StudentUGRD,StudentRPGTPG,StudentNUGD")]
         public ActionResult ExportWord(string id)
         {
             if (String.IsNullOrEmpty(id))
@@ -451,6 +451,56 @@ namespace SchoolOfScience.Controllers
         //    db.SaveChanges();
         //    return RedirectToAction("Index");
         //}
+
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
+        public ActionResult UGCoordinator()
+        {
+            var ugcoordinators = db.SystemUsers.Where(u => u.UserRoles.Any(r => r.RoleName == "UGCoordinator"));
+            return View(ugcoordinators.ToList());
+        }
+
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
+        public ActionResult EditUGCoordinator(int userid)
+        {
+            var user = db.SystemUsers.Find(userid);
+            ViewBag.planList = db.StudentProfiles.Select(s => new { id = s.academic_plan_description, name = s.academic_plan_description }).Distinct().OrderBy(s => s.id);
+            ViewBag.selectedPlans = user.UserProfileAcademicPlans.Select(p => p.academic_plan).ToArray();
+            return View(user);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
+        public ActionResult EditUGCoordinator(int userid, string[] plans)
+        {
+            var user = db.SystemUsers.Find(userid);
+            ViewBag.planList = db.StudentProfiles.Select(s => new { id = s.academic_plan_description, name = s.academic_plan_description }).Distinct().OrderBy(s => s.id);
+            ViewBag.selectedPlans = user.UserProfileAcademicPlans.Select(p => p.academic_plan).ToArray();
+            
+            user.UserProfileAcademicPlans.Clear();
+            if (plans != null)
+            {
+                foreach (var plan in plans)
+                {
+                    user.UserProfileAcademicPlans.Add(new UserProfileAcademicPlan { user_id = userid, academic_plan = plan });
+                }
+            }
+            try
+            {
+                db.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                Session["FlashMessage"] = "Failed to edit UGCoorindator user.<br/>" + e.Message;
+                return View(user);
+            }
+            return RedirectToAction("UGCoordinator");
+        }
+
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
+        public ActionResult DeleteUGCoordinator()
+        {
+            return null;
+        }
 
         protected override void Dispose(bool disposing)
         {

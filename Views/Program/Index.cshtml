@@ -12,6 +12,10 @@
         <legend>Search by Filter (Click to expand)</legend>
         <div class="filter">
             <div class="filter-field">
+                <label for="program">Academic Year:</label>
+                @Html.DropDownList("academic_year", ViewBag.programAcademicYearList as IEnumerable<SelectListItem>, "All", null)
+            </div>
+            <div class="filter-field">
                 <label for="program">Program:</label>
                 @Html.DropDownList("program", ViewBag.programList as IEnumerable<SelectListItem>, "All", null)
             </div>

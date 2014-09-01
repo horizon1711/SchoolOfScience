@@ -891,7 +891,7 @@ namespace SchoolOfScience.Controllers
 
         public Notification SendNotification(Notification notification)
         {
-            bool error = false;
+            bool success = false;
             int batch = 0;
             int count = 0;
 
@@ -939,7 +939,7 @@ namespace SchoolOfScience.Controllers
                     if (notification.NotificationRecipients.Count() < 150)
                     {
                         notification.NotificationRecipients.Where(r => r.recipient_type == "bcc").ToList().ForEach(r => mail.Bcc.Add(r.email));
-                        error = Send(smtp, mail);
+                        success = Send(smtp, mail);
                     }
                     else
                     {
@@ -950,7 +950,7 @@ namespace SchoolOfScience.Controllers
                             if (count % 150 == 0)
                             {
                                 batch++;
-                                error = Send(smtp, mail, batch);
+                                success = Send(smtp, mail, batch);
                                 //reset Bcc List
                                 mail.Bcc.Clear();
                             }
@@ -959,11 +959,11 @@ namespace SchoolOfScience.Controllers
                         if (mail.Bcc.Count() > 0)
                         {
                             batch++;
-                            error = Send(smtp, mail, batch);
+                            success = Send(smtp, mail, batch);
                         }
                     }
 
-                    if (error)
+                    if (!success)
                     {
                         notification.status_id = SentErrorStatus.id;
                     }

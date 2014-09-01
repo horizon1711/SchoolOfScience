@@ -1382,6 +1382,8 @@
     <Content Include="Views\Appointment\ProgramAdmin.cshtml" />
     <Content Include="Views\Appointment\EditProgramAdmin.cshtml" />
     <Content Include="Views\StudentProfile\ExportWord.cshtml" />
+    <Content Include="Views\StudentProfile\EditUGCoordinator.cshtml" />
+    <Content Include="Views\StudentProfile\UGCoordinator.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

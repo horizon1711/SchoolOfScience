@@ -29,6 +29,7 @@
         <div class="editor-field">
             @Html.ListBoxFor(model => model.roleids, ViewBag.roleList as MultiSelectList, new { @class = "chosen" })
             @Html.ValidationMessageFor(model => model.roleids)
+            User without any role will be removed 
         </div>
 
         <p>

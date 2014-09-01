@@ -299,11 +299,11 @@ namespace SchoolOfScience.Controllers
                 foreach (var interview in program.Interviews.Where(i => i.Applications.Count() < i.no_of_interviewee))
                 {
                     string department = null;
-                    var applications = program.Applications.Where(a => a.Interviews.Count() == 0 && a.ApplicationStatus.submitted && !a.ApplicationStatus.rejected);
+                    var applications = program.Applications.Where(a => a.Interviews.Count() == 0 && a.ApplicationStatus.submitted && !a.ApplicationStatus.rejected).OrderBy(a => a.StudentProfile.name);
                     //sort applications by department is sort_by_dept is true, ,or continuous_assign is false
                     if (ViewModel.sort_by_dept || !ViewModel.continuous_assign)
                     {
-                        applications = applications.OrderBy(a => a.StudentProfile.academic_organization);
+                        applications = applications.OrderBy(a => a.StudentProfile.academic_organization).ThenBy(a => a.StudentProfile.name);
                     }
                     foreach (var application in applications)
                     {

@@ -1,0 +1,36 @@
+﻿@model SchoolOfScience.Models.SystemUser
+
+@{
+    ViewBag.Title = "Edit UGCoordinator";
+}
+
+<h2>UG Coordinator</h2>
+
+<fieldset>
+    <legend>Edit UG Coordinator</legend>
+
+@using (Html.BeginForm()) {
+
+    <div class="display-label">
+        User
+    </div>
+    <div class="editor-field">
+        @Model.UserName
+    </div>
+
+    <div class="display-label">
+        Student Academic Plans
+    </div>
+    <div class="editor-field">
+        @Html.ListBox("plans", new MultiSelectList(ViewBag.planList, "id", "name", ViewBag.selectedPlans), new { @class = "chosen" })
+    </div>
+    
+    <p>
+        <input type="submit" value="Submit" />
+    </p>
+    <p>
+        @Html.ActionLink("Back", "UGCoordinator")
+    </p>
+}
+
+</fieldset>

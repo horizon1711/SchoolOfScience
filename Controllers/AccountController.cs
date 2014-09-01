@@ -329,10 +329,16 @@ namespace SchoolOfScience.Controllers
 
         public ActionResult LogOff()
         {
-            // Double check they are signed out
-            string SignoutUrl = CASHOST + "logout";
-            StreamReader SignoutHttpReader = new StreamReader(new WebClient().OpenRead(SignoutUrl));
-            string SignOutResponse = SignoutHttpReader.ReadToEnd();
+            try
+            {
+                // Double check they are signed out
+                string SignoutUrl = CASHOST + "logout";
+                StreamReader SignoutHttpReader = new StreamReader(new WebClient().OpenRead(SignoutUrl));
+                string SignOutResponse = SignoutHttpReader.ReadToEnd();
+            }
+            catch (Exception e)
+            {
+            }
 
             // Sign the user out of the .NET site and Give them a message,
             // they'll never see it though...

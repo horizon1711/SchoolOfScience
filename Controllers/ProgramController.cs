@@ -26,42 +26,48 @@ namespace SchoolOfScience.Controllers
         public ActionResult Index()
         {
 
-            var programs = db.Programs.Include(p => p.ProgramStatus).Include(p => p.ProgramType);
+            var programs = db.Programs.Include(p => p.ProgramStatus).Include(p => p.ProgramType).ToList();
+            var academica_years = programs.Select(p => new { Text = p.application_start_time.AddMonths(-8).Year.ToString() + "-" + p.application_start_time.AddMonths(+4).Year.ToString(), Value = p.application_start_time.AddMonths(-8).Year.ToString() }).Distinct().OrderByDescending(y => y.Text);
             if (User.IsInRole("EDP"))
             {
-                var edpusers = db.SystemUsers.Where(u => u.UserRoles.Any(r => r.RoleName == "EDP")).Select(u => u.UserName).ToArray();
-                programs = programs.Where(p => edpusers.Contains(p.created_by));
+                var edpusers = db.SystemUsers.Where(u => u.UserRoles.Any(r => r.RoleName == "EDP")).Select(u => u.UserName).ToArray().ToList();
+                programs = programs.Where(p => edpusers.Contains(p.created_by)).ToList();
             }
             if (User.IsInRole("CommTutor"))
             {
                 var commtutorusers = db.SystemUsers.Where(u => u.UserRoles.Any(r => r.RoleName == "CommTutor")).Select(u => u.UserName).ToArray();
-                programs = programs.Where(p => commtutorusers.Contains(p.created_by));
+                programs = programs.Where(p => commtutorusers.Contains(p.created_by)).ToList();
             }
             ViewBag.programList = new SelectList(programs.OrderBy(p => p.name), "id", "name");
             ViewBag.programTypeList = new SelectList(db.ProgramTypes, "id", "name");
+            ViewBag.programAcademicYearList = new SelectList(academica_years, "Value", "Text", DateTime.Now.AddMonths(-8).Year.ToString());
             ViewBag.programStatusList = new SelectList(db.ProgramStatus, "id", "name");
-            return View(programs.ToList());
+            return View(programs.ToList().Where(p => 
+                p.application_start_time.AddMonths(-8).Year.ToString() == DateTime.Now.AddMonths(-8).Year.ToString()
+                ));
         }
 
         //
         // POST: /Program/
         [HttpPost]
         [Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP,CommTutor")]
-        public ActionResult Index(FormCollection Form, bool interview, bool appointment, bool exchange, bool nomination)
+        public ActionResult Index(FormCollection Form, bool interview, bool appointment, bool exchange, bool nomination, string academic_year = null)
         {
-            var programs = db.Programs.Include(p => p.ProgramStatus).Include(p => p.ProgramType);
+            var programs = db.Programs.Include(p => p.ProgramStatus).Include(p => p.ProgramType).ToList();
+            var academica_years = programs.Select(p => new { Text = p.application_start_time.AddMonths(-8).Year.ToString() + "-" + p.application_start_time.AddMonths(+4).Year.ToString(), Value = p.application_start_time.AddMonths(-8).Year.ToString() }).Distinct().OrderByDescending(y => y.Text);
             if (User.IsInRole("EDP"))
             {
                 var edpusers = db.SystemUsers.Where(u => u.UserRoles.Any(r => r.RoleName == "EDP")).Select(u => u.UserName).ToArray();
-                programs = programs.Where(p => edpusers.Contains(p.created_by));
+                programs = programs.Where(p => edpusers.Contains(p.created_by)).ToList();
             }
             if (User.IsInRole("CommTutor"))
             {
                 var commtutorusers = db.SystemUsers.Where(u => u.UserRoles.Any(r => r.RoleName == "CommTutor")).Select(u => u.UserName).ToArray();
-                programs = programs.Where(p => commtutorusers.Contains(p.created_by));
+                programs = programs.Where(p => commtutorusers.Contains(p.created_by)).ToList();
             }
             ViewBag.programList = new SelectList(programs.OrderBy(p => p.name), "id", "name", Form["program"]);
             ViewBag.programTypeList = new SelectList(db.ProgramTypes, "id", "name", Form["program_type"]);
+            ViewBag.programAcademicYearList = new SelectList(academica_years, "Value", "Text", DateTime.Now.AddMonths(-8).Year.ToString());
             ViewBag.programStatusList = new SelectList(db.ProgramStatus, "id", "name", Form["program_status"]);
             return View(programs.ToList().Where(p => (true)
                     && (String.IsNullOrEmpty(Form["program"]) || p.id.ToString() == Form["program"])
@@ -71,6 +77,7 @@ namespace SchoolOfScience.Controllers
                     && (!appointment || p.require_appointment)
                     && (!exchange || p.require_exchange_option)
                     && (!nomination || p.require_nomination)
+                    && (String.IsNullOrEmpty(academic_year) || p.application_start_time.AddMonths(-8).Year.ToString() == academic_year)
                     ));
         }
 

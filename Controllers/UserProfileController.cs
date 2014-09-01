@@ -7,6 +7,8 @@ using System.Web;
 using System.Web.Mvc;
 using SchoolOfScience.Models;
 using SchoolOfScience.Models.ViewModels;
+using WebMatrix.WebData;
+using System.Web.Security;
 
 namespace SchoolOfScience.Controllers
 {
@@ -99,6 +101,14 @@ namespace SchoolOfScience.Controllers
                     {
                         userprofile.UserRoles.Add(role);
                     }
+                }
+                else
+                {
+                    db.SaveChanges();
+                    //remove user when there is no role attached
+                    ((SimpleMembershipProvider)Membership.Provider).DeleteAccount(userprofile.UserName); // deletes record from webpages_Membership table
+                    ((SimpleMembershipProvider)Membership.Provider).DeleteUser(userprofile.UserName, true); // deletes record from UserProfile table
+
                 }
 
                 db.SaveChanges();

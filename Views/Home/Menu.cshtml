@@ -134,10 +134,23 @@
 		    @Html.ActionLink("Student Profile", "Index", "StudentProfile")
             <ul>
                 <li>@Html.ActionLink("Import Student Activities", "Import", "StudentActivity")</li>
+                @if (User.IsInRole("FacultyAdvisor") || User.IsInRole("ProgramAdmin"))
+                {
+		            <li>
+			            @Html.ActionLink("MyStudent", "MyStudent", "StudentProfile")
+                        @if (User.IsInRole("FacultyAdvisor"))
+                        {
+                            <ul>
+                                <li>@Html.ActionLink("As Pre-major Faculty Advisor", "MyStudent", "StudentProfile", new { advisor = true }, null)</li>
+                                <li>@Html.ActionLink("As Faculty Mentor", "MyStudent", "StudentProfile", new { mentor = true }, null)</li>
+                            </ul>
+                        }
+		            </li>	
+                }
             </ul>
 	    </li>
     }
-    @if (User.IsInRole("ProgramAdmin"))
+    else if (User.IsInRole("ProgramAdmin") || User.IsInRole("UGCoordinator"))
     {
 	    <li>
 		    @Html.ActionLink("Student Profile", "Index", "StudentProfile")
@@ -224,6 +237,7 @@
 			        <ul>
 			            <li>@Html.ActionLink("Edit Particular Type", "Index", "StudentParticularType")</li>
 			            <li>@Html.ActionLink("Edit Experience Type", "Index", "StudentExperienceType")</li>
+                        <li>@Html.ActionLink("Edit UGCoordinator", "UGCoordinator", "StudentProfile")</li>
 			        </ul>
                 </li>
             </ul>

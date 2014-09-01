@@ -59,7 +59,7 @@
 }
 
 @*201403241200 fai: show remarks only if admin role or remarks is not empty*@
-@if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment") || !String.IsNullOrEmpty(Model.student.remarks))
+@if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment") || User.IsInRole("UGCoordinator") || !String.IsNullOrEmpty(Model.student.remarks))
 {
 <div class="field-wrapper">
     <div class="display-label" id="remarks-label">
@@ -135,14 +135,14 @@
 
 <ul id="tabs">
     <li><a href="#" class="tab1">mySCI Applications</a></li>
-    @if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment") || User.IsInRole("FacultyAdvisor") || User.IsInRole("Nominator") || User.IsInRole("CommTutor") || User.IsInRole("ProgramAdmin"))
+    @if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment") || User.IsInRole("FacultyAdvisor") || User.IsInRole("Nominator") || User.IsInRole("CommTutor") || User.IsInRole("ProgramAdmin") || User.IsInRole("UGCoordinator"))
     {
     <li><a href="#" class="tab2">Academic Records</a></li>
     }
     <li><a href="#" class="tab3">Particulars</a></li>
     <li><a href="#" class="tab4">Experiences</a></li>
     <li><a href="#" class="tab5">Qualifications</a></li>
-    @if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment") || User.IsInRole("FacultyAdvisor") || User.IsInRole("CommTutor"))
+    @if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment") || User.IsInRole("FacultyAdvisor") || User.IsInRole("CommTutor") || User.IsInRole("UGCoordinator"))
     {
     <li><a href="#" class="tab6">Advising Records</a></li>
     }
@@ -207,7 +207,7 @@
         <div class="clear-fix"></div>
     </div>
     
-    @if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment") || User.IsInRole("FacultyAdvisor") || User.IsInRole("Nominator") || User.IsInRole("CommTutor") || User.IsInRole("ProgramAdmin"))
+    @if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment") || User.IsInRole("FacultyAdvisor") || User.IsInRole("Nominator") || User.IsInRole("CommTutor") || User.IsInRole("ProgramAdmin") || User.IsInRole("UGCoordinator"))
     {
     <div id="tab2">
         <fieldset>
@@ -430,7 +430,7 @@
         </fieldset>
     </div>
     
-    @if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment") || User.IsInRole("FacultyAdvisor") || User.IsInRole("CommTutor"))
+    @if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment") || User.IsInRole("FacultyAdvisor") || User.IsInRole("CommTutor") || User.IsInRole("UGCoordinator"))
     {
     <div id="tab6">
         @Html.Action("AdvisingRemark", new { student_id = Model.student.id, opener_id = "tab6" })
@@ -443,7 +443,7 @@
 
 <div class="clear-fix"></div>
 
-@if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment"))
+@if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment") || User.IsInRole("UGCoordinator"))
 {
 <p>
     @Html.ActionLink("Generate CV as MS-WORD Document", "ExportWord", new { id = Model.student.id })

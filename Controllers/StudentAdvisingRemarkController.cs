@@ -39,7 +39,7 @@ namespace SchoolOfScience.Controllers
         //
         // GET: /StudentAdvisingRemark/Create
 
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment,FacultyAdvisor,CommTutor")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,FacultyAdvisor,CommTutor,UGCoordinator")]
         public ActionResult Create(string student_id = null, string opener_id = null)
         {
             ViewBag.opener_id = opener_id;
@@ -62,7 +62,7 @@ namespace SchoolOfScience.Controllers
         // POST: /StudentAdvisingRemark/Create
 
         [HttpPost]
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment,FacultyAdvisor,CommTutor")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,FacultyAdvisor,CommTutor,UGCoordinator")]
         [ValidateAntiForgeryToken]
         public ActionResult Create(StudentAdvisingRemark studentadvisingremark, string opener_id = null)
         {
@@ -123,7 +123,7 @@ namespace SchoolOfScience.Controllers
         //
         // GET: /StudentAdvisingRemark/Edit/5
 
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment,FacultyAdvisor,CommTutor")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,FacultyAdvisor,CommTutor,UGCoordinator")]
         public ActionResult Edit(int id = 0, string opener_id = null)
         {
             ViewBag.opener_id = opener_id;
@@ -139,7 +139,7 @@ namespace SchoolOfScience.Controllers
         // POST: /StudentAdvisingRemark/Edit/5
 
         [HttpPost]
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment,FacultyAdvisor,CommTutor")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,FacultyAdvisor,CommTutor,UGCoordinator")]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(StudentAdvisingRemark studentadvisingremark, string opener_id = null)
         {
@@ -210,7 +210,7 @@ namespace SchoolOfScience.Controllers
         //
         // GET: /StudentAdvisingRemark/Delete/5
 
-        [Authorize(Roles = "Admin,Advising,StudentDevelopment,FacultyAdvisor,CommTutor")]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,FacultyAdvisor,CommTutor,UGCoordinator")]
         public ActionResult Delete(int id = 0, string opener_id = null)
         {
             StudentAdvisingRemark studentadvisingremark = db.StudentAdvisingRemarks.ToList().Where(p => p.id == id && (p.created_by == User.Identity.Name)).SingleOrDefault();
