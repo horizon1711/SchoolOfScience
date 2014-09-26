@@ -1,0 +1,36 @@
+﻿@model IEnumerable<SchoolOfScience.Models.Application>
+@{
+    Layout = null;
+}
+
+<table>
+    <tr>
+        <th>application_id</th>
+        <th>Program</th>
+        <th>Applicant</th>
+        <th>Academic Level</th>
+        <th>CGPA</th>
+        <th>comment</th>
+    </tr>
+    @foreach(var application in Model)
+    {
+        <tr>
+            <td>@application.id</td>
+            <td>@application.Program.name</td>
+            <td>@(application.StudentProfile.name + " " + application.StudentProfile.id + "[" + application.StudentProfile.academic_organization + "]")</td>
+            <td>@application.StudentProfile.academic_level</td>
+            <td>
+            @if (application.StudentProfile.StudentAdmission != null)
+            {
+               @application.StudentProfile.StudentAdmission.Cumulative_GPA
+            } 
+            else
+            {
+                @("N/A")
+            }
+            </td>
+            <td>
+            </td>
+        </tr>
+    }
+</table>

@@ -1,0 +1,124 @@
+﻿@model SchoolOfScience.Models.ApplicationComment
+
+@{
+    Layout = null;
+}
+
+<h2>Add Application Comment</h2>
+
+@using (Html.BeginForm("Create", "ApplicationComment", FormMethod.Post, new { id = "form" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(model => model.application_id)
+
+
+    <div class="display-label">
+        Program
+    </div>
+    <div class="display-field">
+        @Html.ActionLink(Model.Application.Program.name, "Details", "Program", new { id = Model.Application.program_id }, new { @class = "program-details-link" })
+        <div class="program-note">
+            <div>
+            @if (!String.IsNullOrEmpty(Model.Application.Program.job_position))
+            {
+                @(Model.Application.Program.job_position)
+            }
+            </div>
+            <div>
+            @if (!String.IsNullOrEmpty(Model.Application.Program.host_name))
+            {
+                if (!String.IsNullOrEmpty(Model.Application.Program.website))
+                {
+                    <a href="@(Model.Application.Program.website)" target="_blank" title="@(Model.Application.Program.website)">@(Model.Application.Program.host_name)</a>
+                }
+                else
+                {
+                    @(Model.Application.Program.host_name)
+                }
+            }
+            </div>
+        </div>
+    </div>
+
+
+    <div class="display-label">
+        @Html.LabelFor(model => model.application_id, "Applicant")
+    </div>
+    <div class="display-field">
+        <strong>@Html.DisplayFor(modelItem => Model.Application.StudentProfile.name) @Html.ActionLink(Model.Application.StudentProfile.id.ToString(), "Details", "StudentProfile", new { id = Model.Application.StudentProfile.id }, new { @class = "student-link" })</strong>
+    </div>
+
+    <div class="display-label">
+        @Html.LabelFor(model => model.comment)
+    </div>
+    <div class="editor-field">
+        @Html.TextAreaFor(model => model.comment)
+        @Html.ValidationMessageFor(model => model.comment)
+    </div>
+
+    <p>
+        <input type="submit" value="Add" class="add-button" />
+    </p>
+}
+
+@Scripts.Render("~/bundles/jqueryval")
+
+<script>
+    $(function () {
+        $(".add-button").button();
+
+        $(".add-button").click(function (e) {
+            e.preventDefault();
+            if ($("#form").valid()) {
+                $.ajax({
+                    cache: false,
+                    url: "@Url.Action("Create", "ApplicationComment")",
+                    type: "POST",
+                    data: $("#form").serializeArray(),
+                    error: function (jqXHR, status, error) {
+                        $("#add-edit-dialog").dialog("close");
+                        $("#error-dialog").dialog({
+                            width: 350,
+                            height: 100,
+                            overflow: "auto",
+                            modal: true,
+                            resizable: false,
+                            draggable: false,
+                            open: function () {
+                                $(this).scrollTop(0);
+                                $('.ui-widget-overlay').hide().fadeIn();
+                            },
+                            show: {
+                                effect: 'fade',
+                                duration: 200
+                            },
+                            hide: {
+                                effect: 'fade',
+                                duration: 100
+                            }
+                        }).html(error);
+                    },
+                    success: function (result) {
+                        $("#add-edit-dialog").dialog("close");
+                        showDialog(result, "#error-dialog", "#application-comment-dialog");
+                    }
+                });
+            } else {
+                $(".input-validation-error").first().focus();
+            }
+        });
+
+        $("#comment").focus();
+
+        $(".program-details-link").click(function (e) {
+            e.preventDefault();
+            showDialog($(this).prop("href"), "#error-dialog", "#program-details-dialog");
+        });
+
+        $(".student-link").click(function (e) {
+            e.preventDefault();
+            showDialog($(this).prop("href"), "#error-dialog", "#student-profile-dialog");
+        });
+    });
+</script>

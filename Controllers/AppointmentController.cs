@@ -248,6 +248,7 @@ namespace SchoolOfScience.Controllers
 
                 db.Appointments.Add(appointment);
                 db.SaveChanges();
+                SendNotification(CreateNotification("AppointmentReserved", appointment));
                 return RedirectToAction("Index");
             }
 
@@ -548,7 +549,10 @@ namespace SchoolOfScience.Controllers
                 {
                     ViewModel.appointment.student_id = null;
                 }
-
+                if (!String.IsNullOrEmpty(appointment.student_id) && ViewModel.appointment.student_id == null)
+                {
+                    SendNotification(CreateNotification("AppointmentCancelled", appointment));
+                }
                 db.Entry(appointment).CurrentValues.SetValues(ViewModel.appointment);
                 appointment.AppointmentConcerns.Clear();
                 if (ViewModel.concerns != null)
@@ -907,6 +911,7 @@ namespace SchoolOfScience.Controllers
                 Session["FlashMessage"] = "Appointment not found";
                 return RedirectToAction("MyAppointment", "Appointment");
             }
+            SendNotification(CreateNotification("AppointmentCancelledAdvisor", appointment));
             appointment.student_id = null;
             appointment.AppointmentConcerns.Clear();
             db.SaveChanges();

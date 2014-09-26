@@ -1,0 +1,87 @@
+﻿@model IEnumerable<SchoolOfScience.Models.ApplicationComment>
+
+@{
+    Layout = null;
+}
+
+<fieldset class="collapse">
+    <legend>Application Comment</legend>
+
+    <div class="clear-fix"></div>
+    @if (Model.Count() > 0)
+    {
+    <table class="application-comment-table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Program</th>
+                <th>Comment</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var comment in Model)
+        {        
+            <tr>
+                <td>
+                    @String.Format("{0:yyyy-MM-dd}", comment.modified)<br />
+                    [@Html.DisplayFor(model => comment.modified_by)]
+                </td>
+                <td>
+                    @Html.ActionLink(comment.Application.Program.name, "Details", "Program", new { id = comment.Application.Program.id }, new { @class = "program-details-link program-name" })
+                    @if (!String.IsNullOrEmpty(comment.Application.Program.job_position))
+                    {
+                        <br />
+                        <div class="program-note">
+                        @(comment.Application.Program.job_position)
+                        @if (!String.IsNullOrEmpty(comment.Application.Program.host_name))
+                        {
+                            <br />
+                            if (!String.IsNullOrEmpty(comment.Application.Program.website))
+                            {
+                                <a href="@(comment.Application.Program.website)" target="_blank">@(comment.Application.Program.host_name)</a>
+                            }
+                            else
+                            {
+                                @(comment.Application.Program.host_name)
+                            }
+                        }
+                        </div>
+                    }
+                </td>
+                <td>
+                    <pre>
+                        @Html.DisplayFor(model => comment.comment)
+                    </pre>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+    }
+</fieldset>
+
+<div class="clear-fix"></div>
+
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/jqueryui")
+@Scripts.Render("~/bundles/datatable")
+<script>
+    $(function () {
+        $.ajaxSetup({ cache: false });
+
+        $(".application-comment-table").dataTable({
+            "aaSorting": [[0, "desc"]],
+            "bPaginate": false,
+            "bInfo": false,
+            "bFilter": true,
+            "oLanguage": {
+                "sSearch": ""
+            }
+        });
+
+        $(".program-details-link").click(function (e) {
+            e.preventDefault();
+            showDialog($(this).prop("href"), "#error-dialog", "#program-details-dialog");
+        });
+    });
+</script>

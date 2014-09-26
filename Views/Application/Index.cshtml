@@ -61,28 +61,21 @@
     <thead>
         <tr>
             <th>
-                <input type="checkbox" id="checkAll"/>
+                <input type="checkbox" id="checkAll" />
             </th>
-            <th>
-                ID
+            <th>ID
             </th>
-            <th>
-                Program
+            <th>Program
             </th>
-            <th>
-                Student Name
+            <th>Student Name
             </th>
-            <th>
-                Academic Organization
+            <th>Academic Organization
             </th>
-            <th>
-                Academic Plan
+            <th>Academic Plan
             </th>
-            <th>
-                Academic Level
+            <th>Academic Level
             </th>
-            <th>
-                Status
+            <th>Status
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.modified)
@@ -90,65 +83,64 @@
             @*<th>
                 Interview/Consultation
             </th>*@
-            <th>
-                Action
+            <th>Action
             </th>
         </tr>
     </thead>
     <tbody>
-    @foreach (var item in Model)
-    {
-        <tr>
-            <td>
-                <input type="checkbox" class="checkItem" value="@item.id"/>
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.id)
-            </td>
-            <td>
-                @Html.ActionLink(item.Program.name, "Details", "Program", new { id = item.program_id }, new { @class = "program-details-link" })
-                <div class="program-note">
-                    <div>
-                    @if (!String.IsNullOrEmpty(item.Program.job_position))
-                    {
-                        @(item.Program.job_position)
-                    }
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <input type="checkbox" class="checkItem" value="@item.id"/>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.id)
+                </td>
+                <td>
+                    @Html.ActionLink(item.Program.name, "Details", "Program", new { id = item.program_id }, new { @class = "program-details-link" })
+                    <div class="program-note">
+                        <div>
+                            @if (!String.IsNullOrEmpty(item.Program.job_position))
+                            {
+                                @(item.Program.job_position)
+                            }
+                        </div>
+                        <div>
+                            @if (!String.IsNullOrEmpty(item.Program.host_name))
+                            {
+                                if (!String.IsNullOrEmpty(item.Program.website))
+                                {
+                                <a href="@(item.Program.website)" target="_blank" title="@(item.Program.website)">@(item.Program.host_name)</a>
+                                }
+                                else
+                                {
+                                @(item.Program.host_name)
+                                }
+                            }
+                        </div>
                     </div>
-                    <div>
-                    @if (!String.IsNullOrEmpty(item.Program.host_name))
-                    {
-                        if (!String.IsNullOrEmpty(item.Program.website))
-                        {
-                            <a href="@(item.Program.website)" target="_blank" title="@(item.Program.website)">@(item.Program.host_name)</a>
-                        }
-                        else
-                        {
-                            @(item.Program.host_name)
-                        }
-                    }
-                    </div>
-                </div>
-            </td>
-            <td>
-                <strong>@Html.DisplayFor(modelItem => item.StudentProfile.name) @Html.ActionLink(item.StudentProfile.id.ToString(), "Details", "StudentProfile", new { id = item.StudentProfile.id }, new { @class = "student-link" })</strong>
-            </td>
-            <td>
-                @item.StudentProfile.academic_organization
-            </td>
-            <td>
-                @item.StudentProfile.academic_plan_description
-            </td>
-            <td>
-                @item.StudentProfile.academic_level
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ApplicationStatus.name)
-            </td>
-            <td>
-                @String.Format("{0:yyyy-MM-dd HH:mm:ss}", item.modified)<br />
-                [@Html.DisplayFor(modelItem => item.modified_by)]
-            </td>
-            @*<td>
+                </td>
+                <td>
+                    <strong>@Html.DisplayFor(modelItem => item.StudentProfile.name) @Html.ActionLink(item.StudentProfile.id.ToString(), "Details", "StudentProfile", new { id = item.StudentProfile.id }, new { @class = "student-link" })</strong>
+                </td>
+                <td>
+                    @item.StudentProfile.academic_organization
+                </td>
+                <td>
+                    @item.StudentProfile.academic_plan_description
+                </td>
+                <td>
+                    @item.StudentProfile.academic_level
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ApplicationStatus.name)
+                </td>
+                <td>
+                    @String.Format("{0:yyyy-MM-dd HH:mm:ss}", item.modified)<br />
+                    [@Html.DisplayFor(modelItem => item.modified_by)]
+                </td>
+                @*<td>
                 @foreach (var interview in item.Interviews.Where(i => i.InterviewStatus.display_to_student))
                 {
                     <div>@(String.Format("{0:yyyy-MM-dd (ddd) HH:mm}", interview.start_time) + "-" + String.Format("{0:HH:mm}", interview.end_time))</div>
@@ -159,27 +151,32 @@
                     <div>@(String.Format("{0:yyyy-MM-dd (ddd) HH:mm}", appointment.start_time) + "-" + String.Format("{0:HH:mm}", appointment.end_time))</div>
                 }
             </td>*@
-            <td>
-                <ul class="action-list">
-                    <li>
-                        @Html.ActionLink("View", "Details", new { id = item.id }, new { @class = "view-link" })
-                    </li>
-                    <li>
-                        @Html.ActionLink("Change Status", "Review", new { id = item.id }, new { @class = "review-link" }) 
-                    </li>
-                @if (!item.ApplicationStatus.editable)
-                {
-                    <li>
-                        @Html.ActionLink("Edit", "Edit", new { id = item.id }, new { @class = "edit-link" })
-                    </li>
-                    <li>
-                        @Html.ActionLink("Delete", "Delete", new { id = item.id }, new { @class = "application-delete-link" })
-                    </li>
-                }
-                </ul>
-            </td>
-        </tr>
-    }
+                <td>
+                    <ul class="action-list">
+                        <li>
+                            @Html.ActionLink("View", "Details", new { id = item.id }, new { @class = "view-link" })
+                        </li>
+                        <li>
+                            @Html.ActionLink("Change Status", "Review", new { id = item.id }, new { @class = "review-link" })
+                        </li>
+                        @if (!item.ApplicationStatus.editable)
+                        {
+                            <li>
+                                @Html.ActionLink("Edit", "Edit", new { id = item.id }, new { @class = "edit-link" })
+                            </li>
+                            <li>
+                                @Html.ActionLink("Delete", "Delete", new { id = item.id }, new { @class = "application-delete-link" })
+                            </li>
+                        }
+                        <li>
+                            @Html.ActionLink("Comments", "Index", "ApplicationComment", new { application_id = item.id }, new { @class = "comments-link" })
+                            <a href="@Url.Action("Create", "ApplicationComment", new { application_id = item.id })" class="add-comment-link">
+                                <img src="@Url.Content("~/Images/Action/apply.gif")" class="comment-btn"/></a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        }
     </tbody>
 
 </table>
@@ -189,6 +186,11 @@
 <p>
     <button type="button" id="batch-btn">Batch Action</button>
 </p>
+
+<p>
+    <button type="button" id="commenttemplate-btn">Download Comment Template</button>
+</p>
+
 
 @section Scripts {
     <script>
@@ -211,17 +213,28 @@
                 showDialog($(this).prop("href"), "#error-dialog", "#application-dialog");
             });
 
-            $(".review-link").click( function (e) {
+            $(".review-link").click(function (e) {
                 e.preventDefault();
                 showDialog($(this).prop("href"), "#error-dialog", "#application-dialog");
             });
 
-            $(".program-details-link").click( function (e) {
+
+            $(".add-comment-link").click(function (e) {
+                e.preventDefault();
+                showDialog($(this).prop("href"), "#error-dialog", "#add-edit-dialog");
+            });
+
+            $(".comments-link").click(function (e) {
+                e.preventDefault();
+                showDialog($(this).prop("href"), "#error-dialog", "#application-comment-dialog");
+            });
+
+            $(".program-details-link").click(function (e) {
                 e.preventDefault();
                 showDialog($(this).prop("href"), "#error-dialog", "#program-details-dialog");
             });
 
-            $(".student-link").click( function (e) {
+            $(".student-link").click(function (e) {
                 e.preventDefault();
                 showDialog($(this).prop("href"), "#error-dialog", "#student-profile-dialog");
             });
@@ -230,7 +243,7 @@
                 $(".checkItem").prop("checked", $(this).is(":checked"));
             });
 
-            $("#batch-btn").click( function (e) {
+            $("#batch-btn").click(function (e) {
                 e.preventDefault();
                 var items = $(".checkItem:checked").map(function () { return $(this).val() }).get();
                 var url = "@Html.Raw(Url.Action("BatchUpdate", "Application", new { items = "replaceItems" }))";
@@ -250,6 +263,14 @@
                 if (!r) {
                     e.preventDefault();
                 }
+            });
+
+            $("#commenttemplate-btn").click(function (e) {
+                e.preventDefault();
+                var items = $(".checkItem:checked").map(function () { return $(this).val() }).get();
+                var url = "@Html.Raw(Url.Action("CommentTemplate", "Application", new { items = "replaceItems" }))";
+                url = url.replace("replaceItems", items.join('_'));
+                window.open(url, "Download Comment Template");
             });
         });
     </script>

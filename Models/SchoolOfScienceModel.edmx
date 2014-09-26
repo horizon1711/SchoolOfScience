@@ -10,6 +10,7 @@
           <EntitySet Name="AcademicPlans" EntityType="SchoolOfScienceModel.Store.AcademicPlans" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="Application" EntityType="SchoolOfScienceModel.Store.Application" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="ApplicationAttachment" EntityType="SchoolOfScienceModel.Store.ApplicationAttachment" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="ApplicationComment" EntityType="SchoolOfScienceModel.Store.ApplicationComment" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="ApplicationExchangeOption" EntityType="SchoolOfScienceModel.Store.ApplicationExchangeOption" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="ApplicationOptionValue" EntityType="SchoolOfScienceModel.Store.ApplicationOptionValue" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="ApplicationStatus" EntityType="SchoolOfScienceModel.Store.ApplicationStatus" store:Type="Tables" Schema="dbo" />
@@ -83,6 +84,10 @@
           <AssociationSet Name="FK_ApplicationAttachment_ProgramApplicationAttachment" Association="SchoolOfScienceModel.Store.FK_ApplicationAttachment_ProgramApplicationAttachment">
             <End Role="ProgramApplicationAttachment" EntitySet="ProgramApplicationAttachment" />
             <End Role="ApplicationAttachment" EntitySet="ApplicationAttachment" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ApplicationComment_Application" Association="SchoolOfScienceModel.Store.FK_ApplicationComment_Application">
+            <End Role="Application" EntitySet="Application" />
+            <End Role="ApplicationComment" EntitySet="ApplicationComment" />
           </AssociationSet>
           <AssociationSet Name="FK_ApplicationExchangeOption_Application" Association="SchoolOfScienceModel.Store.FK_ApplicationExchangeOption_Application">
             <End Role="Application" EntitySet="Application" />
@@ -363,6 +368,18 @@
           <Property Name="program_application_attachment_id" Type="int" Nullable="false" />
           <Property Name="filename" Type="nvarchar(max)" />
           <Property Name="filepath" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="ApplicationComment">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="application_id" Type="int" Nullable="false" />
+          <Property Name="comment" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="created" Type="datetime" Nullable="false" />
+          <Property Name="created_by" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="modified" Type="datetime" Nullable="false" />
+          <Property Name="modified_by" Type="nvarchar" Nullable="false" MaxLength="50" />
         </EntityType>
         <EntityType Name="ApplicationExchangeOption">
           <Key>
@@ -1175,6 +1192,18 @@
             </Principal>
             <Dependent Role="ApplicationAttachment">
               <PropertyRef Name="program_application_attachment_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ApplicationComment_Application">
+          <End Role="Application" Type="SchoolOfScienceModel.Store.Application" Multiplicity="1" />
+          <End Role="ApplicationComment" Type="SchoolOfScienceModel.Store.ApplicationComment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Application">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="ApplicationComment">
+              <PropertyRef Name="application_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2185,6 +2214,11 @@
             <End Role="SystemUser" EntitySet="SystemUsers" />
             <End Role="UserProfileAcademicPlan" EntitySet="UserProfileAcademicPlans" />
           </AssociationSet>
+          <EntitySet Name="ApplicationComments" EntityType="SchoolOfScienceModel.ApplicationComment" />
+          <AssociationSet Name="FK_ApplicationComment_Application" Association="SchoolOfScienceModel.FK_ApplicationComment_Application">
+            <End Role="Application" EntitySet="Applications" />
+            <End Role="ApplicationComment" EntitySet="ApplicationComments" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="C__MigrationHistory">
           <Key>
@@ -2219,6 +2253,7 @@
           <NavigationProperty Name="Interviews" Relationship="SchoolOfScienceModel.InterviewApplication" FromRole="Application" ToRole="Interview" />
           <NavigationProperty Name="InterviewComments" Relationship="SchoolOfScienceModel.FK_InterviewComment_Application" FromRole="Application" ToRole="InterviewComment" />
           <NavigationProperty Name="NominationApplications" Relationship="SchoolOfScienceModel.FK_NominationApplication_Application" FromRole="Application" ToRole="NominationApplication" />
+          <NavigationProperty Name="ApplicationComments" Relationship="SchoolOfScienceModel.FK_ApplicationComment_Application" FromRole="Application" ToRole="ApplicationComment" />
         </EntityType>
         <EntityType Name="ApplicationAttachment">
           <Key>
@@ -3759,6 +3794,31 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="ApplicationComment">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Type="Int32" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Int32" Name="application_id" Nullable="false" />
+          <Property Type="String" Name="comment" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Type="DateTime" Name="created" Nullable="false" Precision="3" />
+          <Property Type="String" Name="created_by" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="DateTime" Name="modified" Nullable="false" Precision="3" />
+          <Property Type="String" Name="modified_by" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Application" Relationship="SchoolOfScienceModel.FK_ApplicationComment_Application" FromRole="ApplicationComment" ToRole="Application" />
+        </EntityType>
+        <Association Name="FK_ApplicationComment_Application">
+          <End Type="SchoolOfScienceModel.Application" Role="Application" Multiplicity="1" />
+          <End Type="SchoolOfScienceModel.ApplicationComment" Role="ApplicationComment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Application">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="ApplicationComment">
+              <PropertyRef Name="application_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -4611,6 +4671,19 @@
               <MappingFragment StoreEntitySet="UserProfileAcademicPlan">
                 <ScalarProperty Name="academic_plan" ColumnName="academic_plan" />
                 <ScalarProperty Name="user_id" ColumnName="user_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ApplicationComments">
+            <EntityTypeMapping TypeName="SchoolOfScienceModel.ApplicationComment">
+              <MappingFragment StoreEntitySet="ApplicationComment">
+                <ScalarProperty Name="modified_by" ColumnName="modified_by" />
+                <ScalarProperty Name="modified" ColumnName="modified" />
+                <ScalarProperty Name="created_by" ColumnName="created_by" />
+                <ScalarProperty Name="created" ColumnName="created" />
+                <ScalarProperty Name="comment" ColumnName="comment" />
+                <ScalarProperty Name="application_id" ColumnName="application_id" />
+                <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

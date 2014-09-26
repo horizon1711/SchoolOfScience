@@ -14,6 +14,7 @@
         <th>Applicant</th>
         <th>Academic Level</th>
         <th>CGPA</th>
+        <th>Application Comment</th>
         <th>comment</th>
     </tr>
     @foreach(var interview in Model)
@@ -38,6 +39,16 @@
             {
                 @("N/A")
             }
+            </td>
+            <td>
+                @foreach (var comment in application.ApplicationComments.Select((x, i) => new { data = x, index = i }))
+                {
+                    if (comment.index > 0)
+                    {
+                        <text>;<br /></text>
+                    }
+                    @("[" + comment.data.modified_by + "] " + comment.data.comment)
+                }
             </td>
             <td>
             </td>

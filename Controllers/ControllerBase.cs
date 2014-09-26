@@ -504,7 +504,7 @@ namespace SchoolOfScience.Controllers
                 Session["FlashMessage"] += "<br/>Notification type or status not found.<br/>";
                 return null;
             }
-            if (type == "AppointmentReserved")
+            if (type == "AppointmentReserved" || type == "AppointmentCancelled")
             {
                 if (notificationtype.NotificationTemplate != null)
                 {
@@ -599,7 +599,7 @@ namespace SchoolOfScience.Controllers
                     Session["FlashMessage"] += "<br/>Notification Template is not correctly configured<br/>";
                 }
             }
-            if (type == "AppointmentReservedAdvisor")
+            if (type == "AppointmentReservedAdvisor" || type == "AppointmentCancelledAdvisor")
             {
                 if (notificationtype.NotificationTemplate != null)
                 {

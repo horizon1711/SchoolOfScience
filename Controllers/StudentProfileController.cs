@@ -30,6 +30,7 @@ namespace SchoolOfScience.Controllers
                 ViewBag.planList = new SelectList(db.UserProfileAcademicPlans.Where(p => p.UserProfile.UserName == User.Identity.Name).Select(p => new { text = p.academic_plan }).Distinct().OrderBy(t => t.text), "text", "text");
             }
             ViewBag.levelList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_level }).Distinct().OrderBy(t => t.text), "text", "text");
+            ViewBag.programstatusList = new SelectList(db.StudentProfiles.Select(p => new { text = p.program_status }).Distinct().OrderBy(t => t.text), "text", "text", "AC");
             ViewBag.showTable = false;
             return View(new List<StudentProfile>().ToList());
         }
@@ -39,12 +40,16 @@ namespace SchoolOfScience.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin,Advising,StudentDevelopment,ProgramAdmin,UGCoordinator")]
-        public ActionResult Index(FormCollection Form, bool assigned, bool requiredinterview, bool withcomment)
+        public ActionResult Index(FormCollection Form, bool withcomment)
         {
             var students = db.StudentProfiles;
             ViewBag.studentid = Form["studentid"];
             ViewBag.firstname = Form["firstname"];
             ViewBag.lastname = Form["lastname"];
+            ViewBag.itscid = Form["itscid"];
+            ViewBag.commentby = Form["commentby"];
+            ViewBag.facultyadvisor = Form["facultyadvisor"];
+            ViewBag.commentkeyword = Form["commentkeyword"];
             ViewBag.careerList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_career }).Distinct().OrderBy(t => t.text), "text", "text", Form["career"]);
             ViewBag.groupList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_group }).Distinct().OrderBy(t => t.text), "text", "text", Form["academic_group"]);
             ViewBag.departmentList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_organization }).Distinct().OrderBy(t => t.text), "text", "text", Form["academic_organization"]);
@@ -54,7 +59,7 @@ namespace SchoolOfScience.Controllers
                 ViewBag.planList = new SelectList(db.UserProfileAcademicPlans.Where(p => p.UserProfile.UserName == User.Identity.Name).Select(p => new { text = p.academic_plan }).Distinct().OrderBy(t => t.text), "text", "text", Form["academic_plan_description"]);
             }
             ViewBag.levelList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_level }).Distinct().OrderBy(t => t.text), "text", "text", Form["academic_level"]);
-            ViewBag.commentkeyword = Form["commentkeyword"];
+            ViewBag.programstatusList = new SelectList(db.StudentProfiles.Select(p => new { text = p.program_status }).Distinct().OrderBy(t => t.text), "text", "text", Form["program_status"]);
             ViewBag.showTable = true;
             return View(students.ToList().Where(s => (true)
                 && (String.IsNullOrEmpty(Form["career"]) || s.academic_career == Form["career"])
@@ -62,14 +67,18 @@ namespace SchoolOfScience.Controllers
                 && (String.IsNullOrEmpty(Form["academic_organization"]) || s.academic_organization == Form["academic_organization"])
                 && (String.IsNullOrEmpty(Form["academic_plan_description"]) || s.academic_plan_description == Form["academic_plan_description"])
                 && (String.IsNullOrEmpty(Form["academic_level"]) || s.academic_level == Form["academic_level"])
+                && (String.IsNullOrEmpty(Form["program_status"]) || s.program_status == Form["program_status"])
                 && (String.IsNullOrEmpty(Form["studentid"]) || s.id == Form["studentid"])
                 && (String.IsNullOrEmpty(Form["firstname"]) || (s.name.IndexOf(Form["firstname"], StringComparison.OrdinalIgnoreCase) >= 0 && s.name.IndexOf(Form["firstname"], StringComparison.OrdinalIgnoreCase) > s.name.IndexOf(",")))
                 && (String.IsNullOrEmpty(Form["lastname"]) || (s.name.IndexOf(Form["lastname"], StringComparison.OrdinalIgnoreCase) >= 0 && s.name.IndexOf(Form["lastname"], StringComparison.OrdinalIgnoreCase) < s.name.IndexOf(",")))
+                && (String.IsNullOrEmpty(Form["itscid"]) || (s.email.IndexOf(Form["itscid"], StringComparison.OrdinalIgnoreCase) >= 0 && s.email.IndexOf(Form["itscid"], StringComparison.OrdinalIgnoreCase) < s.email.IndexOf("@")))
+                && (String.IsNullOrEmpty(Form["facultyadvisor"]) || (s.StudentAdvisors.Any(a => a.advisor_name.IndexOf(Form["facultyadvisor"], StringComparison.OrdinalIgnoreCase) >= 0)))
+                && (String.IsNullOrEmpty(Form["commentby"]) || (s.StudentAdvisingRemarks.Any(r => r.created_by.IndexOf(Form["commentby"], StringComparison.OrdinalIgnoreCase) >= 0 )))
                 && (String.IsNullOrEmpty(Form["commentkeyword"]) || s.StudentAdvisingRemarks.Any(r => 
                     r.text.IndexOf(Form["commentkeyword"], StringComparison.OrdinalIgnoreCase) >= 0
                     && (!r.@private || r.created_by == User.Identity.Name)))
-                && (!assigned || s.Applications.Any(a => a.Interviews.Count() > 0))
-                && (!requiredinterview || s.Applications.Any(a => a.Program.require_interview && a.Interviews.Count() == 0))
+                //&& (!assigned || s.Applications.Any(a => a.Interviews.Count() > 0))
+                //&& (!requiredinterview || s.Applications.Any(a => a.Program.require_interview && a.Interviews.Count() == 0))
                 && (!withcomment || s.StudentAdvisingRemarks.Count() > 0)
                 && (!(User.IsInRole("ProgramAdmin") || User.IsInRole("UGCoordinator")) || db.UserProfileAcademicPlans.Any(p => p.UserProfile.UserName == User.Identity.Name && p.academic_plan == s.academic_plan_description))
                 ));
@@ -274,6 +283,57 @@ namespace SchoolOfScience.Controllers
             var remarks = db.StudentAdvisingRemarks.Where(p => p.student_id == student_id);
             Response.Cache.SetCacheability(HttpCacheability.NoCache);
             return View(remarks.ToList());
+        }
+
+        //
+        // GET: /StudentProfile/ApplicationComment/
+
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,FacultyAdvisor,CommTutor,UGCoordinator")]
+        public ActionResult ApplicationComment(string student_id = null, string opener_id = null)
+        {
+            ViewBag.student_id = student_id;
+            ViewBag.opener_id = opener_id;
+            if (opener_id == null)
+            {
+                Session["FlashMessage"] = "Opener ID undefined.";
+            }
+            var comments = db.ApplicationComments.Where(p => p.Application.student_id == student_id);
+            Response.Cache.SetCacheability(HttpCacheability.NoCache);
+            return View(comments.ToList());
+        }
+
+        //
+        // GET: /StudentProfile/InterviewComment/
+
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,FacultyAdvisor,CommTutor,UGCoordinator")]
+        public ActionResult InterviewComment(string student_id = null, string opener_id = null)
+        {
+            ViewBag.student_id = student_id;
+            ViewBag.opener_id = opener_id;
+            if (opener_id == null)
+            {
+                Session["FlashMessage"] = "Opener ID undefined.";
+            }
+            var comments = db.InterviewComments.Where(p => p.Application.student_id == student_id);
+            Response.Cache.SetCacheability(HttpCacheability.NoCache);
+            return View(comments.ToList());
+        }
+
+        //
+        // GET: /StudentProfile/NominationComment/
+
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,FacultyAdvisor,CommTutor,UGCoordinator")]
+        public ActionResult NominationComment(string student_id = null, string opener_id = null)
+        {
+            ViewBag.student_id = student_id;
+            ViewBag.opener_id = opener_id;
+            if (opener_id == null)
+            {
+                Session["FlashMessage"] = "Opener ID undefined.";
+            }
+            var comments = db.NominationApplications.Where(p => p.Application.student_id == student_id && !String.IsNullOrEmpty(p.remarks));
+            Response.Cache.SetCacheability(HttpCacheability.NoCache);
+            return View(comments.ToList());
         }
 
         //

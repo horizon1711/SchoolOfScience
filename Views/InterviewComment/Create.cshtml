@@ -92,7 +92,8 @@
                         }).html(error);
                     },
                     success: function (result) {
-                        $("#add-edit-dialog").html(result);
+                        $("#add-edit-dialog").dialog("close");
+                        showDialog(result, "#error-dialog", "#interview-comment-dialog");
                     }
                 });
             } else {
@@ -101,5 +102,16 @@
         });
 
         $("#comment").focus();
+
+
+        $(".program-details-link").click(function (e) {
+            e.preventDefault();
+            showDialog($(this).prop("href"), "#error-dialog", "#program-details-dialog");
+        });
+
+        $(".student-link").click(function (e) {
+            e.preventDefault();
+            showDialog($(this).prop("href"), "#error-dialog", "#student-profile-dialog");
+        });
     });
 </script>

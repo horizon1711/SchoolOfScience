@@ -1188,6 +1188,22 @@ namespace SchoolOfScience.Controllers
         //    return RedirectToAction("Record");
         //}
 
+        //
+        // GET: /Application/CommentTemplate/
+
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
+        public ActionResult CommentTemplate(string items)
+        {
+            var i = items.Split('_');
+            var applications = db.Applications.Where(p => i.Contains(SqlFunctions.StringConvert((double)p.id).Trim()));
+
+            string strHtml = RenderRazorViewToString("CommentTemplate", applications.ToList());
+            strHtml = HttpUtility.HtmlDecode(strHtml);//Html解碼
+            byte[] b = System.Text.Encoding.UTF8.GetBytes(strHtml);//字串轉byte陣列
+            Response.Write("<meta http-equiv=Content-Type content=text/html;charset=utf-8>");
+            return File(b, "application/vnd.ms-excel", "Application Comment Template " + String.Format("{0:yyyyMMddHHmm}", DateTime.Now) + ".xls");//輸出檔案給Client端
+        }
+
         protected override void Dispose(bool disposing)
         {
             db.Dispose();

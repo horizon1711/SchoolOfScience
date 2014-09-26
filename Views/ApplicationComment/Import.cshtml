@@ -1,0 +1,57 @@
+﻿@{
+    ViewBag.Title = "Import Interview Comments";
+}
+
+<h2>Import Application Comments</h2>
+
+@using(Html.BeginForm())
+{
+    <div class="display-label">
+        <a href="@Url.Action("Download", "FileHandler", new { filename = "ApplicationComment.xlsx", folder = "Import/Templates" })" target="_blank">Download Template</a>
+    </div>
+    <div class="display-label">
+        Import from file:
+        <label id="filename_label">
+            <a href="@Url.Action("Download", "FileHandler", new { filename = "", folder = "" })" target="_blank">@ViewBag.filename</a>
+        </label>
+        <img src="@Url.Content("~/Images/Action/delete.gif")" class="delete-btn" id="delete-btn" title="Remove attachment" />
+        <img src="@Url.Content("~/Images/Action/upload.gif")" class="upload-btn" id="upload-btn" title="Upload attachment" />
+        @Html.Hidden("filename", "", new { @class = "filename-hidden", required = "required" })
+        @Html.Hidden("filepath", "", new { @class = "filepath-hidden" })
+        @Html.ValidationMessage("filename")
+    </div>
+    <p>
+        <input type="submit" class="import-button" value="Import"/>
+    </p>
+}
+
+@section Scripts{
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script>
+        $(function () {
+            $(".import-button").button();
+
+            $(".filename-hidden[value='']").prevAll(".delete-btn").hide();
+            $(".filename-hidden[value!='']").prevAll(".upload-btn").hide();
+
+            $(".upload-btn").click(function (e) {
+                e.preventDefault();
+                var actionUrl = '@Html.Raw(Url.Action("Upload", "FileHandler", new { elementId = "replace_elementId", folder = "Import/ApplicationComment/" + User.Identity.Name }))';
+                actionUrl = actionUrl.replace("replace_elementId", $(this).nextAll("input.filename-hidden").prop("id"));
+                window.open(actionUrl, 'popup', 'width=500,height=150,toolbar=0,menubar=0,location=0,status=0,scrollbars=0,resizable=1,left=0,top=0');
+            });
+
+            $(".delete-btn").click(function (e) {
+                e.preventDefault();
+                var elementId = "#" + $(this).nextAll(".filename-hidden").prop("id");
+                $(elementId).val("");
+                $(elementId).next(".filepath-hidden").val("");
+                $(elementId + "_label a").html("");
+                $(elementId + "_label a").prop("href", "");
+                $(elementId).prevAll(".delete-btn").hide();
+                $(elementId).prevAll(".upload-btn").show();
+            });
+        });
+    </script>
+}

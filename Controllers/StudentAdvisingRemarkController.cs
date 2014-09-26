@@ -7,6 +7,7 @@ using System.Web;
 using System.Web.Mvc;
 using SchoolOfScience.Models;
 using System.IO;
+using LinqToExcel;
 
 namespace SchoolOfScience.Controllers
 {
@@ -236,6 +237,77 @@ namespace SchoolOfScience.Controllers
         //    db.SaveChanges();
         //    return RedirectToAction("Index");
         //}
+
+        //
+        // GET: /StudentAdvisingRemark/Import/
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
+        public ActionResult Import()
+        {
+            //clear files uploaded but not used
+            if (Directory.Exists(Server.MapPath("~/App_Data/Import/AdvisingComment/" + User.Identity.Name)))
+            {
+                var files = Directory.GetFiles(Server.MapPath("~/App_Data/Import/AdvisingComment/" + User.Identity.Name));
+                foreach (var file in files)
+                {
+                    System.IO.File.Delete(file);
+                }
+            }
+            return View();
+        }
+
+        //
+        // POST: /StudentAdvisingRemark/Import/
+
+        [HttpPost]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
+        public ActionResult Import(string filename)
+        {
+            ViewBag.filename = filename;
+            var filepath = Server.MapPath("~/App_Data/Import/AdvisingComment/" + User.Identity.Name + "/" + filename);
+            if (!System.IO.File.Exists(filepath))
+            {
+                Session["FlashMessage"] = "File not found.";
+                return View();
+            }
+            try
+            {
+                int count = 0;
+                var excel = new ExcelQueryFactory(filepath);
+                var sheetnames = excel.GetWorksheetNames();
+                var comments = from c in excel.Worksheet<StudentAdvisingRemark>(sheetnames.First())
+                               select c;
+                foreach (var advisingcomment in comments)
+                {
+                    if (!String.IsNullOrEmpty(advisingcomment.text))
+                    {
+                        advisingcomment.created = DateTime.Now;
+                        advisingcomment.created_by = User.Identity.Name;
+                        advisingcomment.modified = DateTime.Now;
+                        advisingcomment.modified_by = User.Identity.Name;
+                        db.StudentAdvisingRemarks.Add(advisingcomment);
+                        count++;
+                    }
+                }
+                db.SaveChanges();
+                Session["FlashMessage"] = count + " record(s) successfully imported.";
+                //clear files uploaded after import
+                if (Directory.Exists(Server.MapPath("~/App_Data/Import/AdvisingComment/" + User.Identity.Name)))
+                {
+                    var files = Directory.GetFiles(Server.MapPath("~/App_Data/Import/AdvisingComment/" + User.Identity.Name));
+                    foreach (var file in files)
+                    {
+                        System.IO.File.Delete(file);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Session["FlashMessage"] = "Failed to import advising comments from excel file. <br/><br/>" + HttpUtility.JavaScriptStringEncode(e.Message);
+                return View();
+            }
+            return RedirectToAction("Import");
+        }
+
 
         protected override void Dispose(bool disposing)
         {

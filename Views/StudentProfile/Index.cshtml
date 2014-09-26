@@ -30,22 +30,32 @@
                 @Html.DropDownList("academic_level", ViewBag.levelList as IEnumerable<SelectListItem>, "All", null)
             </div>
             <div class="filter-field">
+                <label for="program_status">Program Status:</label>
+                @Html.DropDownList("program_status", ViewBag.programstatusList as IEnumerable<SelectListItem>, "All", null)
+            </div>
+            <div class="filter-field">
                 <label for="studentid">Student ID:</label>
                 @Html.TextBox("studentid", ViewBag.studentid as String)
                 <label for="firstname">First Name:</label>
                 @Html.TextBox("firstname", ViewBag.firstname as String)
                 <label for="lastname">Last Name:</label>
                 @Html.TextBox("lastname", ViewBag.lastname as String)
+                <label for="itscid">ITSC ID:</label>
+                @Html.TextBox("itscid", ViewBag.itscid as String)
             </div>
             <div class="filter-field">
+                <label for="facultyadvisor">Faculty Advisor:</label>
+                @Html.TextBox("facultyadvisor", ViewBag.facultyadvisor as String)
+                <label for="commentby">Comment by:</label>
+                @Html.TextBox("commentby", ViewBag.commentby as String)
                 <label for="commentkeyword">Advising Comment Keyword:</label>
                 @Html.TextBox("commentkeyword", ViewBag.commentkeyword as String)
             </div>
             <div class="filter-field">
-                <label for="assigned">Assigned Interview:</label>
+          @*      <label for="assigned">Assigned Interview:</label>
                 @Html.CheckBox("assigned", false)
                 <label for="requiredinterview">Required Interview but Not Assigned:</label>
-                @Html.CheckBox("requiredinterview", false)
+                @Html.CheckBox("requiredinterview", false)*@
                 <label for="withcomment">With Advising Comments:</label>
                 @Html.CheckBox("withcomment", false)
             </div>

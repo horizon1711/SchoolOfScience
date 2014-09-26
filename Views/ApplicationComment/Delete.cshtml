@@ -1,0 +1,68 @@
+﻿@model SchoolOfScience.Models.InterviewComment
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<fieldset>
+    <legend>InterviewComment</legend>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Interview.remarks)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Interview.remarks)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Application.student_id)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Application.student_id)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.comment)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.comment)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.created)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.created)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.created_by)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.created_by)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.modified)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.modified)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.modified_by)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.modified_by)
+    </div>
+</fieldset>
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    <p>
+        <input type="submit" value="Delete" /> |
+        @Html.ActionLink("Back to List", "Index")
+    </p>
+}

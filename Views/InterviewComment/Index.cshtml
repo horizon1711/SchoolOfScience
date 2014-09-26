@@ -2,11 +2,13 @@
 
 @{
     Layout = null;
+    var rand = new Random();
+    var random_int = rand.Next();
 }
 
 <h2>Interview Comments</h2>
 
-<table class="comment-table">
+<table id="comment-table-@random_int">
     <thead>
         <tr>
             <th>
@@ -54,7 +56,9 @@
 
 <script>
     $(function () {
-        $(".comment-table").dataTable({
+        $.ajaxSetup({ cache: false });
+
+        $("#comment-table-@random_int").dataTable({
             "bPaginate": false
         });
 
@@ -95,6 +99,17 @@
                 }
             });
             return false;
+        });
+
+
+        $(".program-details-link").click(function (e) {
+            e.preventDefault();
+            showDialog($(this).prop("href"), "#error-dialog", "#program-details-dialog");
+        });
+
+        $(".student-link").click(function (e) {
+            e.preventDefault();
+            showDialog($(this).prop("href"), "#error-dialog", "#student-profile-dialog");
         });
     });
 </script>

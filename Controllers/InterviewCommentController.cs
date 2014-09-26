@@ -89,7 +89,7 @@ namespace SchoolOfScience.Controllers
                     return HttpNotFound("Failed to add Interview Comment.<br/><br/>" + e.Message);
                 }
             }
-            return RedirectToAction("Index", "InterviewComment", new { interview_id = interviewcomment.interview_id });
+            return Content(Url.Action("Index", "InterviewComment", new { interview_id = interviewcomment.interview_id }));
         }
 
         //
@@ -125,7 +125,7 @@ namespace SchoolOfScience.Controllers
             {
                 return HttpNotFound("Failed to edit Interview Comment.<br/><br/>" + e.Message);
             }
-            return RedirectToAction("Index", "InterviewComment", new { interview_id = interviewcomment.interview_id });
+            return Content(Url.Action("Index", "InterviewComment", new { interview_id = interviewcomment.interview_id }));
 
         }
 
@@ -136,11 +136,11 @@ namespace SchoolOfScience.Controllers
         public ActionResult Delete(int id = 0)
         {
             InterviewComment interviewcomment = db.InterviewComments.Find(id);
-            var interview_id = interviewcomment.interview_id;
             if (interviewcomment == null)
             {
                 return HttpNotFound("Interview Comment not found.");
             }
+            var interview_id = interviewcomment.interview_id;
             try
             {
                 db.InterviewComments.Remove(interviewcomment);
@@ -167,7 +167,7 @@ namespace SchoolOfScience.Controllers
         //}
 
         //
-        // GET: /StudentActivity/Import/
+        // GET: /InterviewComment/Import/
         [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
         public ActionResult Import()
         {
@@ -184,7 +184,7 @@ namespace SchoolOfScience.Controllers
         }
 
         //
-        // POST: /StudentActivity/Import/
+        // POST: /InterviewComment/Import/
 
         [HttpPost]
         [Authorize(Roles = "Admin,Advising,StudentDevelopment")]

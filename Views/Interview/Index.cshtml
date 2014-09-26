@@ -167,6 +167,9 @@
 <p>
     <button type="button" id="commenttemplate-btn">Download Comment Template</button>
 </p>
+<p>
+    <button type="button" id="assignmenttemplate-btn">Download Assignment Template</button>
+</p>
 
 @section Scripts {
     <script>
@@ -236,6 +239,14 @@
                 var url = "@Html.Raw(Url.Action("CommentTemplate", "Interview", new { items = "replaceItems" }))";
                 url = url.replace("replaceItems", items.join('_'));
                 window.open(url, "Download Comment Template");
+            });
+
+            $("#assignmenttemplate-btn").click(function (e) {
+                e.preventDefault();
+                var items = $(".checkItem:checked").map(function () { return $(this).val() }).get();
+                var url = "@Html.Raw(Url.Action("AssignmentTemplate", "Interview", new { items = "replaceItems" }))";
+                url = url.replace("replaceItems", items.join('_'));
+                window.open(url, "Download Assignment Template");
             });
 
             $("input[type=reset]").click(function (e) {

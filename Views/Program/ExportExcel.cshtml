@@ -70,6 +70,7 @@
         }
         <th>Qualification</th>
         <th>Other Activities</th>
+        <th>Comments</th>
     </tr>
     @foreach (var application in Model.program.Applications)
     {
@@ -256,6 +257,16 @@
                     <text>;<br /></text>
                 }
                 @(String.Format("{0:yyyy-MM-dd}", activity.data.start_date) + " " + activity.data.name) 
+            }
+        </td>
+        <td>
+            @foreach (var comment in application.ApplicationComments.Select((x, i) => new { data = x, index = i }))
+            {
+                if (comment.index > 0)
+                {
+                    <text>;<br /></text>
+                }
+                @("[" + comment.data.modified_by + "] " + comment.data.comment)
             }
         </td>
     </tr>

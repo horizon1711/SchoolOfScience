@@ -10,6 +10,8 @@ using SchoolOfScience.Models.ViewModels;
 using SchoolOfScience.Attributes;
 using WebMatrix.WebData;
 using System.Data.Objects.SqlClient;
+using System.IO;
+using LinqToExcel;
 
 namespace SchoolOfScience.Controllers
 {
@@ -652,7 +654,95 @@ namespace SchoolOfScience.Controllers
             strHtml = HttpUtility.HtmlDecode(strHtml);//Html解碼
             byte[] b = System.Text.Encoding.UTF8.GetBytes(strHtml);//字串轉byte陣列
             Response.Write("<meta http-equiv=Content-Type content=text/html;charset=utf-8>");
-            return File(b, "application/vnd.ms-excel", "Comment Template " + String.Format("{0:yyyyMMddHHmm}", DateTime.Now) + ".xls");//輸出檔案給Client端
+            return File(b, "application/vnd.ms-excel", "Interview Comment Template " + String.Format("{0:yyyyMMddHHmm}", DateTime.Now) + ".xls");//輸出檔案給Client端
+        }
+
+        //
+        // GET: /Interview/AssignmentTemplate/
+
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment,EDP")]
+        public ActionResult AssignmentTemplate(string items)
+        {
+            var i = items.Split('_');
+            var interviews = db.Interviews.Where(p => i.Contains(SqlFunctions.StringConvert((double)p.id).Trim()));
+
+            string strHtml = RenderRazorViewToString("AssignmentTemplate", interviews.ToList());
+            strHtml = HttpUtility.HtmlDecode(strHtml);//Html解碼
+            byte[] b = System.Text.Encoding.UTF8.GetBytes(strHtml);//字串轉byte陣列
+            Response.Write("<meta http-equiv=Content-Type content=text/html;charset=utf-8>");
+            return File(b, "application/vnd.ms-excel", "Interview Assignment Template " + String.Format("{0:yyyyMMddHHmm}", DateTime.Now) + ".xls");//輸出檔案給Client端
+        }
+
+        //
+        // GET: /Interview/Import/
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
+        public ActionResult Import()
+        {
+            //clear files uploaded but not used
+            if (Directory.Exists(Server.MapPath("~/App_Data/Import/InterviewAssignment/" + User.Identity.Name)))
+            {
+                var files = Directory.GetFiles(Server.MapPath("~/App_Data/Import/InterviewAssignment/" + User.Identity.Name));
+                foreach (var file in files)
+                {
+                    System.IO.File.Delete(file);
+                }
+            }
+            return View();
+        }
+
+        //
+        // POST: /Interview/Import/
+
+        [HttpPost]
+        [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
+        public ActionResult Import(string filename)
+        {
+            ViewBag.filename = filename;
+            var filepath = Server.MapPath("~/App_Data/Import/InterviewAssignment/" + User.Identity.Name + "/" + filename);
+            if (!System.IO.File.Exists(filepath))
+            {
+                Session["FlashMessage"] = "File not found.";
+                return View();
+            }
+            try
+            {
+                int count = 0;
+                var excel = new ExcelQueryFactory(filepath);
+                var sheetnames = excel.GetWorksheetNames();
+                var assignments = from c in excel.Worksheet<InterviewAssignmentViewModel>(sheetnames.First())
+                               select c;
+                foreach (var interviewassignment in assignments)
+                {
+                    var interview = db.Interviews.Find(interviewassignment.interview_id);
+                    if (interview != null)
+                    {
+                        var application = db.Applications.SingleOrDefault(a => a.program_id == interview.program_id && a.student_id == interviewassignment.student_id);
+                        if (application != null)
+                        {
+                            application.Interviews.Clear();
+                            interview.Applications.Add(application);
+                            count++;
+                        }
+                    }
+                }
+                db.SaveChanges();
+                Session["FlashMessage"] = count + " record(s) successfully imported.";
+                //clear files uploaded after import
+                if (Directory.Exists(Server.MapPath("~/App_Data/Import/InterviewAssignment/" + User.Identity.Name)))
+                {
+                    var files = Directory.GetFiles(Server.MapPath("~/App_Data/Import/InterviewAssignment/" + User.Identity.Name));
+                    foreach (var file in files)
+                    {
+                        System.IO.File.Delete(file);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Session["FlashMessage"] = "Failed to import interview assignment from excel file. <br/><br/>" + HttpUtility.JavaScriptStringEncode(e.Message);
+                return View();
+            }
+            return RedirectToAction("Import");
         }
 
         public List<bool> PrepareAvailableDaysOfWeek(TimeslotConfig config)
