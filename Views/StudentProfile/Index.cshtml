@@ -36,18 +36,22 @@
             <div class="filter-field">
                 <label for="studentid">Student ID:</label>
                 @Html.TextBox("studentid", ViewBag.studentid as String)
-                <label for="firstname">First Name:</label>
-                @Html.TextBox("firstname", ViewBag.firstname as String)
-                <label for="lastname">Last Name:</label>
-                @Html.TextBox("lastname", ViewBag.lastname as String)
                 <label for="itscid">ITSC ID:</label>
                 @Html.TextBox("itscid", ViewBag.itscid as String)
             </div>
             <div class="filter-field">
+                <label for="firstname">First Name:</label>
+                @Html.TextBox("firstname", ViewBag.firstname as String)
+                <label for="lastname">Last Name:</label>
+                @Html.TextBox("lastname", ViewBag.lastname as String)
+            </div>
+            <div class="filter-field">
                 <label for="facultyadvisor">Faculty Advisor:</label>
-                @Html.TextBox("facultyadvisor", ViewBag.facultyadvisor as String)
+                @Html.DropDownList("facultyadvisor", ViewBag.advisorList as IEnumerable<SelectListItem>, "All", null)
                 <label for="commentby">Comment by:</label>
                 @Html.TextBox("commentby", ViewBag.commentby as String)
+            </div>
+            <div class="filter-field">
                 <label for="commentkeyword">Advising Comment Keyword:</label>
                 @Html.TextBox("commentkeyword", ViewBag.commentkeyword as String)
             </div>
@@ -127,6 +131,7 @@
     <script>
         $(function () {
             $(".data-table").dataTable({
+                "sScrollX": "100%",
                 "iDisplayLength": 100
             });
 

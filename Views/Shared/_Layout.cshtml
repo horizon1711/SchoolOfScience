@@ -12,7 +12,7 @@
         {
         <style type="text/css">
             .content-wrapper {
-                width: 90%;
+                max-width: 90%;
             }     
         </style>
         }
@@ -21,7 +21,7 @@
         {
         <style type="text/css">
             .content-wrapper {
-                width: 70%;
+                max-width: 70%;
             }     
         </style>
         }        
@@ -115,6 +115,7 @@
                 <div id="calendar-details-dialog" style="display:none"></div>
                 <div id="exchange-list-dialog" style="display:none"></div>
 
+                <a href="#" class="scrollToTop">^</a>
             </div>
         </div>
 
@@ -139,8 +140,8 @@
             function showDialog(link, errorDestination, successDestination, w, h) {
                 $.ui.dialog.prototype._focusTabbable = function () { };//remove auto focus from dialog
 
-                w = typeof w !== 'undefined' ? w : 950;
-                h = typeof h !== 'undefined' ? h : 600;
+                w = typeof w !== 'undefined' ? w : 900;
+                h = typeof h !== 'undefined' ? h : 480;
 
                 $.ajaxSetup({ cache: false });
 
@@ -196,7 +197,28 @@
 
             $(function () {
 
+                //Check to see if the window is top if not then display button
+                $("#container").scroll(function () {
+                    if ($(this).scrollTop() > 100) {
+                        $('.scrollToTop').fadeIn();
+                    } else {
+                        $('.scrollToTop').fadeOut();
+                    }
+                });
+
+                //Click event to scroll to top
+                $('.scrollToTop').click(function () {
+                    $("#container").animate({ scrollTop: 0 }, 400);
+                    return false;
+                });
+
                 $("#menu").superfish();
+
+                $("#menu").slicknav({
+                    label: "Menu",
+                    prependTo: '.main-menu',
+                    allowParentLinks: true	
+                });
 
                 $(document).tooltip({
                     show: {
@@ -269,7 +291,6 @@
                     </text>
                     Session.Remove("FlashMessage");
                 }
-
             });
         </script>
         @RenderSection("scripts", required: false)

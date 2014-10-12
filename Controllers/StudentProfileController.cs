@@ -31,6 +31,7 @@ namespace SchoolOfScience.Controllers
             }
             ViewBag.levelList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_level }).Distinct().OrderBy(t => t.text), "text", "text");
             ViewBag.programstatusList = new SelectList(db.StudentProfiles.Select(p => new { text = p.program_status }).Distinct().OrderBy(t => t.text), "text", "text", "AC");
+            ViewBag.advisorList = new SelectList(db.StudentAdvisors.Select(p => new { text = p.advisor_name}).Distinct().OrderBy(t => t.text), "text", "text");
             ViewBag.showTable = false;
             return View(new List<StudentProfile>().ToList());
         }
@@ -60,6 +61,7 @@ namespace SchoolOfScience.Controllers
             }
             ViewBag.levelList = new SelectList(db.StudentProfiles.Select(p => new { text = p.academic_level }).Distinct().OrderBy(t => t.text), "text", "text", Form["academic_level"]);
             ViewBag.programstatusList = new SelectList(db.StudentProfiles.Select(p => new { text = p.program_status }).Distinct().OrderBy(t => t.text), "text", "text", Form["program_status"]);
+            ViewBag.advisorList = new SelectList(db.StudentAdvisors.Select(p => new { text = p.advisor_name }).Distinct().OrderBy(t => t.text), "text", "text", Form["facultyadvisor"]);
             ViewBag.showTable = true;
             return View(students.ToList().Where(s => (true)
                 && (String.IsNullOrEmpty(Form["career"]) || s.academic_career == Form["career"])

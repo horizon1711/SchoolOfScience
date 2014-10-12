@@ -21,7 +21,8 @@ namespace SchoolOfScience
                         "~/Scripts/jquery.validate*"));
             
             bundles.Add(new ScriptBundle("~/bundles/jquerymenu").Include(
-                        "~/Scripts/jquery.superfish.js"));
+                        "~/Scripts/jquery.superfish.js",
+                        "~/Scripts/jquery.slicknav.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/dateformat").Include(
                         "~/Scripts/jquery-dateFormat.js"));
@@ -76,7 +77,8 @@ namespace SchoolOfScience
                 "~/Content/jquery.timepicker.css",
                 "~/Content/chosen.css",
                 "~/Content/superfish.css",
-                "~/Content/daypilot/*.css"
+                "~/Content/daypilot/*.css",
+                "~/Content/slicknav.css"
                 ));
 
             bundles.Add(new StyleBundle("~/Content/themes/base/css").Include(

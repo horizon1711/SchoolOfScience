@@ -4,64 +4,64 @@
 }
 
 
-<ul class="sf-menu" id="menu">
-	<li class="current">
-		@Html.ActionLink("Dashboard", "Index", "Home")
-	</li>
-            
-    
+<ul class="sf-menu flexnav" id="menu" data-breakpoint="960">
+    <li class="current">
+        @Html.ActionLink("Dashboard", "Index", "Home")
+    </li>
+
+
     @if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment") || User.IsInRole("EDP") || User.IsInRole("CommTutor"))
     {
-	    <li>
-		    @Html.ActionLink("Enrichment Programs", "Index", "Program")
-		    <ul>
-			    <li>
-				    @Html.ActionLink("Programs", "Index", "Program")
-				    <ul>
-					    <li>@Html.ActionLink("Create Program", "Create", "Program")</li>
-				    </ul>
-			    </li>
-			    <li>
-				    @Html.ActionLink("Applications", "Index", "Application")
-				    <ul>
+        <li>
+            @Html.ActionLink("Enrichment Programs", "Index", "Program")
+            <ul>
+                <li>
+                    @Html.ActionLink("Programs", "Index", "Program")
+                    <ul>
+                        <li>@Html.ActionLink("Create Program", "Create", "Program")</li>
+                    </ul>
+                </li>
+                <li>
+                    @Html.ActionLink("Applications", "Index", "Application")
+                    <ul>
                         <li>@Html.ActionLink("Import Comments", "Import", "ApplicationComment")</li>
-				    </ul>
-			    </li>
+                    </ul>
+                </li>
                 @if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment") || User.IsInRole("EDP"))
                 {
-			    <li>
-				    @Html.ActionLink("Interviews", "Index", "Interview")
-				    <ul>
-                        <li>@Html.ActionLink("Create Interviews", "CreateMultiple", "Interview")</li>
-                        <li>@Html.ActionLink("Assign Applications", "AssignMultiple", "Interview")</li>
-                        <li>@Html.ActionLink("Import Comments", "Import", "InterviewComment")</li>
-                        <li>@Html.ActionLink("Import Assignments", "Import", "Interview")</li>
-				    </ul>
-			    </li>
+                    <li>
+                        @Html.ActionLink("Interviews", "Index", "Interview")
+                        <ul>
+                            <li>@Html.ActionLink("Create Interviews", "CreateMultiple", "Interview")</li>
+                            <li>@Html.ActionLink("Assign Applications", "AssignMultiple", "Interview")</li>
+                            <li>@Html.ActionLink("Import Comments", "Import", "InterviewComment")</li>
+                            <li>@Html.ActionLink("Import Assignments", "Import", "Interview")</li>
+                        </ul>
+                    </li>
                 }
                 @if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment") || User.IsInRole("CommTutor"))
                 {
-                <li>
-                    @Html.ActionLink("Consultations", "Index", "Appointment", new { consultation = true }, null)
-                    <ul>
-                        <li>@Html.ActionLink("Create Consultations", "CreateMultiple", "Appointment", new { consultation = true }, null)</li>
-                    </ul>
-                </li>
+                    <li>
+                        @Html.ActionLink("Consultations", "Index", "Appointment", new { consultation = true }, null)
+                        <ul>
+                            <li>@Html.ActionLink("Create Consultations", "CreateMultiple", "Appointment", new { consultation = true }, null)</li>
+                        </ul>
+                    </li>
                 }
-            @if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment"))
-            {
-			    <li>
-				    @Html.ActionLink("Nominations", "Index", "Nomination")
-			    </li>
-            }
-		    </ul>
-	    </li>
+                @if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment"))
+                {
+                    <li>
+                        @Html.ActionLink("Nominations", "Index", "Nomination")
+                    </li>
+                }
+            </ul>
+        </li>
     }
     else if (User.IsInRole("StudentNUGD") || User.IsInRole("StudentRPGTPG") || User.IsInRole("StudentUGRD"))
     {
-		<li>
-			@Html.ActionLink("Enrichment Programs", "Showcase", "Program")
-			<ul>
+        <li>
+            @Html.ActionLink("Enrichment Programs", "Showcase", "Program")
+            <ul>
                 <li>
                     @Html.ActionLink("View Program List", "", null, new { onclick = "return false;" })
                     <ul>
@@ -80,33 +80,33 @@
                         <li>@Html.ActionLink("My Consultations", "Record", "Application", new { id = 2 }, null)</li>
                     </ul>
                 </li>
-			</ul>
-		</li>
+            </ul>
+        </li>
     }
     else
     {
-	    <li>
-		    @Html.ActionLink("Enrichment Programs", "ViewList", "Program")
-	    </li>
+        <li>
+            @Html.ActionLink("Enrichment Programs", "ViewList", "Program")
+        </li>
     }
 
     @if (User.IsInRole("Nominator"))
     {
-	    <li>
-		    @Html.ActionLink("Nominations", "MyNomination", "Nomination")
+        <li>
+            @Html.ActionLink("Nominations", "MyNomination", "Nomination")
             <ul>
                 <li>@Html.ActionLink("Pending Nominations", "MyNomination", "Nomination")</li>
                 <li>@Html.ActionLink("Nominations History", "MyNomination", "Nomination", new { history = true }, null)</li>
                 <li>@Html.ActionLink("Nominated Applications", "History", "Nomination")</li>
             </ul>
-	    </li>
+        </li>
     }
-        
-    
+
+
     @if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment") || User.IsInRole("FacultyAdvisor") || User.IsInRole("ProgramAdmin"))
     {
-	    <li>@Html.ActionLink("Advising Appointment", "Index", "Appointment")
-		    <ul>
+        <li>@Html.ActionLink("Advising Appointment", "Index", "Appointment")
+            <ul>
                 @if (User.IsInRole("FacultyAdvisor"))
                 {
                     <li>@Html.ActionLink("Manage My Appointments", "Index", "Appointment")</li>
@@ -118,9 +118,12 @@
                     <li>@Html.ActionLink("Manage Appointments", "Index", "Appointment")</li>
                 }
                 <li>@Html.ActionLink("Create Appointments", "CreateMultiple", "Appointment")</li>
-                <li>@Html.ActionLink("Import Comments", "Import", "StudentAdvisingRemark")</li>
-		    </ul>
-	    </li>
+                @if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment"))
+                {
+                    <li>@Html.ActionLink("Import Comments", "Import", "StudentAdvisingRemark")</li>
+                }
+            </ul>
+        </li>
     }
     else if (User.IsInRole("StudentNUGD") || User.IsInRole("StudentRPGTPG") || User.IsInRole("StudentUGRD"))
     {
@@ -131,134 +134,169 @@
             </ul>
         </li>
     }
-        
     
-    @if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment"))
+    <li>
+    @if (User.IsInRole("StudentNUGD") || User.IsInRole("StudentRPGTPG") || User.IsInRole("StudentUGRD"))
     {
-	    <li>
-		    @Html.ActionLink("Student Profile", "Index", "StudentProfile")
-            <ul>
-                <li>@Html.ActionLink("Import Student Activities", "Import", "StudentActivity")</li>
-                @if (User.IsInRole("FacultyAdvisor") || User.IsInRole("ProgramAdmin"))
-                {
-		            <li>
-			            @Html.ActionLink("MyStudent", "MyStudent", "StudentProfile")
-                        @if (User.IsInRole("FacultyAdvisor"))
-                        {
-                            <ul>
-                                <li>@Html.ActionLink("As Pre-major Faculty Advisor", "MyStudent", "StudentProfile", new { advisor = true }, null)</li>
-                                <li>@Html.ActionLink("As Faculty Mentor", "MyStudent", "StudentProfile", new { mentor = true }, null)</li>
-                            </ul>
-                        }
-		            </li>	
-                }
-            </ul>
-	    </li>
-    }
-    else if (User.IsInRole("ProgramAdmin") || User.IsInRole("UGCoordinator"))
+        @Html.ActionLink("My Profile", "MyProfile", "StudentProfile")
+    } 
+    else 
     {
-	    <li>
-		    @Html.ActionLink("Student Profile", "Index", "StudentProfile")
-            @if (User.IsInRole("FacultyAdvisor") || User.IsInRole("ProgramAdmin"))
-            {
-            <ul>
-		        <li>
-			        @Html.ActionLink("As Faculty Advisor", "MyStudent", "StudentProfile")
-                    @if (User.IsInRole("FacultyAdvisor"))
-                    {
-                        <ul>
-                            <li>@Html.ActionLink("As Pre-major Faculty Advisor", "MyStudent", "StudentProfile", new { advisor = true }, null)</li>
-                            <li>@Html.ActionLink("As Faculty Mentor", "MyStudent", "StudentProfile", new { mentor = true }, null)</li>
-                        </ul>
-                    }
-		        </li>	
-            </ul>
-            }
-	    </li>
-    }
-    else if (User.IsInRole("FacultyAdvisor") || User.IsInRole("ProgramAdmin"))
-    {
-		<li>
-			@Html.ActionLink("Student Profile", "MyStudent", "StudentProfile")
+        @Html.ActionLink("Student Profile", "", null, new { onclick = "return false;" })
+        <ul>
+        @if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment") || User.IsInRole("ProgramAdmin") || User.IsInRole("UGCoordinator"))
+        {
+            <li>@Html.ActionLink("View All", "Index", "StudentProfile")</li>
+        }
+        @if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment"))
+        {
+            <li>@Html.ActionLink("Import Student Activities", "Import", "StudentActivity")</li>
+        }
+        @if (User.IsInRole("FacultyAdvisor"))
+        {
+            <li>@Html.ActionLink("My Student", "MyStudent", "StudentProfile")
             @if (User.IsInRole("FacultyAdvisor"))
             {
                 <ul>
-                    <li>@Html.ActionLink("As Pre-major Faculty Advisor", "MyStudent", "StudentProfile", new { advisor = true }, null)</li>
-                    <li>@Html.ActionLink("As Faculty Mentor", "MyStudent", "StudentProfile", new { mentor = true }, null)</li>
+                    <li>@Html.ActionLink("View As Pre-major Faculty Advisor", "MyStudent", "StudentProfile", new { advisor = true }, null)</li>
+                    <li>@Html.ActionLink("View As Faculty Mentor", "MyStudent", "StudentProfile", new { mentor = true }, null)</li>
                 </ul>
             }
-		</li>	
+            </li>
+        }
+        </ul>
+    }
+    </li>
+
+@*
+    @if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment"))
+    {
+        <li>
+            @Html.ActionLink("Student Profile", "", null, new { onclick = "return false;" })
+            <ul>
+                <li>@Html.ActionLink("View All", "Index", "StudentProfile")</li>
+                <li>@Html.ActionLink("Import Student Activities", "Import", "StudentActivity")</li>
+                @if (User.IsInRole("FacultyAdvisor") || User.IsInRole("ProgramAdmin"))
+                {
+                    <li>
+                        @Html.ActionLink("My Student", "MyStudent", "StudentProfile")
+                        @if (User.IsInRole("FacultyAdvisor"))
+                        {
+                            <ul>
+                                <li>@Html.ActionLink("View As Pre-major Faculty Advisor", "MyStudent", "StudentProfile", new { advisor = true }, null)</li>
+                                <li>@Html.ActionLink("View As Faculty Mentor", "MyStudent", "StudentProfile", new { mentor = true }, null)</li>
+                            </ul>
+                        }
+                    </li>	
+                }
+            </ul>
+        </li>
+    }
+    else if (User.IsInRole("ProgramAdmin") || User.IsInRole("UGCoordinator"))
+    {
+        <li>
+            @Html.ActionLink("Student Profile", "", null, new { onclick = "return false;" })
+            <ul>
+                <li>@Html.ActionLink("View All", "Index", "StudentProfile")</li>
+                @if (User.IsInRole("FacultyAdvisor") || User.IsInRole("ProgramAdmin"))
+                {
+                    <li>
+                        @Html.ActionLink("My Student", "MyStudent", "StudentProfile")
+                        @if (User.IsInRole("FacultyAdvisor"))
+                        {
+                            <ul>
+                                <li>@Html.ActionLink("View As Pre-major Faculty Advisor", "MyStudent", "StudentProfile", new { advisor = true }, null)</li>
+                                <li>@Html.ActionLink("View As Faculty Mentor", "MyStudent", "StudentProfile", new { mentor = true }, null)</li>
+                            </ul>
+                        }
+                    </li>	
+                }
+            </ul>
+        </li>
+    }
+    else if (User.IsInRole("FacultyAdvisor") || User.IsInRole("ProgramAdmin"))
+    {
+        <li>
+            @Html.ActionLink("My Student", "MyStudent", "StudentProfile")
+            @if (User.IsInRole("FacultyAdvisor"))
+            {
+                <ul>
+                    <li>@Html.ActionLink("View As Pre-major Faculty Advisor", "MyStudent", "StudentProfile", new { advisor = true }, null)</li>
+                    <li>@Html.ActionLink("View As Faculty Mentor", "MyStudent", "StudentProfile", new { mentor = true }, null)</li>
+                </ul>
+            }
+        </li>	
     }
     else if (User.IsInRole("StudentNUGD") || User.IsInRole("StudentRPGTPG") || User.IsInRole("StudentUGRD"))
     {
-	    <li>
-		    @Html.ActionLink("My Profile", "MyProfile", "StudentProfile")
-	    </li>
-    }
-     
-    
+        <li>
+            @Html.ActionLink("My Profile", "MyProfile", "StudentProfile")
+        </li>
+    }*@
+
+
     @if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment"))
     {
-	    <li>
-		    @Html.ActionLink("Notification", "Index", "Notification")
-	    </li>
+        <li>
+            @Html.ActionLink("Notification", "Index", "Notification")
+        </li>
         <li>
             @Html.ActionLink("Configuration", "", null, new { onclick = "return false;" })
             <ul>
-			    <li>
-				    @Html.ActionLink("User Role", "Index", "UserProfile")
-			    </li>
+                <li>
+                    @Html.ActionLink("User Role", "Index", "UserProfile")
+                </li>
                 <li>
                     @Html.ActionLink("Program", "", null, new { onclick = "return false;" })
-			        <ul>
-					    <li>@Html.ActionLink("Edit Type", "Index", "ProgramType")</li>
-					    <li>@Html.ActionLink("Edit Status", "Index", "ProgramStatus")</li>
+                    <ul>
+                        <li>@Html.ActionLink("Edit Type", "Index", "ProgramType")</li>
+                        <li>@Html.ActionLink("Edit Status", "Index", "ProgramStatus")</li>
                         <li>@Html.ActionLink("Exchange Destinations", "Index", "ExchangeOption")</li>
-			        </ul>
+                    </ul>
                 </li>
                 <li>
                     @Html.ActionLink("Application", "", null, new { onclick = "return false;" })
-			        <ul>
-					    <li>@Html.ActionLink("Edit Status", "Index", "ApplicationStatus")</li>
-			        </ul>
+                    <ul>
+                        <li>@Html.ActionLink("Edit Status", "Index", "ApplicationStatus")</li>
+                    </ul>
                 </li>
                 <li>
                     @Html.ActionLink("Interview", "", null, new { onclick = "return false;" })
-			        <ul>
+                    <ul>
                         <li>@Html.ActionLink("Edit Status", "Index", "InterviewStatus")</li>
                         <li>@Html.ActionLink("Edit Venue", "Index", "InterviewVenue")</li>
-			        </ul>
+                    </ul>
                 </li>
-			    <li>
-				    @Html.ActionLink("Nomination", "", null, new { onclick = "return false;" })
-				    <ul>
+                <li>
+                    @Html.ActionLink("Nomination", "", null, new { onclick = "return false;" })
+                    <ul>
                         <li>@Html.ActionLink("Edit Status", "Index", "NominationStatus")</li>
-				    </ul>
-			    </li>
+                    </ul>
+                </li>
                 <li>
                     @Html.ActionLink("Appointment", "", null, new { onclick = "return false;" })
-			        <ul>
+                    <ul>
                         <li>@Html.ActionLink("Edit Host", "Index", "AppointmentHost")</li>
                         <li>@Html.ActionLink("Edit Status", "Index", "AppointmentStatus")</li>
                         <li>@Html.ActionLink("Edit Concern", "Index", "AppointmentConcern")</li>
                         <li>@Html.ActionLink("Edit ProgramAdmin", "ProgramAdmin", "Appointment")</li>
-			        </ul>
+                    </ul>
                 </li>
                 <li>
                     @Html.ActionLink("Notification", "", null, new { onclick = "return false;" })
-			        <ul>
+                    <ul>
                         <li>@Html.ActionLink("Edit Status", "Index", "NotificationStatus")</li>
-			            <li>@Html.ActionLink("Edit Type", "Index", "NotificationType")</li>
-			            <li>@Html.ActionLink("Edit Template", "Index", "NotificationTemplate")</li>
-			        </ul>
+                        <li>@Html.ActionLink("Edit Type", "Index", "NotificationType")</li>
+                        <li>@Html.ActionLink("Edit Template", "Index", "NotificationTemplate")</li>
+                    </ul>
                 </li>
                 <li>
                     @Html.ActionLink("Student Profile", "", null, new { onclick = "return false;" })
-			        <ul>
-			            <li>@Html.ActionLink("Edit Particular Type", "Index", "StudentParticularType")</li>
-			            <li>@Html.ActionLink("Edit Experience Type", "Index", "StudentExperienceType")</li>
+                    <ul>
+                        <li>@Html.ActionLink("Edit Particular Type", "Index", "StudentParticularType")</li>
+                        <li>@Html.ActionLink("Edit Experience Type", "Index", "StudentExperienceType")</li>
                         <li>@Html.ActionLink("Edit UGCoordinator", "UGCoordinator", "StudentProfile")</li>
-			        </ul>
+                    </ul>
                 </li>
             </ul>
         </li>

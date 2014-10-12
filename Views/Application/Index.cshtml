@@ -224,7 +224,12 @@
                 showDialog($(this).prop("href"), "#error-dialog", "#add-edit-dialog");
             });
 
-            $(".comments-link").click(function (e) {
+            //$(".comments-link").click(function (e) {
+            //    e.preventDefault();
+            //    showDialog($(this).prop("href"), "#error-dialog", "#application-comment-dialog");
+            //});
+
+            $(".data-table").on("click", ".comments-link", function (e) {
                 e.preventDefault();
                 showDialog($(this).prop("href"), "#error-dialog", "#application-comment-dialog");
             });
@@ -234,7 +239,12 @@
                 showDialog($(this).prop("href"), "#error-dialog", "#program-details-dialog");
             });
 
-            $(".student-link").click(function (e) {
+            //$(".student-link").click(function (e) {
+            //    e.preventDefault();
+            //    showDialog($(this).prop("href"), "#error-dialog", "#student-profile-dialog");
+            //});
+
+            $(".data-table").on("click", ".student-link", function (e) {
                 e.preventDefault();
                 showDialog($(this).prop("href"), "#error-dialog", "#student-profile-dialog");
             });

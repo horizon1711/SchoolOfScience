@@ -171,29 +171,31 @@
             @if (ViewBag.typeid == 0)
             {
             <text>
-                $(".data-table").dataTable({
-                    "aaSorting": [[3, "asc"]],
-                    "bPaginate": true,
-                    "oLanguage": {
-                        "sSearch": "",
-                        //"sInfo": "_TOTAL_ entries",
-                        "sEmptyTable": "No matching record found"
-                    }
-                });
+            $(".data-table").dataTable({
+                "sScrollX": "100%",
+                "aaSorting": [[3, "asc"]],
+                "bPaginate": true,
+                "oLanguage": {
+                    "sSearch": "",
+                    //"sInfo": "_TOTAL_ entries",
+                    "sEmptyTable": "No matching record found"
+                }
+            });
             </text>
             }
             else
             {
             <text>
-                $(".data-table").dataTable({
-                    "aaSorting": [[2, "asc"]],
-                    "bPaginate": true,
-                    "oLanguage": {
-                        "sSearch": "",
-                        //"sInfo": "_TOTAL_ entries",
-                        "sEmptyTable": "No matching record found"
-                    }
-                });
+            $(".data-table").dataTable({
+                "sScrollX": "100%",
+                "aaSorting": [[2, "asc"]],
+                "bPaginate": true,
+                "oLanguage": {
+                    "sSearch": "",
+                    //"sInfo": "_TOTAL_ entries",
+                    "sEmptyTable": "No matching record found"
+                }
+            });
             </text>
             }
             $(".action-link").click(function (e) {

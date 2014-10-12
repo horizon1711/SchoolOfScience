@@ -4,7 +4,7 @@
     ViewBag.Title = "Details";
 }
 
-<h1>@Model.student.name (ID: @Model.student.id)</h1>
+<h1>@Model.student.name (ID: @Model.student.id) @Model.student.chinese_name</h1>
 
 @if (ViewBag.profilepic)
 {
@@ -75,6 +75,14 @@
     </div>
 </div>
 }
+<div class="field-wrapper">
+    <div class="display-label">
+        Last Attended Secondary School
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.student.StudentAdmission.Last_Attended_Secondary_School_Name)
+    </div>
+</div>
 <div class="field-wrapper clear-left">
     <div class="display-label">
         @Html.DisplayNameFor(model => model.student.contact_phone_number)
@@ -151,7 +159,7 @@
 
 <div id="tabs-content"> 
     <div id="tab1">
-        <table class="application-table">
+        <table class="application-table" id="application-table">
             <thead>
                 <tr>
                     <th>Type</th>
@@ -433,10 +441,10 @@
     @if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment") || User.IsInRole("FacultyAdvisor") || User.IsInRole("CommTutor") || User.IsInRole("UGCoordinator"))
     {
     <div id="tab6">
-        @Html.Action("AdvisingRemark", new { student_id = Model.student.id, opener_id = "tab6" })
-        @Html.Action("ApplicationComment", new { student_id = Model.student.id, opener_id = "tab6" })
-        @Html.Action("InterviewComment", new { student_id = Model.student.id, opener_id = "tab6" })
-        @Html.Action("NominationComment", new { student_id = Model.student.id, opener_id = "tab6" })
+        <div id="advising-remark">@Html.Action("AdvisingRemark", new { student_id = Model.student.id, opener_id = "advising-remark" })</div>
+        <div id="application-comment">@Html.Action("ApplicationComment", new { student_id = Model.student.id, opener_id = "application-comment" })</div>
+        <div id="interview-comment">@Html.Action("InterviewComment", new { student_id = Model.student.id, opener_id = "interview-comment" })</div>
+        <div id="nomination-comment">@Html.Action("NominationComment", new { student_id = Model.student.id, opener_id = "nomination-comment" })</div>
     </div>
     }
     <div id="tab7">
@@ -457,6 +465,7 @@
 <script>
     $(function () {
         $(".application-table").dataTable({
+            "sScrollX": "100%",
             "aaSorting": [[3, "asc"]],
             "bPaginate": false,
             "bInfo": false,
@@ -468,6 +477,7 @@
         });
 
         $(".experience-table").dataTable({
+            "sScrollX": "100%",
             "aaSorting": [[0, "desc"]],
             "bPaginate": false,
             "bInfo": false,
@@ -479,6 +489,7 @@
         });
 
         $(".qualification-table").dataTable({
+            "sScrollX": "100%",
             "aaSorting": [[0, "desc"]],
             "bPaginate": false,
             "bInfo": false,
@@ -490,6 +501,7 @@
         });
 
         $(".record-table").dataTable({
+            "sScrollX": "100%",
             "bRetrieve": true,
             "bPaginate": false,
             "bInfo": false,
@@ -498,6 +510,16 @@
         });
 
         $(".majorchoice-table").dataTable({
+            "sScrollX": "100%",
+            "bRetrieve": true,
+            "bPaginate": false,
+            "bInfo": false,
+            "bFilter": false,
+            "bSort": false
+        });
+
+        $(".comment-table").dataTable({
+            "sScrollX": "100%",
             "bRetrieve": true,
             "bPaginate": false,
             "bInfo": false,

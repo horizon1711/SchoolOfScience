@@ -120,9 +120,9 @@ b {
 }
 
 .content-wrapper {
-    max-width: 100%;
-    width: 950px;
-    margin: 0px auto;
+    max-width: 950px;
+    margin: auto;
+    padding: 0px 10px;
 }
 
 
@@ -176,6 +176,21 @@ img.logoff {
     border-bottom: 1px solid rgb(206,206,205);
     background: #fff;
     padding: 0px 60px;
+}
+
+.slicknav_menu {
+	display:none;
+}
+
+@media screen and (max-width: 960px) {
+	/* #menu is the original menu */
+	#menu {
+		display:none;
+	}
+	
+	.slicknav_menu {
+		display:block;
+	}
 }
 
 footer {
@@ -281,6 +296,11 @@ select:focus, input[type="text"]:focus {
     margin: 20px 0px;
     font-size: 0.9em !important;
 }
+
+#tabs-content>div {
+    overflow-x: scroll;
+}
+
 
 .field-validation-valid {
     display: none;
@@ -480,6 +500,14 @@ fieldset .dataTables_wrapper, #tabs-content .dataTables_wrapper{
 
 .ui-dialog .ui-dialog-titlebar-close {
     right: 0;
+}
+
+div.ui-dialog {
+    max-width: 90%;
+}
+
+ul#tabs li {
+    font-size: 0.8em;
 }
 
 .table-wrapper {
@@ -873,6 +901,25 @@ img.cv-btn {
 
 .cv-link-prompt {
     list-style: disc;
+}
+
+.scrollToTop{
+	width:30px; 
+	height:30px;
+    font-size: 60px;
+	padding:10px; 
+	text-align:center; 
+	background: whiteSmoke;
+	font-weight: bold;
+	color: #444;
+	text-decoration: none;
+	position:fixed;
+	bottom:20px;
+	right:20px;
+	display:none;
+}
+.scrollToTop:hover{
+	text-decoration:none;
 }
 
 

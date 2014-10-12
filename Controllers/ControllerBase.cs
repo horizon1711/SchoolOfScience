@@ -38,6 +38,7 @@ namespace SchoolOfScience.Controllers
 
         public Notification CreateNotification(String type, Application application)
         {
+            string baseurl = String.Format("{0}://{1}{2}", Request.Url.Scheme, Request.Url.Authority, Url.Content("~"));
             NotificationType notificationtype = db.NotificationTypes.Where(t => t.name == type).SingleOrDefault();
             NotificationStatus notificationstatus = db.NotificationStatus.SingleOrDefault(s => s.default_status);
             if (notificationtype == null || notificationstatus == null)
@@ -52,7 +53,7 @@ namespace SchoolOfScience.Controllers
                 {
                     string body = "";
                     string subject = "";
-                    string directlink = "https://sdb.science.ust.hk/mySCI/Program/Showcase/" + application.Program.id.ToString();
+                    string directlink = baseurl + "Program/Showcase/" + application.Program.id.ToString();
                     body = notificationtype.NotificationTemplate.body;
                     body = body.Replace("[student id]", application.student_id);
                     body = body.Replace("[student name]", application.StudentProfile.name);
@@ -137,7 +138,7 @@ namespace SchoolOfScience.Controllers
                 {
                     string body = "";
                     string subject = "";
-                    string directlink = "https://sdb.science.ust.hk/mySCI/Program/Showcase/" + application.Program.id.ToString();
+                    string directlink = baseurl + "Program/Showcase/" + application.Program.id.ToString();
                     body = notificationtype.NotificationTemplate.body;
                     body = body.Replace("[student id]", application.student_id);
                     body = body.Replace("[student name]", application.StudentProfile.name);
@@ -220,6 +221,7 @@ namespace SchoolOfScience.Controllers
         
         public Notification CreateNotification(String type, Program program)
         {
+            string baseurl = String.Format("{0}://{1}{2}", Request.Url.Scheme, Request.Url.Authority, Url.Content("~"));
             NotificationType notificationtype = db.NotificationTypes.Where(t => t.name == type).SingleOrDefault();
             NotificationStatus notificationstatus = db.NotificationStatus.SingleOrDefault(s => s.default_status);
             if (notificationtype == null || notificationstatus == null)
@@ -233,7 +235,7 @@ namespace SchoolOfScience.Controllers
                 {
                     string body = "";
                     string subject = "";
-                    string directlink = "https://sdb.science.ust.hk/mySCI/Program/Showcase/" + program.id.ToString();
+                    string directlink = baseurl + "Program/Showcase/" + program.id.ToString();
                     body = notificationtype.NotificationTemplate.body;
                     body = body.Replace("[program id]", program.id.ToString());
                     body = body.Replace("[program name]", program.name);
@@ -315,7 +317,7 @@ namespace SchoolOfScience.Controllers
                 {
                     string body = "";
                     string subject = "";
-                    string directlink = "https://sdb.science.ust.hk/mySCI/Program/Showcase/" + program.id.ToString();
+                    string directlink = baseurl + "Program/Showcase/" + program.id.ToString();
                     body = notificationtype.NotificationTemplate.body;
                     body = body.Replace("[program id]", program.id.ToString());
                     body = body.Replace("[program name]", program.name);
@@ -395,6 +397,7 @@ namespace SchoolOfScience.Controllers
 
         public Notification CreateNotification(String type, Interview interview, Application application)
         {
+            string baseurl = String.Format("{0}://{1}{2}", Request.Url.Scheme, Request.Url.Authority, Url.Content("~"));
             NotificationType notificationtype = db.NotificationTypes.Where(t => t.name == type).SingleOrDefault();
             NotificationStatus notificationstatus = db.NotificationStatus.SingleOrDefault(s => s.default_status);
             if (notificationtype == null || notificationstatus == null)
@@ -408,7 +411,8 @@ namespace SchoolOfScience.Controllers
                 {
                     string body = "";
                     string subject = "";
-                    string directlink = "https://sdb.science.ust.hk/mySCI/Program/Showcase/" + application.Program.id.ToString();
+                    string directlink = baseurl + "Program/Showcase/" + application.Program.id.ToString();
+                    string ical = baseurl + "Interview/ExportCalendar/" + interview.id.ToString();
                     body = notificationtype.NotificationTemplate.body;
                     body = body.Replace("[student id]", application.student_id);
                     body = body.Replace("[student name]", application.StudentProfile.name);
@@ -422,6 +426,7 @@ namespace SchoolOfScience.Controllers
                     body = body.Replace("[interview date]", String.Format("{0:yyyy-MM-dd (ddd)}", interview.start_time));
                     body = body.Replace("[interview time]", String.Format("{0:HH:mm}", interview.start_time) + " to " + String.Format("{0:HH:mm}", interview.end_time));
                     body = body.Replace("[interview venue]", interview.InterviewVenue.name);
+                    body = body.Replace("[ical]", "<a href='" + ical + "' target='_blank'>" + ical + "</a>");
 
                     subject = notificationtype.NotificationTemplate.subject;
                     subject = subject.Replace("[student id]", application.student_id);
@@ -436,6 +441,7 @@ namespace SchoolOfScience.Controllers
                     subject = subject.Replace("[interview date]", String.Format("{0:yyyy-MM-dd (ddd)}", interview.start_time));
                     subject = subject.Replace("[interview time]", String.Format("{0:HH:mm}", interview.start_time) + " to " + String.Format("{0:HH:mm}", interview.end_time));
                     subject = subject.Replace("[interview venue]", interview.InterviewVenue.name);
+                    subject = subject.Replace("[ical]", "<a href='" + ical + "' target='_blank'>" + ical + "</a>");
                     
                     Notification notification = new Notification
                     {
@@ -497,6 +503,7 @@ namespace SchoolOfScience.Controllers
 
         public Notification CreateNotification(String type, Appointment appointment)
         {
+            string baseurl = String.Format("{0}://{1}{2}", Request.Url.Scheme, Request.Url.Authority, Url.Content("~"));
             NotificationType notificationtype = db.NotificationTypes.Where(t => t.name == type).SingleOrDefault();
             NotificationStatus notificationstatus = db.NotificationStatus.SingleOrDefault(s => s.default_status);
             if (notificationtype == null || notificationstatus == null)
@@ -510,6 +517,7 @@ namespace SchoolOfScience.Controllers
                 {
                     string body = "";
                     string subject = "";
+                    string ical = baseurl + "Appointment/ExportCalendar/" + appointment.id.ToString();
                     body = notificationtype.NotificationTemplate.body;
                     body = body.Replace("[student id]", appointment.student_id);
                     body = body.Replace("[student name]", appointment.StudentProfile.name);
@@ -517,6 +525,7 @@ namespace SchoolOfScience.Controllers
                     body = body.Replace("[appointment date]", String.Format("{0:yyyy-MM-dd (ddd)}", appointment.start_time));
                     body = body.Replace("[appointment time]", String.Format("{0:HH:mm}", appointment.start_time) + " to " + String.Format("{0:HH:mm}", appointment.end_time));
                     body = body.Replace("[appointment venue]", appointment.venue);
+                    body = body.Replace("[ical]", "<a href='" + ical + "' target='_blank'>" + ical + "</a>");
                     if (appointment.AppointmentConcerns != null && appointment.AppointmentConcerns.Count() > 0)
                     {
                         string concerns = string.Join(",", appointment.AppointmentConcerns.Select(c => c.name));
@@ -534,6 +543,7 @@ namespace SchoolOfScience.Controllers
                     subject = subject.Replace("[appointment date]", String.Format("{0:yyyy-MM-dd (ddd)}", appointment.start_time));
                     subject = subject.Replace("[appointment time]", String.Format("{0:HH:mm}", appointment.start_time) + " to " + String.Format("{0:HH:mm}", appointment.end_time));
                     subject = subject.Replace("[appointment venue]", appointment.venue);
+                    subject = subject.Replace("[ical]", "<a href='" + ical + "' target='_blank'>" + ical + "</a>");
                     if (appointment.AppointmentConcerns != null && appointment.AppointmentConcerns.Count() > 0)
                     {
                         string concerns = string.Join(",", appointment.AppointmentConcerns.Select(c => c.name));
@@ -605,6 +615,7 @@ namespace SchoolOfScience.Controllers
                 {
                     string body = "";
                     string subject = "";
+                    string ical = baseurl + "Appointment/ExportCalendar/" + appointment.id.ToString();
                     body = notificationtype.NotificationTemplate.body;
                     body = body.Replace("[student id]", appointment.student_id);
                     body = body.Replace("[student name]", appointment.StudentProfile.name);
@@ -612,6 +623,7 @@ namespace SchoolOfScience.Controllers
                     body = body.Replace("[appointment date]", String.Format("{0:yyyy-MM-dd (ddd)}", appointment.start_time));
                     body = body.Replace("[appointment time]", String.Format("{0:HH:mm}", appointment.start_time) + " to " + String.Format("{0:HH:mm}", appointment.end_time));
                     body = body.Replace("[appointment venue]", appointment.venue);
+                    body = body.Replace("[ical]", "<a href='" + ical + "' target='_blank'>" + ical + "</a>");
                     if (appointment.AppointmentConcerns != null && appointment.AppointmentConcerns.Count() > 0)
                     {
                         string concerns = string.Join(",", appointment.AppointmentConcerns.Select(c => c.name));
@@ -629,6 +641,7 @@ namespace SchoolOfScience.Controllers
                     subject = subject.Replace("[appointment date]", String.Format("{0:yyyy-MM-dd (ddd)}", appointment.start_time));
                     subject = subject.Replace("[appointment time]", String.Format("{0:HH:mm}", appointment.start_time) + " to " + String.Format("{0:HH:mm}", appointment.end_time));
                     subject = subject.Replace("[appointment venue]", appointment.venue);
+                    subject = subject.Replace("[ical]", "<a href='" + ical + "' target='_blank'>" + ical + "</a>");
                     if (appointment.AppointmentConcerns != null && appointment.AppointmentConcerns.Count() > 0)
                     {
                         string concerns = string.Join(",", appointment.AppointmentConcerns.Select(c => c.name));
@@ -663,6 +676,15 @@ namespace SchoolOfScience.Controllers
                         {
                             email = user.UserName + "@ust.hk",
                             recipient_type = "to"
+                        });
+                    }
+
+                    foreach (var programadmin in appointment.AppointmentHost.UserProfiles1)
+                    {
+                        notification.NotificationRecipients.Add(new NotificationRecipient
+                        {
+                            email = programadmin.UserName + "@ust.hk",
+                            recipient_type = "cc"
                         });
                     }
 
@@ -701,6 +723,7 @@ namespace SchoolOfScience.Controllers
 
         public Notification CreateNotification(String type, NominationList list)
         {
+            string baseurl = String.Format("{0}://{1}{2}", Request.Url.Scheme, Request.Url.Authority, Url.Content("~"));
             NotificationType notificationtype = db.NotificationTypes.Where(t => t.name == type).SingleOrDefault();
             NotificationStatus notificationstatus = db.NotificationStatus.SingleOrDefault(s => s.default_status);
             if (notificationtype == null || notificationstatus == null)
@@ -714,7 +737,7 @@ namespace SchoolOfScience.Controllers
                 {
                     string body = "";
                     string subject = "";
-                    string directlink = "https://sdb.science.ust.hk/mySCI/Nomination/ApplicationList/" + list.id.ToString();
+                    string directlink = baseurl + "Nomination/ApplicationList/" + list.id.ToString();
                     body = notificationtype.NotificationTemplate.body;
                     body = body.Replace("[program id]", list.Nomination.program_id.ToString());
                     body = body.Replace("[program name]", list.Nomination.Program.name);
@@ -803,7 +826,7 @@ namespace SchoolOfScience.Controllers
                 {
                     string body = "";
                     string subject = "";
-                    string directlink = "https://sdb.science.ust.hk/mySCI/Nomination/ApplicationList/" + list.id.ToString();
+                    string directlink = baseurl + "Nomination/ApplicationList/" + list.id.ToString();
                     body = notificationtype.NotificationTemplate.body;
                     body = body.Replace("[program id]", list.Nomination.program_id.ToString());
                     body = body.Replace("[program name]", list.Nomination.Program.name);

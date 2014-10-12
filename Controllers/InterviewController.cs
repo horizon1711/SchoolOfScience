@@ -707,6 +707,7 @@ namespace SchoolOfScience.Controllers
             try
             {
                 int count = 0;
+                string skipped = "";
                 var excel = new ExcelQueryFactory(filepath);
                 var sheetnames = excel.GetWorksheetNames();
                 var assignments = from c in excel.Worksheet<InterviewAssignmentViewModel>(sheetnames.First())
@@ -714,19 +715,31 @@ namespace SchoolOfScience.Controllers
                 foreach (var interviewassignment in assignments)
                 {
                     var interview = db.Interviews.Find(interviewassignment.interview_id);
-                    if (interview != null)
+                    if (interview != null && !String.IsNullOrEmpty(interviewassignment.student_id))
                     {
-                        var application = db.Applications.SingleOrDefault(a => a.program_id == interview.program_id && a.student_id == interviewassignment.student_id);
-                        if (application != null)
+                        var i = interviewassignment.student_id.Split(';');
+                        var applications = db.Applications.Where(a => i.Contains(a.student_id.Trim()) && a.program_id == interview.program_id);
+
+                        if (applications.Count() > 0)
                         {
-                            application.Interviews.Clear();
-                            interview.Applications.Add(application);
-                            count++;
+                            foreach (var application in applications)
+                            {
+                                if (application.Interviews.Count() > 0)
+                                {
+                                    skipped += application.student_id + " is skipped as already assigned. <br/>";
+                                }
+                                else
+                                {
+                                    application.Interviews.Add(interview);
+                                    //count timeslot only when application is valid
+                                    count++;
+                                }
+                            }
                         }
                     }
                 }
                 db.SaveChanges();
-                Session["FlashMessage"] = count + " record(s) successfully imported.";
+                Session["FlashMessage"] = count + " application(s) successfully assigned.<br/><br/>" + skipped;
                 //clear files uploaded after import
                 if (Directory.Exists(Server.MapPath("~/App_Data/Import/InterviewAssignment/" + User.Identity.Name)))
                 {
@@ -743,6 +756,18 @@ namespace SchoolOfScience.Controllers
                 return View();
             }
             return RedirectToAction("Import");
+        }
+
+        //
+        // GET: /Interview/ExportToCalendar/5
+
+        public ActionResult ExportCalendar(int id = 0)
+        {
+            Interview interview = db.Interviews.Find(id);
+            string strHtml = RenderRazorViewToString("ExportCalendarFile", interview);
+            strHtml = HttpUtility.HtmlDecode(strHtml);//Html decoding
+            byte[] b = System.Text.Encoding.UTF8.GetBytes(strHtml);//convert string to byte array
+            return File(b, "text/calendar", "InterviewExport" + String.Format("{0:yyyyMMddHHmm}", DateTime.Now) + ".ics");
         }
 
         public List<bool> PrepareAvailableDaysOfWeek(TimeslotConfig config)

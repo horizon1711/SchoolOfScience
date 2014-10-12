@@ -372,6 +372,20 @@
                 </td>
             </tr>
             <tr>
+                <td>[ical]</td>
+                <td>Interview/Appointment Calendar File Link</td>
+                <td>
+                    <ul class="template-type-list">
+                        <li>
+                            InterviewAssigned
+                        </li>
+                        <li>
+                            AppointmentReserved
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
                 <td>[nominator]</td>
                 <td>Nominator ITSCID</td>
                 <td>
@@ -481,6 +495,7 @@
     @Scripts.Render("~/bundles/jqueryval")
 <script>
     $(".data-table").dataTable({
+        "sScrollX": "100%",
         "bInfo": false,
         "bFilter": true,
         "bPaginate": false

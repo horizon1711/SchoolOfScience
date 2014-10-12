@@ -209,6 +209,9 @@ else
                         @Html.ActionLink("Cancel", "Cancel", new { id = item.id })
                     </li>
                     }
+                    <li>
+                        @Html.ActionLink("Export iCal", "ExportCalendar", new { id = item.id }) 
+                    </li>
                 </ul>
             </td>
         </tr>
@@ -227,6 +230,7 @@ else
     <script>
         $(function () {
             $(".data-table").dataTable({
+                "sScrollX": "100%",
                 "aaSorting": [[2, "asc"],[3, "asc"]],
                 "bPaginate": false,
                 "aoColumnDefs": [

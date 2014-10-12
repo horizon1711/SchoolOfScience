@@ -3,6 +3,15 @@
     Layout = null;
 }
 
+<style>
+    br {
+        mso-data-placement: same-cell;
+    }
+    td {
+        vertical-align: middle;
+    }
+</style>
+
 <table>
     <tr>
         <th>interview_id</th>
@@ -14,7 +23,9 @@
         <th>Applicant</th>
         <th>Academic Level</th>
         <th>CGPA</th>
+        <th>Advising Comment</th>
         <th>Application Comment</th>
+        <th>Previous Interview Comment</th>
         <th>comment</th>
     </tr>
     @foreach(var interview in Model)
@@ -41,13 +52,43 @@
             }
             </td>
             <td>
-                @foreach (var comment in application.ApplicationComments.Select((x, i) => new { data = x, index = i }))
+                @foreach (var advisingremark in application.StudentProfile.StudentAdvisingRemarks.Where(a => !a.@private))
                 {
-                    if (comment.index > 0)
+                    <br />
+                    <strong>@("[" + String.Format("{0:yyyy-MM-dd}", advisingremark.modified) + " " + advisingremark.modified_by + "] ")</strong>
+                    <br />
+                    @advisingremark.text
+                    <br />
+                }
+            </td>
+            <td>
+                @foreach (var previous_application in application.StudentProfile.Applications.Where(a => a.ApplicationComments.Count() > 0))
+                {
+                    <br />
+                    <strong>@(previous_application.Program.name)</strong>
+                    <br />
+                    foreach (var comment in previous_application.ApplicationComments)
                     {
-                        <text>;<br /></text>
+                        @("[" + String.Format("{0:yyyy-MM-dd}", comment.modified) + " " + comment.modified_by + "] ")
+                        <br />
+                        @comment.comment
+                        <br />
                     }
-                    @("[" + comment.data.modified_by + "] " + comment.data.comment)
+                }
+            </td>
+            <td>
+                @foreach (var previous_application in application.StudentProfile.Applications.Where(a => a.InterviewComments.Count() > 0))
+                {
+                    <br />
+                    <strong>@(previous_application.Program.name)</strong>
+                    <br />
+                    foreach (var comment in previous_application.InterviewComments)
+                    {
+                        @("[" + String.Format("{0:yyyy-MM-dd}", comment.modified) + " " + comment.modified_by + "] ")
+                        <br />
+                        @comment.comment
+                        <br />
+                    }
                 }
             </td>
             <td>

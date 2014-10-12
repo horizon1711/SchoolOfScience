@@ -8,7 +8,7 @@
 
 @using (Html.BeginForm())
 {
-    <fieldset class="startCollapse">
+    <fieldset class="collapse">
         <legend>Search by Filter (Click to expand)</legend>
         <div class="filter">
             <div class="filter-field">
@@ -123,6 +123,7 @@
     <script>
         $(function () {
             $(".data-table").dataTable({
+                "sScrollX": "100%",
                 "iDisplayLength": 100
             });
 

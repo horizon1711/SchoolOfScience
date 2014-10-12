@@ -911,15 +911,26 @@ namespace SchoolOfScience.Controllers
                 Session["FlashMessage"] = "Appointment not found";
                 return RedirectToAction("MyAppointment", "Appointment");
             }
-            SendNotification(CreateNotification("AppointmentCancelledAdvisor", appointment));
+            Appointment for_notification = appointment;
             appointment.student_id = null;
             appointment.AppointmentConcerns.Clear();
-            db.SaveChanges();
-            if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment") || User.IsInRole("FacultyAdvisor"))
+            try
             {
-                return RedirectToAction("Index", "Appointment");
+                db.SaveChanges();
+                Session["FlashMessage"] = "Appointment has been successfully cancelled.";
+                SendNotification(CreateNotification("AppointmentCancelled", appointment));
+                SendNotification(CreateNotification("AppointmentCancelledAdvisor", appointment));
+                if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment") || User.IsInRole("FacultyAdvisor"))
+                {
+                    return RedirectToAction("Index", "Appointment");
+                }
+                return RedirectToAction("MyAppointment", "Appointment");
             }
-            return RedirectToAction("MyAppointment", "Appointment");
+            catch (Exception e)
+            {
+                Session["FlashMessage"] = "Failed to cancel the appointment.";
+            }
+            return View(appointment);
         }
 
         [Authorize(Roles = "Admin,Advising,StudentDevelopment")]
@@ -984,6 +995,19 @@ namespace SchoolOfScience.Controllers
         public ActionResult DeleteProgramAdmin()
         {
             return null;
+        }
+
+        //
+        // GET: /Application/ExportToCalendar/5
+
+        public ActionResult ExportCalendar(int id = 0)
+        {
+            Appointment appointment = db.Appointments.Find(id);
+
+            string strHtml = RenderRazorViewToString("ExportCalendarFile", appointment);
+            strHtml = HttpUtility.HtmlDecode(strHtml);//Html decoding
+            byte[] b = System.Text.Encoding.UTF8.GetBytes(strHtml);//convert string to byte array
+            return File(b, "text/calendar", "AppointmentExport" + String.Format("{0:yyyyMMddHHmm}", DateTime.Now) + ".ics");
         }
 
         public List<bool> PrepareAvailableDaysOfWeek(TimeslotConfig config)

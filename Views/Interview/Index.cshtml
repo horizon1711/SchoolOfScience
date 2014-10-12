@@ -148,6 +148,9 @@
                     <li>
                         @Html.ActionLink("Delete", "Delete", new { id=item.id }, new { @class = "manage-link" })
                     </li>
+                    <li>
+                        @Html.ActionLink("Export iCal", "ExportCalendar", new { id = item.id }) 
+                    </li>
                 </ul>
             </td>
         </tr>
@@ -175,6 +178,7 @@
     <script>
         $(function () {
             $(".data-table").dataTable({
+                "sScrollX": "100%",
                 "aaSorting": [[2, "asc"], [3, "asc"]],
                 "bPaginate": false,
                 "aoColumnDefs": [

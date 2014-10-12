@@ -1,0 +1,14 @@
+﻿@model SchoolOfScience.Models.Interview
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//hacksw/handcal//NONSGML v1.0//EN
+BEGIN:VEVENT
+UID:HKUSTmySCIAppointmentExport_@(Model.id)
+DTSTAMP:@DateTime.Now.ToString("u").Replace(" ", "T").Replace("-", "").Replace(":", "").Replace("Z", "")
+DTSTART:@Model.start_time.ToString("u").Replace(" ", "T").Replace("-", "").Replace(":", "").Replace("Z", "")
+DTEND:@Model.end_time.ToString("u").Replace(" ", "T").Replace("-", "").Replace(":", "").Replace("Z", "")
+SUMMARY:mySCI Program Interview
+DESCRIPTION:Program:\r\n@(Model.Program.name)\r\n
+LOCATION:@Model.InterviewVenue.name
+END:VEVENT
+END:VCALENDAR

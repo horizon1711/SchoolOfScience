@@ -1,0 +1,14 @@
+﻿@model SchoolOfScience.Models.Appointment
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//hacksw/handcal//NONSGML v1.0//EN
+BEGIN:VEVENT
+UID:HKUSTmySCIAppointmentExport_@(Model.id)
+DTSTAMP:@DateTime.Now.ToString("u").Replace(" ", "T").Replace("-", "").Replace(":", "").Replace("Z", "")
+DTSTART:@Model.start_time.ToString("u").Replace(" ", "T").Replace("-", "").Replace(":", "").Replace("Z", "")
+DTEND:@Model.end_time.ToString("u").Replace(" ", "T").Replace("-", "").Replace(":", "").Replace("Z", "")
+SUMMARY:mySCI Advising Appointment
+DESCRIPTION:Host:\r\n@(Model.AppointmentHost.name)\r\nStudent:\r\n@(Model.StudentProfile.name + " [Student ID: " + Model.student_id + "]")\r\nConcern(s):\r\n@{foreach(var concern in Model.AppointmentConcerns){if (concern.program_id != null) {<text>@(concern.Program.name)\r\n</text>} else {<text>@(concern.name)\r\n</text>}}}
+LOCATION:@Model.venue
+END:VEVENT
+END:VCALENDAR

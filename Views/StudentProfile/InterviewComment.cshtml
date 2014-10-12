@@ -10,7 +10,7 @@
     <div class="clear-fix"></div>
     @if (Model.Count() > 0)
     {
-    <table class="interview-comment-table">
+    <table class="comment-table">
         <thead>
             <tr>
                 <th>Date & Time</th>
@@ -66,27 +66,3 @@
 </fieldset>
 
 <div class="clear-fix"></div>
-
-@Scripts.Render("~/bundles/jquery")
-@Scripts.Render("~/bundles/jqueryui")
-@Scripts.Render("~/bundles/datatable")
-<script>
-    $(function () {
-        $.ajaxSetup({ cache: false });
-
-        $(".interview-comment-table").dataTable({
-            "aaSorting": [[0, "desc"]],
-            "bPaginate": false,
-            "bInfo": false,
-            "bFilter": true,
-            "oLanguage": {
-                "sSearch": ""
-            }
-        });
-
-        $(".program-details-link").click(function (e) {
-            e.preventDefault();
-            showDialog($(this).prop("href"), "#error-dialog", "#program-details-dialog");
-        });
-    });
-</script>
