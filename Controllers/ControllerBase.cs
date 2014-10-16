@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Mail;
 using System.Web;
 using System.Web.Mvc;
@@ -679,14 +680,14 @@ namespace SchoolOfScience.Controllers
                         });
                     }
 
-                    foreach (var programadmin in appointment.AppointmentHost.UserProfiles1)
-                    {
-                        notification.NotificationRecipients.Add(new NotificationRecipient
-                        {
-                            email = programadmin.UserName + "@ust.hk",
-                            recipient_type = "cc"
-                        });
-                    }
+                    //foreach (var programadmin in appointment.AppointmentHost.UserProfiles1)
+                    //{
+                    //    notification.NotificationRecipients.Add(new NotificationRecipient
+                    //    {
+                    //        email = programadmin.UserName + "@ust.hk",
+                    //        recipient_type = "cc"
+                    //    });
+                    //}
 
                     if (!String.IsNullOrEmpty(notificationtype.NotificationTemplate.cc))
                     {
@@ -949,9 +950,12 @@ namespace SchoolOfScience.Controllers
                     //not in ust server
                     if (!Request.Url.Host.EndsWith("ust.hk"))
                     {
-                        notification.status_id = SentErrorStatus.id;
-                        Session["FlashMessage"] += "<br/>Failed to send notifications. Not in ust server.<br/>";
-                        return notification;
+                        //notification.status_id = SentErrorStatus.id;
+                        //Session["FlashMessage"] += "<br/>Failed to send notifications. Not in ust server.<br/>";
+                        //return notification;
+                        smtp.Host = "smtp.gmail.com";
+                        smtp.Port = 587;
+                        smtp.Credentials = new NetworkCredential("treephoning@gmail.com", "16121612");
                     }
 
                     //add recipients to mail object

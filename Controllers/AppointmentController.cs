@@ -911,15 +911,14 @@ namespace SchoolOfScience.Controllers
                 Session["FlashMessage"] = "Appointment not found";
                 return RedirectToAction("MyAppointment", "Appointment");
             }
-            Appointment for_notification = appointment;
+            SendNotification(CreateNotification("AppointmentCancelled", appointment));
+            SendNotification(CreateNotification("AppointmentCancelledAdvisor", appointment));
             appointment.student_id = null;
             appointment.AppointmentConcerns.Clear();
             try
             {
                 db.SaveChanges();
-                Session["FlashMessage"] = "Appointment has been successfully cancelled.";
-                SendNotification(CreateNotification("AppointmentCancelled", appointment));
-                SendNotification(CreateNotification("AppointmentCancelledAdvisor", appointment));
+                Session["FlashMessage"] = "Appointment has been successfully cancelled.<br/>";
                 if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment") || User.IsInRole("FacultyAdvisor"))
                 {
                     return RedirectToAction("Index", "Appointment");
@@ -928,7 +927,7 @@ namespace SchoolOfScience.Controllers
             }
             catch (Exception e)
             {
-                Session["FlashMessage"] = "Failed to cancel the appointment.";
+                Session["FlashMessage"] += "Failed to cancel the appointment. <br/><br/>" + e.Message;
             }
             return View(appointment);
         }
