@@ -27,14 +27,14 @@ namespace SchoolOfScience.Controllers
             if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment"))
             {
                 appointments = db.Appointments;
-                ViewBag.hostList = new SelectList(db.AppointmentHosts, "id", "name");
+                ViewBag.hostList = new SelectList(db.AppointmentHosts.OrderBy(h => h.name), "id", "name");
                 ViewBag.reserved = true;
                 ViewBag.available = true;
             }
             else if (User.IsInRole("ProgramAdmin"))
             {
                 appointments = db.Appointments.Where(a => a.AppointmentHost.UserProfiles1.Any(u => u.UserName == User.Identity.Name));
-                ViewBag.hostList = new SelectList(db.AppointmentHosts.Where(h => h.UserProfiles1.Any(u => u.UserName == User.Identity.Name)), "id", "name");
+                ViewBag.hostList = new SelectList(db.AppointmentHosts.Where(h => h.UserProfiles1.Any(u => u.UserName == User.Identity.Name)).OrderBy(h => h.name), "id", "name");
                 consultation = false;
                 ViewBag.reserved = true;
                 ViewBag.available = true;
@@ -48,7 +48,7 @@ namespace SchoolOfScience.Controllers
                     );
                 ViewBag.reserved = true;
                 ViewBag.available = true;
-                ViewBag.hostList = new SelectList(db.AppointmentHosts.Where(h => h.SystemUsers.Any(u => u.UserName == User.Identity.Name)), "id", "name");
+                ViewBag.hostList = new SelectList(db.AppointmentHosts.Where(h => h.SystemUsers.Any(u => u.UserName == User.Identity.Name)).OrderBy(h => h.name), "id", "name");
             }
             ViewBag.concernList = new SelectList(db.AppointmentConcerns.Where(c => c.program_id == null && !c.custom), "id", "name");
             ViewBag.statusList = new SelectList(db.AppointmentStatus, "id", "name");
@@ -73,19 +73,19 @@ namespace SchoolOfScience.Controllers
             if (User.IsInRole("Admin") || User.IsInRole("Advising") || User.IsInRole("StudentDevelopment"))
             {
                 appointments = db.Appointments;
-                ViewBag.hostList = new SelectList(db.AppointmentHosts, "id", "name", Form["host"]);
+                ViewBag.hostList = new SelectList(db.AppointmentHosts.OrderBy(h => h.name), "id", "name", Form["host"]);
             }
             else if (User.IsInRole("ProgramAdmin"))
             {
                 appointments = db.Appointments.Where(a => a.AppointmentHost.UserProfiles1.Any(u => u.UserName == User.Identity.Name));
                 consultation = false;
-                ViewBag.hostList = new SelectList(db.AppointmentHosts.Where(h => h.UserProfiles1.Any(u => u.UserName == User.Identity.Name)), "id", "name");
+                ViewBag.hostList = new SelectList(db.AppointmentHosts.Where(h => h.UserProfiles1.Any(u => u.UserName == User.Identity.Name)).OrderBy(h => h.name), "id", "name");
             }
             else
             {
                 appointments = db.Appointments.Where(a => a.AppointmentHost.SystemUsers.Any(u => u.UserName == User.Identity.Name));
                 consultation = false;
-                ViewBag.hostList = new SelectList(db.AppointmentHosts.Where(h => h.SystemUsers.Any(u => u.UserName == User.Identity.Name)), "id", "name", Form["host"]);
+                ViewBag.hostList = new SelectList(db.AppointmentHosts.Where(h => h.SystemUsers.Any(u => u.UserName == User.Identity.Name)).OrderBy(h => h.name), "id", "name", Form["host"]);
             }
             ViewBag.concernList = new SelectList(db.AppointmentConcerns.Where(c => c.program_id == null && !c.custom), "id", "name", Form["concern"]);
             ViewBag.statusList = new SelectList(db.AppointmentStatus, "id", "name", Form["status"]);
@@ -682,7 +682,7 @@ namespace SchoolOfScience.Controllers
             ViewModel.hostList = db.AppointmentHosts.Where(h => h.booking 
                 && !h.advisor
                 && !h.Appointments.Any(o => o.student_id == student.id && o.start_time > DateTime.Now) 
-                && h.Appointments.Where(o => o.start_time > dt24 && o.student_id == null).Count() > 0).ToList();
+                && h.Appointments.Where(o => o.start_time > dt24 && o.student_id == null).Count() > 0).OrderBy(h => h.name).ToList();
             if (ViewModel.advisor != null)
             {
                 string email = ViewModel.advisor.advisor_email;

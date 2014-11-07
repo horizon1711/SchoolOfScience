@@ -357,7 +357,7 @@ namespace SchoolOfScience.Controllers
 
             if (program.require_appointment)
             {
-                ViewBag.AppointmentList = db.Appointments.Where(a => a.student_id == null && a.AppointmentConcerns.Any(c => c.program_id == program.id));
+                ViewBag.AppointmentList = db.Appointments.Where(a => a.student_id == null && a.AppointmentConcerns.Any(c => c.program_id == program.id)).OrderBy(a => a.start_time);
             }
 
             return PartialView(ViewModel);

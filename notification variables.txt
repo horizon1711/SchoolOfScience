@@ -1,7 +1,0 @@
-application notification
-[student id]
-[student name]
-[application id]
-[program id]
-[program name]
-[submit date]

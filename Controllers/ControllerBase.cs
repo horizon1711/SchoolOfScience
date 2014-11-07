@@ -950,12 +950,12 @@ namespace SchoolOfScience.Controllers
                     //not in ust server
                     if (!Request.Url.Host.EndsWith("ust.hk"))
                     {
-                        //notification.status_id = SentErrorStatus.id;
-                        //Session["FlashMessage"] += "<br/>Failed to send notifications. Not in ust server.<br/>";
-                        //return notification;
-                        smtp.Host = "smtp.gmail.com";
-                        smtp.Port = 587;
-                        smtp.Credentials = new NetworkCredential("treephoning@gmail.com", "16121612");
+                        notification.status_id = SentErrorStatus.id;
+                        Session["FlashMessage"] += "<br/>Failed to send notifications. Not in ust server.<br/>";
+                        return notification;
+                        //smtp.Host = "smtp.gmail.com";
+                        //smtp.Port = 587;
+                        //smtp.Credentials = new NetworkCredential("treephoning@gmail.com", "16121612");
                     }
 
                     //add recipients to mail object

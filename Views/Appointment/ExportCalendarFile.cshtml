@@ -8,7 +8,7 @@ DTSTAMP:@DateTime.Now.ToString("u").Replace(" ", "T").Replace("-", "").Replace("
 DTSTART:@Model.start_time.ToString("u").Replace(" ", "T").Replace("-", "").Replace(":", "").Replace("Z", "")
 DTEND:@Model.end_time.ToString("u").Replace(" ", "T").Replace("-", "").Replace(":", "").Replace("Z", "")
 SUMMARY:mySCI Advising Appointment
-DESCRIPTION:Host:\r\n@(Model.AppointmentHost.name)\r\nStudent:\r\n@(Model.StudentProfile.name + " [Student ID: " + Model.student_id + "]")\r\nConcern(s):\r\n@{foreach(var concern in Model.AppointmentConcerns){if (concern.program_id != null) {<text>@(concern.Program.name)\r\n</text>} else {<text>@(concern.name)\r\n</text>}}}
+DESCRIPTION:Host:\r\n@(Model.AppointmentHost.name)\r\nStudent:\r\n@(Model.StudentProfile != null ? Model.StudentProfile.name + " [Student ID: " + Model.student_id + "]" : "")\r\nConcern(s):\r\n@{foreach(var concern in Model.AppointmentConcerns){if (concern.program_id != null) {<text>@(concern.Program.name)\r\n</text>} else {<text>@(concern.name)\r\n</text>}}}
 LOCATION:@Model.venue
 END:VEVENT
 END:VCALENDAR
