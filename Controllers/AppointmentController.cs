@@ -669,7 +669,7 @@ namespace SchoolOfScience.Controllers
 
         [Ajax(true)]
         [Authorize(Roles = "StudentUGRD,StudentRPGTPG,StudentNUGD")]
-        public ActionResult Booking1(AppointmentBookingViewModel ViewModel)
+        public ActionResult Booking1(AppointmentBookingViewModel ViewModel)//appointment host selection
         {
             var student = db.StudentProfiles.Find(User.Identity.Name);
             if (student == null)
@@ -713,7 +713,7 @@ namespace SchoolOfScience.Controllers
         [Ajax(true)]
         [HttpPost]
         [Authorize(Roles = "StudentUGRD,StudentRPGTPG,StudentNUGD")]
-        public ActionResult Booking2(AppointmentBookingViewModel ViewModel)
+        public ActionResult Booking2(AppointmentBookingViewModel ViewModel)//appointment slots selection
         {
             var student = db.StudentProfiles.Find(User.Identity.Name);
             if (student == null)
@@ -743,7 +743,7 @@ namespace SchoolOfScience.Controllers
         [Ajax(true)]
         [HttpPost]
         [Authorize(Roles = "StudentUGRD,StudentRPGTPG,StudentNUGD")]
-        public ActionResult Booking3(AppointmentBookingViewModel ViewModel)
+        public ActionResult Booking3(AppointmentBookingViewModel ViewModel)//appointment concerns input
         {
             var student = db.StudentProfiles.Find(User.Identity.Name);
             if (student == null)
@@ -775,7 +775,7 @@ namespace SchoolOfScience.Controllers
         [Ajax(true)]
         [HttpPost]
         [Authorize(Roles = "StudentUGRD,StudentRPGTPG,StudentNUGD")]
-        public ActionResult BookingConfirm(AppointmentBookingViewModel ViewModel)
+        public ActionResult BookingConfirm(AppointmentBookingViewModel ViewModel)//confirm appointment
         {
             var student = db.StudentProfiles.Find(User.Identity.Name);
             if (student == null)
@@ -805,10 +805,15 @@ namespace SchoolOfScience.Controllers
 
         [HttpPost]
         [Authorize(Roles = "StudentUGRD,StudentRPGTPG,StudentNUGD")]
-        public ActionResult BookingSubmit(AppointmentBookingViewModel ViewModel)
+        public ActionResult BookingSubmit(AppointmentBookingViewModel ViewModel)//submit appointment
         {
             ViewModel.host = db.AppointmentHosts.Find(ViewModel.host_id);
             ViewModel.appointment = db.Appointments.Find(ViewModel.appointment_id);
+            if (ViewModel.appointment.student_id != null)//check if appointment slot is reserved by others during this booking
+            {
+                Session["FlashMessage"] = "Appointment has been reserved by others already .";
+                return RedirectToAction("Booking", "Appointment");
+            }
             DateTime dt24 = DateTime.Now.AddHours(24);
             if (ViewModel.appointment.start_time < dt24)
             {

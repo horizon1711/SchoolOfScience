@@ -1,4 +1,0 @@
-Date: 201409020241
-
-//ug coordinator role
-- INSERT INTO webpages_Roles (RoleName) VALUES ('UGCoordinator')

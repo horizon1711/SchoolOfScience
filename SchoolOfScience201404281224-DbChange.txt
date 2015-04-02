@@ -1,9 +1,0 @@
-Date: 201404281224
-
-//export CV
-- [StudentParticularType] insert column [resume_export] bit not null default 0
-- Create table [AcademicPlans]
-	- [code] nvarchar(10) primary key not null
-	- [description] nvarchar(30)
-	- [full_description] nvarchar(200)
-- Import Excel file to [AcademicPlans]
